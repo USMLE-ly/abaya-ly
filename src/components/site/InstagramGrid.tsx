@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Instagram } from "lucide-react";
+import { InstagramIcon } from "./SocialIcons";
 import { SectionHeader } from "./SectionHeader";
 
 const imgs = [
