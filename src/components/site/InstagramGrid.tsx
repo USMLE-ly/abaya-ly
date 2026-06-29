@@ -36,7 +36,7 @@ export function InstagramGrid() {
             >
               <img src={src} alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gold/0 group-hover:bg-gold/60 transition-all duration-500 flex items-center justify-center">
-                <InstagramIcon className="opacity-0 group-hover:opacity-100 text-ink transition" size={36} />
+                <div className="opacity-0 group-hover:opacity-100 text-ink transition"><InstagramIcon size={36} /></div>
               </div>
             </motion.a>
           ))}
