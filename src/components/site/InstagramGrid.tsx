@@ -36,7 +36,7 @@ export function InstagramGrid() {
             >
               <img src={src} alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gold/0 group-hover:bg-gold/60 transition-all duration-500 flex items-center justify-center">
-                <Instagram className="opacity-0 group-hover:opacity-100 text-ink transition" size={36} />
+                <InstagramIcon className="opacity-0 group-hover:opacity-100 text-ink transition" size={36} />
               </div>
             </motion.a>
           ))}
@@ -49,7 +49,7 @@ export function InstagramGrid() {
             rel="noreferrer"
             className="inline-flex items-center gap-2 rounded-full border border-gold text-gold px-6 py-3 font-semibold hover:bg-gold hover:text-ink transition"
           >
-            <Instagram size={18} />
+            <InstagramIcon size={18} />
             <span>@almalika.ly</span>
           </a>
         </div>
