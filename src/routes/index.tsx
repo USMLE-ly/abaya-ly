@@ -1,6 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Navbar } from "@/components/site/Navbar";
-import { AnimatedMarqueeHero } from "@/components/ui/hero-3";
+import {
+  ShaderBackground,
+  HeroContent,
+  PulsingCircle,
+  PhotoMarquee,
+} from "@/components/ui/shaders-hero-section";
 import { Marquee } from "@/components/site/Marquee";
 import { FeaturedCollection } from "@/components/site/FeaturedCollection";
 import { WhyUs } from "@/components/site/WhyUs";
@@ -41,19 +46,11 @@ function Landing() {
     <div className="bg-ink">
       <Navbar />
       <main>
-        <AnimatedMarqueeHero
-          tagline="✦ الفخامة الليبية الأصيلة ✦"
-          title={
-            <>
-              حيث تلتقي
-              <br />
-              <span className="text-gold">الأناقة</span> بالهوية
-            </>
-          }
-          description="كل عباية نصنعها تحمل روح المرأة الليبية — قوتها، رقّتها، وتميّزها. من أفخر الأقمشة العالمية إلى تفاصيل التطريز اليدوي، الملكة ليست مجرد عباية، هي هوية."
-          ctaText="اكتشفي المجموعة"
-          images={HERO_IMAGES}
-        />
+        <ShaderBackground>
+          <HeroContent />
+          <PulsingCircle />
+          <PhotoMarquee images={HERO_IMAGES} />
+        </ShaderBackground>
         <Marquee />
         <FeaturedCollection />
         <WhyUs />
