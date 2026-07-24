@@ -1,18 +1,19 @@
-export type Product = {
+export interface Product {
   id: string;
   name: string;
   fabric: string;
-  category: "السهرة" | "الكاجوال" | "الرسمية" | "المطرّزة";
+  category: string;
   price: number;
   originalPrice?: number;
-  badge?: "جديد" | "الأكثر مبيعاً" | "حصري";
+  badge?: string;
   colors: { name: string; hex: string }[];
+  sizes: string[];
   description: string;
   details: string[];
   images: string[];
   rating: number;
   reviewCount: number;
-};
+}
 
 const colorBlack = { name: "أسود", hex: "#0a0a0a" };
 const colorGold = { name: "ذهبي", hex: "#c9a84c" };
@@ -31,19 +32,14 @@ export const products: Product[] = [
     originalPrice: 450,
     badge: "الأكثر مبيعاً",
     colors: [colorBlack, colorGold, colorBurgundy],
-    description:
-      "عباية السهرة الذهبية — قطعة تجمع بين الفخامة المعاصرة والهوية الليبية الأصيلة. مصنوعة من الجورجيت الإيطالي الفاخر مع تطريز يدوي بخيوط ذهبية على الأكمام والياقة، لتمنحك إطلالة ملكية تليق بكل مناسبة.",
-    details: [
-      "القماش: جورجيت إيطالي ١٠٠٪",
-      "القصة: واسعة، فضفاضة من الأسفل",
-      "التطريز: يدوي بخيوط ذهبية أصلية",
-      "العناية: غسيل جاف فقط",
-    ],
+    sizes: ["S", "M", "L", "XL"],
+    description: "عباية السهرة الذهبية — قطعة تجمع بين الفخامة المعاصرة والهوية الليبية الأصيلة. مصنوعة من الجورجيت الإيطالي الفاخر مع تطريز يدوي بخيوط ذهبية على الأكمام والياقة.",
+    details: ["القماش: جورجيت إيطالي ١٠٠٪", "القصة: واسعة، فضفاضة من الأسفل", "التطريز: يدوي بخيوط ذهبية أصلية", "العناية: غسيل جاف فقط"],
     images: [
-      "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=1200&q=80",
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=1200&q=80",
-      "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=1200&q=80",
-      "https://images.unsplash.com/photo-1551803091-e20673f15770?w=1200&q=80",
+      "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=800&q=80",
+      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800&q=80",
+      "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=800&q=80",
+      "https://images.unsplash.com/photo-1551803091-e20673f15770?w=800&q=80",
     ],
     rating: 4.9,
     reviewCount: 47,
@@ -56,19 +52,14 @@ export const products: Product[] = [
     price: 450,
     badge: "جديد",
     colors: [colorBlack, colorIvory, colorNavy],
-    description:
-      "كل تطريزة في عباية الياسمين تحكي حكاية — حرير طبيعي ناعم كنسمة الفجر، وزخارف مستوحاة من تراث ليبيا العريق. خياطة دقيقة بأيدي حرفيات ليبيات.",
-    details: [
-      "القماش: حرير طبيعي ١٠٠٪",
-      "القصة: ربع بشت مع أكمام واسعة",
-      "التطريز: زخارف ليبية تقليدية",
-      "العناية: غسيل جاف فقط",
-    ],
+    sizes: ["S", "M", "L", "XL"],
+    description: "كل تطريزة في عباية الياسمين تحكي حكاية — حرير طبيعي ناعم كنسمة الفجر، وزخارف مستوحاة من تراث ليبيا العريق.",
+    details: ["القماش: حرير طبيعي ١٠٠٪", "القصة: ربع بشت مع أكمام واسعة", "التطريز: زخارف ليبية تقليدية", "العناية: غسيل جاف فقط"],
     images: [
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=1200&q=80",
-      "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=1200&q=80",
-      "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=1200&q=80",
-      "https://images.unsplash.com/photo-1551803091-e20673f15770?w=1200&q=80",
+      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800&q=80",
+      "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=800&q=80",
+      "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=800&q=80",
+      "https://images.unsplash.com/photo-1551803091-e20673f15770?w=800&q=80",
     ],
     rating: 5.0,
     reviewCount: 32,
@@ -80,18 +71,14 @@ export const products: Product[] = [
     category: "الكاجوال",
     price: 220,
     colors: [colorBlack, colorBrown, colorNavy],
-    description:
-      "للأيام التي تحبين فيها الراحة دون أن تتنازلي عن أناقتك — عباية الفجر بقماش الكريب المزدوج الخفيف، قصة عملية وأنيقة في آن واحد.",
-    details: [
-      "القماش: كريب مزدوج",
-      "القصة: كلوش بسيطة",
-      "العناية: غسيل عادي بماء بارد",
-    ],
+    sizes: ["S", "M", "L", "XL"],
+    description: "للأيام التي تحبين فيها الراحة دون أن تتنازلي عن أناقتك — عباية الفجر بقماش الكريب المزدوج الخفيف.",
+    details: ["القماش: كريب مزدوج", "القصة: كلوش بسيطة", "العناية: غسيل عادي بماء بارد"],
     images: [
-      "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=1200&q=80",
-      "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=1200&q=80",
-      "https://images.unsplash.com/photo-1551803091-e20673f15770?w=1200&q=80",
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=1200&q=80",
+      "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=800&q=80",
+      "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=800&q=80",
+      "https://images.unsplash.com/photo-1551803091-e20673f15770?w=800&q=80",
+      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800&q=80",
     ],
     rating: 4.8,
     reviewCount: 89,
@@ -104,18 +91,14 @@ export const products: Product[] = [
     price: 550,
     badge: "حصري",
     colors: [colorBlack, colorBurgundy, colorNavy],
-    description:
-      "للمناسبات التي تستحق إطلالة استثنائية — عباية الملكة بقماش ملكي ثقيل وتفاصيل مدروسة، صُنعت لتكوني محط الأنظار في كل مكان تذهبين إليه.",
-    details: [
-      "القماش: قماش ملكي ثقيل",
-      "القصة: ربع بشت رسمية",
-      "التطريز: تفاصيل ذهبية على الأطراف",
-    ],
+    sizes: ["S", "M", "L", "XL"],
+    description: "للمناسبات التي تستحق إطلالة استثنائية — عباية الملكة بقماش ملكي ثقيل وتفاصيل مدروسة.",
+    details: ["القماش: قماش ملكي ثقيل", "القصة: ربع بشت رسمية", "التطريز: تفاصيل ذهبية على الأطراف"],
     images: [
-      "https://images.unsplash.com/photo-1551803091-e20673f15770?w=1200&q=80",
-      "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=1200&q=80",
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=1200&q=80",
-      "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=1200&q=80",
+      "https://images.unsplash.com/photo-1551803091-e20673f15770?w=800&q=80",
+      "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=800&q=80",
+      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800&q=80",
+      "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=800&q=80",
     ],
     rating: 5.0,
     reviewCount: 21,
@@ -127,17 +110,14 @@ export const products: Product[] = [
     category: "السهرة",
     price: 320,
     colors: [colorBlack, colorGold, colorIvory],
-    description:
-      "خفيفة كالنسيم، فخمة كالليالي العربية — شيفون فاخر متعدد الطبقات يمنحك حركة انسيابية مع كل خطوة.",
-    details: [
-      "القماش: شيفون فاخر متعدد الطبقات",
-      "القصة: واسعة مع أكمام منفوشة",
-    ],
+    sizes: ["S", "M", "L", "XL"],
+    description: "خفيفة كالنسيم، فخمة كالليالي العربية — شيفون فاخر متعدد الطبقات.",
+    details: ["القماش: شيفون فاخر متعدد الطبقات", "القصة: واسعة مع أكمام منفوشة"],
     images: [
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=1200&q=80",
-      "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=1200&q=80",
-      "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=1200&q=80",
-      "https://images.unsplash.com/photo-1551803091-e20673f15770?w=1200&q=80",
+      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800&q=80",
+      "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=800&q=80",
+      "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=800&q=80",
+      "https://images.unsplash.com/photo-1551803091-e20673f15770?w=800&q=80",
     ],
     rating: 4.7,
     reviewCount: 54,
@@ -149,17 +129,14 @@ export const products: Product[] = [
     category: "الكاجوال",
     price: 290,
     colors: [colorBlack, colorNavy, colorBurgundy],
-    description:
-      "للذوق الذي لا يتأثر بالموضة — تصميم كلاسيكي خالد بقماش الستان الفاخر اللامع بهدوء.",
-    details: [
-      "القماش: ستان فاخر",
-      "القصة: مستقيمة كلاسيكية",
-    ],
+    sizes: ["S", "M", "L", "XL"],
+    description: "للذوق الذي لا يتأثر بالموضة — تصميم كلاسيكي خالد بقماش الستان الفاخر.",
+    details: ["القماش: ستان فاخر", "القصة: مستقيمة كلاسيكية"],
     images: [
-      "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=1200&q=80",
-      "https://images.unsplash.com/photo-1551803091-e20673f15770?w=1200&q=80",
-      "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=1200&q=80",
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=1200&q=80",
+      "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=800&q=80",
+      "https://images.unsplash.com/photo-1551803091-e20673f15770?w=800&q=80",
+      "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=800&q=80",
+      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800&q=80",
     ],
     rating: 4.9,
     reviewCount: 67,
@@ -167,3 +144,11 @@ export const products: Product[] = [
 ];
 
 export const findProduct = (id: string) => products.find((p) => p.id === id);
+
+export const collections = [
+  { id: "all", name: "الكل" },
+  { id: "السهرة", name: "السهرة" },
+  { id: "الكاجوال", name: "الكاجوال" },
+  { id: "الرسمية", name: "الرسمية" },
+  { id: "المطرّزة", name: "المطرّزة" },
+];
