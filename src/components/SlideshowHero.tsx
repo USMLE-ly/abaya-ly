@@ -3,25 +3,18 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const slides = [
   {
-    image: "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=1600&q=80",
+    image: "/images/hero/abaya-gold-1.jpg",
     heading: "الملكة",
     subheading: "عبايات فاخرة بلمسة ليبية أصيلة",
     cta: "اكتشفي المجموعة",
     link: "/collections",
   },
   {
-    image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=1600&q=80",
-    heading: "مجموعة ٢٠٢٥",
-    subheading: "أقمشة عالمية، تطريز يدوي",
-    cta: "تسوقي الآن",
-    link: "/collections",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=1600&q=80",
+    image: "/images/hero/abaya-gold-2.jpg",
     heading: "الفخامة الليبية",
     subheading: "صُنعت لكل امرأة تستحق الأفضل",
-    cta: "شاهدي المزيد",
-    link: "/about",
+    cta: "تسوقي الآن",
+    link: "/collections",
   },
 ];
 
