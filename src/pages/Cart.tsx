@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 
 interface CartItem {
@@ -45,80 +45,145 @@ export function Cart() {
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <div className="pt-20 pb-16 min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="font-display text-3xl font-bold text-text mb-8">سلة التسوق</h1>
-
-        {items.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-text-light text-lg mb-4">سلتكِ فارغة</p>
-            <Link to="/collections" className="inline-block px-8 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition-colors">
-              تسوقي الآن
+    <div className="bg-white min-h-screen">
+      {/* ─── CART HEADER ─── */}
+      <section className="pt-24 pb-6 md:pt-28 md:pb-8">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10">
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-text">
+              سلة التسوق
+            </h1>
+            <Link
+              to="/collections"
+              className="text-xs text-brand hover:underline font-medium"
+            >
+              متابعة التسوق
             </Link>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-4">
-              {items.map((item) => (
-                <motion.div
-                  key={item.id}
-                  layout
-                  className="flex gap-4 p-4 bg-white rounded-2xl border border-border"
-                >
-                  <img src={item.image} alt={item.name} className="w-24 h-32 object-cover rounded-xl" />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-text">{item.name}</h3>
-                    <p className="text-sm text-text-light">{item.fabric}</p>
-                    <p className="text-sm text-text-light">اللون: {item.color} | المقاس: {item.size}</p>
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="flex items-center gap-3">
-                        <button onClick={() => updateQty(item.id, -1)} className="w-8 h-8 rounded-lg border border-border flex items-center justify-center hover:bg-bg-2 transition-colors">
-                          <Minus size={14} />
-                        </button>
-                        <span className="w-6 text-center font-medium">{item.quantity}</span>
-                        <button onClick={() => updateQty(item.id, 1)} className="w-8 h-8 rounded-lg border border-border flex items-center justify-center hover:bg-bg-2 transition-colors">
-                          <Plus size={14} />
-                        </button>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="font-bold text-brand">{item.price * item.quantity} د.ل</span>
-                        <button onClick={() => remove(item.id)} className="text-text-light hover:text-red-500 transition-colors">
-                          <Trash2 size={16} />
+        </div>
+      </section>
+
+      {/* ─── CART CONTENT ─── */}
+      <section className="pb-16">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10">
+          {items.length === 0 ? (
+            <div className="text-center py-20">
+              <ShoppingBag size={48} className="mx-auto text-text-light mb-4" />
+              <p className="text-text-light text-sm mb-4">سلتكِ فارغة</p>
+              <Link
+                to="/collections"
+                className="inline-block px-8 py-3 bg-brand text-white font-semibold rounded-xl hover:bg-brand-dark transition-colors text-sm"
+              >
+                تسوقي الآن
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Items table */}
+              <div className="lg:col-span-2">
+                {/* Table header */}
+                <div className="hidden md:grid grid-cols-12 gap-4 pb-3 border-b border-border text-xs font-semibold text-text-light">
+                  <div className="col-span-6">المنتج</div>
+                  <div className="col-span-3 text-center">الكمية</div>
+                  <div className="col-span-3 text-right">الإجمالي</div>
+                </div>
+
+                {items.map((item) => (
+                  <motion.div
+                    key={item.id}
+                    layout
+                    className="grid grid-cols-12 gap-4 py-5 border-b border-border items-center"
+                  >
+                    {/* Product info */}
+                    <div className="col-span-12 md:col-span-6 flex gap-4">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-20 h-24 object-cover rounded-lg flex-shrink-0"
+                      />
+                      <div>
+                        <h3 className="text-sm font-semibold text-text">{item.name}</h3>
+                        <p className="text-[10px] text-text-light">{item.fabric}</p>
+                        <p className="text-[10px] text-text-light mt-1">
+                          اللون: {item.color} | المقاس: {item.size}
+                        </p>
+                        <button
+                          onClick={() => remove(item.id)}
+                          className="text-[10px] text-text-light hover:text-red-500 mt-2 flex items-center gap-1 transition-colors"
+                        >
+                          <Trash2 size={10} />
+                          حذف
                         </button>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
 
-            <div className="bg-bg-2 rounded-2xl p-6 h-fit">
-              <h3 className="font-semibold text-text mb-4">ملخص الطلب</h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-text-light">المجموع الفرعي</span>
-                  <span className="font-medium">{subtotal} د.ل</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-text-light">الشحن</span>
-                  <span className="text-green-600 font-medium">مجاني</span>
-                </div>
-                <div className="h-px bg-border" />
-                <div className="flex justify-between text-lg font-bold">
-                  <span>الإجمالي</span>
-                  <span className="text-brand">{subtotal} د.ل</span>
+                    {/* Quantity */}
+                    <div className="col-span-6 md:col-span-3 flex items-center justify-start md:justify-center">
+                      <div className="flex items-center border border-border rounded-lg overflow-hidden">
+                        <button
+                          onClick={() => updateQty(item.id, -1)}
+                          className="w-8 h-8 flex items-center justify-center hover:bg-bg-2 transition-colors"
+                        >
+                          <Minus size={12} />
+                        </button>
+                        <span className="w-8 text-center text-xs font-semibold">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => updateQty(item.id, 1)}
+                          className="w-8 h-8 flex items-center justify-center hover:bg-bg-2 transition-colors"
+                        >
+                          <Plus size={12} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Total */}
+                    <div className="col-span-6 md:col-span-3 text-right">
+                      <span className="text-sm font-bold text-brand">
+                        {item.price * item.quantity} د.ل
+                      </span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Order summary */}
+              <div className="lg:col-span-1">
+                <div className="bg-bg-2 rounded-2xl p-6 sticky top-24">
+                  <h2 className="text-sm font-semibold text-text mb-4">
+                    ملخص الطلب
+                  </h2>
+                  <div className="space-y-3 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-text-light">المجموع الفرعي</span>
+                      <span className="font-medium">{subtotal} د.ل</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-text-light">الشحن</span>
+                      <span className="text-green-600 font-medium">مجاني</span>
+                    </div>
+                    <div className="h-px bg-border" />
+                    <div className="flex justify-between text-base font-bold">
+                      <span>الإجمالي</span>
+                      <span className="text-brand">{subtotal} د.ل</span>
+                    </div>
+                  </div>
+                  <button className="w-full mt-6 py-3 bg-brand text-white font-semibold rounded-xl hover:bg-brand-dark transition-colors text-sm">
+                    إتمام الطلب
+                  </button>
+                  <Link
+                    to="/collections"
+                    className="block text-center mt-3 text-xs text-brand hover:underline"
+                  >
+                    متابعة التسوق
+                  </Link>
                 </div>
               </div>
-              <button className="w-full mt-6 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition-colors">
-                إتمام الطلب
-              </button>
-              <Link to="/collections" className="block text-center mt-3 text-sm text-brand hover:underline">
-                متابعة التسوق
-              </Link>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

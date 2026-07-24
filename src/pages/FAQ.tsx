@@ -33,50 +33,63 @@ export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <div className="pt-20 pb-16 min-h-screen">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-text mb-4">
+    <div className="bg-white min-h-screen">
+      {/* ─── PAGE HEADER ─── */}
+      <section className="pt-24 pb-10 md:pt-28 md:pb-14 bg-bg-2">
+        <div className="max-w-[900px] mx-auto px-4 sm:px-6 text-center">
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-text mb-3">
             الأسئلة <span className="text-brand">الشائعة</span>
           </h1>
-          <p className="text-text-light">إجابات على أكثر الأسئلة شيوعاً</p>
+          <p className="text-sm text-text-light">
+            إجابات على أكثر الأسئلة شيوعاً
+          </p>
         </div>
+      </section>
 
-        <div className="space-y-3">
-          {faqs.map((faq, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="border border-border rounded-2xl overflow-hidden"
-            >
-              <button
-                onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full flex items-center justify-between p-5 text-right hover:bg-bg-2 transition-colors"
+      {/* ─── FAQ LIST ─── */}
+      <section className="py-12 md:py-16">
+        <div className="max-w-[800px] mx-auto px-4 sm:px-6">
+          <div className="space-y-3">
+            {faqs.map((faq, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.04, duration: 0.3 }}
+                className="border border-border rounded-xl overflow-hidden"
               >
-                <span className="font-semibold text-text">{faq.q}</span>
-                <ChevronDown
-                  size={20}
-                  className={`text-text-light transition-transform ${openIndex === i ? "rotate-180" : ""}`}
-                />
-              </button>
-              <AnimatePresence>
-                {openIndex === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <p className="px-5 pb-5 text-text-light leading-relaxed">{faq.a}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
+                <button
+                  onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                  className="w-full flex items-center justify-between p-4 md:p-5 text-right hover:bg-bg-2 transition-colors"
+                >
+                  <span className="text-sm font-semibold text-text">{faq.q}</span>
+                  <ChevronDown
+                    size={16}
+                    className={`text-text-light transition-transform duration-200 flex-shrink-0 ml-3 ${
+                      openIndex === i ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                <AnimatePresence initial={false}>
+                  {openIndex === i && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="overflow-hidden"
+                    >
+                      <p className="px-4 md:px-5 pb-4 md:pb-5 text-xs text-text-light leading-relaxed">
+                        {faq.a}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
