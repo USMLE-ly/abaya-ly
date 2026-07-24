@@ -5,7 +5,6 @@ import { motion } from "framer-motion"
 import type React from "react"
 import { useEffect, useRef, useState } from "react"
 
-// ---------- types ----------
 interface ShaderBackgroundProps {
   children: React.ReactNode
 }
@@ -14,7 +13,6 @@ interface PhotoMarqueeProps {
   images: string[]
 }
 
-// ---------- shared animation variants ----------
 const FADE_IN = {
   hidden: { opacity: 0, y: 10 },
   show: {
@@ -24,7 +22,6 @@ const FADE_IN = {
   },
 }
 
-// ---------- ShaderBackground ----------
 export function ShaderBackground({ children }: ShaderBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isActive, setIsActive] = useState(false)
@@ -48,7 +45,6 @@ export function ShaderBackground({ children }: ShaderBackgroundProps) {
       id="top"
       className="min-h-screen w-full relative overflow-hidden flex flex-col"
     >
-      {/* SVG filters */}
       <svg className="absolute inset-0 w-0 h-0">
         <defs>
           <filter id="glass-effect" x="-50%" y="-50%" width="200%" height="200%">
@@ -76,7 +72,6 @@ export function ShaderBackground({ children }: ShaderBackgroundProps) {
         </defs>
       </svg>
 
-      {/* Background shader — luxury dark + gold mesh */}
       <MeshGradient
         className="absolute inset-0 w-full h-full"
         colors={["#0a0a0a", "#c9a84c", "#f5f0e8", "#3E2723", "#1a1000"]}
@@ -87,7 +82,6 @@ export function ShaderBackground({ children }: ShaderBackgroundProps) {
         className="absolute inset-0 w-full h-full opacity-60"
         colors={["#0a0a0a", "#f5f0e8", "#c9a84c", "#0a0a0a"]}
         speed={0.2}
-        wireframe="true"
         backgroundColor="transparent"
       />
 
@@ -96,7 +90,6 @@ export function ShaderBackground({ children }: ShaderBackgroundProps) {
   )
 }
 
-// ---------- PulsingCircle ----------
 export function PulsingCircle() {
   return (
     <div className="absolute bottom-8 right-8 z-30 hidden md:block">
@@ -109,14 +102,13 @@ export function PulsingCircle() {
           thickness={0.1}
           softness={0.2}
           intensity={5}
-          spotsPerColor={5}
+          spots={5}
           spotSize={0.1}
           pulse={0.1}
           smoke={0.5}
           smokeSize={4}
           scale={0.65}
           rotation={0}
-          frame={9161408.251009725}
           style={{
             width: "60px",
             height: "60px",
@@ -149,7 +141,6 @@ export function PulsingCircle() {
   )
 }
 
-// ---------- HeroContent ----------
 export function HeroContent() {
   return (
     <main className="absolute bottom-8 left-8 z-20 max-w-lg">
@@ -174,7 +165,7 @@ export function HeroContent() {
           }}
           className="font-display text-5xl md:text-6xl md:leading-16 tracking-tight font-light text-cream mb-4"
         >
-          <span className="font-medium italic">{typeof "حيث تلتقي" === "string" ? "حيث تلتقي" : ""}</span>
+          <span className="font-medium italic">حيث تلتقي</span>
           <br />
           <span className="font-light tracking-tight text-gold">الأناقة بالهوية</span>
         </motion.h1>
@@ -215,7 +206,6 @@ export function HeroContent() {
   )
 }
 
-// ---------- PhotoMarquee ----------
 export function PhotoMarquee({ images }: PhotoMarqueeProps) {
   const duplicatedImages = [...images, ...images]
 
