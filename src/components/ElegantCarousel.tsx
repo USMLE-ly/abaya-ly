@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 const slides = [
-  { accent: "#c96442", imageUrl: "/images/hero/abaya-gold-1.jpg" },
-  { accent: "#d97757", imageUrl: "/images/hero/abaya-gold-2.jpg" },
+  { accent: "#e11d63", imageUrl: "/images/hero/abaya-gold-1.jpg" },
+  { accent: "#ff6b9a", imageUrl: "/images/hero/abaya-gold-2.jpg" },
 ];
 
 export default function ElegantCarousel() {
