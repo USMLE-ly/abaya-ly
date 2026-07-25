@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useCallback } from "react"
 import createGlobe from "cobe"
 
 const LIBYA: [number, number] = [32.9022, 13.1800]
@@ -13,19 +13,82 @@ const fabricCountries = [
   { name: "كوريا", clothes: "فساتين مختارة", flag: "🇰🇷", detail: "فساتين صينية مختارة بعناية", lat: 37.5665, lng: 126.978 },
 ]
 
+// Convert lat/lng to 3D sphere coordinates
+function latLngToVector3(lat: number, lng: number, radius: number): [number, number, number] {
+  const latRad = (lat * Math.PI) / 180
+  const lngRad = (lng * Math.PI) / 180
+  return [
+    radius * Math.cos(latRad) * Math.cos(lngRad),
+    radius * Math.cos(latRad) * Math.sin(lngRad),
+    radius * Math.sin(latRad),
+  ]
+}
+
+// Project 3D to 2D with rotation
+function project(
+  x: number, y: number, z: number,
+  phi: number, theta: number,
+  width: number, height: number
+): { x: number; y: number; visible: boolean } {
+  // Rotate around Y axis (phi)
+  const cosPhi = Math.cos(phi)
+  const sinPhi = Math.sin(phi)
+  let rx = x * cosPhi - z * sinPhi
+  let rz = x * sinPhi + z * cosPhi
+  let ry = y
+
+  // Rotate around X axis (theta)
+  const cosTheta = Math.cos(theta)
+  const sinTheta = Math.sin(theta)
+  let ry2 = ry * cosTheta - rz * sinTheta
+  let rz2 = ry * sinTheta + rz * cosTheta
+
+  // Front-facing check
+  const visible = rz2 > 0
+
+  // Simple perspective projection
+  const perspective = 2.5
+  const scale = perspective / (perspective + rz2 / 500)
+
+  return {
+    x: width / 2 + rx * scale * 0.4,
+    y: height / 2 - ry2 * scale * 0.4,
+    visible,
+  }
+}
+
 const SIZE = 400
 
 function GlobeCanvas() {
   const wrapRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const labelsRef = useRef<HTMLDivElement>(null)
+  const phiRef = useRef(0)
   const [ready, setReady] = useState(false)
+  const [labelPositions, setLabelPositions] = useState(
+    fabricCountries.map(() => ({ x: 50, y: 50, visible: false }))
+  )
+
+  const theta = 0.15
+
+  const updateLabels = useCallback(() => {
+    const phi = phiRef.current
+    const positions = fabricCountries.map((c) => {
+      const [x, y, z] = latLngToVector3(c.lat, c.lng, 195)
+      const projected = project(x, y, z, phi, theta, SIZE, SIZE)
+      return {
+        x: (projected.x / SIZE) * 100,
+        y: (projected.y / SIZE) * 100,
+        visible: projected.visible,
+      }
+    })
+    setLabelPositions(positions)
+  }, [])
 
   useEffect(() => {
     const canvas = canvasRef.current
     const wrap = wrapRef.current
-    const labelsEl = labelsRef.current
-    if (!canvas || !wrap || !labelsEl) return
+    if (!canvas || !wrap) return
 
     const dpr = Math.min(window.devicePixelRatio, 2)
     canvas.width = SIZE * dpr
@@ -33,7 +96,6 @@ function GlobeCanvas() {
     canvas.style.width = `${SIZE}px`
     canvas.style.height = `${SIZE}px`
 
-    let phi = 0
     let destroyed = false
 
     try {
@@ -42,7 +104,7 @@ function GlobeCanvas() {
         width: SIZE * dpr,
         height: SIZE * dpr,
         phi: 0,
-        theta: 0.15,
+        theta: theta,
         dark: 1,
         diffuse: 1.2,
         mapSamples: 16000,
@@ -71,23 +133,9 @@ function GlobeCanvas() {
 
       const animate = () => {
         if (destroyed) return
-        phi += 0.003
-        globe.update({ phi })
-
-        // Read cobe's own marker positions from its anchor divs
-        const labelEls = labelsEl.querySelectorAll<HTMLElement>("[data-label]")
-        labelEls.forEach((el, i) => {
-          const anchor = wrap.querySelector(`[style*="anchor-name:--cobe-country-${i}"]`) as HTMLElement
-          if (anchor) {
-            el.style.left = anchor.style.left
-            el.style.top = anchor.style.top
-            // Check visibility: cobe sets anchor-name CSS var when hidden
-            const root = document.documentElement
-            const visVar = root.style.getPropertyValue(`--cobe-visible-country-${i}`)
-            el.style.opacity = visVar === "N" ? "0" : "1"
-          }
-        })
-
+        phiRef.current += 0.003
+        globe.update({ phi: phiRef.current })
+        updateLabels()
         requestAnimationFrame(animate)
       }
       animate()
@@ -96,10 +144,10 @@ function GlobeCanvas() {
     } catch {
       return () => { destroyed = true }
     }
-  }, [])
+  }, [updateLabels])
 
   return (
-    <div ref={wrapRef} className="flex justify-center items-center" style={{ width: Math.min(SIZE, 400), height: Math.min(SIZE, 400), maxWidth: "100%", aspectRatio: "1/1" }}>
+    <div ref={wrapRef} className="flex justify-center items-center" style={{ width: Math.min(SIZE, 400), height: Math.min(SIZE, 400), maxWidth: "100%", aspectRatio: "1/1", position: "relative" }}>
       <canvas
         ref={canvasRef}
         style={{ cursor: "grab", opacity: ready ? 1 : 0, transition: "opacity 0.5s ease" }}
@@ -111,11 +159,12 @@ function GlobeCanvas() {
             data-label
             className="absolute whitespace-nowrap text-[10px] font-bold text-foreground/80 px-2 py-0.5 rounded-full bg-white/80 backdrop-blur-sm border border-black/10"
             style={{
-              left: "50%",
-              top: "50%",
+              left: `${labelPositions[i].x}%`,
+              top: `${labelPositions[i].y}%`,
               transform: "translate(-50%, -100%)",
-              opacity: 0,
-              textShadow: "0 1px 4px rgba(0,0,0,0.8)",
+              opacity: labelPositions[i].visible ? 1 : 0,
+              transition: "opacity 0.3s ease",
+              textShadow: "0 1px 4px rgba(0,0,0,0.15)",
               zIndex: 20,
             }}
           >
@@ -141,7 +190,6 @@ export function GlobeSection() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          {/* Globe: centered on mobile/tablet, left on desktop */}
           <div className="flex justify-center lg:justify-start">
             <GlobeCanvas />
           </div>

@@ -35,7 +35,7 @@ export function ResultsStats() {
                   whileInView={{ width: `${stat.percentage}%` }}
                   viewport={{ once: true }}
                   transition={{ duration: 1, delay: i * 0.15, ease: "easeOut" }}
-                  className="h-full bg-gradient-to-r from-brand to-brand-dark rounded-full"
+                  className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full"
                 />
               </div>
             </motion.div>
