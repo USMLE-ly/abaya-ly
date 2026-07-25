@@ -234,12 +234,12 @@ export function Product() {
             {/* Payment Methods */}
             <div className="mt-4 pt-4 border-t border-black/5">
               <p className="text-[10px] text-foreground/30 mb-2.5 tracking-wide">طرق الدفع المتاحة</p>
-              <div className="flex items-center">
-                <img
-                  src="/images/payments/payment-strip.png"
-                  alt="طرق الدفع المتاحة"
-                  className="h-8 w-auto object-contain"
-                />
+              <div className="flex items-center gap-2 flex-wrap">
+                <img src="/images/payments/visa.svg" alt="Visa" className="h-6 w-auto object-contain" />
+                <img src="/images/payments/mastercard.svg" alt="Mastercard" className="h-6 w-auto object-contain" />
+                <img src="/images/payments/amex.svg" alt="American Express" className="h-6 w-auto object-contain" />
+                <img src="/images/payments/paypal.svg" alt="PayPal" className="h-6 w-auto object-contain" />
+                <img src="/images/payments/google-pay.svg" alt="Google Pay" className="h-6 w-auto object-contain" />
               </div>
             </div>
           </div>
