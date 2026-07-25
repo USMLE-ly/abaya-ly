@@ -47,6 +47,11 @@ function GlobeCanvas() {
         markerColor: [0.79, 0.39, 0.26],
         glowColor: [0.79, 0.39, 0.26],
         opacity: 0.6,
+        markers: fabricCountries.map((c, i) => ({
+          location: [c.lat, c.lng] as [number, number],
+          size: 0.03,
+          id: `country-${i}`,
+        })),
         arcs: fabricCountries.map((c, i) => ({
           from: [c.lat, c.lng] as [number, number],
           to: LIBYA,
