@@ -6,7 +6,7 @@ import { useState } from "react";
 interface CartItem { id: string; name: string; fabric: string; price: number; image: string; color: string; size: string; quantity: number; }
 
 const initialItems: CartItem[] = [
-  { id: "al-sahra-gold", name: "عباية السهرة الذهبية", fabric: "جورجيت إيطالي", price: 380, image: "https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=200&q=80", color: "ذهبي", size: "M", quantity: 1 },
+  { id: "al-sahra-gold", name: "عباية السهرة الذهبية", fabric: "جورجيت إيطالي", price: 380, image: "/images/products/abaya-1.jpg", color: "ذهبي", size: "M", quantity: 1 },
 ];
 
 export function Cart() {

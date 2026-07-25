@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const images = [
-  { subtitle: 'مجموعة السهرة', title: 'عباية السهرة الذهبية', url: 'https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=700&h=1100&fit=crop&q=80' },
-  { subtitle: 'المطرّزة', title: 'عباية الياسمين المطرّزة', url: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=700&h=1100&fit=crop&q=80' },
-  { subtitle: 'الكاجوال', title: 'عباية الفجر الكاجوال', url: 'https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=700&h=1100&fit=crop&q=80' },
-  { subtitle: 'الرسمية', title: 'عباية الملكة الرسمية', url: 'https://images.unsplash.com/photo-1551803091-e20673f15770?w=700&h=1100&fit=crop&q=80' },
-  { subtitle: 'نجمة الصحراء', title: 'عباية نجمة الصحراء', url: 'https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=700&h=1100&fit=crop&q=80' },
+  { subtitle: 'السهرة', title: 'عباية السهرة الذهبية', url: '/outfits/gold-embroidered-abaya-1.jpg' },
+  { subtitle: 'المطرّزة', title: 'عباية التطريز الذهبي', url: '/outfits/gold-embroidered-abaya-3.jpg' },
+  { subtitle: 'الهندسية', title: 'عباية النمط الهندسي', url: '/outfits/geometric-gold-abaya-1.jpg' },
+  { subtitle: 'الليلية', title: 'عباية المخمل الليلية', url: '/outfits/night-velvet-abaya.jpg' },
+  { subtitle: 'الدانتيل', title: 'عباية الدانتيل السوداء', url: '/outfits/black-lace-abaya.jpg' },
 ];
 
 const FLIP_SPEED = 750;

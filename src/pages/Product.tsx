@@ -317,12 +317,12 @@ export function Product() {
             </div>
             <div className="flex items-center justify-center">
               <div className="w-full aspect-square rounded-2xl glass-card border-0 overflow-hidden p-0">
-                <img src="https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=600&q=80" alt="Features" className="w-full h-full object-cover" />
+                <img src="/outfits/gold-embroidered-abaya-3.jpg" alt="عباية التطريز الذهبي" className="w-full h-full object-cover" />
               </div>
             </div>
             <div className="flex items-center justify-center">
               <div className="w-full aspect-square rounded-2xl glass-card border-0 overflow-hidden p-0">
-                <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600&q=80" alt="Features" className="w-full h-full object-cover" />
+                <img src="/outfits/geometric-gold-abaya-3.jpg" alt="عباية النمط الهندسي" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>
