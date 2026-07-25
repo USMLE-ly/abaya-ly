@@ -156,12 +156,15 @@ export function Product() {
             <div className="mb-5">
               <p className="text-xs font-semibold text-foreground/60 mb-2">اللون: <span className="font-normal text-foreground/80">{primaryColor.name}</span></p>
               <div className="flex gap-2">
-                <span
-                  className="block w-8 h-8 rounded-full border-2 border-primary shadow-lg shadow-primary/20"
-                  style={{ backgroundColor: primaryColor.hex }}
-                  title={primaryColor.name}
-                  aria-label={primaryColor.name}
-                />
+                {product.colors.map((color, i) => (
+                  <span
+                    key={i}
+                    className="block w-8 h-8 rounded-full border-2 border-primary shadow-lg shadow-primary/20 cursor-pointer hover:scale-110 transition-transform"
+                    style={{ backgroundColor: color.hex }}
+                    title={color.name}
+                    aria-label={color.name}
+                  />
+                ))}
               </div>
             </div>
 
