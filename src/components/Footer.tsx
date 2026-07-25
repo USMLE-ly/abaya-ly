@@ -26,8 +26,15 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm text-foreground/50">
               <li><Link to="/faq" className="hover:text-ring transition-colors">الأسئلة الشائعة</Link></li>
               <li><Link to="/track-order" className="hover:text-ring transition-colors">تتبع الطلب</Link></li>
-              <li><span>الشحن والتوصيل</span></li>
-              <li><span>سياسة الإرجاع</span></li>
+              <li><Link to="/shipping-policy" className="hover:text-ring transition-colors">الشحن والتوصيل</Link></li>
+              <li><Link to="/refund-policy" className="hover:text-ring transition-colors">سياسة الإرجاع</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold text-foreground mb-4 text-sm">السياسات</h4>
+            <ul className="space-y-2.5 text-sm text-foreground/50">
+              <li><Link to="/terms" className="hover:text-ring transition-colors">شروط الاستخدام</Link></li>
+              <li><Link to="/privacy" className="hover:text-ring transition-colors">سياسة الخصوصية</Link></li>
             </ul>
           </div>
           <div>

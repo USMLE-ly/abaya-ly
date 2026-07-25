@@ -9,6 +9,10 @@ import { FAQ } from "@/pages/FAQ";
 import { Contact } from "@/pages/Contact";
 import { TrackOrder } from "@/pages/TrackOrder";
 import { About } from "@/pages/About";
+import ShippingPolicy from "@/pages/ShippingPolicy";
+import RefundPolicy from "@/pages/RefundPolicy";
+import TermsOfService from "@/pages/TermsOfService";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
 
 export default function App() {
   return (
@@ -25,6 +29,10 @@ export default function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/track-order" element={<TrackOrder />} />
             <Route path="/about" element={<About />} />
+            <Route path="/shipping-policy" element={<ShippingPolicy />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
           </Routes>
         </main>
         <Footer />
