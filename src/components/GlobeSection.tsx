@@ -21,19 +21,18 @@ function GlobeCanvas() {
     const mount = mountRef.current
     if (!mount) return
 
-    // Clear any previous cobe wrapper divs (React StrictMode safety)
+    // Clean previous cobe wrapper divs
     while (mount.firstChild) {
       mount.removeChild(mount.firstChild)
     }
 
-    // Create canvas element manually
     const canvas = document.createElement("canvas")
     canvas.style.cursor = "grab"
     canvas.style.display = "block"
     canvas.style.margin = "0 auto"
     mount.appendChild(canvas)
 
-    const size = 400
+    const size = 420
     const dpr = Math.min(window.devicePixelRatio, 2)
 
     canvas.width = size * dpr
@@ -43,6 +42,30 @@ function GlobeCanvas() {
 
     let destroyed = false
     let phi = 0
+    let autoRotateSpeed = 0.004
+    let mouseX = 0
+    let mouseY = 0
+    let isHovering = false
+    let targetTheta = 0.15
+    let currentTheta = 0.15
+
+    // Smooth mouse interaction
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2
+      mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2
+    }
+
+    const handleMouseEnter = () => { isHovering = true }
+    const handleMouseLeave = () => {
+      isHovering = false
+      mouseX = 0
+      mouseY = 0
+    }
+
+    canvas.addEventListener("mousemove", handleMouseMove)
+    canvas.addEventListener("mouseenter", handleMouseEnter)
+    canvas.addEventListener("mouseleave", handleMouseLeave)
 
     try {
       const globe = createGlobe(canvas, {
@@ -52,15 +75,16 @@ function GlobeCanvas() {
         phi: 0,
         theta: 0.15,
         dark: 1,
-        diffuse: 1.2,
-        mapSamples: 16000,
-        mapBrightness: 6,
-        baseColor: [0.1, 0.1, 0.12],
+        diffuse: 1.4,
+        mapSamples: 28000,
+        mapBrightness: 8,
+        baseColor: [0.08, 0.08, 0.1],
         markerColor: [0.79, 0.39, 0.26],
-        glowColor: [0.79, 0.39, 0.26],
+        glowColor: [0.85, 0.45, 0.3],
+        opacity: 1,
         markers: fabricCountries.map((c, i) => ({
           location: [c.lat, c.lng] as [number, number],
-          size: 0.03,
+          size: 0.04,
           id: `country-${i}`,
         })),
         arcs: fabricCountries.map((c, i) => ({
@@ -69,16 +93,33 @@ function GlobeCanvas() {
           id: `arc-${i}`,
         })),
         arcColor: [0.79, 0.39, 0.26] as [number, number, number],
-        arcWidth: 0.6,
-        arcHeight: 0.3,
+        arcWidth: 0.5,
+        arcHeight: 0.4,
       })
 
       if (!destroyed) setReady(true)
 
       const animate = () => {
         if (destroyed) return
-        phi += 0.003
-        globe.update({ phi })
+
+        // Smooth auto-rotation
+        phi += autoRotateSpeed
+
+        // Smooth mouse-follow theta
+        if (isHovering) {
+          targetTheta = 0.15 + mouseY * 0.15
+        } else {
+          targetTheta = 0.15
+        }
+        currentTheta += (targetTheta - currentTheta) * 0.04
+
+        globe.update({
+          phi,
+          theta: currentTheta,
+          // Slow down rotation on hover for premium feel
+          ...(isHovering ? { mapBrightness: 10 } : { mapBrightness: 8 }),
+        })
+
         requestAnimationFrame(animate)
       }
       animate()
@@ -86,6 +127,9 @@ function GlobeCanvas() {
       return () => {
         destroyed = true
         globe.destroy()
+        canvas.removeEventListener("mousemove", handleMouseMove)
+        canvas.removeEventListener("mouseenter", handleMouseEnter)
+        canvas.removeEventListener("mouseleave", handleMouseLeave)
       }
     } catch (e) {
       console.error("Globe error:", e)
@@ -93,6 +137,9 @@ function GlobeCanvas() {
 
     return () => {
       destroyed = true
+      canvas.removeEventListener("mousemove", handleMouseMove)
+      canvas.removeEventListener("mouseenter", handleMouseEnter)
+      canvas.removeEventListener("mouseleave", handleMouseLeave)
     }
   }, [])
 
@@ -100,10 +147,10 @@ function GlobeCanvas() {
     <div
       ref={mountRef}
       style={{
-        width: 400,
-        height: 400,
+        width: 420,
+        height: 420,
         opacity: ready ? 1 : 0,
-        transition: "opacity 0.8s ease",
+        transition: "opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
       }}
     />
   )

@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { SlideTabs } from "@/components/ui/slide-tabs";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, ChevronLeft, ChevronRight, Minus, Plus, ChevronDown, Truck, RotateCcw, Shield, Headphones } from "lucide-react";
@@ -10,6 +11,61 @@ const trustItems = [
   { icon: Shield, title: "ضمان الجودة", text: "أقمشة عالمية مضمونة" },
   { icon: Headphones, title: "دعم متواصل", text: "واتساب على مدار الساعة" },
 ];
+
+function ContentTabs({ product }: { product: NonNullable<ReturnType<typeof findProduct>> }) {
+  const [activeTab, setActiveTab] = useState(0);
+  const tabs = ["التفاصيل", "المميزات", "الشحن والتوصيل"];
+
+  return (
+    <div>
+      <SlideTabs tabs={tabs} selectedIndex={activeTab} onSelect={setActiveTab} />
+      <div className="mt-6 glass-card p-6">
+        {activeTab === 0 && (
+          <ul className="space-y-3">
+            {product.details.map((d: string, i: number) => (
+              <li key={i} className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                <span className="text-sm text-foreground/60">{d}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {activeTab === 1 && (
+          <div className="space-y-3">
+            {product.highlights.map((h: string, i: number) => (
+              <div key={i} className="flex items-start gap-2.5">
+                <div className="w-5 h-5 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Star size={10} className="text-primary fill-primary" />
+                </div>
+                <span className="text-sm text-foreground/60">{h}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {activeTab === 2 && (
+          <div className="space-y-4">
+            <div className="flex items-start gap-2.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+              <span className="text-sm text-foreground/60">الشحن مجاني لجميع مدن ليبيا</span>
+            </div>
+            <div className="flex items-start gap-2.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+              <span className="text-sm text-foreground/60">يتم التوصيل خلال ٣-٥ أيام عمل</span>
+            </div>
+            <div className="flex items-start gap-2.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+              <span className="text-sm text-foreground/60">إمكانية الإرجاع خلال ٧ أيام من الاستلام</span>
+            </div>
+            <div className="flex items-start gap-2.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+              <span className="text-sm text-foreground/60">الدفع النقدي عند الاستلام أو التحويل البنكي</span>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export function Product() {
   const { id } = useParams();
@@ -141,6 +197,20 @@ export function Product() {
             </div>
             <p className="text-xs text-foreground/40 mb-4">القماش: {product.fabric}</p>
 
+            {/* Highlights */}
+            {product.highlights && product.highlights.length > 0 && (
+              <div className="mb-5 space-y-2.5">
+                {product.highlights.map((h, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Star size={10} className="text-primary fill-primary" />
+                    </div>
+                    <span className="text-xs text-foreground/60 leading-relaxed">{h}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* Colors */}
             <div className="mb-5">
               <p className="text-xs font-semibold text-foreground/60 mb-2">اللون: <span className="font-normal text-foreground/80">{product.colors[selectedColor].name}</span></p>
@@ -220,6 +290,13 @@ export function Product() {
           </div>
         </section>
       )}
+
+      {/* ═══════════ CONTENT TABS ═══════════ */}
+      <section className="py-12">
+        <div className="max-w-[800px] mx-auto px-4 sm:px-6">
+          <ContentTabs product={product} />
+        </div>
+      </section>
     </div>
   );
 }
