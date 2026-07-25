@@ -2,7 +2,7 @@ import ElegantCarousel from "@/components/ElegantCarousel";
 import { ProductCarousel } from "@/components/ProductCarousel";
 import { ComparisonTable } from "@/components/ComparisonTable";
 import { IconBar } from "@/components/IconBar";
-import { ResultsStats } from "@/components/ResultsStats";
+import { GlobeSection } from "@/components/GlobeSection";
 import { ContactForm } from "@/components/ContactForm";
 
 export function Home() {
@@ -12,7 +12,7 @@ export function Home() {
       <ProductCarousel />
       <ComparisonTable />
       <IconBar />
-      <ResultsStats />
+      <GlobeSection />
       <ContactForm />
     </>
   );
