@@ -72,10 +72,10 @@ export default function LuminaHero() {
       <div className="absolute inset-0 z-10 flex flex-col justify-end">
         <div className="max-w-[1400px] mx-auto w-full px-4 md:px-10 pb-8">
           <div className="flex items-end justify-between gap-6">
-            {/* Right: text blocks — each in its own glass card */}
+            {/* Right: text blocks */}
             <div className="flex-1 max-w-lg flex flex-col items-end gap-3">
               {/* Counter */}
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl px-5 py-3">
+              <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl px-5 py-3 self-end">
                 <span className="text-xs font-bold tracking-wider text-white/40">
                   {String(idx + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
                 </span>
@@ -83,17 +83,17 @@ export default function LuminaHero() {
                 <span className="text-xs text-white/50">الملكة</span>
               </div>
 
-              {/* Title */}
-              <div className="rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl px-6 py-4 w-full text-right">
+              {/* Title — shrink-to-fit */}
+              <div className="inline-block rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl px-6 py-4 self-end">
                 <h1
-                  style={{ fontSize: "clamp(1.8rem, 4vw, 3rem)", fontWeight: 300, color: "#fff", lineHeight: 1.1, textShadow: "0 2px 30px rgba(0,0,0,0.5)" }}
+                  style={{ fontSize: "clamp(1.8rem, 4vw, 3rem)", fontWeight: 300, color: "#fff", lineHeight: 1.1, textShadow: "0 2px 30px rgba(0,0,0,0.5)", whiteSpace: "nowrap" }}
                 >
                   {SLIDES[idx].title}
                 </h1>
               </div>
 
               {/* Subtitle */}
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl px-5 py-2">
+              <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl px-5 py-2 self-end">
                 <p className="text-sm font-medium" style={{ color: SLIDES[idx].accent }}>
                   {SLIDES[idx].subtitle}
                 </p>
@@ -102,14 +102,14 @@ export default function LuminaHero() {
               {/* CTA */}
               <a
                 href="/collections"
-                className="inline-block px-7 py-3 rounded-full text-sm font-semibold text-white transition-all duration-300 hover:scale-105 border border-white/10 bg-white/[0.06] backdrop-blur-xl"
-                style={{ backgroundColor: SLIDES[idx].accent, borderColor: "transparent" }}
+                className="inline-block px-7 py-3 rounded-full text-sm font-semibold text-white transition-all duration-300 hover:scale-105 self-end"
+                style={{ backgroundColor: SLIDES[idx].accent }}
               >
                 اكتشفي المجموعة
               </a>
 
               {/* Progress bar */}
-              <div className="h-[2px] w-full max-w-md rounded-full bg-white/10 overflow-hidden mt-2">
+              <div className="h-[2px] w-full max-w-md rounded-full bg-white/10 overflow-hidden mt-2 self-end">
                 <div
                   className="h-full rounded-full"
                   style={{ width: `${progress * 100}%`, backgroundColor: SLIDES[idx].accent, transition: "none" }}
@@ -117,7 +117,7 @@ export default function LuminaHero() {
               </div>
             </div>
 
-            {/* Left: nav dots + arrows in glass panel */}
+            {/* Left: nav dots + arrows */}
             <div className="hidden md:flex flex-col gap-3 items-center rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl px-3 py-4">
               {SLIDES.map((slide, i) => (
                 <button key={i} onClick={() => goTo(i)}>
