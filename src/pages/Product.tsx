@@ -103,17 +103,35 @@ export function Product() {
               )}
             </div>
 
-            {/* Luxury Highlights */}
+            {/* More Details Toggle */}
             {product.highlights && product.highlights.length > 0 && (
-              <div className="mb-5 space-y-2.5">
-                {product.highlights.map((h, i) => (
-                  <div key={i} className="flex items-start gap-2.5">
-                    <div className="w-5 h-5 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Star size={10} className="text-primary fill-primary" />
+              <div className="mb-5">
+                <details className="group">
+                  <summary className="flex items-center gap-2 cursor-pointer select-none list-none mb-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary group-open:scale-125 transition-transform" />
+                    <span className="text-xs font-semibold text-primary tracking-wide">المزيد من التفاصيل</span>
+                    <svg className="w-3 h-3 text-primary/60 group-open:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </summary>
+                  <div className="overflow-hidden transition-all duration-500 ease-out">
+                    <div className="glass-card rounded-2xl p-5 border border-primary/10 relative overflow-hidden">
+                      {/* Subtle gradient glow */}
+                      <div className="absolute -top-16 -right-16 w-32 h-32 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+                      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+                      <div className="relative z-10 space-y-3">
+                        {product.highlights.map((h, i) => (
+                          <div key={i} className="flex items-start gap-3 group/item">
+                            <div className="w-6 h-6 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:scale-110 transition-transform">
+                              <Star size={10} className="text-primary fill-primary" />
+                            </div>
+                            <span className="text-xs text-foreground/60 leading-relaxed group-hover/item:text-foreground/80 transition-colors">{h}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <span className="text-xs text-foreground/60 leading-relaxed">{h}</span>
                   </div>
-                ))}
+                </details>
               </div>
             )}
 
