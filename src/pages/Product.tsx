@@ -125,7 +125,7 @@ export function Product() {
                 <span className="absolute top-4 right-4 px-4 py-1.5 bg-primary text-white text-xs font-semibold rounded-full">{product.badge}</span>
               )}
             </div>
-            <div className="grid grid-cols-4 gap-3 mt-4">
+            <div className="grid grid-cols-3 gap-3 mt-4">
               {product.images.map((src, i) => (
                 <button key={i} onClick={() => setActiveImage(i)} className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${i === activeImage ? "border-primary" : "border-black/10 hover:border-black/10"}`}>
                   <img src={src} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover" />
