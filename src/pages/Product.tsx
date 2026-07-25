@@ -225,54 +225,12 @@ export function Product() {
             {/* Payment Methods */}
             <div className="mt-4 pt-4 border-t border-black/5">
               <p className="text-[10px] text-foreground/30 mb-2.5 tracking-wide">طرق الدفع المتاحة</p>
-              <div className="flex items-center gap-2 flex-wrap">
-                {/* Visa */}
-                <div className="px-2.5 py-1.5 rounded-lg bg-white border border-black/5 flex items-center justify-center">
-                  <svg viewBox="0 0 48 32" className="h-5 w-auto" fill="none">
-                    <rect width="48" height="32" rx="4" fill="#1A1F71"/>
-                    <path d="M19.5 21H17.2L18.6 11H20.9L19.5 21Z" fill="#FFFFFF"/>
-                    <path d="M30.2 11.3C29.8 11.2 29.1 11 28.3 11C26.3 11 24.9 12 24.8 13.5C24.8 14.6 25.8 15.2 26.6 15.5C27.4 15.8 27.7 16 27.7 16.3C27.7 16.8 27.1 16.9 26.6 16.9C25.8 16.9 25.4 16.8 24.6 17.1L24.3 17.2L24 18.7C24.6 18.5 25.6 18.3 26.7 18.3C28.8 18.3 30.2 17.3 30.2 15.6C30.2 14.7 29.6 14 28.4 13.4C27.7 13 27.3 12.7 27.3 12.4C27.3 12.1 27.7 11.8 28.3 11.8C29 11.8 29.6 12 30 12.2L30.3 12.4L30.6 11C30.2 10.8 29.4 10.6 28.4 10.6C26.2 10.6 24.7 11.7 24.7 13.4C24.7 14.4 25.3 15.2 26.4 15.7C27.1 16 27.4 16.2 27.4 16.5C27.4 16.9 26.9 17.1 26.3 17.1C25.5 17.1 24.9 17 24.3 16.8L24 16.7L23.7 15.3C24.2 15.5 25.1 15.7 26 15.7" fill="#FFFFFF"/>
-                    <path d="M34.6 11H33C32.2 11 31.7 11.3 31.4 12.1L27.6 21H30.1L30.6 19.5H34L34.3 21H36.4L34.6 11ZM31.3 17.5L32.7 13.6L33.5 17.5H31.3Z" fill="#FFFFFF"/>
-                    <path d="M16.2 11L13.5 17.7L13.2 16.3C12.6 14.5 10.9 12.5 9 11.6L11 21H13.5L17 11H16.2Z" fill="#FFFFFF"/>
-                    <path d="M12.5 11H7.6L7.5 11.1C9.6 11.6 11.2 13.2 11.8 15.2L10.2 11.6C10.1 11.3 9.8 11 9.5 11H7L6.9 11.1C9.1 11.6 10.8 13.2 11.4 15.2L9.8 11.6C9.7 11.3 9.4 11 9.1 11H7" fill="#F7B600"/>
-                  </svg>
-                </div>
-                {/* Mastercard */}
-                <div className="px-2.5 py-1.5 rounded-lg bg-white border border-black/5 flex items-center justify-center">
-                  <svg viewBox="0 0 48 32" className="h-5 w-auto" fill="none">
-                    <rect width="48" height="32" rx="4" fill="#252525"/>
-                    <circle cx="19" cy="16" r="8" fill="#EB001B"/>
-                    <circle cx="29" cy="16" r="8" fill="#F79E1B"/>
-                    <path d="M24 10.2C25.8 11.6 27 13.7 27 16C27 18.3 25.8 20.4 24 21.8C22.2 20.4 21 18.3 21 16C21 13.7 22.2 11.6 24 10.2Z" fill="#FF5F00"/>
-                  </svg>
-                </div>
-                {/* Apple Pay */}
-                <div className="px-2.5 py-1.5 rounded-lg bg-white border border-black/5 flex items-center justify-center">
-                  <svg viewBox="0 0 48 32" className="h-5 w-auto" fill="none">
-                    <rect width="48" height="32" rx="4" fill="#000000"/>
-                    <path d="M17.2 10.5C17.8 9.7 18.2 8.6 18.1 7.5C17.1 7.6 15.9 8.2 15.3 9C14.7 9.8 14.2 10.9 14.3 11.9C15.4 12 16.5 11.3 17.2 10.5ZM18.1 12.2C16.6 12.1 15.3 13 14.6 13C13.8 13 12.7 12.2 11.5 12.2C9.9 12.2 8.5 13.1 7.7 14.5C6 17.3 7.3 21.5 8.9 23.8C9.7 24.9 10.6 26.1 11.8 26C12.9 26 13.3 25.3 14.7 25.3C16.1 25.3 16.4 26 17.6 26C18.8 26 19.6 24.9 20.4 23.8C21 23 21.3 22.1 21.3 22.1C21.3 22.1 19.9 21.5 19.9 19.8C19.9 18.4 21 17.8 21.1 17.7C20 16.1 18.3 15.9 17.7 15.8C16.5 15.6 15.4 16.4 14.8 16.4C14.1 16.4 13.2 15.8 12.1 15.8C10.5 15.8 9.1 16.7 8.3 18.1C6.7 20.9 7.9 25.1 9.5 27.4C10.3 28.5 11.2 29.7 12.4 29.6C13.5 29.6 13.9 28.9 15.3 28.9C16.7 28.9 17 29.6 18.2 29.6C19.4 29.6 20.2 28.5 21 27.4C21.6 26.6 21.8 25.8 21.8 25.8C21.8 25.8 20.2 25.2 20.2 23.3" fill="#FFFFFF"/>
-                    <text x="26" y="20" fill="#FFFFFF" fontSize="7" fontWeight="bold" fontFamily="Arial">Pay</text>
-                  </svg>
-                </div>
-                {/* Google Pay */}
-                <div className="px-2.5 py-1.5 rounded-lg bg-white border border-black/5 flex items-center justify-center">
-                  <svg viewBox="0 0 48 32" className="h-5 w-auto" fill="none">
-                    <rect width="48" height="32" rx="4" fill="#FFFFFF" stroke="#E0E0E0"/>
-                    <path d="M24 8C20.7 8 17.8 9.3 15.8 11.5L19.2 14.5C20.3 13.5 22 12.8 24 12.8C26.5 12.8 28.7 13.8 30.2 15.3L33.5 12C31.3 10 27.9 8 24 8Z" fill="#EA4335"/>
-                    <path d="M15.8 11.5C14.7 12.9 14 14.6 14 16.5C14 18.4 14.7 20.1 15.8 21.5L19.2 18.5C18.7 17.9 18.4 17.2 18.4 16.5C18.4 15.8 18.7 15.1 19.2 14.5L15.8 11.5Z" fill="#FBBC05"/>
-                    <path d="M24 25C27.9 25 31.3 23 33.5 20L30.2 17.5C28.7 18.8 26.5 19.8 24 19.8C22 19.8 20.3 19.1 19.2 18.1L15.8 21.1C17.8 23.3 20.7 25 24 25Z" fill="#34A853"/>
-                    <path d="M38 16.5H24V19.5H32C31.6 21.5 30 23 28 23.8L31.5 26.8C34.8 24.5 38 20.8 38 16.5Z" fill="#4285F4"/>
-                  </svg>
-                </div>
-                {/* Cash on Delivery */}
-                <div className="px-2.5 py-1.5 rounded-lg bg-white border border-black/5 flex items-center justify-center gap-1">
-                  <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="#16a34a" strokeWidth="1.5">
-                    <rect x="2" y="4" width="16" height="12" rx="2"/>
-                    <circle cx="10" cy="10" r="3"/>
-                    <path d="M6 4V2M14 4V2"/>
-                  </svg>
-                  <span className="text-[9px] font-semibold text-foreground/50">نقدي</span>
-                </div>
+              <div className="flex items-center">
+                <img
+                  src="/images/payments/payment-strip.png"
+                  alt="طرق الدفع المتاحة"
+                  className="h-8 w-auto object-contain"
+                />
               </div>
             </div>
           </div>
