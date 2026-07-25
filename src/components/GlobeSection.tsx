@@ -15,14 +15,38 @@ const fabricCountries = [
 
 const GLOBE_SIZE = 400
 
+function project(lat: number, lng: number, phi: number, theta: number, cx: number, cy: number, r: number) {
+  const latR = (lat * Math.PI) / 180
+  const lngR = (lng * Math.PI) / 180
+
+  const x = Math.cos(latR) * Math.sin(lngR)
+  const y = Math.sin(latR)
+  const z = Math.cos(latR) * Math.cos(lngR)
+
+  const y1 = Math.cos(theta) * y - Math.sin(theta) * z
+  const z1 = Math.sin(theta) * y + Math.cos(theta) * z
+
+  const x2 = Math.cos(phi) * x + Math.sin(phi) * z1
+  const z2 = -Math.sin(phi) * x + Math.cos(phi) * z1
+
+  const perspective = 1 + z2 * 0.4
+  const sx = cx + (r * x2) / perspective
+  const sy = cy - (r * y1) / perspective
+
+  return { x: sx, y: sy, visible: z2 > 0 }
+}
+
 function GlobeCanvas() {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const labelsRef = useRef<HTMLDivElement>(null)
   const [isReady, setIsReady] = useState(false)
   const [error, setError] = useState(false)
+  const phiRef = useRef(0)
 
   useEffect(() => {
     const canvas = canvasRef.current
+    const labelsEl = labelsRef.current
     if (!canvas) return
 
     const dpr = typeof window !== "undefined" ? Math.min(window.devicePixelRatio, 2) : 2
@@ -31,8 +55,10 @@ function GlobeCanvas() {
     canvas.style.width = `${GLOBE_SIZE}px`
     canvas.style.height = `${GLOBE_SIZE}px`
 
-    let phi = 0
     let destroyed = false
+    const THETA = 0.15
+    const CENTER = GLOBE_SIZE / 2
+    const RADIUS = GLOBE_SIZE * 0.4
 
     try {
       const globe = createGlobe(canvas, {
@@ -40,7 +66,7 @@ function GlobeCanvas() {
         width: GLOBE_SIZE * dpr,
         height: GLOBE_SIZE * dpr,
         phi: 0,
-        theta: 0.15,
+        theta: THETA,
         dark: 1,
         diffuse: 1.2,
         mapSamples: 16000,
@@ -68,8 +94,22 @@ function GlobeCanvas() {
 
       const animate = () => {
         if (destroyed) return
-        phi += 0.003
-        globe.update({ phi })
+        phiRef.current += 0.003
+        globe.update({ phi: phiRef.current })
+
+        if (labelsEl) {
+          const labelEls = labelsEl.querySelectorAll<HTMLElement>("[data-label]")
+          labelEls.forEach((el, i) => {
+            if (i >= fabricCountries.length) return
+            const c = fabricCountries[i]
+            const pos = project(c.lat, c.lng, phiRef.current, THETA, CENTER, CENTER, RADIUS)
+            el.style.left = `${pos.x}px`
+            el.style.top = `${pos.y - 10}px`
+            el.style.opacity = pos.visible ? "1" : "0"
+            el.style.transform = "translate(-50%, -100%)"
+          })
+        }
+
         requestAnimationFrame(animate)
       }
       animate()
@@ -87,22 +127,48 @@ function GlobeCanvas() {
   return (
     <div
       ref={containerRef}
-      className="flex justify-center items-center"
+      className="relative flex justify-center items-center"
       style={{ width: GLOBE_SIZE, height: GLOBE_SIZE, maxWidth: "100%" }}
     >
       {error ? (
         <div className="text-center text-white/40 text-sm">
-          <p>كرة الأرض غير متاحة</p>
+          <p>الكرة الأرضية غير متاحة</p>
         </div>
       ) : (
-        <canvas
-          ref={canvasRef}
-          style={{
-            cursor: "grab",
-            opacity: isReady ? 1 : 0,
-            transition: "opacity 0.5s ease",
-          }}
-        />
+        <>
+          <canvas
+            ref={canvasRef}
+            style={{
+              cursor: "grab",
+              opacity: isReady ? 1 : 0,
+              transition: "opacity 0.5s ease",
+            }}
+          />
+          {/* Country name labels floating over the globe */}
+          <div
+            ref={labelsRef}
+            className="absolute inset-0 pointer-events-none"
+            style={{ overflow: "hidden" }}
+          >
+            {fabricCountries.map((c, i) => (
+              <div
+                key={i}
+                data-label
+                className="absolute whitespace-nowrap text-[10px] font-bold text-white/80 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm border border-white/10"
+                style={{
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -100%)",
+                  opacity: 0,
+                  transition: "opacity 0.2s ease",
+                  textShadow: "0 1px 4px rgba(0,0,0,0.8)",
+                }}
+              >
+                {c.flag} {c.name}
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )
@@ -114,10 +180,10 @@ export function GlobeSection() {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="text-center mb-12">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-3">
-            أقمشتنا من <span className="text-brand">كل أنحاء العالم</span>
+            ملابسنا من <span className="text-brand">كل أنحاء العالم</span>
           </h2>
           <p className="text-sm text-white/50 max-w-2xl mx-auto leading-relaxed">
-            نستورد أجود الأقمشة العالمية من ٧ دول لتصنع لكِ عباية تجمع بين الفخامة والأصالة
+            نستقبل أجود الملابس العالمية من ٧ دول لتصنع لكِ عباية تجمع بين الفخامة والأصالة
           </p>
         </div>
 
@@ -137,7 +203,7 @@ export function GlobeSection() {
                 <p className="text-[10px] text-white/40 leading-relaxed">{c.detail}</p>
                 <div className="mt-2 flex items-center gap-1 text-[9px] text-white/30 group-hover:text-brand transition-colors">
                   <span>←</span>
-                  <span>يصل إلى ليبيا</span>
+                  <span>تصل إلى ليبيا</span>
                 </div>
               </div>
             ))}
@@ -150,8 +216,6 @@ export function GlobeSection() {
             <span className="text-xs font-bold text-white">٧ دول</span>
             <span className="text-xs text-white/40">إلى</span>
             <span className="text-xs font-bold text-brand">ليبيا</span>
-            <span className="text-xs text-white/40">—</span>
-            <span className="text-xs text-white/50">صُنعت بكل حب</span>
           </div>
         </div>
       </div>
