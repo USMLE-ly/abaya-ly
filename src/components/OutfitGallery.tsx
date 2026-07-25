@@ -8,7 +8,8 @@ import { useNavigate } from "react-router-dom";
 
 const newOutfitIds = [
   "olive-ruffle", "cream-silk", "white-beach", "red-velvet",
-  "white-lace", "night-velvet", "floral-sleeve", "black-lace", "mesh-geometric"
+  "white-lace", "night-velvet", "floral-sleeve", "black-lace", "mesh-geometric",
+  "gold-embroidered"
 ];
 
 export function OutfitGallery() {
