@@ -34,61 +34,72 @@ const flipAnimationBottomReverse = [
 ];
 
 export default function FlipGallery() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const galleryRef = useRef<HTMLDivElement>(null);
   const uniteRef = useRef<HTMLElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const indexRef = useRef(0);
 
   useEffect(() => {
-    if (!containerRef.current) return;
-    uniteRef.current = Array.from(containerRef.current.querySelectorAll('.unite'));
-    uniteRef.current.forEach(setActiveImage);
-    setImageTitle();
+    if (!galleryRef.current) return;
+    uniteRef.current = Array.from(galleryRef.current.querySelectorAll('.unite'));
+    setAllImages(0);
   }, []);
 
-  const setActiveImage = (el: HTMLElement) => {
-    el.style.backgroundImage = `url('${images[currentIndex].url}')`;
+  const setAllImages = (idx: number) => {
+    uniteRef.current.forEach((el) => {
+      el.style.backgroundImage = `url('${images[idx].url}')`;
+    });
   };
 
-  const setImageTitle = () => {
-    const gallery = containerRef.current;
-    if (!gallery) return;
-    gallery.setAttribute('data-subtitle', images[currentIndex].subtitle);
-    gallery.setAttribute('data-title', images[currentIndex].title);
-    gallery.style.setProperty('--title-y', '0');
-    gallery.style.setProperty('--title-opacity', '1');
+  const showTitle = (idx: number) => {
+    const g = galleryRef.current;
+    if (!g) return;
+    g.setAttribute('data-subtitle', images[idx].subtitle);
+    g.setAttribute('data-title', images[idx].title);
+    g.style.setProperty('--title-y', '0');
+    g.style.setProperty('--title-opacity', '1');
   };
 
-  const updateGallery = (isReverse = false) => {
-    const gallery = containerRef.current;
-    if (!gallery) return;
+  const hideTitle = () => {
+    const g = galleryRef.current;
+    if (!g) return;
+    g.style.setProperty('--title-y', '-1rem');
+    g.style.setProperty('--title-opacity', '0');
+    g.setAttribute('data-subtitle', '');
+    g.setAttribute('data-title', '');
+  };
+
+  const updateGallery = (newIdx: number, isReverse: boolean) => {
+    const g = galleryRef.current;
+    if (!g) return;
 
     const topAnim = isReverse ? flipAnimationTopReverse : flipAnimationTop;
     const bottomAnim = isReverse ? flipAnimationBottomReverse : flipAnimationBottom;
 
-    gallery.querySelector('.overlay-top')?.animate(topAnim, flipTiming);
-    gallery.querySelector('.overlay-bottom')?.animate(bottomAnim, flipTiming);
+    g.querySelector('.overlay-top')?.animate(topAnim, flipTiming);
+    g.querySelector('.overlay-bottom')?.animate(bottomAnim, flipTiming);
 
-    gallery.style.setProperty('--title-y', '-1rem');
-    gallery.style.setProperty('--title-opacity', '0');
-    gallery.setAttribute('data-subtitle', '');
-    gallery.setAttribute('data-title', '');
+    hideTitle();
 
-    uniteRef.current.forEach((el, idx) => {
+    uniteRef.current.forEach((el, i) => {
       const delay =
-        (isReverse && (idx !== 1 && idx !== 2)) ||
-        (!isReverse && (idx === 1 || idx === 2))
+        (isReverse && (i !== 1 && i !== 2)) ||
+        (!isReverse && (i === 1 || i === 2))
           ? FLIP_SPEED - 200
           : 0;
-      setTimeout(() => setActiveImage(el), delay);
+      setTimeout(() => {
+        el.style.backgroundImage = `url('${images[newIdx].url}')`;
+      }, delay);
     });
 
-    setTimeout(setImageTitle, FLIP_SPEED * 0.5);
+    setTimeout(() => showTitle(newIdx), FLIP_SPEED * 0.5);
   };
 
   const updateIndex = (increment: number) => {
-    const newIndex = (currentIndex + increment + images.length) % images.length;
-    setCurrentIndex(newIndex);
-    updateGallery(increment < 0);
+    const newIdx = (indexRef.current + increment + images.length) % images.length;
+    indexRef.current = newIdx;
+    setCurrentIndex(newIdx);
+    updateGallery(newIdx, increment < 0);
   };
 
   return (
@@ -104,13 +115,13 @@ export default function FlipGallery() {
         </div>
 
         <div className="flex justify-center">
-          <div
-            className="relative rounded-3xl border border-white/15 bg-white/[0.04] backdrop-blur-xl p-4 md:p-6"
-          >
+          {/* Glass frame */}
+          <div className="relative rounded-3xl border border-white/15 bg-white/[0.04] backdrop-blur-xl p-4 md:p-6 pb-16 md:pb-20">
+            {/* Flip gallery */}
             <div
               id="flip-gallery"
-              ref={containerRef}
-              className="relative w-[280px] h-[450px] md:w-[360px] md:h-[580px] text-center"
+              ref={galleryRef}
+              className="relative w-[280px] h-[450px] md:w-[360px] md:h-[580px]"
               style={{ perspective: '900px' }}
             >
               <div className="top unite bg-cover bg-no-repeat" />
@@ -119,20 +130,44 @@ export default function FlipGallery() {
               <div className="overlay-bottom unite bg-cover bg-no-repeat" />
             </div>
 
-            <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex gap-3">
+            {/* Title below gallery, inside frame */}
+            <div
+              id="flip-title"
+              className="absolute left-4 md:left-6 text-left"
+              style={{
+                bottom: '1rem',
+                opacity: 1,
+                transition: 'opacity 500ms ease-in-out, transform 500ms ease-in-out',
+              }}
+            >
+              <p
+                className="text-[11px] text-brand font-medium mb-0.5"
+                style={{
+                  opacity: galleryRef.current ? Number(getComputedStyle(galleryRef.current).getPropertyValue('--title-opacity')) || 0 : 0,
+                }}
+              >
+                {images[currentIndex].subtitle}
+              </p>
+              <p className="text-xs text-white/70 font-medium">
+                {images[currentIndex].title}
+              </p>
+            </div>
+
+            {/* Nav buttons — inside frame, bottom-right */}
+            <div className="absolute bottom-4 md:bottom-6 right-4 md:right-6 flex gap-2">
               <button
                 type="button"
                 onClick={() => updateIndex(-1)}
-                className="w-10 h-10 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
+                className="w-9 h-9 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
               >
-                <ChevronRight size={18} />
+                <ChevronRight size={16} />
               </button>
               <button
                 type="button"
                 onClick={() => updateIndex(1)}
-                className="w-10 h-10 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
+                className="w-9 h-9 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
               >
-                <ChevronLeft size={18} />
+                <ChevronLeft size={16} />
               </button>
             </div>
           </div>
@@ -150,20 +185,6 @@ export default function FlipGallery() {
           left: 0;
           transform: translateY(-50%);
           z-index: 10;
-        }
-        #flip-gallery::before {
-          content: attr(data-subtitle) "\A" attr(data-title);
-          white-space: pre;
-          color: rgba(255 255 255 / 0.75);
-          font-size: 0.7rem;
-          left: -0.5rem;
-          position: absolute;
-          top: calc(100% + 2.5rem);
-          line-height: 1.8;
-          opacity: var(--title-opacity, 0);
-          transform: translateY(var(--title-y, 0));
-          transition: opacity 500ms ease-in-out, transform 500ms ease-in-out;
-          text-align: left;
         }
         #flip-gallery > * {
           position: absolute;
