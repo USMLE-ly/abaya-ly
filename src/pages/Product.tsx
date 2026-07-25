@@ -16,6 +16,9 @@ export function Product() {
   const [activeImage, setActiveImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
+  const [checkingSize, setCheckingSize] = useState<number | null>(null);
+  const [sizeMessage, setSizeMessage] = useState('');
+  const [sizeAvailable, setSizeAvailable] = useState(true);
   const [quantity, setQuantity] = useState(1);
   if (!product) {
     return (
@@ -29,6 +32,20 @@ export function Product() {
   }
 
   const savings = product.originalPrice ? product.originalPrice - product.price : 0;
+
+  const handleSizeSelect = (index: number) => {
+    if (index === selectedSize || checkingSize !== null) return;
+    setCheckingSize(index);
+    setSizeMessage('');
+    // Simulate availability check
+    setTimeout(() => {
+      setCheckingSize(null);
+      setSelectedSize(index);
+      setSizeAvailable(true);
+      setSizeMessage('المقاس متاح — جاهز للشحن');
+      setTimeout(() => setSizeMessage(''), 3000);
+    }, 800);
+  };
   const related = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 4);
 
   return (
@@ -151,10 +168,43 @@ export function Product() {
             <div className="mb-5">
               <p className="text-xs font-semibold text-foreground/60 mb-2">المقاس: <span className="font-normal text-foreground/80">{product.sizes[selectedSize]}</span></p>
               <div className="flex gap-2">
-                {product.sizes.map((size, i) => (
-                  <button key={i} onClick={() => setSelectedSize(i)} className={`w-10 h-10 rounded-lg border text-xs font-semibold transition-all ${i === selectedSize ? "border-primary bg-primary text-white" : "border-black/10 text-foreground/60 hover:border-primary"}`}>{size}</button>
-                ))}
+                {product.sizes.map((size, i) => {
+                  const isSelected = i === selectedSize;
+                  const isChecking = checkingSize === i;
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => handleSizeSelect(i)}
+                      disabled={isChecking}
+                      className={`relative w-12 h-12 rounded-xl border-2 text-xs font-bold transition-all duration-300 overflow-hidden ${
+                        isSelected
+                          ? "border-primary bg-primary text-white shadow-lg shadow-primary/20"
+                          : isChecking
+                            ? "border-primary/50 bg-primary/5 text-primary"
+                            : "border-black/10 text-foreground/60 hover:border-primary/40 hover:bg-primary/5"
+                      }`}
+                    >
+                      {isChecking ? (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                        </div>
+                      ) : (
+                        <span className={isSelected ? "relative z-10" : ""}>{size}</span>
+                      )}
+                      {isSelected && !isChecking && (
+                        <div className="absolute inset-0 bg-primary animate-pulse opacity-20 rounded-xl" />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
+              {/* Size availability message */}
+              {sizeMessage && (
+                <div className={`mt-2.5 flex items-center gap-2 text-[11px] font-medium transition-all duration-300 ${sizeAvailable ? "text-green-600" : "text-red-400"}`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${sizeAvailable ? "bg-green-500" : "bg-red-400"} animate-pulse`} />
+                  {sizeMessage}
+                </div>
+              )}
             </div>
 
             {/* Description */}
