@@ -64,7 +64,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
 
           <div className="inline-flex self-start">
             <div className="rounded-full bg-white/70 backdrop-blur-sm px-4 py-1.5 flex items-baseline gap-1.5">
-              <span className="text-sm font-bold text-foreground">{product.price} د.ل</span>
+              <span className="text-sm font-bold text-primary">{product.price} د.ل</span>
               {product.originalPrice && <span className="text-[10px] text-foreground/50 line-through">{product.originalPrice} د.ل</span>}
             </div>
           </div>
