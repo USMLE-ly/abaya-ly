@@ -5,19 +5,19 @@ const SLIDES = [
     media: "/images/hero/abaya-gold-1.jpg",
     title: "عباية السهرة الذهبية",
     subtitle: "مجموعة السهرة الفاخرة",
-    accent: "#c96442",
+    accent: "#e11d63",
   },
   {
     media: "/images/hero/abaya-gold-2.jpg",
     title: "الفخامة الليبية",
     subtitle: "تشكيلة ٢٠٢٥",
-    accent: "#d97757",
+    accent: "#ff6b9a",
   },
   {
     media: "/images/hero/abaya-gold-3.jpg",
     title: "عباية التطريز الذهبي",
     subtitle: "أناقة لا تُنسى",
-    accent: "#c96442",
+    accent: "#e11d63",
   },
 ];
 
