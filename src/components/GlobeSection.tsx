@@ -13,8 +13,6 @@ const fabricCountries = [
   { name: "كوريا", clothes: "فساتين مختارة", flag: "🇰🇷", detail: "فساتين صينية مختارة بعناية", lat: 37.5665, lng: 126.978 },
 ]
 
-const SIZE = 400
-
 function GlobeCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [ready, setReady] = useState(false)
@@ -23,11 +21,12 @@ function GlobeCanvas() {
     const canvas = canvasRef.current
     if (!canvas) return
 
+    const size = 400
     const dpr = Math.min(window.devicePixelRatio, 2)
-    canvas.width = SIZE * dpr
-    canvas.height = SIZE * dpr
-    canvas.style.width = `${SIZE}px`
-    canvas.style.height = `${SIZE}px`
+    canvas.width = size * dpr
+    canvas.height = size * dpr
+    canvas.style.width = `${size}px`
+    canvas.style.height = `${size}px`
 
     let destroyed = false
     let phi = 0
@@ -35,8 +34,8 @@ function GlobeCanvas() {
     try {
       const globe = createGlobe(canvas, {
         devicePixelRatio: dpr,
-        width: SIZE * dpr,
-        height: SIZE * dpr,
+        width: size * dpr,
+        height: size * dpr,
         phi: 0,
         theta: 0.15,
         dark: 1,
@@ -46,7 +45,6 @@ function GlobeCanvas() {
         baseColor: [0.1, 0.1, 0.12],
         markerColor: [0.79, 0.39, 0.26],
         glowColor: [0.79, 0.39, 0.26],
-        opacity: 0.6,
         markers: fabricCountries.map((c, i) => ({
           location: [c.lat, c.lng] as [number, number],
           size: 0.03,
@@ -57,7 +55,7 @@ function GlobeCanvas() {
           to: LIBYA,
           id: `arc-${i}`,
         })),
-        arcColor: [0.79, 0.39, 0.26],
+        arcColor: [0.79, 0.39, 0.26] as [number, number, number],
         arcWidth: 0.6,
         arcHeight: 0.3,
       })
@@ -72,17 +70,29 @@ function GlobeCanvas() {
       }
       animate()
 
-      return () => { destroyed = true; globe.destroy() }
-    } catch {
-      return () => { destroyed = true }
+      return () => {
+        destroyed = true
+        globe.destroy()
+      }
+    } catch (e) {
+      console.error("Globe init error:", e)
+      return () => {
+        destroyed = true
+      }
     }
   }, [])
 
   return (
-    <div className="flex justify-center items-center" style={{ width: Math.min(SIZE, 400), height: Math.min(SIZE, 400), maxWidth: "100%", aspectRatio: "1/1" }}>
+    <div className="flex justify-center items-center w-full h-full">
       <canvas
         ref={canvasRef}
-        style={{ cursor: "grab", opacity: ready ? 1 : 0, transition: "opacity 0.5s ease" }}
+        style={{
+          cursor: "grab",
+          opacity: ready ? 1 : 0,
+          transition: "opacity 0.5s ease",
+          maxWidth: "100%",
+          height: "auto",
+        }}
       />
     </div>
   )

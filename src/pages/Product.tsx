@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { SlideTabs } from "@/components/ui/slide-tabs";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, ChevronLeft, Minus, Plus, Truck, Shield, RotateCcw, Headphones, ChevronDown } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, Minus, Plus, Truck, Shield, RotateCcw, Headphones, ChevronDown } from "lucide-react";
 import { findProduct, products } from "@/data/products";
 
 const trustItems = [
@@ -87,6 +87,7 @@ export function Product() {
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   if (!product) {
     return (
@@ -102,6 +103,15 @@ export function Product() {
   const savings = product.originalPrice ? product.originalPrice - product.price : 0;
   const related = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 4);
 
+  const scrollToImage = (direction: "left" | "right") => {
+    if (!scrollRef.current) return;
+    const cardWidth = scrollRef.current.offsetWidth;
+    const newScroll = direction === "right"
+      ? scrollRef.current.scrollLeft + cardWidth
+      : scrollRef.current.scrollLeft - cardWidth;
+    scrollRef.current.scrollTo({ left: newScroll, behavior: "smooth" });
+  };
+
   return (
     <div>
       {/* ═══════════ 1. MAIN PRODUCT ═══════════ */}
@@ -115,26 +125,66 @@ export function Product() {
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
-          {/* LEFT: MEDIA GALLERY */}
-          <div className={`flex flex-row gap-4 ${product.images.length <= 1 ? "" : ""}`}>
-            {/* Main image */}
-            <div className="flex-1 relative aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0">
-              <AnimatePresence mode="wait">
-                <motion.img key={activeImage} src={product.images[activeImage]} alt={product.name} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="w-full h-full object-cover" />
-              </AnimatePresence>
-              {product.badge && (
-                <span className="absolute top-4 right-4 px-4 py-1.5 bg-primary text-white text-xs font-semibold rounded-full">{product.badge}</span>
-              )}
-            </div>
-            {/* Thumbnails on right — only show when multiple images */}
-            {product.images.length > 1 && (
-              <div className="flex flex-col gap-3 w-20 md:w-24 flex-shrink-0">
-                {product.images.map((src, i) => (
-                  <button key={i} onClick={() => setActiveImage(i)} className={`aspect-square rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${i === activeImage ? "border-primary" : "border-black/10 hover:border-black/20"}`}>
-                    <img src={src} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
+          {/* LEFT: IMAGE GALLERY — each image is a full main image */}
+          <div className="relative">
+            {product.images.length === 1 ? (
+              /* Single image — full display */
+              <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0">
+                <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                {product.badge && (
+                  <span className="absolute top-4 right-4 px-4 py-1.5 bg-primary text-white text-xs font-semibold rounded-full">{product.badge}</span>
+                )}
               </div>
+            ) : (
+              /* Multiple images — horizontal scroll gallery, each image full size */
+              <>
+                <div
+                  ref={scrollRef}
+                  className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4"
+                  style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                >
+                  {product.images.map((src, i) => (
+                    <div
+                      key={i}
+                      className="flex-shrink-0 w-full snap-center relative aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0 cursor-pointer"
+                      onClick={() => setActiveImage(i)}
+                    >
+                      <img src={src} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                      {i === 0 && product.badge && (
+                        <span className="absolute top-4 right-4 px-4 py-1.5 bg-primary text-white text-xs font-semibold rounded-full">{product.badge}</span>
+                      )}
+                      {/* Image counter */}
+                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/40 backdrop-blur-sm text-white text-xs">
+                        {i + 1} / {product.images.length}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Navigation arrows */}
+                {product.images.length > 1 && (
+                  <>
+                    <button onClick={() => scrollToImage("left")} className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/50 transition-colors z-10">
+                      <ChevronRight size={20} />
+                    </button>
+                    <button onClick={() => scrollToImage("right")} className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/50 transition-colors z-10">
+                      <ChevronLeft size={20} />
+                    </button>
+                  </>
+                )}
+                {/* Dot indicators */}
+                <div className="flex justify-center gap-2 mt-4">
+                  {product.images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setActiveImage(i);
+                        scrollRef.current?.scrollTo({ left: i * scrollRef.current.offsetWidth, behavior: "smooth" });
+                      }}
+                      className={`w-2 h-2 rounded-full transition-all ${i === activeImage ? "bg-primary w-6" : "bg-foreground/20"}`}
+                    />
+                  ))}
+                </div>
+              </>
             )}
           </div>
 
@@ -180,23 +230,30 @@ export function Product() {
               </div>
             </div>
 
-            {/* Quantity + ATC */}
-            <div className="flex items-center gap-4 mb-6">
-              <div className="flex items-center glass rounded-xl overflow-hidden">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-colors text-foreground/60"><Minus size={14} /></button>
-                <span className="w-10 text-center text-sm font-semibold text-foreground">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 flex items-center justify-center hover:bg-black/5 transition-colors text-foreground/60"><Plus size={14} /></button>
-              </div>
-              <button className="flex-1 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors text-sm">أضيفي إلى السلة</button>
+            {/* Description */}
+            <div className="glass-card p-4 rounded-xl mb-5">
+              <p className="text-xs text-foreground/50 leading-relaxed">{product.description}</p>
             </div>
 
-            <p className="text-sm text-foreground/50 leading-relaxed mb-6">{product.description}</p>
+            {/* Quantity + Add to Cart */}
+            <div className="flex items-center gap-4 mb-5">
+              <div className="flex items-center glass-card rounded-xl overflow-hidden">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-3 hover:bg-black/5 transition-colors"><Minus size={14} /></button>
+                <span className="px-4 text-sm font-semibold text-foreground min-w-[2rem] text-center">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="p-3 hover:bg-black/5 transition-colors"><Plus size={14} /></button>
+              </div>
+              <button className="flex-1 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors">
+                أضيفي إلى السلة — {product.price * quantity} د.ل
+              </button>
+            </div>
 
-            {/* Trust */}
-            <div className="grid grid-cols-2 gap-3 mt-auto">
+            {/* Trust items */}
+            <div className="grid grid-cols-2 gap-3">
               {trustItems.map((item, i) => (
-                <div key={i} className="flex items-center gap-2.5 p-3 glass-card border-0">
-                  <item.icon size={16} className="text-primary flex-shrink-0" />
+                <div key={i} className="flex items-center gap-2 glass-card p-3 rounded-xl">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+                    <item.icon size={14} className="text-primary" />
+                  </div>
                   <div>
                     <p className="text-[10px] font-semibold text-foreground/80">{item.title}</p>
                     <p className="text-[9px] text-foreground/40">{item.text}</p>
@@ -212,18 +269,19 @@ export function Product() {
       {related.length > 0 && (
         <section className="py-12">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-            <h2 className="font-display text-2xl font-bold text-foreground text-center mb-10">قد يعجبكِ <span className="text-primary">أيضاً</span></h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <h2 className="font-display text-2xl font-bold text-foreground text-center mb-10">منتجات <span className="text-primary">ذات صلة</span></h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {related.map((p) => (
-                <Link key={p.id} to={`/product/${p.id}`} className="group block">
-                  <div className="aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0 mb-3">
-                    <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <Link key={p.id} to={`/product/${p.id}`} className="glass-card rounded-2xl overflow-hidden hover:scale-[1.02] transition-transform">
+                  <div className="aspect-[3/4] overflow-hidden">
+                    <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
                   </div>
-                  <p className="text-xs text-foreground/40 mb-1">{p.fabric}</p>
-                  <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">{p.name}</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-sm font-bold text-primary">{p.price} د.ل</span>
-                    {p.originalPrice && <span className="text-xs text-foreground/30 line-through">{p.originalPrice} د.ل</span>}
+                  <div className="p-3 text-right">
+                    <p className="text-xs font-semibold text-foreground truncate">{p.name}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-sm font-bold text-primary">{p.price} د.ل</span>
+                      {p.originalPrice && <span className="text-xs text-foreground/30 line-through">{p.originalPrice} د.ل</span>}
+                    </div>
                   </div>
                 </Link>
               ))}
@@ -271,14 +329,14 @@ export function Product() {
         </div>
       </section>
 
-      {/* ═══════════ 5. IMAGE SLIDER ═══════════ */}
+      {/* ═══════════ 5. ALL IMAGES GALLERY ═══════════ */}
       {product.images.length > 1 && (
         <section className="py-16">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
             <h2 className="font-display text-2xl font-bold text-foreground text-center mb-10">صور <span className="text-primary">المجموعة</span></h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {product.images.map((src, i) => (
-                <div key={i} className="aspect-square rounded-2xl overflow-hidden glass-card border-0 p-0">
+                <div key={i} className="aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0">
                   <img src={src} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
                 </div>
               ))}
