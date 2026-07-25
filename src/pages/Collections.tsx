@@ -13,8 +13,8 @@ export function Collections() {
       {/* Banner */}
       <section className="pt-24 pb-10 md:pt-28 md:pb-14">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 text-center">
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-white mb-3">المجموعات</h1>
-          <p className="text-sm text-white/50 max-w-lg mx-auto">اكتشفي مجموعتنا من العبايات الفاخرة — كل قطعة قصة، كل تطريزة فن</p>
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">المجموعات</h1>
+          <p className="text-sm text-foreground/50 max-w-lg mx-auto">اكتشفي مجموعتنا من العبايات الفاخرة — كل قطعة قصة، كل تطريزة فن</p>
         </div>
       </section>
 
@@ -29,8 +29,8 @@ export function Collections() {
                 onClick={() => setActive(c.id)}
                 className={`px-5 py-2 rounded-full text-xs font-semibold transition-all duration-200 ${
                   active === c.id
-                    ? "bg-brand text-white"
-                    : "glass text-white/50 hover:text-white hover:bg-white/5"
+                    ? "bg-primary text-white"
+                    : "glass text-foreground/50 hover:text-foreground hover:bg-black/5"
                 }`}
               >
                 {c.name}
@@ -51,22 +51,22 @@ export function Collections() {
                   <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-3 glass-card border-0 p-0">
                     <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     {product.badge && (
-                      <span className="absolute top-3 right-3 px-3 py-1 bg-brand text-white text-[10px] font-semibold rounded-full">{product.badge}</span>
+                      <span className="absolute top-3 right-3 px-3 py-1 bg-primary text-white text-[10px] font-semibold rounded-full">{product.badge}</span>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     <div className="absolute bottom-3 left-3 right-3">
-                      <p className="text-[10px] text-white/60 mb-0.5">{product.fabric}</p>
-                      <h3 className="text-xs font-semibold text-white line-clamp-1">{product.name}</h3>
+                      <p className="text-[10px] text-foreground/60 mb-0.5">{product.fabric}</p>
+                      <h3 className="text-xs font-semibold text-foreground line-clamp-1">{product.name}</h3>
                       <div className="flex items-center gap-0.5 mt-1">
                         {Array.from({ length: 5 }).map((_, s) => (
-                          <Star key={s} size={9} className={s < Math.round(product.rating) ? "fill-yellow-400 text-yellow-400" : "text-white/20"} />
+                          <Star key={s} size={9} className={s < Math.round(product.rating) ? "fill-yellow-400 text-yellow-400" : "text-foreground/20"} />
                         ))}
-                        <span className="text-[8px] text-white/40 mr-1">({product.reviewCount})</span>
+                        <span className="text-[8px] text-foreground/40 mr-1">({product.reviewCount})</span>
                       </div>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs font-bold text-gold">{product.price} د.ل</span>
+                        <span className="text-xs font-bold text-ring">{product.price} د.ل</span>
                         {product.originalPrice && (
-                          <span className="text-[10px] text-white/30 line-through">{product.originalPrice} د.ل</span>
+                          <span className="text-[10px] text-foreground/30 line-through">{product.originalPrice} د.ل</span>
                         )}
                       </div>
                     </div>

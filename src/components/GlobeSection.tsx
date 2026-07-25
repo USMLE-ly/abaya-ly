@@ -48,8 +48,8 @@ function GlobeCanvas() {
         mapSamples: 16000,
         mapBrightness: 6,
         baseColor: [0.1, 0.1, 0.12],
-        markerColor: [0.87, 0.11, 0.11],
-        glowColor: [0.87, 0.11, 0.11],
+        markerColor: [0.79, 0.39, 0.26],
+        glowColor: [0.79, 0.39, 0.26],
         markerElevation: 0.015,
         opacity: 0.6,
         markers: fabricCountries.map((c, i) => ({
@@ -62,7 +62,7 @@ function GlobeCanvas() {
           to: LIBYA,
           id: `arc-${i}`,
         })),
-        arcColor: [0.87, 0.11, 0.11],
+        arcColor: [0.79, 0.39, 0.26],
         arcWidth: 0.6,
         arcHeight: 0.3,
       })
@@ -109,7 +109,7 @@ function GlobeCanvas() {
           <div
             key={i}
             data-label
-            className="absolute whitespace-nowrap text-[10px] font-bold text-white/80 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm border border-white/10"
+            className="absolute whitespace-nowrap text-[10px] font-bold text-foreground/80 px-2 py-0.5 rounded-full bg-white/80 backdrop-blur-sm border border-black/10"
             style={{
               left: "50%",
               top: "50%",
@@ -132,10 +132,10 @@ export function GlobeSection() {
     <section className="py-16 md:py-24 relative">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="text-center mb-12">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-3">
-            ملابسنا من <span className="text-brand">كل أنحاء العالم</span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
+            ملابسنا من <span className="text-primary">كل أنحاء العالم</span>
           </h2>
-          <p className="text-sm text-white/50 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm text-foreground/50 max-w-2xl mx-auto leading-relaxed">
             نستقبل أجود الملابس العالمية من ٧ دول لتصنع لكِ عباية تجمع بين الفخامة والأصالة
           </p>
         </div>
@@ -148,16 +148,16 @@ export function GlobeSection() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {fabricCountries.map((c, i) => (
-              <div key={i} className="glass-card p-4 rounded-2xl hover:bg-white/[0.06] transition-all duration-300 group">
+              <div key={i} className="glass-card p-4 rounded-2xl hover:bg-black/5 transition-all duration-300 group">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-2xl">{c.flag}</span>
                   <div>
-                    <h3 className="text-sm font-bold text-white">{c.name}</h3>
-                    <p className="text-[10px] text-brand font-medium">{c.clothes}</p>
+                    <h3 className="text-sm font-bold text-foreground">{c.name}</h3>
+                    <p className="text-[10px] text-primary font-medium">{c.clothes}</p>
                   </div>
                 </div>
-                <p className="text-[10px] text-white/40 leading-relaxed">{c.detail}</p>
-                <div className="mt-2 flex items-center gap-1 text-[9px] text-white/30 group-hover:text-brand transition-colors">
+                <p className="text-[10px] text-foreground/40 leading-relaxed">{c.detail}</p>
+                <div className="mt-2 flex items-center gap-1 text-[9px] text-foreground/30 group-hover:text-primary transition-colors">
                   <span>←</span>
                   <span>تصل إلى ليبيا</span>
                 </div>
@@ -168,10 +168,10 @@ export function GlobeSection() {
 
         <div className="text-center mt-12">
           <div className="inline-flex items-center gap-2 glass-card px-6 py-3 rounded-full">
-            <span className="text-xs text-white/40">من</span>
-            <span className="text-xs font-bold text-white">٧ دول</span>
-            <span className="text-xs text-white/40">إلى</span>
-            <span className="text-xs font-bold text-brand">ليبيا</span>
+            <span className="text-xs text-foreground/40">من</span>
+            <span className="text-xs font-bold text-foreground">٧ دول</span>
+            <span className="text-xs text-foreground/40">إلى</span>
+            <span className="text-xs font-bold text-primary">ليبيا</span>
           </div>
         </div>
       </div>

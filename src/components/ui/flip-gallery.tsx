@@ -123,21 +123,21 @@ export default function FlipGallery() {
       {/* Bottom bar: text left, buttons right (RTL) */}
       <div className="flex items-center justify-between w-full px-4 py-3 shrink-0">
         <div className="text-left">
-          <p className="text-sm text-[#c9a84c] font-semibold leading-tight">{images[currentIndex].subtitle}</p>
-          <p className="text-base text-white/80 font-bold leading-tight">{images[currentIndex].title}</p>
+          <p className="text-sm text-ring font-semibold leading-tight">{images[currentIndex].subtitle}</p>
+          <p className="text-base text-foreground/80 font-bold leading-tight">{images[currentIndex].title}</p>
         </div>
         <div className="flex gap-2">
           <button
             type="button"
             onClick={() => updateIndex(-1)}
-            className="w-11 h-11 rounded-full border border-white/15 bg-white/[0.06] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
+            className="w-11 h-11 rounded-full border border-white/15 bg-white/70 flex items-center justify-center text-foreground/60 hover:text-foreground hover:bg-black/[0.08] transition-all"
           >
             <ChevronRight size={18} />
           </button>
           <button
             type="button"
             onClick={() => updateIndex(1)}
-            className="w-11 h-11 rounded-full border border-white/15 bg-white/[0.06] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
+            className="w-11 h-11 rounded-full border border-white/15 bg-white/70 flex items-center justify-center text-foreground/60 hover:text-foreground hover:bg-black/[0.08] transition-all"
           >
             <ChevronLeft size={18} />
           </button>

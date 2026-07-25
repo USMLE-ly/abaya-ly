@@ -17,8 +17,8 @@ export function FAQ() {
     <div className="min-h-screen">
       <section className="pt-24 pb-10 md:pt-28 md:pb-14">
         <div className="max-w-[900px] mx-auto px-4 sm:px-6 text-center">
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-white mb-3">الأسئلة <span className="text-brand">الشائعة</span></h1>
-          <p className="text-sm text-white/50">إجابات على أكثر الأسئلة شيوعاً</p>
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">الأسئلة <span className="text-primary">الشائعة</span></h1>
+          <p className="text-sm text-foreground/50">إجابات على أكثر الأسئلة شيوعاً</p>
         </div>
       </section>
       <section className="pb-12 md:pb-16">
@@ -26,14 +26,14 @@ export function FAQ() {
           <div className="space-y-3">
             {faqs.map((faq, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04, duration: 0.3 }} className="glass-card overflow-hidden">
-                <button onClick={() => setOpenIndex(openIndex === i ? null : i)} className="w-full flex items-center justify-between p-4 md:p-5 text-right hover:bg-white/[0.02] transition-colors">
-                  <span className="text-sm font-semibold text-white">{faq.q}</span>
-                  <ChevronDown size={16} className={`text-white/40 transition-transform duration-200 flex-shrink-0 ml-3 ${openIndex === i ? "rotate-180" : ""}`} />
+                <button onClick={() => setOpenIndex(openIndex === i ? null : i)} className="w-full flex items-center justify-between p-4 md:p-5 text-right hover:bg-black/[0.03] transition-colors">
+                  <span className="text-sm font-semibold text-foreground">{faq.q}</span>
+                  <ChevronDown size={16} className={`text-foreground/40 transition-transform duration-200 flex-shrink-0 ml-3 ${openIndex === i ? "rotate-180" : ""}`} />
                 </button>
                 <AnimatePresence initial={false}>
                   {openIndex === i && (
                     <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
-                      <p className="px-4 md:px-5 pb-4 md:pb-5 text-xs text-white/40 leading-relaxed">{faq.a}</p>
+                      <p className="px-4 md:px-5 pb-4 md:pb-5 text-xs text-foreground/40 leading-relaxed">{faq.a}</p>
                     </motion.div>
                   )}
                 </AnimatePresence>

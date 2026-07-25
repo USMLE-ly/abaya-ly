@@ -15,8 +15,8 @@ export interface Product {
   reviewCount: number;
 }
 
-const colorBlack = { name: "أسود", hex: "#0a0a0a" };
-const colorGold = { name: "ذهبي", hex: "#c9a84c" };
+const colorBlack = { name: "أسود", hex: "#3d3929" };
+const colorGold = { name: "ذهبي", hex: "#c96442" };
 const colorIvory = { name: "عاجي", hex: "#f1e9d2" };
 const colorBurgundy = { name: "عنابي", hex: "#5b1a1a" };
 const colorNavy = { name: "كحلي", hex: "#1a2540" };

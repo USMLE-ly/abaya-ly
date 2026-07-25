@@ -69,7 +69,7 @@ export function SlideshowHero() {
                   className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
                     i === current
                       ? "bg-white w-6"
-                      : "bg-white/50 hover:bg-white/80"
+                      : "bg-white/60 hover:bg-black/5"
                   }`}
                 />
               ))}
@@ -88,15 +88,15 @@ export function SlideshowHero() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.4 }}
           >
-            <h2 className="font-display text-3xl md:text-5xl font-bold text-text mb-3 leading-tight">
+            <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-3 leading-tight">
               {slides[current].heading}
             </h2>
-            <p className="text-sm md:text-base text-text-light mb-6 max-w-lg mx-auto">
+            <p className="text-sm md:text-base text-foreground-light mb-6 max-w-lg mx-auto">
               {slides[current].subheading}
             </p>
             <a
               href={slides[current].link}
-              className="inline-block px-8 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition-colors text-sm"
+              className="inline-block px-8 py-3 bg-primary text-white font-semibold rounded-full hover:bg-primary/90 transition-colors text-sm"
             >
               {slides[current].cta}
             </a>
