@@ -160,8 +160,8 @@ export function Product() {
                 {product.colors.map((color, i) => (
                   <button
                     key={i}
-                    onClick={() => color.linkTo && navigate(`/product/${color.linkTo}`)}
-                    className="block w-8 h-8 rounded-full border-2 border-primary shadow-lg shadow-primary/20 cursor-pointer hover:scale-110 transition-transform"
+                    onClick={() => color.linkTo ? navigate(`/product/${color.linkTo}`) : undefined}
+                    className={`block w-8 h-8 rounded-full border-2 cursor-pointer hover:scale-110 transition-transform ${i === 0 ? "border-primary shadow-lg shadow-primary/20" : "border-black/10 hover:border-black/30"}`}
                     style={{ backgroundColor: color.hex }}
                     title={color.name}
                     aria-label={color.name}
