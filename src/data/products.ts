@@ -240,7 +240,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     description: "عباية سهراء الليل — فستان سهرة بتصميم كتف واحد يمنح صاحبته قوة وثقة لا تُضاهى.",
     details: ["القصة: ميرميد بكتف واحد وأكمام طويلة", "اللون: أسود داكن مع بيج دافئ", "التطريز: يدوي بخيوط ذهبية", "العناية: غسيل جاف فقط"],
-    images: ["/outfits/gold-embroidered-abaya-5.jpg"],
+    images: ["/outfits/gold-embroidered-abaya-5.jpg", "/outfits/gold-embroidered-abaya-5-thumb.jpg"],
     highlights: ["تَشْعُرُ بالقُوَّة واثِقَةً بذاتِها في كل حركة.", "تصميم الكتف الواحد يمنح جرأة أنثوية تخطف الأنظار.", "حضور ملكي يجمع بين الحداثة والأناقة الخالدة."],
     rating: 4.9,
     reviewCount: 58,
