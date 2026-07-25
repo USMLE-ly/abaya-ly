@@ -6,13 +6,16 @@ import { ShoppingBag, Eye } from "lucide-react";
 import { products } from "@/data/products";
 import { useNavigate } from "react-router-dom";
 
+const newOutfitIds = [
+  "olive-ruffle", "cream-silk", "white-beach", "red-velvet",
+  "white-lace", "night-velvet", "floral-sleeve", "black-lace", "mesh-geometric"
+];
+
 export function OutfitGallery() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const newOutfits = products.filter((p) =>
-    ["olive-ruffle", "cream-silk", "white-beach", "red-velvet"].includes(p.id)
-  );
+  const newOutfits = products.filter((p) => newOutfitIds.includes(p.id));
 
   return (
     <section className="py-16 md:py-24 px-4 sm:px-6">
@@ -29,19 +32,19 @@ export function OutfitGallery() {
             الوصلات <span className="text-primary">الجديدة</span>
           </h2>
           <p className="text-sm text-foreground/50 max-w-lg mx-auto">
-            أحدث الإضافات إلى مجموعتنا — تصاميم حصرية ب الخامات الفاخرة
+            أحدث الإضافات إلى مجموعتنا — تصاميم حصرية بالخامات الفاخرة
           </p>
         </motion.div>
 
         {/* Outfits Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {newOutfits.map((outfit, index) => (
             <motion.div
               key={outfit.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.5, delay: index * 0.08 }}
               className="group relative glass-card overflow-hidden rounded-2xl"
               onMouseEnter={() => setHoveredId(outfit.id)}
               onMouseLeave={() => setHoveredId(null)}
