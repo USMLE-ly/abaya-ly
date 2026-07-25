@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Star, ChevronLeft, ChevronRight, Minus, Plus, Truck, RotateCcw, Shield, Headphones } from "lucide-react";
+import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones } from "lucide-react";
 import { findProduct, products } from "@/data/products";
 
 const trustItems = [
@@ -17,8 +17,6 @@ export function Product() {
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -32,15 +30,6 @@ export function Product() {
 
   const savings = product.originalPrice ? product.originalPrice - product.price : 0;
   const related = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 4);
-
-  const scrollToImage = (direction: "left" | "right") => {
-    if (!scrollRef.current) return;
-    const cardWidth = scrollRef.current.offsetWidth;
-    const newScroll = direction === "right"
-      ? scrollRef.current.scrollLeft + cardWidth
-      : scrollRef.current.scrollLeft - cardWidth;
-    scrollRef.current.scrollTo({ left: newScroll, behavior: "smooth" });
-  };
 
   return (
     <div>
@@ -58,6 +47,7 @@ export function Product() {
           {/* LEFT: IMAGE GALLERY */}
           <div className="relative">
             {product.images.length === 1 ? (
+              /* Single image */
               <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0">
                 <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
                 {product.badge && (
@@ -65,51 +55,30 @@ export function Product() {
                 )}
               </div>
             ) : (
-              <>
-                <div
-                  ref={scrollRef}
-                  className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4"
-                  style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-                >
-                  {product.images.map((src, i) => (
-                    <div
-                      key={i}
-                      className="flex-shrink-0 w-full snap-center relative aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0 cursor-pointer"
-                      onClick={() => setActiveImage(i)}
-                    >
-                      <img src={src} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-                      {i === 0 && product.badge && (
-                        <span className="absolute top-4 right-4 px-4 py-1.5 bg-primary text-white text-xs font-semibold rounded-full">{product.badge}</span>
-                      )}
-                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/40 backdrop-blur-sm text-white text-xs">
-                        {i + 1} / {product.images.length}
-                      </div>
-                    </div>
-                  ))}
+              /* Main image + thumbnails on right */
+              <div className="flex gap-3">
+                {/* Main image */}
+                <div className="flex-1 relative aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0">
+                  <img src={product.images[activeImage]} alt={product.name} className="w-full h-full object-cover" />
+                  {product.badge && (
+                    <span className="absolute top-4 right-4 px-4 py-1.5 bg-primary text-white text-xs font-semibold rounded-full">{product.badge}</span>
+                  )}
                 </div>
-                {product.images.length > 1 && (
-                  <>
-                    <button onClick={() => scrollToImage("left")} className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/50 transition-colors z-10">
-                      <ChevronRight size={20} />
-                    </button>
-                    <button onClick={() => scrollToImage("right")} className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/50 transition-colors z-10">
-                      <ChevronLeft size={20} />
-                    </button>
-                  </>
-                )}
-                <div className="flex justify-center gap-2 mt-4">
-                  {product.images.map((_, i) => (
+                {/* Thumbnails on right */}
+                <div className="flex flex-col gap-2 w-16 md:w-20 flex-shrink-0">
+                  {product.images.map((src, i) => (
                     <button
                       key={i}
-                      onClick={() => {
-                        setActiveImage(i);
-                        scrollRef.current?.scrollTo({ left: i * scrollRef.current.offsetWidth, behavior: "smooth" });
-                      }}
-                      className={`w-2 h-2 rounded-full transition-all ${i === activeImage ? "bg-primary w-6" : "bg-foreground/20"}`}
-                    />
+                      onClick={() => setActiveImage(i)}
+                      className={`aspect-square rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
+                        i === activeImage ? "border-primary" : "border-black/10 hover:border-black/20"
+                      }`}
+                    >
+                      <img src={src} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover" />
+                    </button>
                   ))}
                 </div>
-              </>
+              </div>
             )}
           </div>
 
