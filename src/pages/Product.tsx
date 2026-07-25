@@ -1,71 +1,14 @@
 import { useState, useRef } from "react";
-import { SlideTabs } from "@/components/ui/slide-tabs";
 import { useParams, Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { Star, ChevronLeft, ChevronRight, Minus, Plus, ChevronDown, Truck, RotateCcw, Shield, Headphones } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, Minus, Plus, Truck, RotateCcw, Shield, Headphones } from "lucide-react";
 import { findProduct, products } from "@/data/products";
 
 const trustItems = [
-  { icon: Truck, title: "شحن مجاني", text: "لجميع مدن ليبيا" },
-  { icon: RotateCcw, title: "إرجاع سهل", text: "خلال ٧ أيام" },
-  { icon: Shield, title: "ضمان الجودة", text: "أقمشة عالمية مضمونة" },
-  { icon: Headphones, title: "دعم متواصل", text: "واتساب على مدار الساعة" },
+  { icon: Truck, title: "شحن مجاني", description: "لجميع مدن ليبيا — التوصيل خلال ٣-٥ أيام عمل", stat: "٧" },
+  { icon: RotateCcw, title: "إرجاع سهل", description: "خلال ٧ أيام من تاريخ الاستلام بدون أي تعقيد", stat: "٧" },
+  { icon: Shield, title: "ضمان الجودة", description: "أقمشة عالمية مضمونة من أفضل المصانع العالمية", stat: "١٠٠٪" },
+  { icon: Headphones, title: "دعم متواصل", description: "فريق خدمة العملاء متاح عبر الواتساب على مدار الساعة", stat: "٢٤/٧" },
 ];
-
-function ContentTabs({ product }: { product: NonNullable<ReturnType<typeof findProduct>> }) {
-  const [activeTab, setActiveTab] = useState(0);
-  const tabs = ["التفاصيل", "المميزات", "الشحن والتوصيل"];
-
-  return (
-    <div>
-      <SlideTabs tabs={tabs} selectedIndex={activeTab} onSelect={setActiveTab} />
-      <div className="mt-6 glass-card p-6">
-        {activeTab === 0 && (
-          <ul className="space-y-3">
-            {product.details.map((d: string, i: number) => (
-              <li key={i} className="flex items-start gap-2.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                <span className="text-sm text-foreground/60">{d}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-        {activeTab === 1 && (
-          <div className="space-y-3">
-            {product.highlights.map((h: string, i: number) => (
-              <div key={i} className="flex items-start gap-2.5">
-                <div className="w-5 h-5 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Star size={10} className="text-primary fill-primary" />
-                </div>
-                <span className="text-sm text-foreground/60">{h}</span>
-              </div>
-            ))}
-          </div>
-        )}
-        {activeTab === 2 && (
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { icon: Truck, title: "شحن مجاني", text: "لجميع مدن ليبيا" },
-              { icon: RotateCcw, title: "إرجاع سهل", text: "خلال ٧ أيام" },
-              { icon: Shield, title: "ضمان الجودة", text: "أقمشة عالمية مضمونة" },
-              { icon: Headphones, title: "دعم متواصل", text: "واتساب على مدار الساعة" },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-3 glass-card p-4 rounded-xl">
-                <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
-                  <item.icon size={18} className="text-primary" />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-foreground/80">{item.title}</p>
-                  <p className="text-[10px] text-foreground/40">{item.text}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 export function Product() {
   const { id } = useParams();
@@ -112,10 +55,9 @@ export function Product() {
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
-          {/* LEFT: IMAGE GALLERY — each image is a full main image */}
+          {/* LEFT: IMAGE GALLERY */}
           <div className="relative">
             {product.images.length === 1 ? (
-              /* Single image — full display */
               <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0">
                 <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
                 {product.badge && (
@@ -123,7 +65,6 @@ export function Product() {
                 )}
               </div>
             ) : (
-              /* Multiple images — horizontal scroll gallery, each image full size */
               <>
                 <div
                   ref={scrollRef}
@@ -140,14 +81,12 @@ export function Product() {
                       {i === 0 && product.badge && (
                         <span className="absolute top-4 right-4 px-4 py-1.5 bg-primary text-white text-xs font-semibold rounded-full">{product.badge}</span>
                       )}
-                      {/* Image counter */}
                       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/40 backdrop-blur-sm text-white text-xs">
                         {i + 1} / {product.images.length}
                       </div>
                     </div>
                   ))}
                 </div>
-                {/* Navigation arrows */}
                 {product.images.length > 1 && (
                   <>
                     <button onClick={() => scrollToImage("left")} className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/50 transition-colors z-10">
@@ -158,7 +97,6 @@ export function Product() {
                     </button>
                   </>
                 )}
-                {/* Dot indicators */}
                 <div className="flex justify-center gap-2 mt-4">
                   {product.images.map((_, i) => (
                     <button
@@ -195,6 +133,21 @@ export function Product() {
                 </>
               )}
             </div>
+
+            {/* Luxury Highlights */}
+            {product.highlights && product.highlights.length > 0 && (
+              <div className="mb-5 space-y-2.5">
+                {product.highlights.map((h, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <div className="w-5 h-5 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Star size={10} className="text-primary fill-primary" />
+                    </div>
+                    <span className="text-xs text-foreground/60 leading-relaxed">{h}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
             <p className="text-xs text-foreground/40 mb-4">القماش: {product.fabric}</p>
 
             {/* Colors */}
@@ -233,33 +186,35 @@ export function Product() {
                 أضيفي إلى السلة — {product.price * quantity} د.ل
               </button>
             </div>
-
-            {/* Trust items */}
-            <div className="grid grid-cols-2 gap-3">
-              {trustItems.map((item, i) => (
-                <div key={i} className="flex items-center gap-2 glass-card p-3 rounded-xl">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
-                    <item.icon size={14} className="text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-semibold text-foreground/80">{item.title}</p>
-                    <p className="text-[9px] text-foreground/40">{item.text}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
 
-      {/* ═══════════ CONTENT TABS ═══════════ */}
+      {/* ═══════════ 2. TRUST ITEMS (Landing Page Style) ═══════════ */}
       <section className="py-12">
-        <div className="max-w-[800px] mx-auto px-4 sm:px-6">
-          <ContentTabs product={product} />
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-0 border border-black/[0.06] divide-y sm:divide-y-0 sm:divide-x divide-black/[0.06]">
+            {trustItems.map((item, i) => (
+              <div key={i} className="group relative overflow-hidden p-6 transition-all duration-500 hover:bg-black/[0.03]">
+                <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl" />
+                </div>
+                <div className="relative z-10 w-10 h-10 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-primary/25 transition-all duration-500">
+                  <item.icon className="text-primary size-4" strokeWidth={1.5} />
+                </div>
+                {item.stat && (
+                  <span className="relative z-10 text-2xl font-bold text-primary/20 block mb-1 font-display">{item.stat}</span>
+                )}
+                <h3 className="relative z-10 text-sm font-bold text-foreground mb-1 group-hover:text-foreground transition-colors duration-300">{item.title}</h3>
+                <p className="relative z-10 text-[10px] font-light text-foreground/35 leading-relaxed group-hover:text-foreground/50 transition-colors duration-300">{item.description}</p>
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ═══════════ 2. RELATED PRODUCTS ═══════════ */}
+      {/* ═══════════ 3. RELATED PRODUCTS ═══════════ */}
       {related.length > 0 && (
         <section className="py-12">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
@@ -283,7 +238,6 @@ export function Product() {
           </div>
         </section>
       )}
-
     </div>
   );
 }
