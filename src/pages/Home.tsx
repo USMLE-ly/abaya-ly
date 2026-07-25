@@ -61,22 +61,20 @@ export function Home() {
       <IconBar />
       <GlobeSection />
 
-      {/* FlipGallery inside iPhone mockup */}
-      <section className="py-16 md:py-24">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-          <div className="text-center mb-10">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-3">
-              تشكيلتنا <span className="text-brand">المميزة</span>
-            </h2>
-            <p className="text-sm text-white/50 max-w-lg mx-auto">
-              اكتشفي أحدث تصميماتنا من العبايات الفاخرة
-            </p>
-          </div>
-          <div className="flex justify-center">
-            <IPhoneMockup model="15-pro" color="natural-titanium" scale={0.65}>
-              <FlipGallery />
-            </IPhoneMockup>
-          </div>
+      {/* FlipGallery inside iPhone mockup — centered on all devices */}
+      <section className="min-h-[80vh] flex flex-col items-center justify-center py-12">
+        <div className="text-center mb-8">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-3">
+            تشكيلتنا <span className="text-brand">المميزة</span>
+          </h2>
+          <p className="text-sm text-white/50 max-w-lg mx-auto">
+            اكتشفي أحدث تصميماتنا من العبايات الفاخرة
+          </p>
+        </div>
+        <div className="flex items-center justify-center">
+          <IPhoneMockup model="15-pro" color="natural-titanium" scale={0.65}>
+            <FlipGallery />
+          </IPhoneMockup>
         </div>
       </section>
 

@@ -33,13 +33,6 @@ const flipAnimationBottomReverse = [
   { transform: 'rotateX(90deg)' }
 ];
 
-/*
- * iPhone 15 Pro content area (logical px):
- *   Screen: 393 × 852
- *   Safe top: 59, bottom: 34
- *   Content: 393 × 759
- *   Title + buttons ≈ 70px → gallery: 393 × 689
- */
 const GALLERY_W = 393;
 const GALLERY_H = 689;
 
@@ -114,7 +107,7 @@ export default function FlipGallery() {
 
   return (
     <div className="relative w-full h-full flex flex-col bg-black overflow-hidden">
-      {/* Flip gallery — fixed to iPhone content area */}
+      {/* Flip gallery */}
       <div
         id="flip-gallery"
         ref={galleryRef}
@@ -127,28 +120,28 @@ export default function FlipGallery() {
         <div className="overlay-bottom unite bg-cover bg-no-repeat" />
       </div>
 
-      {/* Title */}
-      <div className="text-center w-full px-3 py-2 shrink-0">
-        <p className="text-[10px] text-[#c9a84c] font-medium leading-tight">{images[currentIndex].subtitle}</p>
-        <p className="text-[11px] text-white/70 font-medium leading-tight">{images[currentIndex].title}</p>
-      </div>
-
-      {/* Nav buttons */}
-      <div className="flex gap-2 justify-center pb-3 shrink-0">
-        <button
-          type="button"
-          onClick={() => updateIndex(-1)}
-          className="w-8 h-8 rounded-full border border-white/15 bg-white/[0.06] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
-        >
-          <ChevronRight size={14} />
-        </button>
-        <button
-          type="button"
-          onClick={() => updateIndex(1)}
-          className="w-8 h-8 rounded-full border border-white/15 bg-white/[0.06] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
-        >
-          <ChevronLeft size={14} />
-        </button>
+      {/* Bottom bar: text left, buttons right (RTL) */}
+      <div className="flex items-center justify-between w-full px-4 py-3 shrink-0">
+        <div className="text-left">
+          <p className="text-sm text-[#c9a84c] font-semibold leading-tight">{images[currentIndex].subtitle}</p>
+          <p className="text-base text-white/80 font-bold leading-tight">{images[currentIndex].title}</p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => updateIndex(-1)}
+            className="w-11 h-11 rounded-full border border-white/15 bg-white/[0.06] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
+          >
+            <ChevronRight size={18} />
+          </button>
+          <button
+            type="button"
+            onClick={() => updateIndex(1)}
+            className="w-11 h-11 rounded-full border border-white/15 bg-white/[0.06] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
+          >
+            <ChevronLeft size={18} />
+          </button>
+        </div>
       </div>
 
       <style>{`
