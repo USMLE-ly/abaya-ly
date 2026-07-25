@@ -102,6 +102,8 @@ function GlobeCanvas() {
         mapSamples: 16000,
         mapBrightness: 6,
         baseColor: [0.1, 0.1, 0.12],
+        markerColor: [0.79, 0.39, 0.26],
+        glowColor: [0.79, 0.39, 0.26],
         opacity: 0.6,
         arcs: fabricCountries.map((c, i) => ({
           from: [c.lat, c.lng] as [number, number],
