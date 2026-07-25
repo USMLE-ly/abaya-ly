@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const images = [
-  { title: 'عباية السهرة الذهبية', url: 'https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=600&h=1000&fit=crop&q=80' },
-  { title: 'عباية الياسمين المطرّزة', url: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600&h=1000&fit=crop&q=80' },
-  { title: 'عباية الفجر الكاجوال', url: 'https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=600&h=1000&fit=crop&q=80' },
-  { title: 'عباية الملكة الرسمية', url: 'https://images.unsplash.com/photo-1551803091-e20673f15770?w=600&h=1000&fit=crop&q=80' },
-  { title: 'عباية نجمة الصحراء', url: 'https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=600&h=1000&fit=crop&q=80' },
+  { subtitle: 'مجموعة السهرة', title: 'عباية السهرة الذهبية', url: 'https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=700&h=1100&fit=crop&q=80' },
+  { subtitle: 'المطرّزة', title: 'عباية الياسمين المطرّزة', url: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=700&h=1100&fit=crop&q=80' },
+  { subtitle: 'الكاجوال', title: 'عباية الفجر الكاجوال', url: 'https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=700&h=1100&fit=crop&q=80' },
+  { subtitle: 'الرسمية', title: 'عباية الملكة الرسمية', url: 'https://images.unsplash.com/photo-1551803091-e20673f15770?w=700&h=1100&fit=crop&q=80' },
+  { subtitle: 'نجمة الصحراء', title: 'عباية نجمة الصحراء', url: 'https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=700&h=1100&fit=crop&q=80' },
 ];
 
 const FLIP_SPEED = 750;
@@ -41,13 +41,9 @@ export default function FlipGallery() {
   useEffect(() => {
     if (!containerRef.current) return;
     uniteRef.current = Array.from(containerRef.current.querySelectorAll('.unite'));
-    defineFirstImg();
-  }, []);
-
-  const defineFirstImg = () => {
     uniteRef.current.forEach(setActiveImage);
     setImageTitle();
-  };
+  }, []);
 
   const setActiveImage = (el: HTMLElement) => {
     el.style.backgroundImage = `url('${images[currentIndex].url}')`;
@@ -56,12 +52,13 @@ export default function FlipGallery() {
   const setImageTitle = () => {
     const gallery = containerRef.current;
     if (!gallery) return;
+    gallery.setAttribute('data-subtitle', images[currentIndex].subtitle);
     gallery.setAttribute('data-title', images[currentIndex].title);
     gallery.style.setProperty('--title-y', '0');
     gallery.style.setProperty('--title-opacity', '1');
   };
 
-  const updateGallery = (nextIndex: number, isReverse = false) => {
+  const updateGallery = (isReverse = false) => {
     const gallery = containerRef.current;
     if (!gallery) return;
 
@@ -73,6 +70,7 @@ export default function FlipGallery() {
 
     gallery.style.setProperty('--title-y', '-1rem');
     gallery.style.setProperty('--title-opacity', '0');
+    gallery.setAttribute('data-subtitle', '');
     gallery.setAttribute('data-title', '');
 
     uniteRef.current.forEach((el, idx) => {
@@ -89,9 +87,8 @@ export default function FlipGallery() {
 
   const updateIndex = (increment: number) => {
     const newIndex = (currentIndex + increment + images.length) % images.length;
-    const isReverse = increment < 0;
     setCurrentIndex(newIndex);
-    updateGallery(newIndex, isReverse);
+    updateGallery(increment < 0);
   };
 
   return (
@@ -108,14 +105,13 @@ export default function FlipGallery() {
 
         <div className="flex justify-center">
           <div
-            className="relative bg-white/10 border border-white/25 p-2 rounded-2xl"
-            style={{ '--gallery-bg-color': 'rgba(255 255 255 / 0.075)' } as React.CSSProperties}
+            className="relative rounded-3xl border border-white/15 bg-white/[0.04] backdrop-blur-xl p-4 md:p-6"
           >
             <div
               id="flip-gallery"
               ref={containerRef}
-              className="relative w-[240px] h-[400px] md:w-[300px] md:h-[500px] text-center"
-              style={{ perspective: '800px' }}
+              className="relative w-[280px] h-[450px] md:w-[360px] md:h-[580px] text-center"
+              style={{ perspective: '900px' }}
             >
               <div className="top unite bg-cover bg-no-repeat" />
               <div className="bottom unite bg-cover bg-no-repeat" />
@@ -123,20 +119,20 @@ export default function FlipGallery() {
               <div className="overlay-bottom unite bg-cover bg-no-repeat" />
             </div>
 
-            <div className="absolute top-full right-0 mt-2 flex gap-2">
+            <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex gap-3">
               <button
                 type="button"
                 onClick={() => updateIndex(-1)}
-                className="text-white opacity-75 hover:opacity-100 hover:scale-125 transition"
+                className="w-10 h-10 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
               >
-                <ChevronLeft size={20} />
+                <ChevronRight size={18} />
               </button>
               <button
                 type="button"
                 onClick={() => updateIndex(1)}
-                className="text-white opacity-75 hover:opacity-100 hover:scale-125 transition"
+                className="w-10 h-10 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
               >
-                <ChevronRight size={20} />
+                <ChevronLeft size={18} />
               </button>
             </div>
           </div>
@@ -153,29 +149,32 @@ export default function FlipGallery() {
           top: 50%;
           left: 0;
           transform: translateY(-50%);
+          z-index: 10;
         }
         #flip-gallery::before {
-          content: attr(data-title);
+          content: attr(data-subtitle) "\A" attr(data-title);
+          white-space: pre;
           color: rgba(255 255 255 / 0.75);
-          font-size: 0.75rem;
+          font-size: 0.7rem;
           left: -0.5rem;
           position: absolute;
-          top: calc(100% + 1rem);
-          line-height: 2;
+          top: calc(100% + 2.5rem);
+          line-height: 1.8;
           opacity: var(--title-opacity, 0);
           transform: translateY(var(--title-y, 0));
           transition: opacity 500ms ease-in-out, transform 500ms ease-in-out;
+          text-align: left;
         }
         #flip-gallery > * {
           position: absolute;
           width: 100%;
           height: 50%;
           overflow: hidden;
-          background-size: 240px 400px;
+          background-size: 280px 450px;
         }
         @media (min-width: 600px) {
           #flip-gallery > * {
-            background-size: 300px 500px;
+            background-size: 360px 580px;
           }
         }
         .top, .overlay-top {
