@@ -219,7 +219,7 @@ export function Product() {
               <p className="text-xs text-foreground/50 leading-relaxed">{product.description}</p>
             </div>
 
-            {/* Quantity + Add to Cart */}
+            {/* Quantity + Add to Cart + Payment */}
             <div className="flex items-center gap-4 mb-3">
               <div className="flex items-center glass-card rounded-xl overflow-hidden">
                 <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-3 hover:bg-black/5 transition-colors"><Minus size={14} /></button>
@@ -229,17 +229,12 @@ export function Product() {
               <button className="flex-1 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors">
                 أضيفي إلى السلة — {product.price * quantity} د.ل
               </button>
-            </div>
-
-            {/* Payment Methods */}
-            <div className="mt-2">
-              
-              <div className="flex items-center gap-2 flex-wrap">
-                <img src="/images/payments/visa.svg" alt="Visa" className="h-6 w-auto object-contain" />
-                <img src="/images/payments/mastercard.svg" alt="Mastercard" className="h-6 w-auto object-contain" />
-                <img src="/images/payments/amex.svg" alt="American Express" className="h-6 w-auto object-contain" />
-                <img src="/images/payments/paypal.svg" alt="PayPal" className="h-6 w-auto object-contain" />
-                <img src="/images/payments/google-pay.svg" alt="Google Pay" className="h-6 w-auto object-contain" />
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                <img src="/images/payments/visa.svg" alt="Visa" className="h-5 w-auto object-contain" />
+                <img src="/images/payments/mastercard.svg" alt="Mastercard" className="h-5 w-auto object-contain" />
+                <img src="/images/payments/amex.svg" alt="Amex" className="h-5 w-auto object-contain" />
+                <img src="/images/payments/paypal.svg" alt="PayPal" className="h-5 w-auto object-contain" />
+                <img src="/images/payments/google-pay.svg" alt="Google Pay" className="h-5 w-auto object-contain" />
               </div>
             </div>
           </div>
