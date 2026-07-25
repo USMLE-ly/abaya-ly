@@ -132,10 +132,8 @@ export function Product() {
                     </svg>
                   </summary>
                   <div className="overflow-hidden transition-all duration-500 ease-out">
-                    <div className="glass-card rounded-2xl p-5 border border-primary/10 relative overflow-hidden">
-                      {/* Subtle gradient glow */}
-                      <div className="absolute -top-16 -right-16 w-32 h-32 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-                      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+                    <div className="rounded-2xl p-5 relative overflow-hidden" style={{ background: "var(--color-background)", border: "1px solid rgba(0,0,0,0.04)" }}>
+                      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
                       <div className="relative z-10 space-y-3">
                         {product.highlights.map((h, i) => (
                           <div key={i} className="flex items-start gap-3 group/item">
