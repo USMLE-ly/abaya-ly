@@ -47,32 +47,29 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
           <div className="absolute top-3 right-3 z-20 px-2.5 py-1 bg-brand text-white text-[10px] font-bold rounded-full">{product.badge}</div>
         )}
 
-        <div className="absolute inset-0 p-4 flex flex-col">
-          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4" style={{ transform: "translateZ(40px)" }}>
+        <div className="absolute inset-0 p-4 flex flex-col justify-end">
+          <div className="flex items-center gap-0.5 mb-2">
+            {Array.from({ length: 5 }).map((_, s) => (
+              <svg key={s} className={`w-3 h-3 ${s < stars ? "text-yellow-400" : "text-white/30"}`} fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            ))}
+            <span className="text-[9px] text-white/60 mr-1">({reviewCount})</span>
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4 mb-3">
             <h3 className="text-lg font-bold text-white leading-tight mb-0.5 line-clamp-2">{product.name}</h3>
             <p className="text-[10px] text-white/70">{product.fabric}</p>
           </div>
 
-          <div className="mt-3 inline-flex self-start" style={{ transform: "translateZ(30px)" }}>
+          <div className="inline-flex self-start">
             <div className="rounded-full bg-black/40 backdrop-blur-sm px-4 py-1.5 flex items-baseline gap-1.5">
               <span className="text-sm font-bold text-white">{product.price} د.ل</span>
               {product.originalPrice && <span className="text-[10px] text-white/50 line-through">{product.originalPrice} د.ل</span>}
             </div>
           </div>
 
-          <div className="mt-2 flex items-center gap-1.5" style={{ transform: "translateZ(25px)" }}>
-            <div className="flex gap-0.5">
-              {Array.from({ length: 5 }).map((_, s) => (
-                <svg key={s} className={`w-3 h-3 ${s < stars ? "text-yellow-400" : "text-white/30"}`} fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-            </div>
-            <span className="text-[9px] text-white/60">({reviewCount})</span>
-          </div>
-
-          <div className="flex-1" />
-          <div className="flex justify-center gap-1.5 pb-1">
+          <div className="flex justify-center gap-1.5 pb-1 mt-3">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className={`h-1.5 rounded-full ${i === 0 ? "w-4 bg-white" : "w-1.5 bg-white/30"}`} />
             ))}
