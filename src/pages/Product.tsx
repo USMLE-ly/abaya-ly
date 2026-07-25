@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SlideTabs } from "@/components/ui/slide-tabs";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, ChevronLeft, Minus, Plus, Truck, Shield, RotateCcw, Headphones, ChevronDown } from "lucide-react";
@@ -32,6 +33,49 @@ function AccordionTab({ title, children, defaultOpen = false }: { title: string;
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+const tabNames = ["التفاصيل", "الشحن والتوصيل", "التقييمات"];
+
+function ContentTabs({ product, testimonials }: { product: ReturnType<typeof findProduct> & {}; testimonials: typeof testimonialData }) {
+  const [activeTab, setActiveTab] = useState(0);
+
+  return (
+    <div>
+      <SlideTabs tabs={tabNames} selectedIndex={activeTab} onSelect={setActiveTab} />
+      <div className="mt-6 glass-card p-6">
+        {activeTab === 0 && (
+          <ul className="space-y-2">
+            {product.details.map((d: string, i: number) => (
+              <li key={i} className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand mt-1.5 flex-shrink-0" />
+                {d}
+              </li>
+            ))}
+          </ul>
+        )}
+        {activeTab === 1 && (
+          <p className="text-sm text-white/50 leading-relaxed">الشحن مجاني لجميع مدن ليبيا. يتم التوصيل خلال ٣-٥ أيام عمل.</p>
+        )}
+        {activeTab === 2 && (
+          <div className="space-y-4">
+            {testimonials.map((t, i) => (
+              <div key={i} className="border-b border-white/5 pb-4 last:border-0">
+                <div className="flex gap-0.5 mb-1">
+                  {Array.from({ length: t.stars }).map((_, s) => (
+                    <Star key={s} size={12} className="fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <p className="text-sm font-semibold text-white">{t.title}</p>
+                <p className="text-xs text-white/40 mt-1">{t.text}</p>
+                <p className="text-[10px] text-brand mt-1">— {t.author}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -187,22 +231,7 @@ export function Product() {
       {/* ═══════════ 3. CONTENT TABS ═══════════ */}
       <section className="py-12">
         <div className="max-w-[800px] mx-auto px-4 sm:px-6">
-          <AccordionTab title="التفاصيل" defaultOpen>
-            <ul className="space-y-2">{product.details.map((d, i) => (<li key={i} className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-brand mt-1.5 flex-shrink-0" />{d}</li>))}</ul>
-          </AccordionTab>
-          <AccordionTab title="الشحن والتوصيل"><p>الشحن مجاني لجميع مدن ليبيا. يتم التوصيل خلال ٣-٥ أيام عمل.</p></AccordionTab>
-          <AccordionTab title="التقييمات">
-            <div className="space-y-4">
-              {testimonialData.map((t, i) => (
-                <div key={i} className="border-b border-white/5 pb-4 last:border-0">
-                  <div className="flex gap-0.5 mb-1">{Array.from({ length: t.stars }).map((_, s) => (<Star key={s} size={12} className="fill-yellow-400 text-yellow-400" />))}</div>
-                  <p className="text-sm font-semibold text-white">{t.title}</p>
-                  <p className="text-xs text-white/40 mt-1">{t.text}</p>
-                  <p className="text-[10px] text-brand mt-1">— {t.author}</p>
-                </div>
-              ))}
-            </div>
-          </AccordionTab>
+          <ContentTabs product={product} testimonials={testimonialData} />
         </div>
       </section>
 
