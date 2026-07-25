@@ -9,6 +9,7 @@ import { GlobeSection } from "@/components/GlobeSection";
 import FlipGallery from "@/components/ui/flip-gallery";
 import IPhoneMockup from "@/components/ui/iphone-mockup";
 import { ContactForm } from "@/components/ContactForm";
+import { OutfitGallery } from "@/components/OutfitGallery";
 
 const faqs = [
   { q: "كيف يمكنني طلب عباية؟", a: "يمكنكِ تصفح المجموعات واختيار العباية التي تفضلينها، ثم إضافتها إلى سلة التسوق وإتمام الطلب. يمكنكِ أيضًا التواصل معنا عبر الواتساب." },
@@ -57,6 +58,7 @@ export function Home() {
     <>
       <LuminaHero />
       <ProductCarousel />
+      <OutfitGallery />
       <ComparisonTable />
       <IconBar />
       <GlobeSection />
