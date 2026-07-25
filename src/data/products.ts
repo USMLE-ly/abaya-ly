@@ -35,7 +35,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     description: "عباية السهرة الذهبية — قطعة تجمع بين الفخامة المعاصرة والهوية الليبية الأصيلة.",
     details: ["القماش: جورجيت إيطالي ١٠٠٪", "القصة: واسعة، فضفاضة من الأسفل", "التطريز: يدوي بخيوط ذهبية أصلية", "العناية: غسيل جاف فقط"],
-    images: ["/images/products/abaya-1.jpg"],
+    images: ["/images/products/abaya-1.jpg", "/images/products/abaya-1-thumb.jpg"],
     rating: 4.9,
     reviewCount: 47,
   },
