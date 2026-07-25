@@ -191,12 +191,7 @@ export default function FlipGallery() {
           width: 100%;
           height: 50%;
           overflow: hidden;
-          background-size: 280px 450px;
-        }
-        @media (min-width: 600px) {
-          #flip-gallery > * {
-            background-size: 360px 580px;
-          }
+          background-size: 100% 200%;
         }
         .top, .overlay-top {
           top: 0;
