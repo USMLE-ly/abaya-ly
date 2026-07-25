@@ -121,7 +121,7 @@ export const IPhoneMockup: React.FC<IPhoneMockupProps> = ({
     : { position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 1, display: 'flex', flexDirection: 'column' as const };
 
   return (
-    <div className={className} style={{ boxSizing: 'border-box', display: 'inline-block', transform: `scale(${scale})`, transformOrigin: 'top left', ...style }}>
+    <div className={className} style={{ boxSizing: 'border-box', display: 'inline-block', transform: `scale(${scale})`, transformOrigin: 'center center', ...style }}>
       <div style={{ width: outerWidth, height: outerHeight, borderRadius: outerRadius, background: frameGradient, padding: resolvedBezel, boxSizing: 'border-box' as const, boxShadow: outerShadow, position: 'relative', overflow: 'hidden', ...frameStyle }} aria-label={`iPhone mockup (${model})`}>
         <div style={{ width: '100%', height: '100%', borderRadius: resolvedRadius, position: 'relative', overflow: 'hidden', background: screenBg, boxShadow: innerShadowCss, ...screenStyle }}>
           {wallpaper && <div aria-hidden style={{ position: 'absolute', inset: 0, backgroundImage: `url(${wallpaper})`, backgroundSize: wallpaperFit, backgroundPosition: wallpaperPosition, backgroundRepeat: 'no-repeat', zIndex: 0 }} />}
