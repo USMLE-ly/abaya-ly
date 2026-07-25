@@ -116,7 +116,7 @@ export function Product() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
           {/* LEFT: MEDIA GALLERY */}
-          <div className="flex flex-row-reverse gap-4">
+          <div className="flex flex-row gap-4">
             {/* Main image */}
             <div className="flex-1 relative aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0">
               <AnimatePresence mode="wait">
@@ -126,7 +126,7 @@ export function Product() {
                 <span className="absolute top-4 right-4 px-4 py-1.5 bg-primary text-white text-xs font-semibold rounded-full">{product.badge}</span>
               )}
             </div>
-            {/* Thumbnails on left */}
+            {/* Thumbnails on right */}
             <div className="flex flex-col gap-3 w-20 md:w-24 flex-shrink-0">
               {product.images.map((src, i) => (
                 <button key={i} onClick={() => setActiveImage(i)} className={`aspect-square rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${i === activeImage ? "border-primary" : "border-black/10 hover:border-black/20"}`}>
