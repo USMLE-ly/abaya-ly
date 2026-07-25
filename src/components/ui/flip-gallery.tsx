@@ -33,12 +33,7 @@ const flipAnimationBottomReverse = [
   { transform: 'rotateX(90deg)' }
 ];
 
-interface FlipGalleryProps {
-  width?: number;
-  height?: number;
-}
-
-export default function FlipGallery({ width = 280, height = 450 }: FlipGalleryProps) {
+export default function FlipGallery() {
   const galleryRef = useRef<HTMLDivElement>(null);
   const uniteRef = useRef<HTMLElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -108,13 +103,13 @@ export default function FlipGallery({ width = 280, height = 450 }: FlipGalleryPr
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center bg-black">
-      {/* Flip gallery */}
+    <div className="relative w-full h-full flex flex-col items-center justify-end bg-black overflow-hidden">
+      {/* Flip gallery — fills available width, takes 80% of height */}
       <div
         id="flip-gallery"
         ref={galleryRef}
-        className="relative"
-        style={{ perspective: '900px', width, height }}
+        className="relative flex-1 w-full"
+        style={{ perspective: '900px' }}
       >
         <div className="top unite bg-cover bg-no-repeat" />
         <div className="bottom unite bg-cover bg-no-repeat" />
@@ -123,26 +118,26 @@ export default function FlipGallery({ width = 280, height = 450 }: FlipGalleryPr
       </div>
 
       {/* Title */}
-      <div className="text-center mt-3 px-4">
-        <p className="text-[11px] text-[#c9a84c] font-medium">{images[currentIndex].subtitle}</p>
-        <p className="text-xs text-white/70 font-medium">{images[currentIndex].title}</p>
+      <div className="text-center w-full px-3 py-2 shrink-0">
+        <p className="text-[10px] text-[#c9a84c] font-medium leading-tight">{images[currentIndex].subtitle}</p>
+        <p className="text-[11px] text-white/70 font-medium leading-tight">{images[currentIndex].title}</p>
       </div>
 
       {/* Nav buttons */}
-      <div className="flex gap-2 mt-3">
+      <div className="flex gap-2 pb-3 shrink-0">
         <button
           type="button"
           onClick={() => updateIndex(-1)}
-          className="w-9 h-9 rounded-full border border-white/15 bg-white/[0.06] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
+          className="w-8 h-8 rounded-full border border-white/15 bg-white/[0.06] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
         >
-          <ChevronRight size={16} />
+          <ChevronRight size={14} />
         </button>
         <button
           type="button"
           onClick={() => updateIndex(1)}
-          className="w-9 h-9 rounded-full border border-white/15 bg-white/[0.06] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
+          className="w-8 h-8 rounded-full border border-white/15 bg-white/[0.06] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
         >
-          <ChevronLeft size={16} />
+          <ChevronLeft size={14} />
         </button>
       </div>
 
@@ -152,7 +147,7 @@ export default function FlipGallery({ width = 280, height = 450 }: FlipGalleryPr
           position: absolute;
           background-color: black;
           width: 100%;
-          height: 4px;
+          height: 3px;
           top: 50%;
           left: 0;
           transform: translateY(-50%);
