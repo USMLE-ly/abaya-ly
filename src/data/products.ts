@@ -256,7 +256,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     description: "عباية سحر الأناقة — فستان سهرة بتصميم كتف واحد يجمع بين الأنوثة والقوة الهادئة.",
     details: ["القصة: ميرميد بكتف واحد وأكمام طويلة", "اللون: نبيذي غامق مع أبيض", "التطريز: يدوي بخيوط ذهبية", "العناية: غسيل جاف فقط"],
-    images: ["/outfits/gold-embroidered-abaya-6.jpg"],
+    images: ["/outfits/gold-embroidered-abaya-6.jpg", "/outfits/gold-embroidered-abaya-6-thumb.jpg"],
     highlights: ["تعزز الثقة والجاذبية الفريدة في كل مناسبة.", "تجمع بين الأنوثة والقوة الهادئة في تصميم واحد.", "تمنح صاحبتها هالة من التميز والتألق."],
     rating: 4.9,
     reviewCount: 58,
