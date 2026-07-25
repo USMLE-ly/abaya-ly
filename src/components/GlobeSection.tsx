@@ -13,81 +13,36 @@ const fabricCountries = [
   { name: "كوريا", clothes: "عبايات مختارة", flag: "🇰🇷", detail: "عبايات صينية مختارة بعناية", lat: 37.5665, lng: 126.978 },
 ]
 
-const GLOBE_SIZE = 400
-
-/**
- * Projects a lat/lng point onto screen coordinates matching cobe's rendering.
- *
- * Cobe's shader does: screen → unit sphere → rotate by A(theta,phi) → render
- * We do the inverse: lat/lng → unit sphere → inverse rotate → screen
- *
- * A(theta,phi) in cobe (column-major GLSL mat3):
- *   col0: (cos(phi), 0, sin(phi))
- *   col1: (sin(phi)*sin(theta), cos(theta), -cos(phi)*sin(theta))
- *   col2: (-sin(phi)*cos(theta), sin(theta), cos(phi)*cos(theta))
- *
- * A^T (the inverse) maps world→view:
- *   h.x = cos(phi)*d.x + sin(phi)*d.z
- *   h.y = sin(phi)*sin(theta)*d.x + cos(theta)*d.y - cos(phi)*sin(theta)*d.z
- *   h.z = -sin(phi)*cos(theta)*d.x + sin(theta)*d.y + cos(phi)*cos(theta)*d.z
- *
- * Screen: px = center + h.x * 0.4 * SIZE, py = center - h.y * 0.4 * SIZE
- */
-function project(lat: number, lng: number, phi: number, theta: number, cx: number, cy: number, size: number) {
-  const latR = (lat * Math.PI) / 180
-  const lngR = (lng * Math.PI) / 180
-
-  // Unit sphere point in world space
-  const dx = Math.cos(latR) * Math.sin(lngR)
-  const dy = Math.sin(latR)
-  const dz = Math.cos(latR) * Math.cos(lngR)
-
-  const cp = Math.cos(phi), sp = Math.sin(phi)
-  const ct = Math.cos(theta), st = Math.sin(theta)
-
-  // A^T * d → view space
-  const hx = cp * dx + sp * dz
-  const hy = sp * st * dx + ct * dy - cp * st * dz
-  const hz = -sp * ct * dx + st * dy + cp * ct * dz
-
-  const scale = 0.4 * size
-  return {
-    x: cx + hx * scale,
-    y: cy - hy * scale,
-    visible: hz > 0,
-  }
-}
+const SIZE = 400
 
 function GlobeCanvas() {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const labelsRef = useRef<HTMLDivElement>(null)
-  const [isReady, setIsReady] = useState(false)
-  const [error, setError] = useState(false)
-  const phiRef = useRef(0)
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     const canvas = canvasRef.current
+    const wrap = wrapRef.current
     const labelsEl = labelsRef.current
-    if (!canvas) return
+    if (!canvas || !wrap || !labelsEl) return
 
-    const dpr = typeof window !== "undefined" ? Math.min(window.devicePixelRatio, 2) : 2
-    canvas.width = GLOBE_SIZE * dpr
-    canvas.height = GLOBE_SIZE * dpr
-    canvas.style.width = `${GLOBE_SIZE}px`
-    canvas.style.height = `${GLOBE_SIZE}px`
+    const dpr = Math.min(window.devicePixelRatio, 2)
+    canvas.width = SIZE * dpr
+    canvas.height = SIZE * dpr
+    canvas.style.width = `${SIZE}px`
+    canvas.style.height = `${SIZE}px`
 
+    let phi = 0
     let destroyed = false
-    const THETA = 0
-    const CENTER = GLOBE_SIZE / 2
 
     try {
       const globe = createGlobe(canvas, {
         devicePixelRatio: dpr,
-        width: GLOBE_SIZE * dpr,
-        height: GLOBE_SIZE * dpr,
+        width: SIZE * dpr,
+        height: SIZE * dpr,
         phi: 0,
-        theta: THETA,
+        theta: 0.15,
         dark: 1,
         diffuse: 1.2,
         mapSamples: 16000,
@@ -97,9 +52,10 @@ function GlobeCanvas() {
         glowColor: [0.87, 0.11, 0.11],
         markerElevation: 0.015,
         opacity: 0.6,
-        markers: fabricCountries.map((c) => ({
+        markers: fabricCountries.map((c, i) => ({
           location: [c.lat, c.lng] as [number, number],
           size: 0.03,
+          id: `country-${i}`,
         })),
         arcs: fabricCountries.map((c, i) => ({
           from: [c.lat, c.lng] as [number, number],
@@ -111,85 +67,62 @@ function GlobeCanvas() {
         arcHeight: 0.3,
       })
 
-      setIsReady(true)
+      setReady(true)
 
       const animate = () => {
         if (destroyed) return
-        phiRef.current += 0.003
-        globe.update({ phi: phiRef.current })
+        phi += 0.003
+        globe.update({ phi })
 
-        if (labelsEl) {
-          const labelEls = labelsEl.querySelectorAll<HTMLElement>("[data-label]")
-          labelEls.forEach((el, i) => {
-            if (i >= fabricCountries.length) return
-            const c = fabricCountries[i]
-            const pos = project(c.lat, c.lng, phiRef.current, THETA, CENTER, CENTER, GLOBE_SIZE)
-            el.style.left = `${pos.x}px`
-            el.style.top = `${pos.y}px`
-            el.style.opacity = pos.visible ? "1" : "0"
-            el.style.transform = "translate(-50%, -100%)"
-          })
-        }
+        // Read cobe's own marker positions from its anchor divs
+        const labelEls = labelsEl.querySelectorAll<HTMLElement>("[data-label]")
+        labelEls.forEach((el, i) => {
+          const anchor = wrap.querySelector(`[style*="anchor-name:--cobe-country-${i}"]`) as HTMLElement
+          if (anchor) {
+            el.style.left = anchor.style.left
+            el.style.top = anchor.style.top
+            // Check visibility: cobe sets anchor-name CSS var when hidden
+            const root = document.documentElement
+            const visVar = root.style.getPropertyValue(`--cobe-visible-country-${i}`)
+            el.style.opacity = visVar === "N" ? "0" : "1"
+          }
+        })
 
         requestAnimationFrame(animate)
       }
       animate()
 
-      return () => {
-        destroyed = true
-        globe.destroy()
-      }
+      return () => { destroyed = true; globe.destroy() }
     } catch {
-      setError(true)
       return () => { destroyed = true }
     }
   }, [])
 
   return (
-    <div
-      ref={containerRef}
-      className="relative flex justify-center items-center"
-      style={{ width: GLOBE_SIZE, height: GLOBE_SIZE, maxWidth: "100%" }}
-    >
-      {error ? (
-        <div className="text-center text-white/40 text-sm">
-          <p>الكرة الأرضية غير متاحة</p>
-        </div>
-      ) : (
-        <>
-          <canvas
-            ref={canvasRef}
-            style={{
-              cursor: "grab",
-              opacity: isReady ? 1 : 0,
-              transition: "opacity 0.5s ease",
-            }}
-          />
+    <div ref={wrapRef} className="flex justify-center items-center" style={{ width: SIZE, height: SIZE, maxWidth: "100%" }}>
+      <canvas
+        ref={canvasRef}
+        style={{ cursor: "grab", opacity: ready ? 1 : 0, transition: "opacity 0.5s ease" }}
+      />
+      <div ref={labelsRef} className="absolute inset-0 pointer-events-none" style={{ overflow: "hidden" }}>
+        {fabricCountries.map((c, i) => (
           <div
-            ref={labelsRef}
-            className="absolute inset-0 pointer-events-none"
-            style={{ overflow: "hidden" }}
+            key={i}
+            data-label
+            className="absolute whitespace-nowrap text-[10px] font-bold text-white/80 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm border border-white/10"
+            style={{
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -100%)",
+              opacity: 0,
+              textShadow: "0 1px 4px rgba(0,0,0,0.8)",
+              zIndex: 20,
+            }}
           >
-            {fabricCountries.map((c, i) => (
-              <div
-                key={i}
-                data-label
-                className="absolute whitespace-nowrap text-[10px] font-bold text-white/80 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm border border-white/10"
-                style={{
-                  left: "50%",
-                  top: "50%",
-                  transform: "translate(-50%, -100%)",
-                  opacity: 0,
-                  transition: "opacity 0.2s ease",
-                  textShadow: "0 1px 4px rgba(0,0,0,0.8)",
-                }}
-              >
-                {c.flag} {c.name}
-              </div>
-            ))}
+            {c.flag} {c.name}
           </div>
-        </>
-      )}
+        ))}
+      </div>
     </div>
   )
 }
