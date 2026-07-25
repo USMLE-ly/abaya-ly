@@ -190,24 +190,27 @@ export function Product() {
         </div>
       </section>
 
-      {/* ═══════════ 2. TRUST ITEMS (Landing Page Style) ═══════════ */}
-      <section className="py-12">
+      {/* ═══════════ 2. TRUST ITEMS (Compact) ═══════════ */}
+      <section className="py-6">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-0 border border-black/[0.06] divide-y sm:divide-y-0 sm:divide-x divide-black/[0.06]">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-black/[0.06] divide-x divide-black/[0.06]">
             {trustItems.map((item, i) => (
-              <div key={i} className="group relative overflow-hidden p-6 transition-all duration-500 hover:bg-black/[0.03]">
-                <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl" />
+              <div key={i} className="group relative overflow-hidden px-3 py-4 transition-all duration-500 hover:bg-black/[0.03]">
+                <div className="flex items-center gap-2.5">
+                  <div className="relative z-10 w-7 h-7 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-all duration-500">
+                    <item.icon className="text-primary" size={12} strokeWidth={1.5} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-baseline gap-1.5">
+                      {item.stat && (
+                        <span className="text-xs font-bold text-primary/30 font-display">{item.stat}</span>
+                      )}
+                      <h3 className="text-[11px] font-bold text-foreground truncate">{item.title}</h3>
+                    </div>
+                    <p className="text-[9px] font-light text-foreground/35 leading-tight truncate">{item.description}</p>
+                  </div>
                 </div>
-                <div className="relative z-10 w-10 h-10 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-primary/25 transition-all duration-500">
-                  <item.icon className="text-primary size-4" strokeWidth={1.5} />
-                </div>
-                {item.stat && (
-                  <span className="relative z-10 text-2xl font-bold text-primary/20 block mb-1 font-display">{item.stat}</span>
-                )}
-                <h3 className="relative z-10 text-sm font-bold text-foreground mb-1 group-hover:text-foreground transition-colors duration-300">{item.title}</h3>
-                <p className="relative z-10 text-[10px] font-light text-foreground/35 leading-relaxed group-hover:text-foreground/50 transition-colors duration-300">{item.description}</p>
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
             ))}
           </div>
