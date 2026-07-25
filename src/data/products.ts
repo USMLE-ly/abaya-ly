@@ -224,7 +224,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     description: "عباية الرقي الأثيري — فستان سهرة أنيق بتصميم كتف واحد وقصة ميرميد بطول أرضي تمنح حضوراً ملكياً.",
     details: ["القصة: ميرميد بكتف واحد بطول أرضي", "اللون: أبيض عاجي دافئ", "التطريز: يدوي بخيوط ذهبية", "العناية: غسيل جاف فقط"],
-    images: ["/outfits/gold-embroidered-abaya-4.jpg"],
+    images: ["/outfits/gold-embroidered-abaya-4.jpg", "/outfits/gold-embroidered-abaya-4-thumb.jpg"],
     highlights: ["رقة وذوق رفيع يمنح ثقة خالدة في كل مناسبة.", "فخامة عصرية بتصميم كتف واحد يخطف الأنظار.", "جمال أثيري ينساب مع حركتكِ بأناقة ساحرة."],
     rating: 4.9,
     reviewCount: 58,
