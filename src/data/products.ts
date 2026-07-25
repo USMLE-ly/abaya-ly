@@ -321,7 +321,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     description: "عباية الانتعاش الأخضر — انتعاش يسري في كل خيط يمنحكِ إحساساً بالحيوية الناعمة.",
     details: ["القصة: قطعتان بتفاصيل حديثة", "اللون: أخضر فاتح منعش", "النقشة: pleated", "العناية: غسيل يدوي بارد"],
-    images: ["/outfits/geometric-gold-abaya-6.jpg"],
+    images: ["/outfits/geometric-gold-abaya-6.jpg", "/outfits/geometric-gold-abaya-6-thumb.jpg"],
     highlights: ["انتعاش يسري في كل خيط، يمنحكِ إحساساً بالحيوية الناعمة والتفاؤل البراق.", "تصميم يحتفي بالأنوثة الخفيفة، يمنح ثقة طبيعية تتماهى مع سلاسة الحركة.", "أناقة تنبض بالحياة حيث يمتزج اللون الانتعاشي بأناقة الطراز العصري."],
     rating: 4.7,
     reviewCount: 26,
