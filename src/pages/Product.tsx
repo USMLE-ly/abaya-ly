@@ -238,8 +238,7 @@ export function Product() {
               <img src="/images/payments/amex.svg" alt="Amex" className="h-[22px] w-auto object-contain" />
               <img src="/images/payments/google-pay.svg" alt="Google Pay" className="h-[22px] w-auto object-contain" />
               <img src="/images/payments/stripe.svg" alt="Stripe" className="h-[22px] w-auto object-contain" />
-              <img src="/images/payments/apple-pay.svg" alt="Apple Pay" className="h-[22px] w-auto object-contain" />
-              <img src="/images/payments/klarna.svg" alt="Klarna" className="h-[22px] w-auto object-contain" />
+              <img src="/images/payments/paypal.svg" alt="PayPal" className="h-[22px] w-auto object-contain" />
             </div>
           </div>
         </div>
