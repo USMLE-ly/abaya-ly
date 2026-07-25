@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones } from "lucide-react";
 import { findProduct, products } from "@/data/products";
 
@@ -12,6 +12,7 @@ const trustItems = [
 
 export function Product() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const product = findProduct(id || "");
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
@@ -157,12 +158,14 @@ export function Product() {
               <p className="text-xs font-semibold text-foreground/60 mb-2">اللون: <span className="font-normal text-foreground/80">{primaryColor.name}</span></p>
               <div className="flex gap-2">
                 {product.colors.map((color, i) => (
-                  <span
+                  <button
                     key={i}
+                    onClick={() => color.linkTo && navigate(`/product/${color.linkTo}`)}
                     className="block w-8 h-8 rounded-full border-2 border-primary shadow-lg shadow-primary/20 cursor-pointer hover:scale-110 transition-transform"
                     style={{ backgroundColor: color.hex }}
                     title={color.name}
                     aria-label={color.name}
+                    type="button"
                   />
                 ))}
               </div>

@@ -6,7 +6,7 @@ export interface Product {
   price: number;
   originalPrice?: number;
   badge?: string;
-  colors: { name: string; hex: string }[];
+  colors: { name: string; hex: string; linkTo?: string }[];
   sizes: string[];
   description: string;
   details: string[];
@@ -25,7 +25,7 @@ export const products: Product[] = [
     price: 380,
     originalPrice: 450,
     badge: "الأكثر مبيعاً",
-    colors: [{"name": "أبيض", "hex": "#FFFFFF"}, {"name": "أسود", "hex": "#111827"}],
+    colors: [{"name": "أبيض", "hex": "#FFFFFF"}, {"name": "أسود", "hex": "#111827", "linkTo": "mesh-geometric"}],
     sizes: ["S", "M", "L", "XL"],
     description: "عباية النقط البيضاء الكلاسيكية — تصميم كلاسيكي بأكمام قصيرة وتفاصيل محدد الخصر يمنحها أناقة خالدة.",
     details: ["القصة: كلاسيكية بأكمام قصيرة ومحدد الخصر", "النقشة: نقاط بيضاء كلاسيكية", "الطول: ميدي", "العناية: غسيل جاف فقط"],
@@ -318,7 +318,7 @@ export const products: Product[] = [
     category: "المطرّزة",
     price: 350,
     originalPrice: 420,
-    colors: [{"name": "أسود", "hex": "#111827"}, {"name": "أبيض", "hex": "#FFFFFF"}],
+    colors: [{"name": "أسود", "hex": "#111827"}, {"name": "أبيض", "hex": "#FFFFFF", "linkTo": "al-sahra-gold"}],
     sizes: ["S", "M", "L", "XL"],
     description: "عباية البولكا العصرية — نقوش بيضاء على خلفية داكنة تضفي طابعاً فاخراً وعصرياً.",
     details: ["القصة: محتشمة بأناقة", "النقشة: نقاط بيضاء كلاسيكية", "اللون: كحلي غامق", "العناية: غسيل جاف فقط"],
