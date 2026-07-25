@@ -14,7 +14,6 @@ export function Product() {
   const { id } = useParams();
   const product = findProduct(id || "");
   const [activeImage, setActiveImage] = useState(0);
-  const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
   const [checkingSize, setCheckingSize] = useState<number | null>(null);
   const [sizeMessage, setSizeMessage] = useState('');
@@ -32,6 +31,7 @@ export function Product() {
   }
 
   const savings = product.originalPrice ? product.originalPrice - product.price : 0;
+  const primaryColor = product.colors[0] ?? { name: "غير محدد", hex: "transparent" };
 
   const handleSizeSelect = (index: number) => {
     if (index === selectedSize || checkingSize !== null) return;
@@ -154,11 +154,14 @@ export function Product() {
 
             {/* Colors */}
             <div className="mb-5">
-              <p className="text-xs font-semibold text-foreground/60 mb-2">اللون: <span className="font-normal text-foreground/80">{product.colors[selectedColor].name}</span></p>
+              <p className="text-xs font-semibold text-foreground/60 mb-2">اللون: <span className="font-normal text-foreground/80">{primaryColor.name}</span></p>
               <div className="flex gap-2">
-                {product.colors.map((color, i) => (
-                  <button key={i} onClick={() => setSelectedColor(i)} className={`w-8 h-8 rounded-full border-2 transition-all ${i === selectedColor ? "border-primary scale-110" : "border-black/10 hover:border-black/15"}`} style={{ backgroundColor: color.hex }} title={color.name} />
-                ))}
+                <span
+                  className="block w-8 h-8 rounded-full border-2 border-primary shadow-lg shadow-primary/20"
+                  style={{ backgroundColor: primaryColor.hex }}
+                  title={primaryColor.name}
+                  aria-label={primaryColor.name}
+                />
               </div>
             </div>
 
