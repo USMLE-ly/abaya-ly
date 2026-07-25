@@ -33,7 +33,12 @@ const flipAnimationBottomReverse = [
   { transform: 'rotateX(90deg)' }
 ];
 
-export default function FlipGallery() {
+interface FlipGalleryProps {
+  width?: number;
+  height?: number;
+}
+
+export default function FlipGallery({ width = 280, height = 450 }: FlipGalleryProps) {
   const galleryRef = useRef<HTMLDivElement>(null);
   const uniteRef = useRef<HTMLElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -103,75 +108,42 @@ export default function FlipGallery() {
   };
 
   return (
-    <div className="relative w-full py-16 md:py-24">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        <div className="text-center mb-10">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-3">
-            تشكيلتنا <span className="text-brand">المميزة</span>
-          </h2>
-          <p className="text-sm text-white/50 max-w-lg mx-auto">
-            اكتشفي أحدث تصميماتنا من العبايات الفاخرة
-          </p>
-        </div>
+    <div className="relative w-full h-full flex flex-col items-center justify-center bg-black">
+      {/* Flip gallery */}
+      <div
+        id="flip-gallery"
+        ref={galleryRef}
+        className="relative"
+        style={{ perspective: '900px', width, height }}
+      >
+        <div className="top unite bg-cover bg-no-repeat" />
+        <div className="bottom unite bg-cover bg-no-repeat" />
+        <div className="overlay-top unite bg-cover bg-no-repeat" />
+        <div className="overlay-bottom unite bg-cover bg-no-repeat" />
+      </div>
 
-        <div className="flex justify-center">
-          {/* Glass frame */}
-          <div className="relative rounded-3xl border border-white/15 bg-white/[0.04] backdrop-blur-xl p-4 md:p-6 pb-16 md:pb-20">
-            {/* Flip gallery */}
-            <div
-              id="flip-gallery"
-              ref={galleryRef}
-              className="relative w-[280px] h-[450px] md:w-[360px] md:h-[580px]"
-              style={{ perspective: '900px' }}
-            >
-              <div className="top unite bg-cover bg-no-repeat" />
-              <div className="bottom unite bg-cover bg-no-repeat" />
-              <div className="overlay-top unite bg-cover bg-no-repeat" />
-              <div className="overlay-bottom unite bg-cover bg-no-repeat" />
-            </div>
+      {/* Title */}
+      <div className="text-center mt-3 px-4">
+        <p className="text-[11px] text-[#c9a84c] font-medium">{images[currentIndex].subtitle}</p>
+        <p className="text-xs text-white/70 font-medium">{images[currentIndex].title}</p>
+      </div>
 
-            {/* Title below gallery, inside frame */}
-            <div
-              id="flip-title"
-              className="absolute left-4 md:left-6 text-left"
-              style={{
-                bottom: '1rem',
-                opacity: 1,
-                transition: 'opacity 500ms ease-in-out, transform 500ms ease-in-out',
-              }}
-            >
-              <p
-                className="text-[11px] text-brand font-medium mb-0.5"
-                style={{
-                  opacity: galleryRef.current ? Number(getComputedStyle(galleryRef.current).getPropertyValue('--title-opacity')) || 0 : 0,
-                }}
-              >
-                {images[currentIndex].subtitle}
-              </p>
-              <p className="text-xs text-white/70 font-medium">
-                {images[currentIndex].title}
-              </p>
-            </div>
-
-            {/* Nav buttons — inside frame, bottom-right */}
-            <div className="absolute bottom-4 md:bottom-6 right-4 md:right-6 flex gap-2">
-              <button
-                type="button"
-                onClick={() => updateIndex(-1)}
-                className="w-9 h-9 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
-              >
-                <ChevronRight size={16} />
-              </button>
-              <button
-                type="button"
-                onClick={() => updateIndex(1)}
-                className="w-9 h-9 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
-              >
-                <ChevronLeft size={16} />
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Nav buttons */}
+      <div className="flex gap-2 mt-3">
+        <button
+          type="button"
+          onClick={() => updateIndex(-1)}
+          className="w-9 h-9 rounded-full border border-white/15 bg-white/[0.06] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
+        >
+          <ChevronRight size={16} />
+        </button>
+        <button
+          type="button"
+          onClick={() => updateIndex(1)}
+          className="w-9 h-9 rounded-full border border-white/15 bg-white/[0.06] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.1] transition-all"
+        >
+          <ChevronLeft size={16} />
+        </button>
       </div>
 
       <style>{`

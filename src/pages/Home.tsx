@@ -7,6 +7,7 @@ import { ComparisonTable } from "@/components/ComparisonTable";
 import { IconBar } from "@/components/IconBar";
 import { GlobeSection } from "@/components/GlobeSection";
 import FlipGallery from "@/components/ui/flip-gallery";
+import IPhoneMockup from "@/components/ui/iphone-mockup";
 import { ContactForm } from "@/components/ContactForm";
 
 const faqs = [
@@ -59,7 +60,26 @@ export function Home() {
       <ComparisonTable />
       <IconBar />
       <GlobeSection />
-      <FlipGallery />
+
+      {/* FlipGallery inside iPhone mockup */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+          <div className="text-center mb-10">
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-3">
+              تشكيلتنا <span className="text-brand">المميزة</span>
+            </h2>
+            <p className="text-sm text-white/50 max-w-lg mx-auto">
+              اكتشفي أحدث تصميماتنا من العبايات الفاخرة
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <IPhoneMockup model="15-pro" color="natural-titanium" scale={0.7}>
+              <FlipGallery width={240} height={380} />
+            </IPhoneMockup>
+          </div>
+        </div>
+      </section>
+
       <HomeFAQ />
       <ContactForm />
     </>
