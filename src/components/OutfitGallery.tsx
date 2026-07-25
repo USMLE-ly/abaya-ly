@@ -9,8 +9,8 @@ import { useNavigate } from "react-router-dom";
 const newOutfitIds = [
   "olive-ruffle", "cream-silk", "white-beach", "red-velvet",
   "white-lace", "night-velvet", "floral-sleeve", "black-lace", "mesh-geometric",
-  "gold-embroidered",
-  "geometric-gold"
+  "gold-emb-1", "gold-emb-2", "gold-emb-3", "gold-emb-4", "gold-emb-5", "gold-emb-6",
+  "geo-gold-1", "geo-gold-2", "geo-gold-3", "geo-gold-4", "geo-gold-5", "geo-gold-6", "geo-gold-7",
 ];
 
 export function OutfitGallery() {
@@ -39,14 +39,14 @@ export function OutfitGallery() {
         </motion.div>
 
         {/* Outfits Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {newOutfits.map((outfit, index) => (
             <motion.div
               key={outfit.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.08 }}
+              transition={{ duration: 0.5, delay: index * 0.05 }}
               className="group relative glass-card overflow-hidden rounded-2xl"
               onMouseEnter={() => setHoveredId(outfit.id)}
               onMouseLeave={() => setHoveredId(null)}
@@ -85,19 +85,19 @@ export function OutfitGallery() {
               </div>
 
               {/* Info */}
-              <div className="p-4 text-right">
-                <h3 className="text-sm font-bold text-foreground mb-1">
+              <div className="p-3 md:p-4 text-right">
+                <h3 className="text-xs md:text-sm font-bold text-foreground mb-1 line-clamp-2">
                   {outfit.name}
                 </h3>
-                <p className="text-[11px] text-foreground/40 mb-2">
+                <p className="text-[10px] md:text-[11px] text-foreground/40 mb-2">
                   {outfit.fabric}
                 </p>
                 <div className="flex items-center justify-end gap-2">
-                  <span className="text-sm font-bold text-primary">
+                  <span className="text-xs md:text-sm font-bold text-primary">
                     {outfit.price} د.ل
                   </span>
                   {outfit.originalPrice && (
-                    <span className="text-xs text-foreground/30 line-through">
+                    <span className="text-[10px] md:text-xs text-foreground/30 line-through">
                       {outfit.originalPrice} د.ل
                     </span>
                   )}
