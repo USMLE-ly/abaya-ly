@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react"
+import { useEffect, useRef, useState } from "react"
 import createGlobe from "cobe"
 
 const LIBYA: [number, number] = [32.9022, 13.1800]
@@ -13,39 +13,33 @@ const fabricCountries = [
   { name: "كوريا", clothes: "فساتين مختارة", flag: "🇰🇷", detail: "فساتين صينية مختارة بعناية", lat: 37.5665, lng: 126.978 },
 ]
 
-const GLOBE_SIZE = 400
-
 function GlobeCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const mountRef = useRef<HTMLDivElement>(null)
   const [ready, setReady] = useState(false)
-  const [error, setError] = useState(false)
-  const globeRef = useRef<ReturnType<typeof createGlobe> | null>(null)
-  const rafRef = useRef<number>(0)
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+    const mount = mountRef.current
+    if (!mount) return
 
-    // Check WebGL support first
-    const testCanvas = document.createElement("canvas")
-    const gl = testCanvas.getContext("webgl") || testCanvas.getContext("experimental-webgl")
-    if (!gl) {
-      setError(true)
-      return
+    // Clear any previous cobe wrapper divs (React StrictMode safety)
+    while (mount.firstChild) {
+      mount.removeChild(mount.firstChild)
     }
 
-    const dpr = Math.min(window.devicePixelRatio, 2)
-    const size = GLOBE_SIZE
+    // Create canvas element manually
+    const canvas = document.createElement("canvas")
+    canvas.style.cursor = "grab"
+    canvas.style.display = "block"
+    canvas.style.margin = "0 auto"
+    mount.appendChild(canvas)
 
-    // Set canvas dimensions via attributes (not CSS)
+    const size = 400
+    const dpr = Math.min(window.devicePixelRatio, 2)
+
     canvas.width = size * dpr
     canvas.height = size * dpr
-
-    // Set CSS dimensions explicitly — no auto, no maxWidth overrides
     canvas.style.width = `${size}px`
     canvas.style.height = `${size}px`
-    canvas.style.display = "block"
 
     let destroyed = false
     let phi = 0
@@ -79,61 +73,39 @@ function GlobeCanvas() {
         arcHeight: 0.3,
       })
 
-      globeRef.current = globe
-
-      if (!destroyed) {
-        setReady(true)
-      }
+      if (!destroyed) setReady(true)
 
       const animate = () => {
         if (destroyed) return
         phi += 0.003
         globe.update({ phi })
-        rafRef.current = requestAnimationFrame(animate)
+        requestAnimationFrame(animate)
       }
       animate()
 
       return () => {
         destroyed = true
-        cancelAnimationFrame(rafRef.current)
         globe.destroy()
-        globeRef.current = null
       }
     } catch (e) {
-      console.error("Globe init error:", e)
-      setError(true)
-      return () => {
-        destroyed = true
-      }
+      console.error("Globe error:", e)
+    }
+
+    return () => {
+      destroyed = true
     }
   }, [])
 
-  if (error) {
-    return (
-      <div className="flex justify-center items-center" style={{ width: GLOBE_SIZE, height: GLOBE_SIZE }}>
-        <div className="glass-card p-8 rounded-2xl text-center">
-          <p className="text-sm text-foreground/50">الكرة الأرضية غير متاحة حالياً</p>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div
-      ref={containerRef}
-      className="flex justify-center items-center"
-      style={{ width: GLOBE_SIZE, height: GLOBE_SIZE, position: "relative" }}
-    >
-      <canvas
-        ref={canvasRef}
-        style={{
-          cursor: "grab",
-          opacity: ready ? 1 : 0,
-          transition: "opacity 0.8s ease",
-          display: "block",
-        }}
-      />
-    </div>
+      ref={mountRef}
+      style={{
+        width: 400,
+        height: 400,
+        opacity: ready ? 1 : 0,
+        transition: "opacity 0.8s ease",
+      }}
+    />
   )
 }
 
