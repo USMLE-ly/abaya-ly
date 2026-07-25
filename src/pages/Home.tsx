@@ -1,4 +1,4 @@
-import ElegantCarousel from "@/components/ElegantCarousel";
+import LuminaHero from "@/components/LuminaHero";
 import { ProductCarousel } from "@/components/ProductCarousel";
 import { ComparisonTable } from "@/components/ComparisonTable";
 import { IconBar } from "@/components/IconBar";
@@ -8,7 +8,7 @@ import { ContactForm } from "@/components/ContactForm";
 export function Home() {
   return (
     <>
-      <ElegantCarousel />
+      <LuminaHero />
       <ProductCarousel />
       <ComparisonTable />
       <IconBar />
