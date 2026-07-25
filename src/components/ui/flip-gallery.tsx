@@ -33,6 +33,16 @@ const flipAnimationBottomReverse = [
   { transform: 'rotateX(90deg)' }
 ];
 
+/*
+ * iPhone 15 Pro content area (logical px):
+ *   Screen: 393 × 852
+ *   Safe top: 59, bottom: 34
+ *   Content: 393 × 759
+ *   Title + buttons ≈ 70px → gallery: 393 × 689
+ */
+const GALLERY_W = 393;
+const GALLERY_H = 689;
+
 export default function FlipGallery() {
   const galleryRef = useRef<HTMLDivElement>(null);
   const uniteRef = useRef<HTMLElement[]>([]);
@@ -103,13 +113,13 @@ export default function FlipGallery() {
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-end bg-black overflow-hidden">
-      {/* Flip gallery — fills available width, takes 80% of height */}
+    <div className="relative w-full h-full flex flex-col bg-black overflow-hidden">
+      {/* Flip gallery — fixed to iPhone content area */}
       <div
         id="flip-gallery"
         ref={galleryRef}
-        className="relative flex-1 w-full"
-        style={{ perspective: '900px' }}
+        className="relative shrink-0"
+        style={{ width: GALLERY_W, height: GALLERY_H, perspective: '900px' }}
       >
         <div className="top unite bg-cover bg-no-repeat" />
         <div className="bottom unite bg-cover bg-no-repeat" />
@@ -124,7 +134,7 @@ export default function FlipGallery() {
       </div>
 
       {/* Nav buttons */}
-      <div className="flex gap-2 pb-3 shrink-0">
+      <div className="flex gap-2 justify-center pb-3 shrink-0">
         <button
           type="button"
           onClick={() => updateIndex(-1)}

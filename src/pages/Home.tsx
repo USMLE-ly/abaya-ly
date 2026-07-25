@@ -73,7 +73,7 @@ export function Home() {
             </p>
           </div>
           <div className="flex justify-center">
-            <IPhoneMockup model="15-pro" color="natural-titanium" scale={0.7}>
+            <IPhoneMockup model="15-pro" color="natural-titanium" scale={0.65}>
               <FlipGallery />
             </IPhoneMockup>
           </div>
