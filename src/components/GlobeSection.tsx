@@ -4,36 +4,58 @@ import createGlobe from "cobe"
 const LIBYA: [number, number] = [32.9022, 13.1800]
 
 const fabricCountries = [
-  { name: "إيطاليا", fabric: "جورجيت", flag: "🇮🇹", detail: "أجود أنواع الجورجيت الإيطالي", lat: 45.4642, lng: 9.19 },
-  { name: "فرنسا", fabric: "حرير", flag: "🇫🇷", detail: "حرير طبيعي فاخر", lat: 48.8566, lng: 2.3522 },
-  { name: "تركيا", fabric: "كريب", flag: "🇹🇷", detail: "كريب مزدوج عالي الجودة", lat: 41.0082, lng: 28.9784 },
-  { name: "الصين", fabric: "شيفون", flag: "🇨🇳", detail: "شيفون متعدد الطبقات", lat: 31.2304, lng: 121.4737 },
-  { name: "الإمارات", fabric: "ستان", flag: "🇦🇪", detail: "ستان ملكي أنيق", lat: 25.2048, lng: 55.2708 },
-  { name: "الهند", fabric: "قطن", flag: "🇮🇳", detail: "قطن مصري ناعم", lat: 19.076, lng: 72.8777 },
-  { name: "كوريا", fabric: "صيني", flag: "🇰🇷", detail: "أقمشة صينية مختارة", lat: 37.5665, lng: 126.978 },
+  { name: "إيطاليا", clothes: "عبايات سهرة", flag: "🇮🇹", detail: "عبايات سهرة فاخرة بالجورجيت الإيطالي", lat: 45.4642, lng: 9.19 },
+  { name: "فرنسا", clothes: "عبايات حرير", flag: "🇫🇷", detail: "عبايات حرير طبيعي فاخرة", lat: 48.8566, lng: 2.3522 },
+  { name: "تركيا", clothes: "عبايات كريب", flag: "🇹🇷", detail: "عبايات كريب مزدوج عالية الجودة", lat: 41.0082, lng: 28.9784 },
+  { name: "الصين", clothes: "عبايات شيفون", flag: "🇨🇳", detail: "عبايات شيفون متعدد الطبقات", lat: 31.2304, lng: 121.4737 },
+  { name: "الإمارات", clothes: "عبايات ستان", flag: "🇦🇪", detail: "عبايات ستان ملكية أنيقة", lat: 25.2048, lng: 55.2708 },
+  { name: "الهند", clothes: "عبايات قطن", flag: "🇮🇳", detail: "عبايات قطن مصري ناعمة", lat: 19.076, lng: 72.8777 },
+  { name: "كوريا", clothes: "عبايات مختارة", flag: "🇰🇷", detail: "عبايات صينية مختارة بعناية", lat: 37.5665, lng: 126.978 },
 ]
 
 const GLOBE_SIZE = 400
 
-function project(lat: number, lng: number, phi: number, theta: number, cx: number, cy: number, r: number) {
+/**
+ * Projects a lat/lng point onto screen coordinates matching cobe's rendering.
+ *
+ * Cobe's shader does: screen → unit sphere → rotate by A(theta,phi) → render
+ * We do the inverse: lat/lng → unit sphere → inverse rotate → screen
+ *
+ * A(theta,phi) in cobe (column-major GLSL mat3):
+ *   col0: (cos(phi), 0, sin(phi))
+ *   col1: (sin(phi)*sin(theta), cos(theta), -cos(phi)*sin(theta))
+ *   col2: (-sin(phi)*cos(theta), sin(theta), cos(phi)*cos(theta))
+ *
+ * A^T (the inverse) maps world→view:
+ *   h.x = cos(phi)*d.x + sin(phi)*d.z
+ *   h.y = sin(phi)*sin(theta)*d.x + cos(theta)*d.y - cos(phi)*sin(theta)*d.z
+ *   h.z = -sin(phi)*cos(theta)*d.x + sin(theta)*d.y + cos(phi)*cos(theta)*d.z
+ *
+ * Screen: px = center + h.x * 0.4 * SIZE, py = center - h.y * 0.4 * SIZE
+ */
+function project(lat: number, lng: number, phi: number, theta: number, cx: number, cy: number, size: number) {
   const latR = (lat * Math.PI) / 180
   const lngR = (lng * Math.PI) / 180
 
-  const x = Math.cos(latR) * Math.sin(lngR)
-  const y = Math.sin(latR)
-  const z = Math.cos(latR) * Math.cos(lngR)
+  // Unit sphere point in world space
+  const dx = Math.cos(latR) * Math.sin(lngR)
+  const dy = Math.sin(latR)
+  const dz = Math.cos(latR) * Math.cos(lngR)
 
-  const y1 = Math.cos(theta) * y - Math.sin(theta) * z
-  const z1 = Math.sin(theta) * y + Math.cos(theta) * z
+  const cp = Math.cos(phi), sp = Math.sin(phi)
+  const ct = Math.cos(theta), st = Math.sin(theta)
 
-  const x2 = Math.cos(phi) * x + Math.sin(phi) * z1
-  const z2 = -Math.sin(phi) * x + Math.cos(phi) * z1
+  // A^T * d → view space
+  const hx = cp * dx + sp * dz
+  const hy = sp * st * dx + ct * dy - cp * st * dz
+  const hz = -sp * ct * dx + st * dy + cp * ct * dz
 
-  const perspective = 1 + z2 * 0.4
-  const sx = cx + (r * x2) / perspective
-  const sy = cy - (r * y1) / perspective
-
-  return { x: sx, y: sy, visible: z2 > 0 }
+  const scale = 0.4 * size
+  return {
+    x: cx + hx * scale,
+    y: cy - hy * scale,
+    visible: hz > 0,
+  }
 }
 
 function GlobeCanvas() {
@@ -58,7 +80,6 @@ function GlobeCanvas() {
     let destroyed = false
     const THETA = 0
     const CENTER = GLOBE_SIZE / 2
-    const RADIUS = GLOBE_SIZE * 0.4
 
     try {
       const globe = createGlobe(canvas, {
@@ -102,9 +123,9 @@ function GlobeCanvas() {
           labelEls.forEach((el, i) => {
             if (i >= fabricCountries.length) return
             const c = fabricCountries[i]
-            const pos = project(c.lat, c.lng, phiRef.current, THETA, CENTER, CENTER, RADIUS)
+            const pos = project(c.lat, c.lng, phiRef.current, THETA, CENTER, CENTER, GLOBE_SIZE)
             el.style.left = `${pos.x}px`
-            el.style.top = `${pos.y - 10}px`
+            el.style.top = `${pos.y}px`
             el.style.opacity = pos.visible ? "1" : "0"
             el.style.transform = "translate(-50%, -100%)"
           })
@@ -144,7 +165,6 @@ function GlobeCanvas() {
               transition: "opacity 0.5s ease",
             }}
           />
-          {/* Country name labels floating over the globe */}
           <div
             ref={labelsRef}
             className="absolute inset-0 pointer-events-none"
@@ -197,7 +217,7 @@ export function GlobeSection() {
                   <span className="text-2xl">{c.flag}</span>
                   <div>
                     <h3 className="text-sm font-bold text-white">{c.name}</h3>
-                    <p className="text-[10px] text-brand font-medium">{c.fabric}</p>
+                    <p className="text-[10px] text-brand font-medium">{c.clothes}</p>
                   </div>
                 </div>
                 <p className="text-[10px] text-white/40 leading-relaxed">{c.detail}</p>
