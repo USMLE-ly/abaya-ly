@@ -89,15 +89,6 @@ export default function LuminaHero() {
                 <span className="text-xs text-foreground/50">الملكة</span>
               </div>
 
-              {/* Title — shrink-to-fit */}
-              <div className="inline-block rounded-2xl border border-black/10 bg-white/70 backdrop-blur-xl px-6 py-4 self-start">
-                <h1
-                  style={{ fontSize: "clamp(1.8rem, 4vw, 3rem)", fontWeight: 300, color: "#fff", lineHeight: 1.1, textShadow: "0 2px 30px rgba(0,0,0,0.5)", whiteSpace: "nowrap" }}
-                >
-                  {SLIDES[idx].title}
-                </h1>
-              </div>
-
               {/* Subtitle */}
               <div className="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-white/70 backdrop-blur-xl px-5 py-2 self-start">
                 <p className="text-sm font-medium" style={{ color: SLIDES[idx].accent }}>
