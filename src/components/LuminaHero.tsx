@@ -72,49 +72,44 @@ export default function LuminaHero() {
       <div className="absolute inset-0 z-10 flex flex-col justify-end">
         <div className="max-w-[1400px] mx-auto w-full px-4 md:px-10 pb-8">
           <div className="flex items-end justify-between gap-6">
-            {/* Right: text block with glassmorphism */}
-            <div className="flex-1 max-w-lg">
-              <div className="rounded-3xl border border-white/10 bg-white/[0.06] backdrop-blur-xl px-7 py-6">
-                <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-2 mb-4">
-                  <span className="text-xs font-bold tracking-wider text-white/40">
-                    {String(idx + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
-                  </span>
-                  <span className="w-px h-3 bg-white/15" />
-                  <span className="text-xs text-white/50">الملكة</span>
-                </div>
+            {/* Right: text blocks — each in its own glass card */}
+            <div className="flex-1 max-w-lg flex flex-col items-end gap-3">
+              {/* Counter */}
+              <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl px-5 py-3">
+                <span className="text-xs font-bold tracking-wider text-white/40">
+                  {String(idx + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
+                </span>
+                <span className="w-px h-3 bg-white/15" />
+                <span className="text-xs text-white/50">الملكة</span>
+              </div>
 
+              {/* Title */}
+              <div className="rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl px-6 py-4 w-full text-right">
                 <h1
-                  className="!text-right !mb-2"
                   style={{ fontSize: "clamp(1.8rem, 4vw, 3rem)", fontWeight: 300, color: "#fff", lineHeight: 1.1, textShadow: "0 2px 30px rgba(0,0,0,0.5)" }}
                 >
                   {SLIDES[idx].title}
                 </h1>
-
-                <p className="text-sm font-medium mb-4 text-right" style={{ color: SLIDES[idx].accent }}>
-                  {SLIDES[idx].subtitle}
-                </p>
-
-                <div className="flex items-center gap-3 justify-end">
-                  <a
-                    href="/collections"
-                    className="inline-block px-7 py-3 rounded-full text-sm font-semibold text-white transition-all duration-300 hover:scale-105"
-                    style={{ backgroundColor: SLIDES[idx].accent }}
-                  >
-                    اكتشفي المجموعة
-                  </a>
-                  <div className="flex gap-1.5 rounded-2xl border border-white/10 bg-white/[0.04] p-1.5">
-                    <button onClick={() => goTo((idx - 1 + SLIDES.length) % SLIDES.length)} className="w-9 h-9 rounded-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.08] transition-all">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-                    </button>
-                    <button onClick={() => goTo((idx + 1) % SLIDES.length)} className="w-9 h-9 rounded-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.08] transition-all">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
-                    </button>
-                  </div>
-                </div>
               </div>
 
+              {/* Subtitle */}
+              <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl px-5 py-2">
+                <p className="text-sm font-medium" style={{ color: SLIDES[idx].accent }}>
+                  {SLIDES[idx].subtitle}
+                </p>
+              </div>
+
+              {/* CTA */}
+              <a
+                href="/collections"
+                className="inline-block px-7 py-3 rounded-full text-sm font-semibold text-white transition-all duration-300 hover:scale-105 border border-white/10 bg-white/[0.06] backdrop-blur-xl"
+                style={{ backgroundColor: SLIDES[idx].accent, borderColor: "transparent" }}
+              >
+                اكتشفي المجموعة
+              </a>
+
               {/* Progress bar */}
-              <div className="mt-4 h-[2px] w-full rounded-full bg-white/10 overflow-hidden">
+              <div className="h-[2px] w-full max-w-md rounded-full bg-white/10 overflow-hidden mt-2">
                 <div
                   className="h-full rounded-full"
                   style={{ width: `${progress * 100}%`, backgroundColor: SLIDES[idx].accent, transition: "none" }}
@@ -122,8 +117,8 @@ export default function LuminaHero() {
               </div>
             </div>
 
-            {/* Left: nav dots */}
-            <div className="hidden md:flex flex-col gap-3 items-center rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl px-3 py-4">
+            {/* Left: nav dots + arrows in glass panel */}
+            <div className="hidden md:flex flex-col gap-3 items-center rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl px-3 py-4">
               {SLIDES.map((slide, i) => (
                 <button key={i} onClick={() => goTo(i)}>
                   <div
@@ -132,6 +127,13 @@ export default function LuminaHero() {
                   />
                 </button>
               ))}
+              <div className="w-px h-2 bg-white/10 my-1" />
+              <button onClick={() => goTo((idx - 1 + SLIDES.length) % SLIDES.length)} className="w-8 h-8 rounded-xl flex items-center justify-center text-white/50 hover:text-white hover:bg-white/[0.08] transition-all">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+              </button>
+              <button onClick={() => goTo((idx + 1) % SLIDES.length)} className="w-8 h-8 rounded-xl flex items-center justify-center text-white/50 hover:text-white hover:bg-white/[0.08] transition-all">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+              </button>
             </div>
           </div>
         </div>
