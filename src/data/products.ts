@@ -221,7 +221,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     description: "عباية الشبكة المعدنية — تصميم هندسي جريء بشبكة معدنية على قماش أسود يعكس الطابع العصري والفخم.",
     details: ["القماش: شبك معدني مع بطانة ساتان", "القصة: أنيقة مع نمط هندسي", "اللون: أسود مع لمعة معدنية", "العناية: غسيل جاف فقط"],
-    images: ["/outfits/mesh-geometric-abaya.jpg"],
+    images: ["/outfits/mesh-geometric-abaya.jpg", "/outfits/mesh-geometric-abaya-thumb.jpg"],
     highlights: [
       "نمط هندسي جريء بلمعان معدني فريد",
       "بطانة ساتان مريحة تمنحكِ الراحة طوال الليل",
