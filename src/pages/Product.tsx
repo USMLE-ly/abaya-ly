@@ -220,7 +220,7 @@ export function Product() {
             </div>
 
             {/* Quantity + Add to Cart */}
-            <div className="flex items-center gap-4 mb-5">
+            <div className="flex items-center gap-4 mb-3">
               <div className="flex items-center glass-card rounded-xl overflow-hidden">
                 <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-3 hover:bg-black/5 transition-colors"><Minus size={14} /></button>
                 <span className="px-4 text-sm font-semibold text-foreground min-w-[2rem] text-center">{quantity}</span>
@@ -232,8 +232,8 @@ export function Product() {
             </div>
 
             {/* Payment Methods */}
-            <div className="mt-4 pt-4 border-t border-black/5">
-              <p className="text-[10px] text-foreground/30 mb-2.5 tracking-wide">طرق الدفع المتاحة</p>
+            <div className="mt-2">
+              
               <div className="flex items-center gap-2 flex-wrap">
                 <img src="/images/payments/visa.svg" alt="Visa" className="h-6 w-auto object-contain" />
                 <img src="/images/payments/mastercard.svg" alt="Mastercard" className="h-6 w-auto object-contain" />
