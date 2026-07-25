@@ -233,11 +233,11 @@ export function Product() {
 
             {/* Payment Methods */}
             <div className="flex items-center gap-1.5 mb-3 justify-center mr-32">
-              <img src="/images/payments/visa.svg" alt="Visa" className="h-7 w-auto object-contain" />
-              <img src="/images/payments/mastercard.svg" alt="Mastercard" className="h-7 w-auto object-contain" />
-              <img src="/images/payments/amex.svg" alt="Amex" className="h-7 w-auto object-contain" />
-              <img src="/images/payments/paypal.svg" alt="PayPal" className="h-7 w-auto object-contain" />
-              <img src="/images/payments/google-pay.svg" alt="Google Pay" className="h-7 w-auto object-contain" />
+              <img src="/images/payments/visa.svg" alt="Visa" className="h-5 w-auto object-contain" />
+              <img src="/images/payments/mastercard.svg" alt="Mastercard" className="h-5 w-auto object-contain" />
+              <img src="/images/payments/amex.svg" alt="Amex" className="h-5 w-auto object-contain" />
+              <img src="/images/payments/paypal.svg" alt="PayPal" className="h-5 w-auto object-contain" />
+              <img src="/images/payments/google-pay.svg" alt="Google Pay" className="h-5 w-auto object-contain" />
             </div>
           </div>
         </div>
