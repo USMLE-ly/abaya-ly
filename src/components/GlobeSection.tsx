@@ -99,7 +99,7 @@ function GlobeCanvas() {
   }, [])
 
   return (
-    <div ref={wrapRef} className="flex justify-center items-center" style={{ width: SIZE, height: SIZE, maxWidth: "100%" }}>
+    <div ref={wrapRef} className="flex justify-center items-center" style={{ width: Math.min(SIZE, 400), height: Math.min(SIZE, 400), maxWidth: "100%", aspectRatio: "1/1" }}>
       <canvas
         ref={canvasRef}
         style={{ cursor: "grab", opacity: ready ? 1 : 0, transition: "opacity 0.5s ease" }}
@@ -141,7 +141,10 @@ export function GlobeSection() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          <GlobeCanvas />
+          {/* Globe: centered on mobile/tablet, left on desktop */}
+          <div className="flex justify-center lg:justify-start">
+            <GlobeCanvas />
+          </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {fabricCountries.map((c, i) => (
