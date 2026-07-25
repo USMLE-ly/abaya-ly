@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 type FeatureType = {
@@ -15,8 +15,16 @@ type FeatureCardProps = {
   index?: number;
 };
 
+function genRandomPattern(length?: number): number[][] {
+  length = length ?? 5;
+  return Array.from({ length }, () => [
+    Math.floor(Math.random() * 4) + 7,
+    Math.floor(Math.random() * 6) + 1,
+  ]);
+}
+
 export function FeatureCard({ feature, className, index = 0 }: FeatureCardProps) {
-  const p = genRandomPattern();
+  const p = useMemo(() => genRandomPattern(), []);
 
   return (
     <motion.div
@@ -26,10 +34,9 @@ export function FeatureCard({ feature, className, index = 0 }: FeatureCardProps)
       transition={{ delay: index * 0.08, duration: 0.5, ease: "easeOut" }}
       className={cn(
         'group relative overflow-hidden p-8 transition-all duration-500',
-        'hover:bg-white/[0.03]',
+        'hover:bg-black/[0.03]',
         className
       )}
-
     >
       {/* Subtle gradient glow on hover */}
       <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -38,14 +45,14 @@ export function FeatureCard({ feature, className, index = 0 }: FeatureCardProps)
 
       {/* Grid pattern background */}
       <div className="pointer-events-none absolute top-0 left-1/2 -mt-2 -ml-20 h-full w-full [mask-image:linear-gradient(white,transparent)]">
-        <div className="from-white/[0.03] to-transparent absolute inset-0 bg-gradient-to-r [mask-image:radial-gradient(farthest-side_at_top,white,transparent)]">
+        <div className="from-black/[0.03] to-transparent absolute inset-0 bg-gradient-to-r [mask-image:radial-gradient(farthest-side_at_top,white,transparent)]">
           <GridPattern
             width={20}
             height={20}
             x="-12"
             y="4"
             squares={p}
-            className="fill-white/[0.02] stroke-white/[0.06] absolute inset-0 h-full w-full mix-blend-overlay"
+            className="fill-black/[0.02] stroke-black/[0.06] absolute inset-0 h-full w-full mix-blend-overlay"
           />
         </div>
       </div>
@@ -86,19 +93,11 @@ function GridPattern({
       <rect width="100%" height="100%" strokeWidth={0} fill={`url(#${patternId})`} />
       {squares && (
         <svg x={x} y={y} className="overflow-visible">
-          {squares.map(([x, y], index) => (
-            <rect strokeWidth="0" key={index} width={width + 1} height={height + 1} x={x * width} y={y * height} />
+          {squares.map(([sx, sy], index) => (
+            <rect strokeWidth="0" key={index} width={width + 1} height={height + 1} x={sx * width} y={sy * height} />
           ))}
         </svg>
       )}
     </svg>
   );
-}
-
-function genRandomPattern(length?: number): number[][] {
-  length = length ?? 5;
-  return Array.from({ length }, () => [
-    Math.floor(Math.random() * 4) + 7,
-    Math.floor(Math.random() * 6) + 1,
-  ]);
 }

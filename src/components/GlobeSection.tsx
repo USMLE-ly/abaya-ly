@@ -13,7 +13,6 @@ const fabricCountries = [
   { name: "كوريا", clothes: "فساتين مختارة", flag: "🇰🇷", detail: "فساتين صينية مختارة بعناية", lat: 37.5665, lng: 126.978 },
 ]
 
-// Convert lat/lng to 3D sphere coordinates
 function latLngToVector3(lat: number, lng: number, radius: number): [number, number, number] {
   const latRad = (lat * Math.PI) / 180
   const lngRad = (lng * Math.PI) / 180
@@ -24,29 +23,23 @@ function latLngToVector3(lat: number, lng: number, radius: number): [number, num
   ]
 }
 
-// Project 3D to 2D with rotation
 function project(
   x: number, y: number, z: number,
   phi: number, theta: number,
   width: number, height: number
 ): { x: number; y: number; visible: boolean } {
-  // Rotate around Y axis (phi)
   const cosPhi = Math.cos(phi)
   const sinPhi = Math.sin(phi)
   let rx = x * cosPhi - z * sinPhi
   let rz = x * sinPhi + z * cosPhi
   let ry = y
 
-  // Rotate around X axis (theta)
   const cosTheta = Math.cos(theta)
   const sinTheta = Math.sin(theta)
   let ry2 = ry * cosTheta - rz * sinTheta
   let rz2 = ry * sinTheta + rz * cosTheta
 
-  // Front-facing check
   const visible = rz2 > 0
-
-  // Simple perspective projection
   const perspective = 2.5
   const scale = perspective / (perspective + rz2 / 500)
 
@@ -62,7 +55,6 @@ const SIZE = 400
 function GlobeCanvas() {
   const wrapRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const labelsRef = useRef<HTMLDivElement>(null)
   const phiRef = useRef(0)
   const [ready, setReady] = useState(false)
   const [labelPositions, setLabelPositions] = useState(
@@ -110,15 +102,7 @@ function GlobeCanvas() {
         mapSamples: 16000,
         mapBrightness: 6,
         baseColor: [0.1, 0.1, 0.12],
-        markerColor: [0.79, 0.39, 0.26],
-        glowColor: [0.79, 0.39, 0.26],
-        markerElevation: 0.015,
         opacity: 0.6,
-        markers: fabricCountries.map((c, i) => ({
-          location: [c.lat, c.lng] as [number, number],
-          size: 0.03,
-          id: `country-${i}`,
-        })),
         arcs: fabricCountries.map((c, i) => ({
           from: [c.lat, c.lng] as [number, number],
           to: LIBYA,
@@ -152,7 +136,7 @@ function GlobeCanvas() {
         ref={canvasRef}
         style={{ cursor: "grab", opacity: ready ? 1 : 0, transition: "opacity 0.5s ease" }}
       />
-      <div ref={labelsRef} className="absolute inset-0 pointer-events-none" style={{ overflow: "hidden" }}>
+      <div className="absolute inset-0 pointer-events-none" style={{ overflow: "hidden" }}>
         {fabricCountries.map((c, i) => (
           <div
             key={i}
