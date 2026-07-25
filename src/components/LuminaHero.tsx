@@ -200,6 +200,7 @@ export default function LuminaHero() {
   const [activeIdx, setActiveIdx] = useState(0);
   const currentSlideRef = useRef(0);
   const progressRef = useRef(0);
+  const goToSlideRef = useRef<(idx: number) => void>(() => {});
 
   useEffect(() => {
     const loadScript = (src: string, globalName: string) =>
@@ -268,6 +269,7 @@ export default function LuminaHero() {
       }
       requestAnimationFrame(animateTransition);
     }
+    goToSlideRef.current = goToSlide;
 
     function startAutoSlide() {
       stopAutoSlide();
@@ -414,10 +416,10 @@ export default function LuminaHero() {
                   اكتشفي المجموعة
                 </a>
                 <div className="flex gap-1.5 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl p-1.5">
-                  <button onClick={() => goToSlide((activeIdx - 1 + SLIDES.length) % SLIDES.length)} className="w-9 h-9 rounded-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.08] transition-all">
+                  <button onClick={() => goToSlideRef.current((activeIdx - 1 + SLIDES.length) % SLIDES.length)} className="w-9 h-9 rounded-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.08] transition-all">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
                   </button>
-                  <button onClick={() => goToSlide((activeIdx + 1) % SLIDES.length)} className="w-9 h-9 rounded-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.08] transition-all">
+                  <button onClick={() => goToSlideRef.current((activeIdx + 1) % SLIDES.length)} className="w-9 h-9 rounded-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.08] transition-all">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                   </button>
                 </div>
@@ -427,7 +429,7 @@ export default function LuminaHero() {
             {/* Right: nav dots in glass */}
             <div className="hidden md:flex flex-col gap-2 items-center rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl px-3 py-4">
               {SLIDES.map((slide, i) => (
-                <button key={i} onClick={() => goToSlide(i)} className="group" aria-label={`Slide ${i + 1}`}>
+                <button key={i} onClick={() => goToSlideRef.current(i)} className="group" aria-label={`Slide ${i + 1}`}>
                   <div className={`h-1.5 rounded-full transition-all duration-300 ${i === activeIdx ? "w-6" : "w-1.5 bg-white/20 group-hover:bg-white/40"}`} style={i === activeIdx ? { backgroundColor: slide.accent } : undefined} />
                 </button>
               ))}
