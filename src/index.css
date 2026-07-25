@@ -1,61 +1,66 @@
 @import "tailwindcss";
 
-/* ── New shadcn-style CSS variables (Light Mode) ── */
+/* ── VELAR Design System — Light Theme ── */
 :root {
-  --card: #faf9f5;
-  --ring: #c96442;
-  --input: #b4b2a7;
-  --muted: #ede9de;
-  --accent: #e9e6dc;
-  --border: #dad9d4;
-  --radius: 0.5rem;
-  --chart-1: #b05730;
-  --chart-2: #9c87f5;
-  --chart-3: #ded8c4;
-  --chart-4: #dbd3f0;
-  --chart-5: #b4552d;
+  --background: #fff7f8;
+  --foreground: #1a1113;
+  --card: #ffffff;
+  --card-foreground: #1a1113;
   --popover: #ffffff;
-  --primary: #c96442;
-  --sidebar: #f5f4ee;
-  --secondary: #e9e6dc;
-  --background: #faf9f5;
-  --foreground: #3d3929;
-  --destructive: #141413;
-  --sidebar-ring: #b5b5b5;
-  --sidebar-accent: #e9e6dc;
-  --sidebar-border: #ebebeb;
-  --card-foreground: #141413;
-  --sidebar-primary: #c96442;
-  --muted-foreground: #83827d;
-  --accent-foreground: #28261b;
-  --popover-foreground: #28261b;
+  --popover-foreground: #1a1113;
+
+  --primary: #e11d63;
   --primary-foreground: #ffffff;
-  --sidebar-foreground: #3d3d3a;
-  --secondary-foreground: #535146;
+  --secondary: #ffe4ea;
+  --secondary-foreground: #7a1836;
+  --muted: #f5e6ea;
+  --muted-foreground: #7a5560;
+  --accent: #ffb6c4;
+  --accent-foreground: #1a1113;
+
+  --destructive: #b00020;
   --destructive-foreground: #ffffff;
-  --sidebar-accent-foreground: #343434;
-  --sidebar-primary-foreground: #fbfbfb;
 
-  /* Legacy token aliases for backward compat */
-  --color-brand: #c96442;
-  --color-brand-dark: #b85a3a;
-  --color-text: #3d3929;
-  --color-text-light: #83827d;
-  --color-bg-1: #faf9f5;
-  --color-bg-2: #f5f4ee;
-  --color-bg-3: #ede9de;
-  --color-border: rgba(0, 0, 0, 0.08);
+  --border: #f0d9de;
+  --input: #f0d9de;
+  --ring: #e11d63;
+  --radius: 0.75rem;
+
+  --chart-1: #e11d63;
+  --chart-2: #ff8fab;
+  --chart-3: #ffb6c4;
+  --chart-4: #7a1836;
+  --chart-5: #ffe4ea;
+
+  --sidebar: #fff7f8;
+  --sidebar-foreground: #1a1113;
+  --sidebar-primary: #e11d63;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ffe4ea;
+  --sidebar-accent-foreground: #7a1836;
+  --sidebar-border: #f0d9de;
+  --sidebar-ring: #e11d63;
+
+  /* Legacy token aliases — remap old gold/cream names onto VELAR tokens */
+  --color-brand: #e11d63;
+  --color-brand-dark: #b31552;
+  --color-text: #1a1113;
+  --color-text-light: #7a5560;
+  --color-bg-1: #fff7f8;
+  --color-bg-2: #ffffff;
+  --color-bg-3: #f5e6ea;
+  --color-border: rgba(225, 29, 99, 0.12);
   --color-glass: rgba(255, 255, 255, 0.6);
-  --color-glass-border: rgba(0, 0, 0, 0.08);
-  --color-glass-strong: rgba(255, 255, 255, 0.75);
-  --color-gold: #c96442;
-  --color-gold-light: #d97757;
-  --color-ink: #3d3929;
-  --color-cream: #faf9f5;
-  --color-warm: #83827d;
+  --color-glass-border: rgba(225, 29, 99, 0.14);
+  --color-glass-strong: rgba(255, 255, 255, 0.78);
+  --color-gold: #e11d63;
+  --color-gold-light: #ff6b9a;
+  --color-ink: #1a1113;
+  --color-cream: #fff7f8;
+  --color-warm: #7a5560;
 
-  --font-display: "Noto Kufi Arabic", sans-serif;
-  --font-body: "Almarai", sans-serif;
+  --font-display: "Fraunces", "Noto Kufi Arabic", serif;
+  --font-body: "Inter", "Almarai", sans-serif;
 }
 
 /* ── Tailwind v4 theme mapping ── */
@@ -94,7 +99,7 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
 
-  /* Legacy aliases mapped to new tokens */
+  /* Legacy aliases mapped to VELAR tokens */
   --color-brand: var(--primary);
   --color-brand-dark: var(--primary);
   --color-text: var(--foreground);
@@ -108,8 +113,8 @@
   --color-warm: var(--muted-foreground);
   --color-ink: var(--foreground);
 
-  --font-display: "Noto Kufi Arabic", sans-serif;
-  --font-body: "Almarai", sans-serif;
+  --font-display: "Fraunces", "Noto Kufi Arabic", serif;
+  --font-body: "Inter", "Almarai", sans-serif;
 }
 
 html {
@@ -126,49 +131,49 @@ body {
   box-sizing: border-box;
 }
 
-/* ── Glassmorphism utilities (Light Mode adapted) ── */
+/* ── Glassmorphism utilities (VELAR blush) ── */
 .glass {
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(225, 29, 99, 0.12);
 }
 
 .glass-strong {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(225, 29, 99, 0.14);
 }
 
 .glass-subtle {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(225, 29, 99, 0.08);
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(225, 29, 99, 0.12);
   border-radius: 1.25rem;
 }
 
 .glass-input {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(225, 29, 99, 0.14);
   color: var(--color-foreground);
 }
 
 .glass-input:focus {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   border-color: var(--color-primary);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(201, 100, 66, 0.15);
+  box-shadow: 0 0 0 2px rgba(225, 29, 99, 0.18);
 }
 
 /* Hide scrollbar for carousel */
