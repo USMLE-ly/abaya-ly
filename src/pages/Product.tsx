@@ -4,10 +4,10 @@ import { Star, ChevronLeft, ChevronRight, Minus, Plus, Truck, RotateCcw, Shield,
 import { findProduct, products } from "@/data/products";
 
 const trustItems = [
-  { icon: Truck, title: "شحن مجاني", description: "لجميع مدن ليبيا — التوصيل خلال ٣-٥ أيام عمل", stat: "٧" },
-  { icon: RotateCcw, title: "إرجاع سهل", description: "خلال ٧ أيام من تاريخ الاستلام بدون أي تعقيد", stat: "٧" },
-  { icon: Shield, title: "ضمان الجودة", description: "أقمشة عالمية مضمونة من أفضل المصانع العالمية", stat: "١٠٠٪" },
-  { icon: Headphones, title: "دعم متواصل", description: "فريق خدمة العملاء متاح عبر الواتساب على مدار الساعة", stat: "٢٤/٧" },
+  { icon: Truck, title: "شحن مجاني", description: "لجميع مدن ليبيا — التوصيل خلال 3-5 أيام عمل", stat: "7" },
+  { icon: RotateCcw, title: "إرجاع سهل", description: "خلال 7 أيام من تاريخ الاستلام بدون أي تعقيد", stat: "7" },
+  { icon: Shield, title: "ضمان الجودة", description: "أقمشة عالمية مضمونة من أفضل المصانع العالمية", stat: "100%" },
+  { icon: Headphones, title: "دعم متواصل", description: "فريق خدمة العملاء متاح عبر الواتساب على مدار الساعة", stat: "24/7" },
 ];
 
 export function Product() {
