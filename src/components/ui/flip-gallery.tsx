@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const images = [
-  { subtitle: 'السهرة', title: 'عباية السهرة الذهبية', url: '/outfits/gold-embroidered-abaya-1.jpg' },
-  { subtitle: 'المطرّزة', title: 'عباية التطريز الذهبي', url: '/outfits/gold-embroidered-abaya-3.jpg' },
   { subtitle: 'الهندسية', title: 'عباية النمط الهندسي', url: '/outfits/geometric-gold-abaya-1.jpg' },
   { subtitle: 'الليلية', title: 'عباية المخمل الليلية', url: '/outfits/night-velvet-abaya.jpg' },
   { subtitle: 'الدانتيل', title: 'عباية الدانتيل السوداء', url: '/outfits/black-lace-abaya.jpg' },
