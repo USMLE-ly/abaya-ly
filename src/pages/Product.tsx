@@ -43,23 +43,23 @@ function ContentTabs({ product }: { product: NonNullable<ReturnType<typeof findP
           </div>
         )}
         {activeTab === 2 && (
-          <div className="space-y-4">
-            <div className="flex items-start gap-2.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-              <span className="text-sm text-foreground/60">الشحن مجاني لجميع مدن ليبيا</span>
-            </div>
-            <div className="flex items-start gap-2.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-              <span className="text-sm text-foreground/60">يتم التوصيل خلال ٣-٥ أيام عمل</span>
-            </div>
-            <div className="flex items-start gap-2.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-              <span className="text-sm text-foreground/60">إمكانية الإرجاع خلال ٧ أيام من الاستلام</span>
-            </div>
-            <div className="flex items-start gap-2.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-              <span className="text-sm text-foreground/60">الدفع النقدي عند الاستلام أو التحويل البنكي</span>
-            </div>
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { icon: Truck, title: "شحن مجاني", text: "لجميع مدن ليبيا" },
+              { icon: RotateCcw, title: "إرجاع سهل", text: "خلال ٧ أيام" },
+              { icon: Shield, title: "ضمان الجودة", text: "أقمشة عالمية مضمونة" },
+              { icon: Headphones, title: "دعم متواصل", text: "واتساب على مدار الساعة" },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3 glass-card p-4 rounded-xl">
+                <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+                  <item.icon size={18} className="text-primary" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-foreground/80">{item.title}</p>
+                  <p className="text-[10px] text-foreground/40">{item.text}</p>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -197,20 +197,6 @@ export function Product() {
             </div>
             <p className="text-xs text-foreground/40 mb-4">القماش: {product.fabric}</p>
 
-            {/* Highlights */}
-            {product.highlights && product.highlights.length > 0 && (
-              <div className="mb-5 space-y-2.5">
-                {product.highlights.map((h, i) => (
-                  <div key={i} className="flex items-start gap-2.5">
-                    <div className="w-5 h-5 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Star size={10} className="text-primary fill-primary" />
-                    </div>
-                    <span className="text-xs text-foreground/60 leading-relaxed">{h}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
             {/* Colors */}
             <div className="mb-5">
               <p className="text-xs font-semibold text-foreground/60 mb-2">اللون: <span className="font-normal text-foreground/80">{product.colors[selectedColor].name}</span></p>
@@ -266,6 +252,13 @@ export function Product() {
         </div>
       </section>
 
+      {/* ═══════════ CONTENT TABS ═══════════ */}
+      <section className="py-12">
+        <div className="max-w-[800px] mx-auto px-4 sm:px-6">
+          <ContentTabs product={product} />
+        </div>
+      </section>
+
       {/* ═══════════ 2. RELATED PRODUCTS ═══════════ */}
       {related.length > 0 && (
         <section className="py-12">
@@ -291,12 +284,6 @@ export function Product() {
         </section>
       )}
 
-      {/* ═══════════ CONTENT TABS ═══════════ */}
-      <section className="py-12">
-        <div className="max-w-[800px] mx-auto px-4 sm:px-6">
-          <ContentTabs product={product} />
-        </div>
-      </section>
     </div>
   );
 }
