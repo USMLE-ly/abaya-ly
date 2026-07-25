@@ -161,7 +161,7 @@ export default function FlipGallery() {
           width: 100%;
           height: 50%;
           overflow: hidden;
-          background-size: 100% 200%;
+          background-size: cover;
         }
         .top, .overlay-top {
           top: 0;
