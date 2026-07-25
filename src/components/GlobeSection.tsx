@@ -56,7 +56,7 @@ function GlobeCanvas() {
     canvas.style.height = `${GLOBE_SIZE}px`
 
     let destroyed = false
-    const THETA = 0.15
+    const THETA = 0
     const CENTER = GLOBE_SIZE / 2
     const RADIUS = GLOBE_SIZE * 0.4
 
