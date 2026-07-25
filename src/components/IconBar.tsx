@@ -10,15 +10,12 @@ const icons = [
 
 export function IconBar() {
   return (
-    <section className="py-12 md:py-16 bg-white">
+    <section className="py-12 md:py-16">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Heading */}
-        <h2 className="font-display text-2xl md:text-3xl font-bold text-text text-center mb-10">
+        <h2 className="font-display text-2xl md:text-3xl font-bold text-white text-center mb-10">
           لماذا <span className="text-brand">تختاريننا</span>؟
         </h2>
-
-        {/* 4-column grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {icons.map((item, i) => (
             <motion.div
               key={i}
@@ -26,13 +23,13 @@ export function IconBar() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.4 }}
-              className="flex flex-col items-center text-center"
+              className="glass-card p-6 flex flex-col items-center text-center"
             >
-              <div className="w-14 h-14 rounded-full bg-brand/10 flex items-center justify-center mb-4">
-                <item.icon size={24} className="text-brand" strokeWidth={1.5} />
+              <div className="w-12 h-12 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center mb-3">
+                <item.icon size={20} className="text-brand" strokeWidth={1.5} />
               </div>
-              <h3 className="text-sm font-semibold text-text mb-1">{item.title}</h3>
-              <p className="text-xs text-text-light leading-relaxed">{item.text}</p>
+              <h3 className="text-sm font-semibold text-white mb-1">{item.title}</h3>
+              <p className="text-xs text-white/40 leading-relaxed">{item.text}</p>
             </motion.div>
           ))}
         </div>

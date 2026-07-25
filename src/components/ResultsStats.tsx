@@ -8,19 +8,14 @@ const results = [
 
 export function ResultsStats() {
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="py-16 md:py-24">
       <div className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Heading — centered */}
         <div className="text-center mb-10">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-text mb-3">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-3">
             نتائج <span className="text-brand">عملائنا</span>
           </h2>
-          <p className="text-sm text-text-light">
-            أكثر من ١٠٠٠ امرأة ليبية تثق بنا
-          </p>
+          <p className="text-sm text-white/50">أكثر من ١٠٠٠ امرأة ليبية تثق بنا</p>
         </div>
-
-        {/* Percentage bars */}
         <div className="space-y-8">
           {results.map((stat, i) => (
             <motion.div
@@ -31,16 +26,16 @@ export function ResultsStats() {
               transition={{ delay: i * 0.15, duration: 0.5 }}
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-text">{stat.text}</span>
+                <span className="text-sm font-medium text-white/80">{stat.text}</span>
                 <span className="text-sm font-bold text-brand">{stat.percentage}%</span>
               </div>
-              <div className="w-full h-3 bg-bg-2 rounded-full overflow-hidden">
+              <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden border border-white/5">
                 <motion.div
                   initial={{ width: 0 }}
                   whileInView={{ width: `${stat.percentage}%` }}
                   viewport={{ once: true }}
                   transition={{ duration: 1, delay: i * 0.15, ease: "easeOut" }}
-                  className="h-full bg-brand rounded-full"
+                  className="h-full bg-gradient-to-r from-brand to-brand-dark rounded-full"
                 />
               </div>
             </motion.div>

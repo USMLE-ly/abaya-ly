@@ -1,17 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Star,
-  ChevronLeft,
-  Minus,
-  Plus,
-  Truck,
-  Shield,
-  RotateCcw,
-  Headphones,
-  ChevronDown,
-} from "lucide-react";
+import { Star, ChevronLeft, Minus, Plus, Truck, Shield, RotateCcw, Headphones, ChevronDown } from "lucide-react";
 import { findProduct, products } from "@/data/products";
 
 const trustItems = [
@@ -30,15 +20,15 @@ const testimonialData = [
 function AccordionTab({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-t border-border">
+    <div className="border-t border-white/5">
       <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between py-4 text-right">
-        <span className="font-semibold text-text">{title}</span>
-        <ChevronDown size={18} className={`text-text-light transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+        <span className="font-semibold text-white">{title}</span>
+        <ChevronDown size={18} className={`text-white/40 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
       </button>
       <AnimatePresence initial={false}>
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
-            <div className="pb-4 text-sm text-text-light leading-relaxed">{children}</div>
+            <div className="pb-4 text-sm text-white/50 leading-relaxed">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -57,8 +47,8 @@ export function Product() {
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-text mb-4">المنتج غير موجود</h1>
+        <div className="text-center glass-card p-10">
+          <h1 className="text-3xl font-bold text-white mb-4">المنتج غير موجود</h1>
           <Link to="/collections" className="text-brand hover:underline">العودة للمجموعات</Link>
         </div>
       </div>
@@ -69,44 +59,31 @@ export function Product() {
   const related = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 4);
 
   return (
-    <div className="bg-white">
+    <div>
       {/* ═══════════ 1. MAIN PRODUCT ═══════════ */}
       <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-24 pb-12">
-        <nav className="flex items-center gap-2 text-xs text-text-light mb-8">
-          <Link to="/" className="hover:text-brand transition-colors">الرئيسية</Link>
+        <nav className="flex items-center gap-2 text-xs text-white/40 mb-8">
+          <Link to="/" className="hover:text-gold transition-colors">الرئيسية</Link>
           <ChevronLeft size={12} />
-          <Link to="/collections" className="hover:text-brand transition-colors">المجموعات</Link>
+          <Link to="/collections" className="hover:text-gold transition-colors">المجموعات</Link>
           <ChevronLeft size={12} />
-          <span className="text-text font-medium">{product.name}</span>
+          <span className="text-white font-medium">{product.name}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
           {/* LEFT: MEDIA GALLERY */}
           <div>
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-bg-2 mb-4">
+            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0">
               <AnimatePresence mode="wait">
-                <motion.img
-                  key={activeImage}
-                  src={product.images[activeImage]}
-                  alt={product.name}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-full h-full object-cover"
-                />
+                <motion.img key={activeImage} src={product.images[activeImage]} alt={product.name} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="w-full h-full object-cover" />
               </AnimatePresence>
               {product.badge && (
                 <span className="absolute top-4 right-4 px-4 py-1.5 bg-brand text-white text-xs font-semibold rounded-full">{product.badge}</span>
               )}
             </div>
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-4 gap-3 mt-4">
               {product.images.map((src, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImage(i)}
-                  className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${i === activeImage ? "border-brand" : "border-transparent hover:border-border"}`}
-                >
+                <button key={i} onClick={() => setActiveImage(i)} className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${i === activeImage ? "border-brand" : "border-white/10 hover:border-white/20"}`}>
                   <img src={src} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover" />
                 </button>
               ))}
@@ -115,88 +92,66 @@ export function Product() {
 
           {/* RIGHT: PRODUCT INFO */}
           <div className="flex flex-col">
-            {/* Title */}
-            <h1 className="font-display text-2xl md:text-3xl font-bold text-text mb-2">{product.name}</h1>
-
-            {/* Rating */}
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-white mb-2">{product.name}</h1>
             <div className="flex items-center gap-2 mb-4">
               <div className="flex gap-0.5">
                 {Array.from({ length: 5 }).map((_, s) => (
-                  <Star key={s} size={14} className={s < Math.round(product.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"} />
+                  <Star key={s} size={14} className={s < Math.round(product.rating) ? "fill-yellow-400 text-yellow-400" : "text-white/20"} />
                 ))}
               </div>
-              <span className="text-xs text-text-light">({product.reviewCount} تقييم)</span>
+              <span className="text-xs text-white/40">({product.reviewCount} تقييم)</span>
             </div>
-
-            {/* Price */}
             <div className="flex items-baseline gap-3 mb-6">
               <span className="text-2xl font-bold text-brand">{product.price} د.ل</span>
               {product.originalPrice && (
                 <>
-                  <span className="text-sm text-text-light line-through">{product.originalPrice} د.ل</span>
-                  {savings > 0 && <span className="text-xs bg-brand/10 text-brand px-2 py-0.5 rounded-full font-semibold">وفّري {savings} د.ل</span>}
+                  <span className="text-sm text-white/30 line-through">{product.originalPrice} د.ل</span>
+                  {savings > 0 && <span className="text-xs glass px-2 py-0.5 rounded-full font-semibold text-brand">وفّري {savings} د.ل</span>}
                 </>
               )}
             </div>
+            <p className="text-xs text-white/40 mb-4">القماش: {product.fabric}</p>
 
-            {/* Fabric */}
-            <p className="text-xs text-text-light mb-4">القماش: {product.fabric}</p>
-
-            {/* Color picker */}
+            {/* Colors */}
             <div className="mb-5">
-              <p className="text-xs font-semibold text-text mb-2">اللون: <span className="font-normal text-text-light">{product.colors[selectedColor].name}</span></p>
+              <p className="text-xs font-semibold text-white/60 mb-2">اللون: <span className="font-normal text-white/80">{product.colors[selectedColor].name}</span></p>
               <div className="flex gap-2">
                 {product.colors.map((color, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setSelectedColor(i)}
-                    className={`w-8 h-8 rounded-full border-2 transition-all ${i === selectedColor ? "border-brand scale-110" : "border-border hover:border-text-light"}`}
-                    style={{ backgroundColor: color.hex }}
-                    title={color.name}
-                  />
+                  <button key={i} onClick={() => setSelectedColor(i)} className={`w-8 h-8 rounded-full border-2 transition-all ${i === selectedColor ? "border-brand scale-110" : "border-white/10 hover:border-white/30"}`} style={{ backgroundColor: color.hex }} title={color.name} />
                 ))}
               </div>
             </div>
 
-            {/* Size picker */}
+            {/* Sizes */}
             <div className="mb-5">
-              <p className="text-xs font-semibold text-text mb-2">المقاس: <span className="font-normal text-text-light">{product.sizes[selectedSize]}</span></p>
+              <p className="text-xs font-semibold text-white/60 mb-2">المقاس: <span className="font-normal text-white/80">{product.sizes[selectedSize]}</span></p>
               <div className="flex gap-2">
                 {product.sizes.map((size, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setSelectedSize(i)}
-                    className={`w-10 h-10 rounded-lg border text-xs font-semibold transition-all ${i === selectedSize ? "border-brand bg-brand text-white" : "border-border text-text hover:border-brand"}`}
-                  >
-                    {size}
-                  </button>
+                  <button key={i} onClick={() => setSelectedSize(i)} className={`w-10 h-10 rounded-lg border text-xs font-semibold transition-all ${i === selectedSize ? "border-brand bg-brand text-white" : "border-white/10 text-white/60 hover:border-brand"}`}>{size}</button>
                 ))}
               </div>
             </div>
 
-            {/* Quantity + Add to Cart */}
+            {/* Quantity + ATC */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="flex items-center border border-border rounded-xl overflow-hidden">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 flex items-center justify-center hover:bg-bg-2 transition-colors"><Minus size={14} /></button>
-                <span className="w-10 text-center text-sm font-semibold">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 flex items-center justify-center hover:bg-bg-2 transition-colors"><Plus size={14} /></button>
+              <div className="flex items-center glass rounded-xl overflow-hidden">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-10 h-10 flex items-center justify-center hover:bg-white/5 transition-colors text-white/60"><Minus size={14} /></button>
+                <span className="w-10 text-center text-sm font-semibold text-white">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="w-10 h-10 flex items-center justify-center hover:bg-white/5 transition-colors text-white/60"><Plus size={14} /></button>
               </div>
-              <button className="flex-1 py-3 bg-brand text-white font-semibold rounded-xl hover:bg-brand-dark transition-colors text-sm">
-                أضيفي إلى السلة
-              </button>
+              <button className="flex-1 py-3 bg-brand text-white font-semibold rounded-xl hover:bg-brand-dark transition-colors text-sm">أضيفي إلى السلة</button>
             </div>
 
-            {/* Description */}
-            <p className="text-sm text-text-light leading-relaxed mb-6">{product.description}</p>
+            <p className="text-sm text-white/50 leading-relaxed mb-6">{product.description}</p>
 
-            {/* Trust badges */}
+            {/* Trust */}
             <div className="grid grid-cols-2 gap-3 mt-auto">
               {trustItems.map((item, i) => (
-                <div key={i} className="flex items-center gap-2.5 p-3 bg-bg-2 rounded-xl">
+                <div key={i} className="flex items-center gap-2.5 p-3 glass-card border-0">
                   <item.icon size={16} className="text-brand flex-shrink-0" />
                   <div>
-                    <p className="text-[10px] font-semibold text-text">{item.title}</p>
-                    <p className="text-[9px] text-text-light">{item.text}</p>
+                    <p className="text-[10px] font-semibold text-white/80">{item.title}</p>
+                    <p className="text-[9px] text-white/40">{item.text}</p>
                   </div>
                 </div>
               ))}
@@ -207,20 +162,20 @@ export function Product() {
 
       {/* ═══════════ 2. RELATED PRODUCTS ═══════════ */}
       {related.length > 0 && (
-        <section className="py-12 bg-bg-2">
+        <section className="py-12">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-            <h2 className="font-display text-2xl font-bold text-text text-center mb-10">قد يعجبكِ <span className="text-brand">أيضاً</span></h2>
+            <h2 className="font-display text-2xl font-bold text-white text-center mb-10">قد يعجبكِ <span className="text-brand">أيضاً</span></h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {related.map((p) => (
                 <Link key={p.id} to={`/product/${p.id}`} className="group block">
-                  <div className="aspect-[3/4] rounded-xl overflow-hidden mb-3 bg-white">
+                  <div className="aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0 mb-3">
                     <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   </div>
-                  <p className="text-xs text-text-light mb-1">{p.fabric}</p>
-                  <h3 className="text-sm font-semibold text-text group-hover:text-brand transition-colors line-clamp-1">{p.name}</h3>
+                  <p className="text-xs text-white/40 mb-1">{p.fabric}</p>
+                  <h3 className="text-sm font-semibold text-white group-hover:text-brand transition-colors line-clamp-1">{p.name}</h3>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="text-sm font-bold text-brand">{p.price} د.ل</span>
-                    {p.originalPrice && <span className="text-xs text-text-light line-through">{p.originalPrice} د.ل</span>}
+                    {p.originalPrice && <span className="text-xs text-white/30 line-through">{p.originalPrice} د.ل</span>}
                   </div>
                 </Link>
               ))}
@@ -233,29 +188,16 @@ export function Product() {
       <section className="py-12">
         <div className="max-w-[800px] mx-auto px-4 sm:px-6">
           <AccordionTab title="التفاصيل" defaultOpen>
-            <ul className="space-y-2">
-              {product.details.map((d, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand mt-1.5 flex-shrink-0" />
-                  {d}
-                </li>
-              ))}
-            </ul>
+            <ul className="space-y-2">{product.details.map((d, i) => (<li key={i} className="flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-brand mt-1.5 flex-shrink-0" />{d}</li>))}</ul>
           </AccordionTab>
-          <AccordionTab title="الشحن والتوصيل">
-            <p>الشحن مجاني لجميع مدن ليبيا. يتم التوصيل خلال ٣-٥ أيام عمل من تاريخ تأكيد الطلب.</p>
-          </AccordionTab>
+          <AccordionTab title="الشحن والتوصيل"><p>الشحن مجاني لجميع مدن ليبيا. يتم التوصيل خلال ٣-٥ أيام عمل.</p></AccordionTab>
           <AccordionTab title="التقييمات">
             <div className="space-y-4">
               {testimonialData.map((t, i) => (
-                <div key={i} className="border-b border-border pb-4 last:border-0">
-                  <div className="flex gap-0.5 mb-1">
-                    {Array.from({ length: t.stars }).map((_, s) => (
-                      <Star key={s} size={12} className="fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                  <p className="text-sm font-semibold text-text">{t.title}</p>
-                  <p className="text-xs text-text-light mt-1">{t.text}</p>
+                <div key={i} className="border-b border-white/5 pb-4 last:border-0">
+                  <div className="flex gap-0.5 mb-1">{Array.from({ length: t.stars }).map((_, s) => (<Star key={s} size={12} className="fill-yellow-400 text-yellow-400" />))}</div>
+                  <p className="text-sm font-semibold text-white">{t.title}</p>
+                  <p className="text-xs text-white/40 mt-1">{t.text}</p>
                   <p className="text-[10px] text-brand mt-1">— {t.author}</p>
                 </div>
               ))}
@@ -264,33 +206,31 @@ export function Product() {
         </div>
       </section>
 
-      {/* ═══════════ 4. CUSTOM COLUMNS (Trust Bar) ═══════════ */}
-      <section className="py-12 bg-bg-2">
+      {/* ═══════════ 4. CUSTOM COLUMNS ═══════════ */}
+      <section className="py-12">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-2xl p-6">
-              <h3 className="text-sm font-semibold text-text mb-4">لماذا تختارين الملكة؟</h3>
+            <div className="glass-card p-6">
+              <h3 className="text-sm font-semibold text-white mb-4">لماذا تختارين الملكة؟</h3>
               <div className="space-y-4">
                 {trustItems.map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center flex-shrink-0">
-                      <item.icon size={14} className="text-brand" />
-                    </div>
+                    <div className="w-8 h-8 rounded-full bg-brand/10 border border-brand/20 flex items-center justify-center flex-shrink-0"><item.icon size={14} className="text-brand" /></div>
                     <div>
-                      <p className="text-xs font-semibold text-text">{item.title}</p>
-                      <p className="text-[10px] text-text-light">{item.text}</p>
+                      <p className="text-xs font-semibold text-white/80">{item.title}</p>
+                      <p className="text-[10px] text-white/40">{item.text}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
             <div className="flex items-center justify-center">
-              <div className="w-full aspect-square rounded-2xl bg-white overflow-hidden flex items-center justify-center p-6">
-                <img src="https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=600&q=80" alt="Features" className="w-full h-full object-cover rounded-xl" />
+              <div className="w-full aspect-square rounded-2xl glass-card border-0 overflow-hidden p-0">
+                <img src="https://images.unsplash.com/photo-1594938298603-c8148c4b5b3e?w=600&q=80" alt="Features" className="w-full h-full object-cover" />
               </div>
             </div>
             <div className="flex items-center justify-center">
-              <div className="w-full aspect-square rounded-2xl bg-white overflow-hidden">
+              <div className="w-full aspect-square rounded-2xl glass-card border-0 overflow-hidden p-0">
                 <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600&q=80" alt="Features" className="w-full h-full object-cover" />
               </div>
             </div>
@@ -299,12 +239,12 @@ export function Product() {
       </section>
 
       {/* ═══════════ 5. IMAGE SLIDER ═══════════ */}
-      <section className="py-16 bg-bg-2">
+      <section className="py-16">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-          <h2 className="font-display text-2xl font-bold text-text text-center mb-10">صور <span className="text-brand">المجموعة</span></h2>
+          <h2 className="font-display text-2xl font-bold text-white text-center mb-10">صور <span className="text-brand">المجموعة</span></h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {product.images.map((src, i) => (
-              <div key={i} className="aspect-square rounded-xl overflow-hidden">
+              <div key={i} className="aspect-square rounded-2xl overflow-hidden glass-card border-0 p-0">
                 <img src={src} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
               </div>
             ))}
@@ -313,19 +253,15 @@ export function Product() {
       </section>
 
       {/* ═══════════ 6. TESTIMONIALS ═══════════ */}
-      <section className="py-16 bg-white">
+      <section className="py-16">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-          <h2 className="font-display text-2xl font-bold text-text text-center mb-10">ماذا تقول <span className="text-brand">عملاؤنا</span></h2>
+          <h2 className="font-display text-2xl font-bold text-white text-center mb-10">ماذا تقول <span className="text-brand">عملاؤنا</span></h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonialData.map((t, i) => (
-              <div key={i} className="bg-bg-2 rounded-2xl p-6 text-center">
-                <div className="flex justify-center gap-0.5 mb-3">
-                  {Array.from({ length: t.stars }).map((_, s) => (
-                    <Star key={s} size={16} className="fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-sm font-semibold text-text mb-2">{t.title}</p>
-                <p className="text-xs text-text-light leading-relaxed mb-3">{t.text}</p>
+              <div key={i} className="glass-card p-6 text-center">
+                <div className="flex justify-center gap-0.5 mb-3">{Array.from({ length: t.stars }).map((_, s) => (<Star key={s} size={16} className="fill-yellow-400 text-yellow-400" />))}</div>
+                <p className="text-sm font-semibold text-white mb-2">{t.title}</p>
+                <p className="text-xs text-white/40 leading-relaxed mb-3">{t.text}</p>
                 <p className="text-xs font-medium text-brand">— {t.author}</p>
               </div>
             ))}
@@ -336,7 +272,7 @@ export function Product() {
       {/* ═══════════ 7. WAVE DIVIDER ═══════════ */}
       <div className="bg-brand">
         <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-          <path d="M0 30C120 10 240 50 360 30C480 10 600 50 720 30C840 10 960 50 1080 30C1200 10 1320 50 1440 30V60H0V30Z" fill="white" />
+          <path d="M0 30C120 10 240 50 360 30C480 10 600 50 720 30C840 10 960 50 1080 30C1200 10 1320 50 1440 30V60H0V30Z" fill="#0a0a0a" />
         </svg>
       </div>
     </div>

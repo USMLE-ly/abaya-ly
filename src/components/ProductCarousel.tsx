@@ -28,9 +28,8 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
     });
   };
 
-  const reviewCount = product.reviewCount || 0;
   const stars = Math.round(product.rating);
-  const dots = 4;
+  const reviewCount = product.reviewCount || 0;
 
   return (
     <Link to={`/product/${product.id}`}>
@@ -39,50 +38,28 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={style}
-        className="relative w-[240px] md:w-[280px] flex-shrink-0 aspect-[9/12] rounded-3xl overflow-hidden cursor-pointer shadow-lg"
+        className="relative w-[240px] md:w-[280px] flex-shrink-0 aspect-[9/12] rounded-3xl overflow-hidden cursor-pointer shadow-lg shadow-black/20"
       >
-        {/* Full-bleed background image */}
-        <img
-          src={product.images[0]}
-          alt={product.name}
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{ transform: "translateZ(-20px) scale(1.1)" }}
-        />
-
-        {/* Gradient overlay */}
+        <img src={product.images[0]} alt={product.name} className="absolute inset-0 h-full w-full object-cover" style={{ transform: "translateZ(-20px) scale(1.1)" }} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-        {/* Badge */}
         {product.badge && (
-          <div className="absolute top-3 right-3 z-20 px-2.5 py-1 bg-brand text-white text-[10px] font-bold rounded-full">
-            {product.badge}
-          </div>
+          <div className="absolute top-3 right-3 z-20 px-2.5 py-1 bg-brand text-white text-[10px] font-bold rounded-full">{product.badge}</div>
         )}
 
-        {/* Content */}
         <div className="absolute inset-0 p-4 flex flex-col">
-          {/* Glassmorphism header */}
-          <div
-            className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4"
-            style={{ transform: "translateZ(40px)" }}
-          >
-            <h3 className="text-lg font-bold text-white leading-tight mb-0.5 line-clamp-2">
-              {product.name}
-            </h3>
+          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4" style={{ transform: "translateZ(40px)" }}>
+            <h3 className="text-lg font-bold text-white leading-tight mb-0.5 line-clamp-2">{product.name}</h3>
             <p className="text-[10px] text-white/70">{product.fabric}</p>
           </div>
 
-          {/* Price pill */}
           <div className="mt-3 inline-flex self-start" style={{ transform: "translateZ(30px)" }}>
             <div className="rounded-full bg-black/40 backdrop-blur-sm px-4 py-1.5 flex items-baseline gap-1.5">
               <span className="text-sm font-bold text-white">{product.price} د.ل</span>
-              {product.originalPrice && (
-                <span className="text-[10px] text-white/50 line-through">{product.originalPrice} د.ل</span>
-              )}
+              {product.originalPrice && <span className="text-[10px] text-white/50 line-through">{product.originalPrice} د.ل</span>}
             </div>
           </div>
 
-          {/* Rating */}
           <div className="mt-2 flex items-center gap-1.5" style={{ transform: "translateZ(25px)" }}>
             <div className="flex gap-0.5">
               {Array.from({ length: 5 }).map((_, s) => (
@@ -94,16 +71,10 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
             <span className="text-[9px] text-white/60">({reviewCount})</span>
           </div>
 
-          {/* Spacer */}
           <div className="flex-1" />
-
-          {/* Pagination dots */}
           <div className="flex justify-center gap-1.5 pb-1">
-            {Array.from({ length: dots }).map((_, i) => (
-              <div
-                key={i}
-                className={`h-1.5 rounded-full ${i === 0 ? "w-4 bg-white" : "w-1.5 bg-white/30"}`}
-              />
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className={`h-1.5 rounded-full ${i === 0 ? "w-4 bg-white" : "w-1.5 bg-white/30"}`} />
             ))}
           </div>
         </div>
@@ -130,85 +101,38 @@ export function ProductCarousel() {
     checkScroll();
     el.addEventListener("scroll", checkScroll, { passive: true });
     window.addEventListener("resize", checkScroll);
-    return () => {
-      el.removeEventListener("scroll", checkScroll);
-      window.removeEventListener("resize", checkScroll);
-    };
+    return () => { el.removeEventListener("scroll", checkScroll); window.removeEventListener("resize", checkScroll); };
   }, [checkScroll]);
 
   const scroll = (dir: "left" | "right") => {
     const el = scrollRef.current;
     if (!el) return;
-    const amount = el.clientWidth * 0.7;
-    el.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
+    el.scrollBy({ left: dir === "left" ? -el.clientWidth * 0.7 : el.clientWidth * 0.7, behavior: "smooth" });
   };
 
   return (
-    <section className="py-10 md:py-14 bg-white">
+    <section className="py-10 md:py-14">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-text">
-              مجموعة <span className="text-brand">العبايات</span>
-            </h2>
-            <p className="text-xs text-text-light mt-1">اكتشفي أحدث تشكيلاتنا من العبايات الفاخرة</p>
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-white">مجموعة <span className="text-brand">العبايات</span></h2>
+            <p className="text-xs text-white/40 mt-1">اكتشفي أحدث تشكيلاتنا من العبايات الفاخرة</p>
           </div>
-          <Link
-            to="/collections"
-            className="text-xs font-semibold text-brand hover:underline hidden sm:block"
-          >
-            عرض الكل ←
-          </Link>
+          <Link to="/collections" className="text-xs font-semibold text-brand hover:underline hidden sm:block">عرض الكل ←</Link>
         </div>
-
-        {/* Carousel */}
         <div className="relative group">
-          <div
-            ref={scrollRef}
-            className="flex gap-5 overflow-x-auto scroll-smooth pb-4"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
+          <div ref={scrollRef} className="flex gap-5 overflow-x-auto scroll-smooth pb-4" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
             {products.map((product, i) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.06, duration: 0.35 }}
-                className="flex-shrink-0"
-              >
+              <motion.div key={product.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06, duration: 0.35 }} className="flex-shrink-0">
                 <InteractiveCard product={product} />
               </motion.div>
             ))}
           </div>
-
-          {/* Navigation Arrows */}
-          {!atStart && (
-            <button
-              onClick={() => scroll("left")}
-              className="absolute left-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full bg-white border border-border shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-bg-2 z-10"
-            >
-              <ChevronLeft size={18} className="text-text" />
-            </button>
-          )}
-          {!atEnd && (
-            <button
-              onClick={() => scroll("right")}
-              className="absolute right-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full bg-white border border-border shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-bg-2 z-10"
-            >
-              <ChevronRight size={18} className="text-text" />
-            </button>
-          )}
+          {!atStart && <button onClick={() => scroll("left")} className="absolute left-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronLeft size={18} className="text-white" /></button>}
+          {!atEnd && <button onClick={() => scroll("right")} className="absolute right-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronRight size={18} className="text-white" /></button>}
         </div>
-
-        {/* Mobile "View All" */}
         <div className="text-center mt-6 sm:hidden">
-          <Link
-            to="/collections"
-            className="inline-block px-6 py-2 border border-brand text-brand text-xs font-semibold rounded-full hover:bg-brand hover:text-white transition-colors"
-          >
-            عرض الكل
-          </Link>
+          <Link to="/collections" className="inline-block px-6 py-2 glass text-white text-xs font-semibold rounded-full hover:bg-white/5 transition-colors">عرض الكل</Link>
         </div>
       </div>
     </section>
