@@ -46,7 +46,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     description: "فستان النقط الكلاسيكية السوداء — تصميم أنيق بنقاط بيضاء على خلفية سوداء مع حزام مزخرف.",
     details: ["القصة: أنيقة بأكمام قصيرة", "النقشة: نقاط بيضاء كلاسيكية", "الطول: ميدي", "العناية: غسيل يدوي أو جاف"],
-    images: ["/outfits/olive-ruffle-abaya.jpg"],
+    images: ["/outfits/olive-ruffle-abaya.jpg", "/outfits/olive-ruffle-abaya-thumb.jpg"],
     highlights: ["تصميم كلاسيكي خالد بنقاط بيضاء تضفي لمسة جذابة تخطف الأنظار.", "خصر محدد بحزام مزخرف يمنح المظهر أناقة راقية وثقة مطلقة.", "مثالية للخروجات الراقية والمناسبات التي تستحق التألق."],
     rating: 4.8,
     reviewCount: 23,
