@@ -375,6 +375,23 @@ export const products: Product[] = [
     rating: 4.7,
     reviewCount: 12,
   },
+  {
+    id: "white-polka-dot",
+    name: "فستان النقط السوداء الكلاسيكية",
+    fabric: "شيفون فاخر",
+    category: "الكاجوال",
+    price: 290,
+    originalPrice: 360,
+    badge: "جديد",
+    colors: [{"name": "أبيض", "hex": "#FFFFFF"}, {"name": "أسود", "hex": "#000000", "linkTo": "olive-ruffle"}, {"name": "كحلي غامق", "hex": "#1a2744", "linkTo": "navy-tie-neck"}],
+    sizes: ["S", "M", "L", "XL"],
+    description: "فستان النقط السوداء الكلاسيكية — تصميم كلاسيكي بأ نقش نقاط سوداء على خلفية بيضاء مع أكمام منسابة ورقبة مزخرفة.",
+    details: ["القصة: أنيقة بأكمام طويلة منسابة", "النقشة: نقاط سوداء كلاسيكية على خلفية بيضاء", "الطول: ميدي", "العناية: غسيل يدوي بارد"],
+    images: ["/outfits/white-polka-dot-abaya.jpg"],
+    highlights: ["نقاط سوداء كلاسيكية على خلفية بيضاء تضفي لمسة جذابة تخطف الأنظار في كل مناسبة.", "أكمام منسابة مع رقبة مزخرفة بأربطة تمنح أناقة راقية و_CONFIDENCE مطلقة.", "قماش شيفون فاخر خفيف وانسيابي يتحرك معكِ بسلاسة ويرتقي بإطلالتكِ."],
+    rating: 4.8,
+    reviewCount: 15,
+  },
 ];
 
 export const findProduct = (id: string) => products.find((p) => p.id === id);
