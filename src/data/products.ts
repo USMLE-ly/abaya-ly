@@ -369,4 +369,3 @@ export const collections = [
   { id: "الرسمية", name: "الرسمية" },
   { id: "المطرّزة", name: "المطرّزة" },
 ];
-// force redeploy
