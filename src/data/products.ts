@@ -1,4 +1,3 @@
-// deploy 1785085444
 // deploy 1785085041
 // deploy
 export interface Product {
