@@ -188,7 +188,7 @@ export const products: Product[] = [
     category: "المطرّزة",
     price: 520,
     originalPrice: 620,
-    colors: [{"name": "نبيذي غامق", "hex": "#4A0020"}, {"name": "ذهبي", "hex": "#D4AF37", "linkTo": "cream-silk"}],
+    colors: [{"name": "نبيذي غامق", "hex": "#4A0020"}, {"name": "ذهبي", "hex": "#D4AF37", "linkTo": "gold-embroidered-4"}],
     sizes: ["S", "M", "L", "XL"],
     description: "فستان أناقة الكتف المنسابة — تصميم أنيق بأكمام طويلة وتفاصيل كتف منسدلة تمنح حضوراً ملكياً.",
     details: ["القصة: فضفاضة مع أكمام طويلة", "اللون: نبيذي غامق أنيق", "التطريز: يدوي بخيوط ذهبية", "العناية: غسيل جاف فقط"],
