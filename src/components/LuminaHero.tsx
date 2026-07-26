@@ -54,17 +54,27 @@ export default function LuminaHero() {
   return (
     <div className="relative w-full h-[70vh] md:h-[88vh] overflow-hidden bg-surface-inverse">
       {SLIDES.map((slide, i) => (
-        <img
+        <div
           key={i}
-          src={slide.media}
-          alt=""
-          className="absolute inset-0 w-full h-full object-contain"
+          className="absolute inset-0"
           style={{
             opacity: i === idx ? 1 : 0,
             transition: "opacity 1s ease-in-out",
             zIndex: i === idx ? 1 : 0,
           }}
-        />
+        >
+          <img
+            src={slide.media}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: "blur(20px) brightness(0.6)", transform: "scale(1.1)" }}
+          />
+          <img
+            src={slide.media}
+            alt=""
+            className="absolute inset-0 w-full h-full object-contain"
+          />
+        </div>
       ))}
 
       <div className="absolute inset-0 z-[2] bg-gradient-to-t from-black/80 via-black/20 to-black/40 pointer-events-none" />
