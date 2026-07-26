@@ -13,12 +13,12 @@ const rows = [
 export function ComparisonTable() {
   return (
     <section className="py-16 md:py-24">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+      <div className="max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="text-right mb-12">
           <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-fg mb-3">
             لماذا <span className="text-accent-brand">الملكة</span>؟
           </h2>
-          <p className="text-sm text-fg-tertiary max-w-xl mx-auto">
+          <p className="text-sm text-fg-tertiary max-w-xl ml-auto">
             نقدم لكِ ما لا تجدينه لدى الآخرين — جودة لا تُضاهى بلمسة ليبية أصيلة
           </p>
         </div>

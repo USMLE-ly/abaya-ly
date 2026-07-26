@@ -160,11 +160,11 @@ export function GlobeSection() {
   return (
     <section className="py-16 md:py-24 relative">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        <div className="text-center mb-12">
+        <div className="text-right mb-12">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">
             ملابسنا من <span className="text-accent-brand">كل أنحاء العالم</span>
           </h2>
-          <p className="text-sm text-fg/50 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm text-fg/50 max-w-2xl ml-auto leading-relaxed">
             نستقبل أجود الملابس العالمية من ٧ دول لتصنع لكِ عباية تجمع بين الفخامة والأصالة
           </p>
         </div>
@@ -194,7 +194,7 @@ export function GlobeSection() {
           </div>
         </div>
 
-        <div className="text-center mt-12">
+        <div className="text-right mt-12">
           <div className="inline-flex items-center gap-2 glass-card px-6 py-3 rounded-full">
             <span className="text-xs text-fg/40">من</span>
             <span className="text-xs font-bold text-fg">٧ دول</span>

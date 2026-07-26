@@ -235,7 +235,7 @@ export function Product() {
       {related.length > 0 && (
         <section className="py-12">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-            <h2 className="font-display text-2xl font-bold text-fg text-center mb-10">منتجات <span className="text-accent-brand">ذات صلة</span></h2>
+            <h2 className="font-display text-2xl font-bold text-fg text-right mb-10">منتجات <span className="text-accent-brand">ذات صلة</span></h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {related.map((p) => (
                 <Link key={p.id} to={`/product/${p.id}`}>

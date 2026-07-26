@@ -21,19 +21,19 @@ export function OutfitGallery() {
 
   return (
     <section className="py-20 md:py-28 px-4 sm:px-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-0">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-right mb-12"
         >
           <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-fg mb-3">
             الوصلات <span className="text-accent-brand">الجديدة</span>
           </h2>
-          <p className="text-sm text-fg/50 max-w-lg mx-auto">
+          <p className="text-sm text-fg/50 max-w-lg ml-auto">
             أحدث الإضافات إلى مجموعتنا — تصاميم حصرية بالخامات الفاخرة
           </p>
         </motion.div>

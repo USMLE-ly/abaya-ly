@@ -9,11 +9,11 @@ export function ContactForm() {
 
   return (
     <section className="py-16 md:py-24">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6">
-        <h2 className="font-display text-2xl md:text-3xl font-bold text-fg text-center mb-3">
+      <div className="max-w-2xl px-4 sm:px-6">
+        <h2 className="font-display text-2xl md:text-3xl font-bold text-fg text-right mb-3">
           تواصلي <span className="text-accent-brand">معنا</span>
         </h2>
-        <p className="text-sm text-fg-tertiary text-center mb-10">
+        <p className="text-sm text-fg-tertiary text-right mb-10 ml-auto max-w-md">
           يسعدنا سماعكِ — أرسلي لنا رسالة وسنرد عليكِ في أقرب وقت
         </p>
         {submitted ? (

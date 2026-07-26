@@ -79,7 +79,7 @@ export function SlideshowHero() {
       </div>
 
       {/* Text Below — heading, subheading, button */}
-      <div className="bg-raised py-8 md:py-10 text-center px-6">
+      <div className="bg-raised py-8 md:py-10 text-right px-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={current}

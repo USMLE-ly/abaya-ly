@@ -10,10 +10,10 @@ export function About() {
         </div>
       </section>
       <section className="py-16 md:py-20">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+        <div className="max-w-5xl px-4 sm:px-6 text-right">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-fg mb-6">قصة <span className="text-accent-brand">الملكة</span></h2>
-            <p className="text-sm text-fg/50 leading-relaxed max-w-2xl mx-auto">ولدت الملكة من حبٍّ عميق للمرأة الليبية ورغبتها في تقديم الأفضل لها. نؤمن أن كل امرأة تستحق عباية تحكي قصتها — عباية تجمع بين الفخامة العالمية والهوية الليبية الأصيلة.</p>
+            <p className="text-sm text-fg/50 leading-relaxed max-w-2xl ml-auto">ولدت الملكة من حبٍّ عميق للمرأة الليبية ورغبتها في تقديم الأفضل لها. نؤمن أن كل امرأة تستحق عباية تحكي قصتها — عباية تجمع بين الفخامة العالمية والهوية الليبية الأصيلة.</p>
           </motion.div>
         </div>
       </section>
@@ -31,7 +31,7 @@ export function About() {
       </section>
       <section className="py-16 md:py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-right mb-10">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-fg mb-3">رؤيتنا <span className="text-accent-brand">وقيمنا</span></h2>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
