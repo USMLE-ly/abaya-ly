@@ -99,7 +99,7 @@ export default function LuminaHero() {
           <img
             src={slide.media}
             alt=""
-            className="absolute inset-0 w-full h-full object-contain"
+            className="absolute inset-0 w-full h-full object-cover"
           />
         </div>
       ))}
