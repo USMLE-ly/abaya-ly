@@ -55,7 +55,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
 
         <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-end">
           {/* Stars */}
-          <div className="flex items-center gap-0.5 mb-2 self-start rounded-full px-3 py-1.5 w-fit bg-black/30 border border-white/10">
+          <div className="flex items-center gap-0.5 mb-2 self-start rounded-full px-3 py-1.5 w-fit border border-white/15" style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
             {Array.from({ length: 5 }).map((_, s) => (
               <svg key={s} className={`w-3 h-3 ${s < stars ? "text-warning" : "text-white/40"}`} fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -65,7 +65,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
           </div>
 
           {/* Title overlay — no backdrop-filter */}
-          <div className="inline-block rounded-2xl border border-white/15 bg-black/40 p-3 sm:p-4 mb-3 w-fit max-w-full">
+          <div className="inline-block rounded-2xl border border-white/15 p-3 sm:p-4 mb-3 w-fit max-w-full" style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
             <h3
               className="text-sm md:text-base font-bold text-white leading-tight mb-0.5"
               style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
@@ -75,7 +75,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
           </div>
 
           <div className="inline-flex self-start">
-            <div className="rounded-full bg-black/40 border border-white/10 px-4 py-1.5 flex items-baseline gap-1.5">
+            <div className="rounded-full border border-white/15 px-4 py-1.5 flex items-baseline gap-1.5" style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
               <span className="text-sm font-bold text-accent-brand">{product.price} د.ل</span>
               {product.originalPrice && <span className="text-[10px] text-white/50 line-through">{product.originalPrice} د.ل</span>}
             </div>
