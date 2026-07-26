@@ -5,6 +5,10 @@
     "website": "https://nadine.luxor.ly",
     "products_data": "../src/data/products.ts"
   },
+  "hermosi": {
+    "skill_path": "~/.agents/skills/alex-hermosi",
+    "enabled": true
+  },
   "posting": {
     "frequency": "3-5 per day",
     "time_windows": ["09:00-11:00", "14:00-16:00", "19:00-22:00"],

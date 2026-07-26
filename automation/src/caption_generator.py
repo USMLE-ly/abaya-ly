@@ -6,6 +6,15 @@ import random
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG_PATH = os.path.join(ROOT_DIR, "config.json")
 
+# Import Hermosi templates
+from hermosi_templates import (
+    generate_hermosi_caption,
+    get_hermosi_hook,
+    generate_story,
+    generate_offer,
+    get_hermosi_cta,
+)
+
 
 def load_config() -> dict:
     with open(CONFIG_PATH, "r", encoding="utf-8") as f:
@@ -82,62 +91,16 @@ def find_product_by_id(product_id: str) -> dict | None:
     return None
 
 
-HOOK_QUESTIONS = [
-    "سألتي الفستان اللي يخلّي كل العيون عليك؟",
-    "تبحثين عن القطعة اللي تخلّيكِ الأشيك بالمناسبة؟",
-    "شوفي هالتصميم وبعدين قولي ما عجبكِ؟",
-    "القطعة اللي كل بنت تتمنى تلبسها؟",
-    "تبي تتألقي بأقل مجهود؟ هذي هي الحل",
-    "شوفيها وبعدين قولي ما تبينها؟",
-    "التصميم اللي ما حد يقدر يقاومه",
-    "تبحثين عن إطلالة تخطف الأنظار؟",
-    "هذي القطعة غيرت كل شي في خزانتي",
-    "الفساتين اللي الكل يسأل عنها؟",
-    "تبي تكونين الأشيك بدون مجهود؟",
-    "شوفي هالجمال وبعدين قولي لا",
-    "القطعة اللي تخلي أي مناسبة özel",
-    "تبحثين عن شي يجمع الأناقة والفخامة؟",
-    "التصميم اللي ي speaking for itself",
-]
-
-
-def generate_hook() -> str:
-    """Generate a random hook question."""
-    return random.choice(HOOK_QUESTIONS)
-
-
 def generate_caption(product: dict) -> str:
-    """Generate a full caption for a product."""
+    """
+    Generate a full caption using Alex Hermosi's framework:
+    Hook → Story/Proof → Offer → CTA → Link → Hashtags
+    """
     config = load_config()
     hashtags = config.get("hashtags", [])
     website = config.get("brand", {}).get("website", "https://nadine.luxor.ly")
 
-    hook = generate_hook()
-
-    highlights = product.get("highlights", [])
-    if len(highlights) >= 3:
-        points = highlights[:3]
-    elif len(highlights) > 0:
-        points = highlights
-        while len(points) < 3:
-            points.append(highlights[0])
-    else:
-        points = [
-            f"تصميم فاخر بقماش {product.get('description', 'مميز').split('—')[-1].strip() if '—' in product.get('description', '') else 'عالي الجودة'}",
-            f"مناسب لجميع المناسبات",
-            f"متوفر بعدة ألوان ومقاسات",
-        ]
-
-    link = f"{website}/product/{product['id']}"
-    hashtag_str = " ".join(hashtags)
-
-    caption = f"{hook}\n\n"
-    for point in points:
-        caption += f"✅ {point}\n"
-    caption += f"\n👉 {link}\n\n"
-    caption += hashtag_str
-
-    return caption
+    return generate_hermosi_caption(product, hashtags, website)
 
 
 def list_products() -> list[dict]:
