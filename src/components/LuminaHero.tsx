@@ -13,12 +13,6 @@ const SLIDES = [
     subtitle: "تشكيلة ٢٠٢٥",
     accent: "#ff6b9a",
   },
-  {
-    media: "/images/hero/abaya-gold-3.jpg",
-    title: "فستان التطريز الذهبي",
-    subtitle: "أناقة لا تُنسى",
-    accent: "#e11d63",
-  },
 ];
 
 const DURATION = 6000;
