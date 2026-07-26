@@ -126,7 +126,6 @@ export function OutfitGallery() {
                   {outfit.name}
                 </h3>
                 <p className="text-[10px] sm:text-xs md:text-sm text-fg-tertiary mb-2 leading-relaxed">
-                  {outfit.fabric}
                 </p>
                 <div className="flex items-center justify-end gap-2">
                   <span className="text-xs sm:text-sm md:text-base font-bold text-accent-brand">

@@ -99,7 +99,6 @@ export function Product() {
           {/* RIGHT: DETAILS */}
           <div className="flex flex-col">
             <h1 className="font-display text-3xl font-bold text-fg mb-2">{product.name}</h1>
-            <p className="text-sm text-fg-secondary mb-4">{product.fabric}</p>
 
             {/* Rating */}
             <div className="flex items-center gap-2 mb-4">

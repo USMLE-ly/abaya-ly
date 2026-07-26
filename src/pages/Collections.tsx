@@ -55,7 +55,6 @@ export function Collections() {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-surface-inverse/60 via-transparent to-transparent" />
                     <div className="absolute bottom-3 left-3 right-3">
-                      <p className="text-[10px] text-fg-tertiary mb-0.5">{product.fabric}</p>
                       <h3 className="text-xs font-semibold text-fg line-clamp-1">{product.name}</h3>
                       <div className="flex items-center gap-0.5 mt-1">
                         {Array.from({ length: 5 }).map((_, s) => (

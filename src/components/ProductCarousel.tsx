@@ -49,7 +49,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
 
         <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-end">
           {/* Stars — no glass, inline, ends after the number */}
-          <div className="flex items-center gap-0.5 mb-2 w-fit">
+          <div className="flex items-center gap-0.5 mb-2 self-start w-fit">
             {Array.from({ length: 5 }).map((_, s) => (
               <svg key={s} className={`w-3 h-3 ${s < stars ? "text-warning" : "text-fg/30"}`} fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -66,7 +66,6 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
             >
               {product.name}
             </h3>
-            <p className="text-[10px] text-fg/70">{product.fabric}</p>
           </div>
 
           <div className="inline-flex self-start">

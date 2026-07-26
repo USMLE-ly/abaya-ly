@@ -48,7 +48,6 @@ export function Cart() {
                       <img src={item.image} alt={item.name} className="w-20 h-24 object-cover rounded-xl flex-shrink-0" />
                       <div>
                         <h3 className="text-sm font-semibold text-fg">{item.name}</h3>
-                        <p className="text-[10px] text-fg-tertiary">{item.fabric}</p>
                         <p className="text-[10px] text-fg-tertiary mt-1">اللون: {item.color} | المقاس: {item.size}</p>
                         <button onClick={() => remove(item.id)} className="text-[10px] text-fg-tertiary hover:text-status-danger mt-2 flex items-center gap-1 transition-colors"><Trash2 size={10} />حذف</button>
                       </div>
