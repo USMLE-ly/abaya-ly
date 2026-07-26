@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Search, ShoppingBag } from "lucide-react";
+import { ThemeToggle } from "@/components/velar";
 
 const navLinks = [
   { label: "الرئيسية", href: "/" },
@@ -33,6 +34,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <ThemeToggle className="hidden md:inline-flex" />
           <button className="p-2 text-foreground/60 hover:text-foreground hover:bg-black/5 rounded-full transition-all">
             <Search size={20} />
           </button>
