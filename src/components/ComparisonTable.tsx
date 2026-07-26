@@ -71,13 +71,13 @@ export function ComparisonTable() {
           </table>
         </motion.div>
 
-        {/* Mobile: card-based layout */}
+        {/* Mobile: horizontal scroll cards */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="sm:hidden space-y-3"
+          className="sm:hidden flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory"
         >
           {rows.map((row, i) => (
             <motion.div
@@ -86,18 +86,20 @@ export function ComparisonTable() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05, duration: 0.3 }}
-              className="glass-card p-4 flex items-center justify-between"
+              className="glass-card p-5 flex-shrink-0 w-72 snap-start"
             >
-              <span className="text-sm font-medium text-fg-secondary flex-1">{row.benefit}</span>
-              <div className="flex items-center gap-4 mr-4">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-medium text-fg-secondary">{row.benefit}</span>
+              </div>
+              <div className="flex items-center justify-between">
                 <div className="flex flex-col items-center gap-1">
                   <span className="text-[10px] text-accent-brand font-semibold">الملكة</span>
                   {row.us ? (
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-status-success text-fg-inverse">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-status-success text-fg-inverse">
                       <Check size={14} strokeWidth={3} />
                     </span>
                   ) : (
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sunken text-fg-disabled">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-sunken text-fg-disabled">
                       <X size={14} strokeWidth={3} />
                     </span>
                   )}
@@ -105,11 +107,11 @@ export function ComparisonTable() {
                 <div className="flex flex-col items-center gap-1">
                   <span className="text-[10px] text-fg-tertiary font-semibold">الآخرون</span>
                   {row.others ? (
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-status-success text-fg-inverse">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-status-success text-fg-inverse">
                       <Check size={14} strokeWidth={3} />
                     </span>
                   ) : (
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sunken text-fg-disabled">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-sunken text-fg-disabled">
                       <X size={14} strokeWidth={3} />
                     </span>
                   )}

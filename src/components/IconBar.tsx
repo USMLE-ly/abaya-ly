@@ -31,10 +31,19 @@ export function IconBar() {
           </p>
         </motion.div>
 
-        {/* Grid that fills available width on all screens */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-0 divide-y sm:divide-y-0 sm:divide-x divide-line-subtle border border-line-subtle">
+        {/* Horizontal scrollable row */}
+        <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory">
           {features.map((feature, i) => (
-            <FeatureCard key={i} feature={feature} index={i} className="border-line-subtle" />
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.5 }}
+              className="flex-shrink-0 w-72 snap-start"
+            >
+              <FeatureCard feature={feature} index={i} className="border-line-subtle" />
+            </motion.div>
           ))}
         </div>
 

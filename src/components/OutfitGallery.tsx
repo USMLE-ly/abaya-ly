@@ -38,8 +38,8 @@ export function OutfitGallery() {
           </p>
         </motion.div>
 
-        {/* Outfits Grid — larger cards that fill space */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        {/* Horizontal scrollable row */}
+        <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory">
           {newOutfits.map((outfit, index) => (
             <motion.div
               key={outfit.id}
@@ -47,12 +47,12 @@ export function OutfitGallery() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
-              className="group relative glass-card overflow-hidden rounded-2xl"
+              className="group relative glass-card overflow-hidden rounded-2xl flex-shrink-0 w-64 snap-start"
               onMouseEnter={() => setHoveredId(outfit.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
               {/* Image — fills the card completely */}
-              <div className="relative aspect-[4/5] w-full overflow-hidden">
+              <div className="relative aspect-[3/4] w-full overflow-hidden">
                 <img
                   src={outfit.images[0]}
                   alt={outfit.name}
