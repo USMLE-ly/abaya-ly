@@ -77,7 +77,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     description: "فستان الأنوثة النبيذية — إطلالة ساحرة تجمع بين الأنوثة والرقي في تصميم يخطف الأنظار.",
     details: ["القصة: أنيقة مع تفاصيل V-neck", "النقشة: نقاط بيضاء كلاسيكية", "الطول: ميدي", "العناية: غسيل يدوي بارد"],
-    images: ["/outfits/white-beach-abaya.jpg"],
+    images: ["/outfits/white-beach-abaya.jpg", "/outfits/white-beach-abaya-thumb.jpg"],
     highlights: ["إطلالة ساحرة تجمع بين الأنوثة والرقي.", "ثقة لامعه تعكس فخامة اللمسات التصميمية.", "أناقة خلابة تستحضر جمالية العصر الذهبي."],
     rating: 4.6,
     reviewCount: 31,
