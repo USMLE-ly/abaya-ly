@@ -230,7 +230,7 @@
   --shadow-elevation-5: 0 24px 64px var(--shadow-16);
 
   /* ── Typography ── */
-  --font-display: "Fraunces", "Noto Kufi Arabic", ui-serif, serif;
+  --font-display: "Zodiak", "Noto Kufi Arabic", ui-serif, serif;
   --font-body:    "Inter", "Almarai", ui-sans-serif, system-ui, sans-serif;
   --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
@@ -591,7 +591,7 @@
   --radius-full: 9999px;
 
   /* ── Typography (direct values, no self-refs) ── */
-  --font-display: "Fraunces", "Noto Kufi Arabic", ui-serif, serif;
+  --font-display: "Zodiak", "Noto Kufi Arabic", ui-serif, serif;
   --font-body:    "Inter", "Almarai", ui-sans-serif, system-ui, sans-serif;
   --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-sans:    "Inter", "Almarai", ui-sans-serif, system-ui, sans-serif;
