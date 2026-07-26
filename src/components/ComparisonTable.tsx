@@ -13,7 +13,7 @@ const rows = [
 export function ComparisonTable() {
   return (
     <section className="py-16 md:py-24">
-      <div className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="text-center mb-10">
           <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-fg mb-3">
             لماذا <span className="text-accent-brand">الملكة</span>؟
@@ -31,7 +31,7 @@ export function ComparisonTable() {
           transition={{ duration: 0.5 }}
           className="glass-card overflow-hidden hidden sm:block"
         >
-          <table className="w-full text-sm">
+          <table className="w-full text-sm" style={{ direction: "rtl" }}>
             <thead>
               <tr className="glass-strong">
                 <th className="text-right p-4 md:p-5 font-semibold text-fg w-1/2">الميزة</th>
@@ -71,14 +71,8 @@ export function ComparisonTable() {
           </table>
         </motion.div>
 
-        {/* Mobile: horizontal scroll cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="sm:hidden flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory"
-        >
+        {/* Mobile: stacked cards — proper grid layout */}
+        <div className="sm:hidden grid grid-cols-1 gap-4" style={{ direction: "rtl" }}>
           {rows.map((row, i) => (
             <motion.div
               key={i}
@@ -86,7 +80,7 @@ export function ComparisonTable() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05, duration: 0.3 }}
-              className="glass-card p-5 flex-shrink-0 w-72 snap-start"
+              className="glass-card p-5"
             >
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-medium text-fg-secondary">{row.benefit}</span>
@@ -119,7 +113,7 @@ export function ComparisonTable() {
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

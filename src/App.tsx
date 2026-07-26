@@ -18,9 +18,9 @@ import DesignSystem from "@/pages/DesignSystem";
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col">
+      <div style={{ width: "100%", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <Header />
-        <main className="flex-1">
+        <main style={{ flex: "1 1 auto", width: "100%" }}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/product/:id" element={<Product />} />

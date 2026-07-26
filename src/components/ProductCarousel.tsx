@@ -38,7 +38,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={style}
-        className="relative w-[160px] md:w-[280px] flex-shrink-0 aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer shadow-lg shadow-black/20"
+        className="relative w-full aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer shadow-lg shadow-black/20"
       >
         <img src={product.images[0]} alt={product.name} className="absolute inset-0 h-full w-full object-cover" style={{ transform: "translateZ(-20px) scale(1.1)" }} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -47,7 +47,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
           <div className="absolute top-3 right-3 z-20 px-2.5 py-1 bg-accent-brand text-fg-inverse text-[10px] font-bold rounded-full">{product.badge}</div>
         )}
 
-        <div className="absolute inset-0 p-4 flex flex-col justify-end">
+        <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-end">
           <div className="flex items-center gap-0.5 mb-2">
             {Array.from({ length: 5 }).map((_, s) => (
               <svg key={s} className={`w-3 h-3 ${s < stars ? "text-warning" : "text-fg/30"}`} fill="currentColor" viewBox="0 0 20 20">
@@ -57,14 +57,19 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
             <span className="text-[9px] text-fg/60 mr-1">({reviewCount})</span>
           </div>
 
-          <div className="rounded-2xl border border-line-subtle bg-raised/60 backdrop-blur-md p-4 mb-3">
-            <h3 className="text-lg font-bold text-fg leading-tight mb-0.5 line-clamp-2">{product.name}</h3>
+          <div className="rounded-2xl border border-line-subtle bg-raised/60 backdrop-blur-md p-3 sm:p-4 mb-3">
+            <h3
+              className="text-sm sm:text-base md:text-lg font-bold text-fg leading-tight mb-0.5"
+              style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
+            >
+              {product.name}
+            </h3>
             <p className="text-[10px] text-fg/70">{product.fabric}</p>
           </div>
 
           <div className="inline-flex self-start">
             <div className="rounded-full bg-raised/70 backdrop-blur-sm px-4 py-1.5 flex items-baseline gap-1.5">
-              <span className="text-sm font-bold text-accent-brand">{product.price} د.ل</span>
+              <span className="text-xs sm:text-sm font-bold text-accent-brand">{product.price} د.ل</span>
               {product.originalPrice && <span className="text-[10px] text-fg/50 line-through">{product.originalPrice} د.ل</span>}
             </div>
           </div>
@@ -109,7 +114,7 @@ export function ProductCarousel() {
 
   return (
     <section className="py-10 md:py-14">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-fg">مجموعة <span className="text-accent-brand">العبايات</span></h2>
@@ -117,17 +122,22 @@ export function ProductCarousel() {
           </div>
           <Link to="/collections" className="text-xs font-semibold text-accent-brand hover:underline hidden sm:block">عرض الكل ←</Link>
         </div>
-        <div className="relative group">
-          <div ref={scrollRef} className="flex gap-5 overflow-x-auto scroll-smooth pb-4" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-            {products.map((product, i) => (
-              <motion.div key={product.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06, duration: 0.35 }} className="flex-shrink-0">
-                <InteractiveCard product={product} />
-              </motion.div>
-            ))}
-          </div>
-          {!atStart && <button onClick={() => scroll("left")} className="absolute left-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronLeft size={18} className="text-fg" /></button>}
-          {!atEnd && <button onClick={() => scroll("right")} className="absolute right-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronRight size={18} className="text-fg" /></button>}
+
+        {/* Responsive Grid — 2 cols mobile, 3 cols tablet, 4 cols desktop */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6" style={{ direction: "rtl" }}>
+          {products.map((product, i) => (
+            <motion.div
+              key={product.id}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: (i % 8) * 0.06, duration: 0.35 }}
+            >
+              <InteractiveCard product={product} />
+            </motion.div>
+          ))}
         </div>
+
         <div className="text-center mt-6 sm:hidden">
           <Link to="/collections" className="inline-block px-6 py-2 glass text-fg text-xs font-semibold rounded-full hover:bg-sunken transition-colors">عرض الكل</Link>
         </div>

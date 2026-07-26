@@ -9,7 +9,7 @@ export function ContactForm() {
 
   return (
     <section className="py-16 md:py-24">
-      <div className="max-w-[600px] mx-auto px-4 sm:px-6">
+      <div className="w-full max-w-[600px] mx-auto px-4 sm:px-6">
         <h2 className="font-display text-2xl md:text-3xl font-bold text-fg text-center mb-3">
           تواصلي <span className="text-accent-brand">معنا</span>
         </h2>
@@ -23,7 +23,7 @@ export function ContactForm() {
             <p className="text-sm text-fg-tertiary">سنرد عليكِ خلال ٢٤ ساعة</p>
           </motion.div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4 glass-card p-6 md:p-8">
+          <form onSubmit={handleSubmit} className="space-y-4 glass-card p-6 md:p-8" style={{ direction: "rtl" }}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input label="الاسم" required type="text" placeholder="" />
               <Input label="البريد الإلكتروني" required type="email" placeholder="" />

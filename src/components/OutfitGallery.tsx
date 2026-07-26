@@ -20,8 +20,8 @@ export function OutfitGallery() {
   const newOutfits = products.filter((p) => newOutfitIds.includes(p.id));
 
   return (
-    <section className="py-20 md:py-28 px-4 sm:px-6">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-20 md:py-28">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -38,20 +38,21 @@ export function OutfitGallery() {
           </p>
         </motion.div>
 
-        {/* Horizontal scrollable row */}
-        <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory">
+        {/* Responsive Grid — 2 cols mobile, 3 cols tablet, 4 cols desktop */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6" style={{ direction: "rtl" }}>
           {newOutfits.map((outfit, index) => (
             <motion.div
               key={outfit.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.05 }}
-              className="group relative glass-card overflow-hidden rounded-2xl flex-shrink-0 w-64 snap-start"
+              transition={{ duration: 0.5, delay: (index % 8) * 0.05 }}
+              className="group relative glass-card overflow-hidden rounded-2xl cursor-pointer"
               onMouseEnter={() => setHoveredId(outfit.id)}
               onMouseLeave={() => setHoveredId(null)}
+              onClick={() => navigate(`/product/${outfit.id}`)}
             >
-              {/* Image — fills the card completely */}
+              {/* Image */}
               <div className="relative aspect-[3/4] w-full overflow-hidden">
                 <img
                   src={outfit.images[0]}
@@ -65,13 +66,16 @@ export function OutfitGallery() {
                   }`}
                 >
                   <button
-                    onClick={() => navigate(`/product/${outfit.id}`)}
+                    onClick={(e) => { e.stopPropagation(); navigate(`/product/${outfit.id}`); }}
                     className="px-4 py-2 rounded-full bg-raised/20 backdrop-blur-md border border-white/30 text-fg-inverse text-xs font-medium hover:bg-raised/30 transition-colors flex items-center gap-2"
                   >
                     <Eye size={14} />
                     عرض
                   </button>
-                  <button className="px-4 py-2 rounded-full bg-accent-brand/80 backdrop-blur-md text-fg-inverse text-xs font-medium hover:bg-accent-brand transition-colors flex items-center gap-2">
+                  <button
+                    onClick={(e) => e.stopPropagation()}
+                    className="px-4 py-2 rounded-full bg-accent-brand/80 backdrop-blur-md text-fg-inverse text-xs font-medium hover:bg-accent-brand transition-colors flex items-center gap-2"
+                  >
                     <ShoppingBag size={14} />
                     أضيفي
                   </button>
@@ -84,16 +88,19 @@ export function OutfitGallery() {
                 )}
               </div>
 
-              {/* Info — full width, no truncation */}
-              <div className="p-4 md:p-5 text-right">
-                <h3 className="text-base md:text-lg font-bold text-fg mb-1 leading-snug">
+              {/* Info */}
+              <div className="p-3 sm:p-4 md:p-5 text-right">
+                <h3
+                  className="text-sm sm:text-base md:text-lg font-bold text-fg mb-1 leading-snug"
+                  style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
+                >
                   {outfit.name}
                 </h3>
-                <p className="text-xs md:text-sm text-fg/40 mb-2 leading-relaxed">
+                <p className="text-[10px] sm:text-xs md:text-sm text-fg/40 mb-2 leading-relaxed">
                   {outfit.fabric}
                 </p>
                 <div className="flex items-center justify-end gap-2">
-                  <span className="text-sm md:text-base font-bold text-accent-brand">
+                  <span className="text-xs sm:text-sm md:text-base font-bold text-accent-brand">
                     {outfit.price} د.ل
                   </span>
                   {outfit.originalPrice && (

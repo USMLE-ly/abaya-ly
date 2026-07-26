@@ -159,7 +159,7 @@ function GlobeCanvas() {
 export function GlobeSection() {
   return (
     <section className="py-16 md:py-24 relative">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="text-center mb-12">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">
             ملابسنا من <span className="text-accent-brand">كل أنحاء العالم</span>
@@ -169,8 +169,8 @@ export function GlobeSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          <div className="flex justify-center lg:justify-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center" style={{ direction: "rtl" }}>
+          <div className="flex justify-center lg:justify-end">
             <GlobeCanvas />
           </div>
 
@@ -186,8 +186,8 @@ export function GlobeSection() {
                 </div>
                 <p className="text-[10px] text-fg/40 leading-relaxed">{c.detail}</p>
                 <div className="mt-2 flex items-center gap-1 text-[9px] text-fg/30 group-hover:text-accent-brand transition-colors">
-                  <span>←</span>
                   <span>تصل إلى ليبيا</span>
+                  <span>←</span>
                 </div>
               </div>
             ))}

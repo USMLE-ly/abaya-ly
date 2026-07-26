@@ -4,8 +4,8 @@ import { Instagram, Facebook, Twitter } from "lucide-react";
 export function Footer() {
   return (
     <footer className="glass-subtle border-t border-line-subtle">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10" style={{ direction: "rtl" }}>
           <div>
             <h3 className="font-display text-2xl font-bold text-accent-brand mb-4">الملكة</h3>
             <p className="text-fg-tertiary text-sm leading-relaxed">

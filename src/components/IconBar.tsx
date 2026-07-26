@@ -14,13 +14,13 @@ const features = [
 export function IconBar() {
   return (
     <section className="py-16 md:py-24">
-      <div className="mx-auto w-full max-w-6xl space-y-10 md:space-y-12 px-4">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mx-auto max-w-3xl text-center"
+          className="mx-auto max-w-3xl text-center mb-10"
         >
           <span className="inline-block text-xs font-semibold tracking-widest text-accent-brand/60 uppercase mb-4">مميزاتنا</span>
           <h2 className="font-display text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight text-fg text-balance leading-tight">
@@ -31,8 +31,8 @@ export function IconBar() {
           </p>
         </motion.div>
 
-        {/* Horizontal scrollable row */}
-        <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory">
+        {/* Responsive Grid — 2 cols mobile, 3 cols tablet, 3 cols desktop */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6" style={{ direction: "rtl" }}>
           {features.map((feature, i) => (
             <motion.div
               key={i}
@@ -40,7 +40,6 @@ export function IconBar() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="flex-shrink-0 w-72 snap-start"
             >
               <FeatureCard feature={feature} index={i} className="border-line-subtle" />
             </motion.div>
