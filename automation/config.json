@@ -1,0 +1,42 @@
+{
+  "brand": {
+    "name": "نادين",
+    "name_en": "Nadine",
+    "website": "https://nadine.luxor.ly",
+    "products_data": "../src/data/products.ts"
+  },
+  "posting": {
+    "frequency": "3-5 per day",
+    "time_windows": ["09:00-11:00", "14:00-16:00", "19:00-22:00"],
+    "platform_delay_min": 5,
+    "platform_delay_max": 15
+  },
+  "hashtags": [
+    "#نادين",
+    "#عبايات_فاخرة",
+    "#فاشن_ليبيا",
+    "#ملابس_نسائية",
+    "#تصميم_مميز",
+    "#أناقة",
+    "#ستايل",
+    "#ملابس"
+  ],
+  "platforms": {
+    "tiktok": {
+      "enabled": true,
+      "cookies_file": "cookies/tiktok.json"
+    },
+    "instagram": {
+      "enabled": true,
+      "cookies_file": "cookies/instagram.json"
+    },
+    "twitter": {
+      "enabled": true,
+      "cookies_file": "cookies/twitter.json"
+    },
+    "facebook": {
+      "enabled": true,
+      "cookies_file": "cookies/facebook.json"
+    }
+  }
+}

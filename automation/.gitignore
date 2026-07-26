@@ -1,0 +1,27 @@
+# Ignore cookie files (contains session data)
+cookies/*.json
+!cookies/.gitkeep
+
+# Ignore video content
+content/*.mp4
+content/*.mov
+content/*.avi
+!content/.gitkeep
+
+# Ignore logs
+logs/*.json
+!logs/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
