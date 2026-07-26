@@ -15,24 +15,24 @@ const tag = cva(
         warning: "border-transparent",
         danger:  "border-transparent",
       },
-      style: { solid: "", subtle: "" },
+      appearance: { solid: "", subtle: "" },
     },
     compoundVariants: [
-      { style: "solid", tone: "brand",   className: "bg-brand text-fg-on-accent" },
-      { style: "solid", tone: "neutral", className: "bg-cotton-800 text-fg-on-accent" },
-      { style: "solid", tone: "success", className: "bg-success text-fg-on-accent" },
-      { style: "solid", tone: "info",    className: "bg-info text-fg-on-accent" },
-      { style: "solid", tone: "warning", className: "bg-warning text-cotton-950" },
-      { style: "solid", tone: "danger",  className: "bg-danger text-fg-on-accent" },
+      { appearance: "solid", tone: "brand",   className: "bg-brand text-fg-on-accent" },
+      { appearance: "solid", tone: "neutral", className: "bg-cotton-800 text-fg-on-accent" },
+      { appearance: "solid", tone: "success", className: "bg-success text-fg-on-accent" },
+      { appearance: "solid", tone: "info",    className: "bg-info text-fg-on-accent" },
+      { appearance: "solid", tone: "warning", className: "bg-warning text-cotton-950" },
+      { appearance: "solid", tone: "danger",  className: "bg-danger text-fg-on-accent" },
 
-      { style: "subtle", tone: "brand",   className: "bg-brand-subtle text-brand border-strawberry-200" },
-      { style: "subtle", tone: "neutral", className: "bg-cotton-100 text-cotton-800 border-cotton-200" },
-      { style: "subtle", tone: "success", className: "bg-success-subtle text-mint-700 border-mint-200" },
-      { style: "subtle", tone: "info",    className: "bg-info-subtle text-sky-700 border-sky-200" },
-      { style: "subtle", tone: "warning", className: "bg-warning-subtle text-lemon-800 border-lemon-200" },
-      { style: "subtle", tone: "danger",  className: "bg-danger-subtle text-strawberry-700 border-strawberry-200" },
+      { appearance: "subtle", tone: "brand",   className: "bg-brand-subtle text-brand border-strawberry-200" },
+      { appearance: "subtle", tone: "neutral", className: "bg-cotton-100 text-cotton-800 border-cotton-200" },
+      { appearance: "subtle", tone: "success", className: "bg-success-subtle text-mint-700 border-mint-200" },
+      { appearance: "subtle", tone: "info",    className: "bg-info-subtle text-sky-700 border-sky-200" },
+      { appearance: "subtle", tone: "warning", className: "bg-warning-subtle text-lemon-800 border-lemon-200" },
+      { appearance: "subtle", tone: "danger",  className: "bg-danger-subtle text-strawberry-700 border-strawberry-200" },
     ],
-    defaultVariants: { tone: "neutral", style: "subtle" },
+    defaultVariants: { tone: "neutral", appearance: "subtle" },
   }
 );
 
@@ -43,9 +43,9 @@ export interface TagProps
   onRemove?: () => void;
 }
 
-export function Tag({ className, tone, style, leadingIcon, onRemove, children, ...rest }: TagProps) {
+export function Tag({ className, tone, appearance, leadingIcon, onRemove, children, ...rest }: TagProps) {
   return (
-    <span className={cn(tag({ tone, style }), className)} {...rest}>
+    <span className={cn(tag({ tone, appearance }), className)} {...rest}>
       {leadingIcon}
       {children}
       {onRemove && (

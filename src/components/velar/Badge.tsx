@@ -14,23 +14,27 @@ const badge = cva(
         warning: "bg-warning text-cotton-950",
         danger:  "bg-danger text-fg-on-accent",
       },
-      style: { solid: "", subtle: "" },
+      appearance: { solid: "", subtle: "" },
       size:  { sm: "text-2xs px-2 py-0.5", md: "text-xs px-2.5 py-1", lg: "text-sm px-3 py-1.5" },
     },
     compoundVariants: [
-      { style: "subtle", tone: "brand",   className: "bg-brand-subtle text-brand" },
-      { style: "subtle", tone: "neutral", className: "bg-cotton-100 text-cotton-700" },
-      { style: "subtle", tone: "success", className: "bg-success-subtle text-mint-700" },
-      { style: "subtle", tone: "info",    className: "bg-info-subtle text-sky-700" },
-      { style: "subtle", tone: "warning", className: "bg-warning-subtle text-lemon-800" },
-      { style: "subtle", tone: "danger",  className: "bg-danger-subtle text-strawberry-700" },
+      { appearance: "subtle", tone: "brand",   className: "bg-brand-subtle text-brand" },
+      { appearance: "subtle", tone: "neutral", className: "bg-cotton-100 text-cotton-700" },
+      { appearance: "subtle", tone: "success", className: "bg-success-subtle text-mint-700" },
+      { appearance: "subtle", tone: "info",    className: "bg-info-subtle text-sky-700" },
+      { appearance: "subtle", tone: "warning", className: "bg-warning-subtle text-lemon-800" },
+      { appearance: "subtle", tone: "danger",  className: "bg-danger-subtle text-strawberry-700" },
     ],
-    defaultVariants: { tone: "brand", style: "solid", size: "md" },
+    defaultVariants: { tone: "brand", appearance: "solid", size: "md" },
   }
 );
 
-export interface BadgeProps extends HTMLAttributes<HTMLSpanElement>, VariantProps<typeof badge> {}
+export interface BadgeProps
+  extends Omit<HTMLAttributes<HTMLSpanElement>, "style">,
+    VariantProps<typeof badge> {
+  style?: React.CSSProperties;
+}
 
-export function Badge({ className, tone, style, size, ...rest }: BadgeProps) {
-  return <span className={cn(badge({ tone, style, size }), className)} {...rest} />;
+export function Badge({ className, tone, appearance, size, style, ...rest }: BadgeProps) {
+  return <span style={style} className={cn(badge({ tone, appearance, size }), className)} {...rest} />;
 }
