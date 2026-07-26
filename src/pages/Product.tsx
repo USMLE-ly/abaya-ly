@@ -88,7 +88,7 @@ export function Product() {
                         i === activeImage ? "border-primary" : "border-line-subtle hover:border-line-default"
                       }`}
                     >
-                      <img src={src} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover" />
+                      <img src={src} alt={`${product.name} ${i + 1}`} className="w-full h-full object-contain" />
                     </button>
                   ))}
                 </div>
