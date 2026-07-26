@@ -6,7 +6,24 @@ export interface Product {
   price: number;
   originalPrice?: number;
   badge?: string;
-  colors: { name: string; hex: string; linkTo?: string }[];
+  colors: { name: string; hex: string; linkTo?: string }[  {
+    id: "olive-elegant",
+    name: "فستان الزيتون الأنيق",
+    fabric: "شيفون فاخر",
+    category: "الكاجوال",
+    price: 300,
+    originalPrice: 370,
+    badge: "جديد",
+    colors: [{"name": "أخضر زيتوني", "hex": "#556B2F"}, {"name": "أسود", "hex": "#000000", "linkTo": "olive-ruffle"}, {"name": "كريمي", "hex": "#f5f0e8", "linkTo": "floral-sleeve"}],
+    sizes: ["S", "M", "L", "XL"],
+    description: "فستان الزيتون الأنيق — تصميم بسيط وأنيق بأكمام 3/4 وقصة محتشمة تمنح إطلالة راقية ومريحة.",
+    details: ["القصة: محتشمة بأكمام 3/4", "اللون: أخضر زيتوني أنيق", "الطول: ميدي", "العناية: غسيل يدوي بارد"],
+    images: ["/outfits/olive-elegant-abaya.jpg"],
+    highlights: ["تصميم بسيط وأنيق يجمع بين الراحة والأناقة في قطعة واحدة.", "أكمام 3/4 تمنح حرية الحركة مع أناقة راقية تخطف الأنظار.", "لون أخضر زيتوني دافئ يعكس الذوق الرفيع ويضيف لمسة طبيعية لأناقتكِ."],
+    rating: 4.7,
+    reviewCount: 18,
+  },
+];
   sizes: string[];
   description: string;
   details: string[];
