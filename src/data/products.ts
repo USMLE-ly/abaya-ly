@@ -99,7 +99,7 @@ export const products: Product[] = [
     images: ["/outfits/red-velvet-abaya.jpg", "/outfits/red-velvet-abaya-thumb.jpg"],
     highlights: ["تُضفي جواً من الأناقة الفاخرة، تُشعركِ بالتألق في كل حركة.", "تصميم ريترو عصري يجمع بين الرقة والجرأة بأناقة مبهرة.", "تفاصيل الخصر المزخرفة تمنح المظهر لمسة ملكية ساحرة."],
     rating: 4.9,
-    reviewCount: 56,
+    reviewCount: 57,
   },
   {
     id: "black-lace",
