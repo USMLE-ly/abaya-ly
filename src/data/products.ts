@@ -1,7 +1,3 @@
-// 1785089802
-// deploy 1785088225
-// deploy 1785085041
-// deploy
 export interface Product {
   id: string;
   name: string;
