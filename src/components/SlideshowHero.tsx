@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 const slides = [
   {
     image: "/images/hero/abaya-gold-1.jpg",
-    heading: "الملكة",
-    subheading: "عبايات فاخرة بلمسة ليبية أصيلة",
+    heading: "نادين",
+    subheading: "فساتين فاخرة بلمسة ليبية أصيلة",
     cta: "اكتشفي المجموعة",
     link: "/collections",
   },

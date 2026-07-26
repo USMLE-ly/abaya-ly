@@ -94,7 +94,7 @@ export default function ElegantCarousel() {
                   {String(currentIndex + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
                 </span>
                 <span className="w-px h-3 bg-sunken/80" />
-                <span className="text-xs text-fg/50">الملكة</span>
+                <span className="text-xs text-fg/50">نادين</span>
               </div>
             </div>
 

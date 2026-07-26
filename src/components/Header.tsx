@@ -7,7 +7,7 @@ import { Button, ThemeToggle } from "@/components/velar";
 const navLinks = [
   { label: "الرئيسية", href: "/" },
   { label: "المجموعات", href: "/collections" },
-  { label: "عن الملكة", href: "/about" },
+  { label: "عن نادين", href: "/about" },
   { label: "تواصلي معنا", href: "/contact" },
 ];
 
@@ -75,7 +75,7 @@ export function Header() {
 
         {/* Logo — center (col 2) */}
         <Link to="/" className="flex items-center justify-center">
-          <span className="font-display text-2xl font-bold text-ring">الملكة</span>
+          <span className="font-display text-2xl font-bold text-ring">نادين</span>
         </Link>
 
         {/* Icons — left (col 3) */}

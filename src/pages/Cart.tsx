@@ -7,7 +7,7 @@ import { Button, Card } from "@/components/velar";
 interface CartItem { id: string; name: string; fabric: string; price: number; image: string; color: string; size: string; quantity: number; }
 
 const initialItems: CartItem[] = [
-  { id: "al-sahra-gold", name: "عباية السهرة الذهبية", fabric: "جورجيت إيطالي", price: 380, image: "/images/products/abaya-1.jpg", color: "ذهبي", size: "M", quantity: 1 },
+  { id: "al-sahra-gold", name: "فستان السهرة الذهبية", fabric: "جورجيت إيطالي", price: 380, image: "/images/products/abaya-1.jpg", color: "ذهبي", size: "M", quantity: 1 },
 ];
 
 export function Cart() {

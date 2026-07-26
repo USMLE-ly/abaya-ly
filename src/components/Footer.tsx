@@ -7,9 +7,9 @@ export function Footer() {
       <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10" style={{ direction: "rtl" }}>
           <div>
-            <h3 className="font-display text-2xl font-bold text-accent-brand mb-4">الملكة</h3>
+            <h3 className="font-display text-2xl font-bold text-accent-brand mb-4">نادين</h3>
             <p className="text-fg-tertiary text-sm leading-relaxed">
-              بيت العباءات الفاخرة في ليبيا. صُنعت لكل امرأة تستحق الأفضل.
+              بيت الفساتين الفاخرة في ليبيا. صُنعت لكل امرأة تستحق الأفضل.
             </p>
           </div>
           <div>
@@ -17,7 +17,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm text-fg-tertiary">
               <li><Link to="/" className="hover:text-accent-brand transition-colors">الرئيسية</Link></li>
               <li><Link to="/collections" className="hover:text-accent-brand transition-colors">المجموعات</Link></li>
-              <li><Link to="/about" className="hover:text-accent-brand transition-colors">عن الملكة</Link></li>
+              <li><Link to="/about" className="hover:text-accent-brand transition-colors">عن نادين</Link></li>
               <li><Link to="/contact" className="hover:text-accent-brand transition-colors">تواصلي معنا</Link></li>
             </ul>
           </div>
@@ -52,7 +52,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 pt-6 border-t border-line-subtle flex flex-col md:flex-row items-center justify-between text-xs text-fg-quaternary">
-          <p>جميع الحقوق محفوظة © 2025 الملكة</p>
+          <p>جميع الحقوق محفوظة © 2025 نادين</p>
           <p>صُنع بـ ❤ لكل امرأة ليبية</p>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 const SLIDES = [
   {
     media: "/images/hero/abaya-gold-1.jpg",
-    title: "عباية السهرة الذهبية",
+    title: "فستان السهرة الذهبية",
     subtitle: "مجموعة السهرة الفاخرة",
     accent: "#e11d63",
   },
@@ -15,7 +15,7 @@ const SLIDES = [
   },
   {
     media: "/images/hero/abaya-gold-3.jpg",
-    title: "عباية التطريز الذهبي",
+    title: "فستان التطريز الذهبي",
     subtitle: "أناقة لا تُنسى",
     accent: "#e11d63",
   },
@@ -86,7 +86,7 @@ export default function LuminaHero() {
                   {String(idx + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
                 </span>
                 <span className="w-px h-3 bg-surface-inverse/10" />
-                <span className="text-xs text-fg/50">الملكة</span>
+                <span className="text-xs text-fg/50">نادين</span>
               </div>
 
               {/* Subtitle */}

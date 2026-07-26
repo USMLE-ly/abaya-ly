@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const results = [
   { percentage: 95, text: "عملاء راضون عن الجودة" },
-  { percentage: 90, text: "يوصين بعباياتنا لصديقاتهن" },
+  { percentage: 90, text: "يوصين بفساتيننا لصديقاتهن" },
   { percentage: 98, text: "راضيات عن خدمة ما بعد البيع" },
 ];
 

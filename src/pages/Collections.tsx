@@ -16,7 +16,7 @@ export function Collections() {
       <section className="pt-24 pb-10 md:pt-28 md:pb-14">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 text-center">
           <h1 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">المجموعات</h1>
-          <p className="text-sm text-fg-tertiary max-w-lg mx-auto">اكتشفي مجموعتنا من العبايات الفاخرة — كل قطعة قصة، كل تطريزة فن</p>
+          <p className="text-sm text-fg-tertiary max-w-lg mx-auto">اكتشفي مجموعتنا من الفساتين الفاخرة — كل قطعة قصة، كل تطريزة فن</p>
         </div>
       </section>
 

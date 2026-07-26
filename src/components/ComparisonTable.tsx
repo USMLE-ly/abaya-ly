@@ -16,7 +16,7 @@ export function ComparisonTable() {
       <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="text-center mb-10">
           <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-fg mb-3">
-            لماذا <span className="text-accent-brand">الملكة</span>؟
+            لماذا <span className="text-accent-brand">نادين</span>؟
           </h2>
           <p className="text-sm text-fg-tertiary max-w-xl mx-auto">
             نقدم لكِ ما لا تجدينه لدى الآخرين — جودة لا تُضاهى بلمسة ليبية أصيلة
@@ -36,7 +36,7 @@ export function ComparisonTable() {
               <thead>
                 <tr className="glass-strong">
                   <th className="text-right p-3 sm:p-4 md:p-5 font-semibold text-fg w-1/2">الميزة</th>
-                  <th className="p-3 sm:p-4 md:p-5 text-center font-semibold text-accent-brand bg-brand-subtle w-1/4">الملكة</th>
+                  <th className="p-3 sm:p-4 md:p-5 text-center font-semibold text-accent-brand bg-brand-subtle w-1/4">نادين</th>
                   <th className="p-3 sm:p-4 md:p-5 text-center font-semibold text-fg-tertiary w-1/4">الآخرون</th>
                 </tr>
               </thead>

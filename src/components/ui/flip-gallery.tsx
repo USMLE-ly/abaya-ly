@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const images = [
-  { subtitle: 'الهندسية', title: 'عباية النمط الهندسي', url: '/outfits/geometric-gold-abaya-1.jpg' },
-  { subtitle: 'المحتشمة', title: 'عباية الأناقة المحتشمة', url: '/outfits/floral-sleeve-abaya.jpg' },
-  { subtitle: 'الدانتيل', title: 'عباية الدانتيل السوداء', url: '/outfits/black-lace-abaya.jpg' },
+  { subtitle: 'الهندسية', title: 'فستان النمط الهندسي', url: '/outfits/geometric-gold-abaya-1.jpg' },
+  { subtitle: 'المحتشمة', title: 'فستان الأناقة المحتشمة', url: '/outfits/floral-sleeve-abaya.jpg' },
+  { subtitle: 'الدانتيل', title: 'فستان الدانتيل السوداء', url: '/outfits/black-lace-abaya.jpg' },
 ];
 
 const FLIP_SPEED = 750;
