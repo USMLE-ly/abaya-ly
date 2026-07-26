@@ -38,7 +38,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={style}
-        className="relative w-full aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer shadow-lg shadow-black/20"
+        className="relative w-[160px] md:w-[280px] flex-shrink-0 aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer shadow-lg shadow-black/20"
       >
         <img src={product.images[0]} alt={product.name} className="absolute inset-0 h-full w-full object-cover" style={{ transform: "translateZ(-20px) scale(1.1)" }} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -57,9 +57,9 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
             <span className="text-[9px] text-fg/60 mr-1">({reviewCount})</span>
           </div>
 
-          <div className="rounded-2xl border border-line-subtle bg-raised/60 backdrop-blur-md p-3 sm:p-4 mb-3">
+          <div className="rounded-2xl border border-line-subtle bg-raised/60 backdrop-blur-md p-4 mb-3">
             <h3
-              className="text-sm sm:text-base md:text-lg font-bold text-fg leading-tight mb-0.5"
+              className="text-base md:text-lg font-bold text-fg leading-tight mb-0.5"
               style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
             >
               {product.name}
@@ -69,7 +69,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
 
           <div className="inline-flex self-start">
             <div className="rounded-full bg-raised/70 backdrop-blur-sm px-4 py-1.5 flex items-baseline gap-1.5">
-              <span className="text-xs sm:text-sm font-bold text-accent-brand">{product.price} د.ل</span>
+              <span className="text-sm font-bold text-accent-brand">{product.price} د.ل</span>
               {product.originalPrice && <span className="text-[10px] text-fg/50 line-through">{product.originalPrice} د.ل</span>}
             </div>
           </div>
@@ -123,19 +123,17 @@ export function ProductCarousel() {
           <Link to="/collections" className="text-xs font-semibold text-accent-brand hover:underline hidden sm:block">عرض الكل ←</Link>
         </div>
 
-        {/* Responsive Grid — 2 cols mobile, 3 cols tablet, 4 cols desktop */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6" style={{ direction: "rtl" }}>
-          {products.map((product, i) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: (i % 8) * 0.06, duration: 0.35 }}
-            >
-              <InteractiveCard product={product} />
-            </motion.div>
-          ))}
+        {/* Horizontal scrollable carousel */}
+        <div className="relative group">
+          <div ref={scrollRef} className="flex gap-5 overflow-x-auto scroll-smooth pb-4 scrollbar-hide" style={{ scrollSnapType: "x mandatory" }}>
+            {products.map((product, i) => (
+              <motion.div key={product.id} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06, duration: 0.35 }} className="flex-shrink-0" style={{ scrollSnapAlign: "start" }}>
+                <InteractiveCard product={product} />
+              </motion.div>
+            ))}
+          </div>
+          {!atStart && <button onClick={() => scroll("left")} className="absolute left-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronLeft size={18} className="text-fg" /></button>}
+          {!atEnd && <button onClick={() => scroll("right")} className="absolute right-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronRight size={18} className="text-fg" /></button>}
         </div>
 
         <div className="text-center mt-6 sm:hidden">

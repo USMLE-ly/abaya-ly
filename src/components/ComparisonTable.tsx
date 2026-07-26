@@ -23,97 +23,55 @@ export function ComparisonTable() {
           </p>
         </div>
 
-        {/* Desktop: table view */}
+        {/* Table — visible on all screens including mobile */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="glass-card overflow-hidden hidden sm:block"
+          className="glass-card overflow-hidden"
         >
-          <table className="w-full text-sm" style={{ direction: "rtl" }}>
-            <thead>
-              <tr className="glass-strong">
-                <th className="text-right p-4 md:p-5 font-semibold text-fg w-1/2">الميزة</th>
-                <th className="p-4 md:p-5 text-center font-semibold text-accent-brand bg-brand-subtle w-1/4">الملكة</th>
-                <th className="p-4 md:p-5 text-center font-semibold text-fg-tertiary w-1/4">الآخرون</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row, i) => (
-                <tr key={i} className="border-t border-line-subtle hover:bg-sunken transition-colors">
-                  <td className="p-4 md:p-5 text-fg-secondary font-medium">{row.benefit}</td>
-                  <td className="p-4 md:p-5 text-center bg-brand-subtle/50">
-                    {row.us ? (
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-status-success text-fg-inverse">
-                        <Check size={14} strokeWidth={3} />
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sunken text-fg-disabled">
-                        <X size={14} strokeWidth={3} />
-                      </span>
-                    )}
-                  </td>
-                  <td className="p-4 md:p-5 text-center">
-                    {row.others ? (
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-status-success text-fg-inverse">
-                        <Check size={14} strokeWidth={3} />
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sunken text-fg-disabled">
-                        <X size={14} strokeWidth={3} />
-                      </span>
-                    )}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs sm:text-sm min-w-[480px]" style={{ direction: "rtl" }}>
+              <thead>
+                <tr className="glass-strong">
+                  <th className="text-right p-3 sm:p-4 md:p-5 font-semibold text-fg w-1/2">الميزة</th>
+                  <th className="p-3 sm:p-4 md:p-5 text-center font-semibold text-accent-brand bg-brand-subtle w-1/4">الملكة</th>
+                  <th className="p-3 sm:p-4 md:p-5 text-center font-semibold text-fg-tertiary w-1/4">الآخرون</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {rows.map((row, i) => (
+                  <tr key={i} className="border-t border-line-subtle hover:bg-sunken transition-colors">
+                    <td className="p-3 sm:p-4 md:p-5 text-fg-secondary font-medium">{row.benefit}</td>
+                    <td className="p-3 sm:p-4 md:p-5 text-center bg-brand-subtle/50">
+                      {row.us ? (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-status-success text-fg-inverse">
+                          <Check size={14} strokeWidth={3} />
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sunken text-fg-disabled">
+                          <X size={14} strokeWidth={3} />
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-3 sm:p-4 md:p-5 text-center">
+                      {row.others ? (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-status-success text-fg-inverse">
+                          <Check size={14} strokeWidth={3} />
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sunken text-fg-disabled">
+                          <X size={14} strokeWidth={3} />
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </motion.div>
-
-        {/* Mobile: stacked cards — proper grid layout */}
-        <div className="sm:hidden grid grid-cols-1 gap-4" style={{ direction: "rtl" }}>
-          {rows.map((row, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05, duration: 0.3 }}
-              className="glass-card p-5"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-fg-secondary">{row.benefit}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col items-center gap-1">
-                  <span className="text-[10px] text-accent-brand font-semibold">الملكة</span>
-                  {row.us ? (
-                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-status-success text-fg-inverse">
-                      <Check size={14} strokeWidth={3} />
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-sunken text-fg-disabled">
-                      <X size={14} strokeWidth={3} />
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-col items-center gap-1">
-                  <span className="text-[10px] text-fg-tertiary font-semibold">الآخرون</span>
-                  {row.others ? (
-                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-status-success text-fg-inverse">
-                      <Check size={14} strokeWidth={3} />
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-sunken text-fg-disabled">
-                      <X size={14} strokeWidth={3} />
-                    </span>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </section>
   );
