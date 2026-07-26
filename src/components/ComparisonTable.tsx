@@ -13,8 +13,8 @@ const rows = [
 export function ComparisonTable() {
   return (
     <section className="py-16 md:py-24">
-      <div className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
           <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-fg mb-3">
             لماذا <span className="text-accent-brand">الملكة</span>؟
           </h2>
@@ -45,22 +45,22 @@ export function ComparisonTable() {
                   <td className="p-4 md:p-5 text-fg-secondary font-medium">{row.benefit}</td>
                   <td className="p-4 md:p-5 text-center bg-brand-subtle/50">
                     {row.us ? (
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-status-success text-fg-inverse">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-status-success text-fg-inverse">
                         <Check size={14} strokeWidth={3} />
                       </span>
                     ) : (
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sunken text-fg-disabled">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-sunken text-fg-disabled">
                         <X size={14} strokeWidth={3} />
                       </span>
                     )}
                   </td>
                   <td className="p-4 md:p-5 text-center">
                     {row.others ? (
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-status-success text-fg-inverse">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-status-success text-fg-inverse">
                         <Check size={14} strokeWidth={3} />
                       </span>
                     ) : (
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sunken text-fg-disabled">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-sunken text-fg-disabled">
                         <X size={14} strokeWidth={3} />
                       </span>
                     )}
@@ -77,7 +77,7 @@ export function ComparisonTable() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="sm:hidden space-y-3"
+          className="sm:hidden space-y-4"
         >
           {rows.map((row, i) => (
             <motion.div
@@ -86,30 +86,30 @@ export function ComparisonTable() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05, duration: 0.3 }}
-              className="glass-card p-4 flex items-center justify-between"
+              className="glass-card p-5 md:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 min-h-[80px]"
             >
-              <span className="text-sm font-medium text-fg-secondary flex-1">{row.benefit}</span>
-              <div className="flex items-center gap-4 mr-4">
+              <span className="text-base font-medium text-fg-secondary flex-1">{row.benefit}</span>
+              <div className="flex items-center gap-6">
                 <div className="flex flex-col items-center gap-1">
-                  <span className="text-[10px] text-accent-brand font-semibold">الملكة</span>
+                  <span className="text-xs text-accent-brand font-semibold">الملكة</span>
                   {row.us ? (
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-status-success text-fg-inverse">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-status-success text-fg-inverse">
                       <Check size={14} strokeWidth={3} />
                     </span>
                   ) : (
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sunken text-fg-disabled">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-sunken text-fg-disabled">
                       <X size={14} strokeWidth={3} />
                     </span>
                   )}
                 </div>
                 <div className="flex flex-col items-center gap-1">
-                  <span className="text-[10px] text-fg-tertiary font-semibold">الآخرون</span>
+                  <span className="text-xs text-fg-tertiary font-semibold">الآخرون</span>
                   {row.others ? (
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-status-success text-fg-inverse">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-status-success text-fg-inverse">
                       <Check size={14} strokeWidth={3} />
                     </span>
                   ) : (
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sunken text-fg-disabled">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-sunken text-fg-disabled">
                       <X size={14} strokeWidth={3} />
                     </span>
                   )}

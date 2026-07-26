@@ -22,7 +22,7 @@ const faqs = [
 function HomeFAQ() {
   return (
     <section className="py-16 md:py-24">
-      <div className="max-w-[800px] mx-auto px-4 sm:px-6">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-10">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">
             الأسئلة <span className="text-accent-brand">الشائعة</span>

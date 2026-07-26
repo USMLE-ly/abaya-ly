@@ -9,7 +9,7 @@ export function ContactForm() {
 
   return (
     <section className="py-16 md:py-24">
-      <div className="max-w-[600px] mx-auto px-4 sm:px-6">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6">
         <h2 className="font-display text-2xl md:text-3xl font-bold text-fg text-center mb-3">
           تواصلي <span className="text-accent-brand">معنا</span>
         </h2>

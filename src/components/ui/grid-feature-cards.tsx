@@ -68,10 +68,10 @@ export function FeatureCard({ feature, className, index = 0 }: FeatureCardProps)
       )}
 
       {/* Title */}
-      <h3 className="relative z-10 text-sm md:text-lg font-bold text-fg mb-2 group-hover:text-fg transition-colors duration-300">{feature.title}</h3>
+      <h3 className="relative z-10 text-base md:text-lg font-bold text-fg mb-2 group-hover:text-fg transition-colors duration-300">{feature.title}</h3>
 
       {/* Description */}
-      <p className="relative z-10 text-xs md:text-sm font-light text-fg/35 leading-relaxed group-hover:text-fg/50 transition-colors duration-300">{feature.description}</p>
+      <p className="relative z-10 text-sm md:text-base font-light text-fg/40 leading-relaxed group-hover:text-fg/50 transition-colors duration-300">{feature.description}</p>
 
       {/* Bottom accent line on hover */}
       <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

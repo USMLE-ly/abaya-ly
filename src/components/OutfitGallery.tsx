@@ -20,7 +20,7 @@ export function OutfitGallery() {
   const newOutfits = products.filter((p) => newOutfitIds.includes(p.id));
 
   return (
-    <section className="py-16 md:py-24 px-4 sm:px-6">
+    <section className="py-20 md:py-28 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <motion.div
@@ -39,7 +39,7 @@ export function OutfitGallery() {
         </motion.div>
 
         {/* Outfits Grid — larger cards that fill space */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {newOutfits.map((outfit, index) => (
             <motion.div
               key={outfit.id}
@@ -52,7 +52,7 @@ export function OutfitGallery() {
               onMouseLeave={() => setHoveredId(null)}
             >
               {/* Image — fills the card completely */}
-              <div className="relative aspect-[3/4] w-full overflow-hidden">
+              <div className="relative aspect-[4/5] w-full overflow-hidden">
                 <img
                   src={outfit.images[0]}
                   alt={outfit.name}
@@ -85,15 +85,15 @@ export function OutfitGallery() {
               </div>
 
               {/* Info — full width, no truncation */}
-              <div className="p-3 md:p-4 text-right">
-                <h3 className="text-sm md:text-base font-bold text-fg mb-1 leading-snug">
+              <div className="p-4 md:p-5 text-right">
+                <h3 className="text-base md:text-lg font-bold text-fg mb-1 leading-snug">
                   {outfit.name}
                 </h3>
-                <p className="text-[11px] md:text-xs text-fg/40 mb-2 leading-relaxed">
+                <p className="text-xs md:text-sm text-fg/40 mb-2 leading-relaxed">
                   {outfit.fabric}
                 </p>
                 <div className="flex items-center justify-end gap-2">
-                  <span className="text-xs md:text-sm font-bold text-accent-brand">
+                  <span className="text-sm md:text-base font-bold text-accent-brand">
                     {outfit.price} د.ل
                   </span>
                   {outfit.originalPrice && (

@@ -12,7 +12,7 @@ const conditions = [
 export default function RefundPolicy() {
   return (
     <div className="min-h-screen pt-24 pb-16">
-      <div className="max-w-[800px] mx-auto px-4 sm:px-6">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <nav className="flex items-center gap-2 text-xs text-fg/40 mb-8">
           <Link to="/" className="hover:text-ring transition-colors">الرئيسية</Link>
           <ChevronLeft size={12} />
