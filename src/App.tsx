@@ -13,6 +13,7 @@ import ShippingPolicy from "@/pages/ShippingPolicy";
 import RefundPolicy from "@/pages/RefundPolicy";
 import TermsOfService from "@/pages/TermsOfService";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import DesignSystem from "@/pages/DesignSystem";
 
 export default function App() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="/refund-policy" element={<RefundPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/design-system" element={<DesignSystem />} />
           </Routes>
         </main>
         <Footer />
