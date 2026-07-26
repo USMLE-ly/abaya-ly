@@ -126,7 +126,7 @@ export const products: Product[] = [
     price: 360,
     originalPrice: 430,
     badge: "مميز",
-    colors: [{"name": "أبيض", "hex": "#FFFFFF"}, {"name": "أسود", "hex": "#111827"}],
+    colors: [{"name": "أبيض", "hex": "#FFFFFF"}],
     sizes: ["S", "M", "L", "XL"],
     description: "فستان الفخامة الكلاسيكية — تصميم خالد بأناقة النقاط السوداء الكلاسيكية مع أكمام متدلية.",
     details: ["القصة: Off-the-shoulder مع حزام", "النقشة: نقاط سوداء على أبيض", "الطول: ميدي", "العناية: غسيل جاف فقط"],
