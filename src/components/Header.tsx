@@ -17,11 +17,8 @@ export function Header() {
   return (
     <header className="fixed top-0 inset-x-0 z-50 glass-strong">
       <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between h-16">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="font-display text-2xl font-bold text-ring">الملكة</span>
-        </Link>
-
-        <nav className="hidden md:flex items-center gap-1">
+        {/* Nav links — right side */}
+        <nav className="hidden md:flex items-center gap-1 order-1">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -33,7 +30,13 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        {/* Logo — center */}
+        <Link to="/" className="flex items-center gap-2 order-2 mx-auto">
+          <span className="font-display text-2xl font-bold text-ring">الملكة</span>
+        </Link>
+
+        {/* Icons — left side */}
+        <div className="flex items-center gap-2 order-3">
           <ThemeToggle className="hidden md:inline-flex" />
           <Button variant="ghost" iconOnly size="sm" aria-label="بحث">
             <Search size={18} />
