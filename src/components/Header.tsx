@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Search, ShoppingBag } from "lucide-react";
@@ -13,30 +13,73 @@ const navLinks = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    if (open) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 glass-strong">
-      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between h-16">
-        {/* Nav links — right side */}
-        <nav className="hidden md:flex items-center gap-1 order-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              to={link.href}
-              className="text-sm font-medium text-fg-secondary hover:text-fg px-4 py-2 rounded-full hover:bg-sunken transition-all duration-200"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 h-16 grid grid-cols-[auto_1fr_auto] items-center">
+        {/* Hamburger — right (col 1) */}
+        <div className="relative" ref={menuRef}>
+          <Button
+            variant="ghost"
+            iconOnly
+            size="sm"
+            onClick={() => setOpen(!open)}
+            aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
+          >
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </Button>
 
-        {/* Logo — center */}
-        <Link to="/" className="flex items-center gap-2 order-2 mx-auto">
+          <AnimatePresence>
+            {open && (
+              <motion.div
+                initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="absolute top-full right-0 mt-2 w-56 rounded-2xl overflow-hidden z-50"
+                style={{
+                  background: "rgba(255,255,255,0.92)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  border: "1px solid rgba(196,40,85,0.12)",
+                  boxShadow: "0 8px 24px rgba(17,15,13,0.08)",
+                }}
+              >
+                <nav className="py-2 flex flex-col">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      onClick={() => setOpen(false)}
+                      className="text-sm font-medium text-fg-secondary hover:text-fg hover:bg-sunken px-5 py-3 transition-all"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </nav>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Logo — center (col 2) */}
+        <Link to="/" className="flex items-center justify-center">
           <span className="font-display text-2xl font-bold text-ring">الملكة</span>
         </Link>
 
-        {/* Icons — left side */}
-        <div className="flex items-center gap-2 order-3">
+        {/* Icons — left (col 3) */}
+        <div className="flex items-center gap-2">
           <ThemeToggle className="hidden md:inline-flex" />
           <Button variant="ghost" iconOnly size="sm" aria-label="بحث">
             <Search size={18} />
@@ -46,42 +89,8 @@ export function Header() {
               <ShoppingBag size={18} />
             </Button>
           </Link>
-          <Button
-            variant="ghost"
-            iconOnly
-            size="sm"
-            className="md:hidden"
-            onClick={() => setOpen(!open)}
-            aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
-          >
-            {open ? <X size={20} /> : <Menu size={20} />}
-          </Button>
         </div>
       </div>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="md:hidden overflow-hidden glass-strong border-t border-line-subtle"
-          >
-            <nav className="px-4 py-4 flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  onClick={() => setOpen(false)}
-                  className="text-sm font-medium text-fg-secondary hover:text-fg hover:bg-sunken px-4 py-3 rounded-xl transition-all"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   );
 }
