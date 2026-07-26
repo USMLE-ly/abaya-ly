@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const SLIDES = [
+const SLIDES_DESKTOP = [
   {
     media: "/images/hero/abaya-gold-1.jpg",
     title: "فستان السهرة الذهبية",
@@ -15,9 +15,36 @@ const SLIDES = [
   },
 ];
 
+const SLIDES_MOBILE = [
+  {
+    media: "/images/hero/abaya-gold-mobile-1.jpg",
+    title: "فستان السهرة الذهبية",
+    subtitle: "مجموعة السهرة الفاخرة",
+    accent: "#e11d63",
+  },
+  {
+    media: "/images/hero/abaya-gold-mobile-2.jpg",
+    title: "الفخامة الليبية",
+    subtitle: "تشكيلة ٢٠٢٥",
+    accent: "#ff6b9a",
+  },
+];
+
 const DURATION = 6000;
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return isMobile;
+}
+
 export default function LuminaHero() {
+  const isMobile = useIsMobile();
+  const SLIDES = isMobile ? SLIDES_MOBILE : SLIDES_DESKTOP;
   const [idx, setIdx] = useState(0);
   const [progress, setProgress] = useState(0);
   const idxRef = useRef(0);
