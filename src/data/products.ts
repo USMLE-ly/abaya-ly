@@ -359,7 +359,7 @@ export const products: Product[] = [
     images: ["/outfits/mesh-geometric-abaya.jpg", "/outfits/mesh-geometric-abaya-thumb.jpg"],
     highlights: ["تُضفي نقوش البولكا البيضاء على الخلفية السوداء طابعًا فاخرًا وعصريًا يجذب الأنظار.", "تصميم القِطع المُحتشم يُبرز أناقة الفستان مع لمسة من الفخامة الرصينة.", "نمط النقش المتناسق يُضفي على الإطلالة عمقًا وأناقة لا تُضاهى."],
     rating: 4.8,
-    reviewCount: 39,
+    reviewCount: 40,
   },
 ];
 
