@@ -96,7 +96,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     description: "فستان الأزرق السماوي — تصميم ريترو عصري يجمع بين الرقة والجرأة بأناقة مبهرة.",
     details: ["القصة: أنيقة بأكمام ناعمة وحزام مزخرف", "النقشة: نقاط بيضاء كلاسيكية", "الطول: ميدي", "العناية: غسيل جاف فقط"],
-    images: ["/outfits/red-velvet-abaya.jpg"],
+    images: ["/outfits/red-velvet-abaya.jpg", "/outfits/red-velvet-abaya-thumb.jpg"],
     highlights: ["تُضفي جواً من الأناقة الفاخرة، تُشعركِ بالتألق في كل حركة.", "تصميم ريترو عصري يجمع بين الرقة والجرأة بأناقة مبهرة.", "تفاصيل الخصر المزخرفة تمنح المظهر لمسة ملكية ساحرة."],
     rating: 4.9,
     reviewCount: 56,
