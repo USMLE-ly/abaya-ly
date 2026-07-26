@@ -1,3 +1,4 @@
+// deploy 1785088225
 // deploy 1785085041
 // deploy
 export interface Product {
@@ -161,7 +162,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     description: "فستان الأناقة المحتشمة — تصميم يحيط بجسدكِ برفق ويعطيكِ إحساس بالأناقة المطلقة.",
     details: ["القصة: محتشمة بأكمام ناعمة", "النقشة: نقاط كلاسيكية", "الطول: ميدي", "العناية: غسيل جاف فقط"],
-    images: ["/outfits/floral-sleeve-abaya.jpg"],
+    images: ["/outfits/floral-sleeve-abaya.jpg", "/outfits/floral-sleeve-abaya-thumb.jpg"],
     highlights: ["هذا التصميم يحيط بجسدكِ برفق، ليمنحكِ إحساس بالأناقة المطلقة والثقة المتألقة.", "نقشة النقط الكلاسيكية تضفي لمسة من الفخامة العصرية تلفت الأنظار في كل مناسبة.", "قصة محتشمة بأكمام ناعمة تمنحكي حرية الحركة مع أناقة لا تُضاهى."],
     rating: 4.8,
     reviewCount: 35,
