@@ -58,7 +58,7 @@ export default function LuminaHero() {
           key={i}
           src={slide.media}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-contain"
           style={{
             opacity: i === idx ? 1 : 0,
             transition: "opacity 1s ease-in-out",
