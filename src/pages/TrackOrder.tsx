@@ -11,13 +11,13 @@ export function TrackOrder() {
   return (
     <div className="min-h-screen">
       <section className="pt-24 pb-10 md:pt-28 md:pb-14">
-        <div className="max-w-5xl px-4 sm:px-6 text-right">
+        <div className="max-w-[900px] mx-auto px-4 sm:px-6 text-center">
           <h1 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">تتبع <span className="text-accent-brand">طلبكِ</span></h1>
           <p className="text-sm text-fg-tertiary">أدخلي رقم الطلب والبريد الإلكتروني لمتابعة شحنتكِ</p>
         </div>
       </section>
       <section className="pb-16">
-        <div className="max-w-xl px-4 sm:px-6">
+        <div className="max-w-[500px] mx-auto px-4 sm:px-6">
           {!tracked ? (
             <form onSubmit={handleSubmit} className="glass-card p-6 md:p-8">
               <div className="space-y-5">

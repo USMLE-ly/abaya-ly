@@ -22,12 +22,12 @@ const faqs = [
 function HomeFAQ() {
   return (
     <section className="py-16 md:py-24">
-      <div className="max-w-3xl px-4 sm:px-6">
-        <div className="text-right mb-10">
+      <div className="max-w-[800px] mx-auto px-4 sm:px-6">
+        <div className="text-center mb-10">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">
             الأسئلة <span className="text-accent-brand">الشائعة</span>
           </h2>
-          <p className="text-sm text-fg-tertiary ml-auto max-w-md">إجابات على أكثر الأسئلة شيوعاً</p>
+          <p className="text-sm text-fg-tertiary">إجابات على أكثر الأسئلة شيوعاً</p>
         </div>
         <Accordion
           items={faqs.map((faq, i) => ({
@@ -53,7 +53,7 @@ export function Home() {
 
       {/* FlipGallery inside iPhone mockup — centered on all devices */}
       <section className="min-h-[80vh] flex flex-col items-center justify-center py-12">
-        <div className="text-right mb-8">
+        <div className="text-center mb-8">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">
             تشكيلتنا <span className="text-accent-brand">المميزة</span>
           </h2>

@@ -14,19 +14,19 @@ const features = [
 export function IconBar() {
   return (
     <section className="py-16 md:py-24">
-      <div className="w-full max-w-6xl space-y-10 md:space-y-12 px-4">
+      <div className="mx-auto w-full max-w-6xl space-y-10 md:space-y-12 px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="max-w-3xl text-right"
+          className="mx-auto max-w-3xl text-center"
         >
           <span className="inline-block text-xs font-semibold tracking-widest text-accent-brand/60 uppercase mb-4">مميزاتنا</span>
           <h2 className="font-display text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight text-fg text-balance leading-tight">
             لماذا <span className="text-accent-brand">تختاريننا</span>؟
           </h2>
-          <p className="mt-4 md:mt-5 text-sm md:text-base tracking-wide text-fg/30 text-balance leading-relaxed max-w-xl ml-auto">
+          <p className="mt-4 md:mt-5 text-sm md:text-base tracking-wide text-fg/30 text-balance leading-relaxed max-w-xl mx-auto">
             نقدم لكِ ما لا تجدينه لدى الآخرين — جودة لا تُضاهى بلمسة ليبية أصيلة
           </p>
         </motion.div>
