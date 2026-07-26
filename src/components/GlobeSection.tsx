@@ -161,10 +161,10 @@ export function GlobeSection() {
     <section className="py-16 md:py-24 relative">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="text-center mb-12">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
-            ملابسنا من <span className="text-primary">كل أنحاء العالم</span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">
+            ملابسنا من <span className="text-accent-brand">كل أنحاء العالم</span>
           </h2>
-          <p className="text-sm text-foreground/50 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm text-fg/50 max-w-2xl mx-auto leading-relaxed">
             نستقبل أجود الملابس العالمية من ٧ دول لتصنع لكِ عباية تجمع بين الفخامة والأصالة
           </p>
         </div>
@@ -176,16 +176,16 @@ export function GlobeSection() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {fabricCountries.map((c, i) => (
-              <div key={i} className="glass-card p-4 rounded-2xl hover:bg-black/5 transition-all duration-300 group">
+              <div key={i} className="glass-card p-4 rounded-2xl hover:bg-surface-inverse/5 transition-all duration-300 group">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-2xl">{c.flag}</span>
                   <div>
-                    <h3 className="text-sm font-bold text-foreground">{c.name}</h3>
-                    <p className="text-[10px] text-primary font-medium">{c.clothes}</p>
+                    <h3 className="text-sm font-bold text-fg">{c.name}</h3>
+                    <p className="text-[10px] text-accent-brand font-medium">{c.clothes}</p>
                   </div>
                 </div>
-                <p className="text-[10px] text-foreground/40 leading-relaxed">{c.detail}</p>
-                <div className="mt-2 flex items-center gap-1 text-[9px] text-foreground/30 group-hover:text-primary transition-colors">
+                <p className="text-[10px] text-fg/40 leading-relaxed">{c.detail}</p>
+                <div className="mt-2 flex items-center gap-1 text-[9px] text-fg/30 group-hover:text-accent-brand transition-colors">
                   <span>←</span>
                   <span>تصل إلى ليبيا</span>
                 </div>
@@ -196,10 +196,10 @@ export function GlobeSection() {
 
         <div className="text-center mt-12">
           <div className="inline-flex items-center gap-2 glass-card px-6 py-3 rounded-full">
-            <span className="text-xs text-foreground/40">من</span>
-            <span className="text-xs font-bold text-foreground">٧ دول</span>
-            <span className="text-xs text-foreground/40">إلى</span>
-            <span className="text-xs font-bold text-primary">ليبيا</span>
+            <span className="text-xs text-fg/40">من</span>
+            <span className="text-xs font-bold text-fg">٧ دول</span>
+            <span className="text-xs text-fg/40">إلى</span>
+            <span className="text-xs font-bold text-accent-brand">ليبيا</span>
           </div>
         </div>
       </div>

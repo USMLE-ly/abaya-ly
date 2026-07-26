@@ -89,32 +89,32 @@ export default function ElegantCarousel() {
           <div className="flex items-end justify-between gap-6">
             {/* Left: slide info in glass card */}
             <div className="flex-1">
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-white/60 backdrop-blur-2xl px-5 py-3 mb-3">
-                <span className="text-xs font-bold tracking-wider text-foreground/40">
+              <div className="inline-flex items-center gap-2 rounded-2xl border border-line-subtle bg-raised/60 backdrop-blur-2xl px-5 py-3 mb-3">
+                <span className="text-xs font-bold tracking-wider text-fg/40">
                   {String(currentIndex + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
                 </span>
-                <span className="w-px h-3 bg-black/10" />
-                <span className="text-xs text-foreground/50">الملكة</span>
+                <span className="w-px h-3 bg-sunken/80" />
+                <span className="text-xs text-fg/50">الملكة</span>
               </div>
             </div>
 
             {/* Right: glass nav + progress */}
             <div className="flex items-center gap-3">
               {/* Nav arrows in glass */}
-              <div className="flex gap-1.5 rounded-2xl border border-black/10 bg-white/60 backdrop-blur-2xl p-1.5">
-                <button onClick={goPrev} className="w-9 h-9 rounded-xl flex items-center justify-center text-foreground/60 hover:text-foreground hover:bg-black/[0.05] transition-all" aria-label="Previous">
+              <div className="flex gap-1.5 rounded-2xl border border-line-subtle bg-raised/60 backdrop-blur-2xl p-1.5">
+                <button onClick={goPrev} className="w-9 h-9 rounded-xl flex items-center justify-center text-fg/60 hover:text-fg hover:bg-black/[0.05] transition-all" aria-label="Previous">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
                 </button>
-                <button onClick={goNext} className="w-9 h-9 rounded-xl flex items-center justify-center text-foreground/60 hover:text-foreground hover:bg-black/[0.05] transition-all" aria-label="Next">
+                <button onClick={goNext} className="w-9 h-9 rounded-xl flex items-center justify-center text-fg/60 hover:text-fg hover:bg-black/[0.05] transition-all" aria-label="Next">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                 </button>
               </div>
 
               {/* Progress dots in glass */}
-              <div className="flex gap-2 items-center rounded-2xl border border-black/10 bg-white/60 backdrop-blur-2xl px-4 py-3">
+              <div className="flex gap-2 items-center rounded-2xl border border-line-subtle bg-raised/60 backdrop-blur-2xl px-4 py-3">
                 {slides.map((_, i) => (
                   <button key={i} onClick={() => goToSlide(i)} className="group" aria-label={`Slide ${i + 1}`}>
-                    <div className={`h-1.5 rounded-full transition-all duration-300 ${i === currentIndex ? "w-8" : "w-1.5 bg-black/10 group-hover:bg-black/10"}`} style={i === currentIndex ? { backgroundColor: currentSlide.accent } : undefined} />
+                    <div className={`h-1.5 rounded-full transition-all duration-300 ${i === currentIndex ? "w-8" : "w-1.5 bg-sunken/80 group-hover:bg-sunken/80"}`} style={i === currentIndex ? { backgroundColor: currentSlide.accent } : undefined} />
                   </button>
                 ))}
               </div>
@@ -122,7 +122,7 @@ export default function ElegantCarousel() {
           </div>
 
           {/* Progress bar */}
-          <div className="mt-3 h-px w-full rounded-full bg-white/70 overflow-hidden">
+          <div className="mt-3 h-px w-full rounded-full bg-raised/70 overflow-hidden">
             <div className="h-full rounded-full transition-all duration-100" style={{ width: `${progress}%`, backgroundColor: currentSlide.accent }} />
           </div>
         </div>

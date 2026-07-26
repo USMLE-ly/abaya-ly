@@ -2,119 +2,119 @@
 
 /* ════════════════════════════════════════════════════════════════
    VELAR Design System — Full Token Layer
-   Extracted from VELAR - Design System.fig (kiwi payload @ 27116)
    Palettes: 8 families × 11 steps (50–950)
    Modes: Light (default), Dark, High Contrast
+   Source: design-tokens.tokens.json
    ════════════════════════════════════════════════════════════════ */
 
 :root {
   /* ── Palette: Strawberry (brand rose) ── */
-  --strawberry-50:  #FFF5F7;
-  --strawberry-100: #FFE4EB;
-  --strawberry-200: #FFCDD8;
-  --strawberry-300: #FFA8BC;
-  --strawberry-400: #FF7A9C;
-  --strawberry-500: #F9577F;
-  --strawberry-600: #E63D6A;
-  --strawberry-700: #C42855;
-  --strawberry-800: #9C1F44;
-  --strawberry-900: #6E1531;
-  --strawberry-950: #4D1639;
+  --strawberry-50:  #fff5f7;
+  --strawberry-100: #ffe4eb;
+  --strawberry-200: #ffcdd8;
+  --strawberry-300: #ffa8bc;
+  --strawberry-400: #ff7a9c;
+  --strawberry-500: #f9577f;
+  --strawberry-600: #e63d6a;
+  --strawberry-700: #c42855;
+  --strawberry-800: #9c1f44;
+  --strawberry-900: #6e1531;
+  --strawberry-950: #4d1639;
 
   /* ── Palette: Bubblegum ── */
-  --bubblegum-50:  #FDF4FB;
-  --bubblegum-100: #FBE7F7;
-  --bubblegum-200: #F6CDED;
-  --bubblegum-300: #F0A6DD;
-  --bubblegum-400: #E777C5;
-  --bubblegum-500: #D851A8;
-  --bubblegum-600: #BB3A8B;
-  --bubblegum-700: #952A6E;
-  --bubblegum-800: #6F2052;
-  --bubblegum-900: #420A1D;
-  --bubblegum-950: #2C0B20;
+  --bubblegum-50:  #fdf4fb;
+  --bubblegum-100: #fbe7f7;
+  --bubblegum-200: #f6cded;
+  --bubblegum-300: #f0a6dd;
+  --bubblegum-400: #e777c5;
+  --bubblegum-500: #d851a8;
+  --bubblegum-600: #bb3a8b;
+  --bubblegum-700: #952a6e;
+  --bubblegum-800: #6f2052;
+  --bubblegum-900: #4d1639;
+  --bubblegum-950: #2c0b20;
 
   /* ── Palette: Cotton (neutrals) ── */
-  --cotton-50:  #FCFAF8;
-  --cotton-100: #F5F1EC;
-  --cotton-200: #E9E2D9;
-  --cotton-300: #D6CCC0;
-  --cotton-400: #B3A89B;
-  --cotton-500: #8C8276;
-  --cotton-600: #6E665C;
-  --cotton-700: #534D44;
-  --cotton-800: #3A352F;
-  --cotton-900: #22201C;
-  --cotton-950: #110F0D;
+  --cotton-50:  #fcfaf8;
+  --cotton-100: #f5f1ec;
+  --cotton-200: #e9e2d9;
+  --cotton-300: #d6ccc0;
+  --cotton-400: #b3a89b;
+  --cotton-500: #8c8276;
+  --cotton-600: #6e665c;
+  --cotton-700: #534d44;
+  --cotton-800: #3a352f;
+  --cotton-900: #22201c;
+  --cotton-950: #110f0d;
 
   /* ── Palette: Lavender ── */
-  --lavender-50:  #F7F3FF;
-  --lavender-100: #ECE3FF;
-  --lavender-200: #D7C2FF;
-  --lavender-300: #B998FF;
-  --lavender-400: #9970FF;
-  --lavender-500: #7C50F0;
-  --lavender-600: #6238D2;
-  --lavender-700: #4C2BA4;
+  --lavender-50:  #f7f3ff;
+  --lavender-100: #ece3ff;
+  --lavender-200: #d7c2ff;
+  --lavender-300: #b998ff;
+  --lavender-400: #9970ff;
+  --lavender-500: #7c50f0;
+  --lavender-600: #6238d2;
+  --lavender-700: #4c2ba4;
   --lavender-800: #382077;
-  --lavender-900: #25164F;
-  --lavender-950: #140B2B;
+  --lavender-900: #25164f;
+  --lavender-950: #140b2b;
 
   /* ── Palette: Lemon ── */
-  --lemon-50:  #FFFAEB;
-  --lemon-100: #FFF1C2;
-  --lemon-200: #FFE689;
-  --lemon-300: #FFD64E;
-  --lemon-400: #FFC11C;
-  --lemon-500: #F2A700;
-  --lemon-600: #C98400;
-  --lemon-700: #9A6500;
-  --lemon-800: #6F4900;
-  --lemon-900: #4A3000;
-  --lemon-950: #281A00;
+  --lemon-50:  #fffaeb;
+  --lemon-100: #fff1c2;
+  --lemon-200: #ffe689;
+  --lemon-300: #ffd64e;
+  --lemon-400: #ffc11c;
+  --lemon-500: #f2a700;
+  --lemon-600: #c98400;
+  --lemon-700: #9a6500;
+  --lemon-800: #6f4900;
+  --lemon-900: #4a3000;
+  --lemon-950: #281a00;
 
   /* ── Palette: Mint ── */
-  --mint-50:  #F0FBF5;
-  --mint-100: #D9F4E5;
-  --mint-200: #B0E8C7;
-  --mint-300: #7CD4A2;
-  --mint-400: #4DC07F;
-  --mint-500: #29A763;
-  --mint-600: #1F8A50;
-  --mint-700: #196B3F;
-  --mint-800: #144F2F;
-  --mint-900: #0E351F;
-  --mint-950: #061A0F;
+  --mint-50:  #f0fbf5;
+  --mint-100: #d9f4e5;
+  --mint-200: #b0e8c7;
+  --mint-300: #7cd4a2;
+  --mint-400: #4dc07f;
+  --mint-500: #29a763;
+  --mint-600: #1f8a50;
+  --mint-700: #196b3f;
+  --mint-800: #144f2f;
+  --mint-900: #0e351f;
+  --mint-950: #061a0f;
 
   /* ── Palette: Peach ── */
-  --peach-50:  #FFF6F0;
-  --peach-100: #FFE9DA;
-  --peach-200: #FFD3B5;
-  --peach-300: #FFB382;
-  --peach-400: #FF9152;
-  --peach-500: #F9722C;
-  --peach-600: #DD5A18;
-  --peach-700: #B14411;
-  --peach-800: #7E3210;
-  --peach-900: #56230C;
-  --peach-950: #2F1306;
+  --peach-50:  #fff6f0;
+  --peach-100: #ffe9da;
+  --peach-200: #ffd3b5;
+  --peach-300: #ffb382;
+  --peach-400: #ff9152;
+  --peach-500: #f9722c;
+  --peach-600: #dd5a18;
+  --peach-700: #b14411;
+  --peach-800: #7e3210;
+  --peach-900: #56230c;
+  --peach-950: #2f1306;
 
   /* ── Palette: Sky ── */
-  --sky-50:  #EFF8FF;
-  --sky-100: #DBEEFF;
-  --sky-200: #B6DCFF;
-  --sky-300: #85C5FF;
-  --sky-400: #54A8FE;
-  --sky-500: #2E89F2;
-  --sky-600: #1B6CD2;
-  --sky-700: #1453A4;
-  --sky-800: #103D78;
-  --sky-900: #0A2A52;
-  --sky-950: #04162D;
+  --sky-50:  #eff8ff;
+  --sky-100: #dbeeff;
+  --sky-200: #b6dcff;
+  --sky-300: #85c5ff;
+  --sky-400: #54a8fe;
+  --sky-500: #2e89f2;
+  --sky-600: #1b6cd2;
+  --sky-700: #1453a4;
+  --sky-800: #103d78;
+  --sky-900: #0a2a52;
+  --sky-950: #04162d;
 
   /* ── Utility ── */
-  --utility-white: #FFFFFF;
-  --utility-transparent: rgba(255,255,255,0);
+  --utility-white: #ffffff;
+  --utility-transparent: #00000000;
 
   --overlay-50: rgba(17,15,13,0.50);
   --overlay-70: rgba(17,15,13,0.70);
@@ -126,43 +126,57 @@
   --shadow-12: rgba(17,15,13,0.12);
   --shadow-16: rgba(17,15,13,0.16);
 
-  /* ── Semantic — Light mode ── */
-  --accent-brand:               var(--strawberry-600);
-  --accent-brand-hover:         var(--strawberry-700);
-  --accent-brand-pressed:       var(--strawberry-800);
+  /* ── Semantic — Light mode (from tokens file) ── */
+  --accent-brand:               var(--strawberry-700);
+  --accent-brand-hover:         var(--strawberry-800);
+  --accent-brand-pressed:       var(--strawberry-900);
   --accent-brand-subtle:        var(--strawberry-100);
   --accent-brand-subtle-hover:  var(--strawberry-200);
 
   --surface-canvas:  var(--utility-white);
   --surface-raised:  var(--utility-white);
-  --surface-sunken:  var(--cotton-50);
-  --surface-overlay: var(--utility-white);
+  --surface-sunken:  var(--cotton-100);
+  --surface-overlay: var(--overlay-80);
   --surface-inverse: var(--cotton-950);
 
   --text-primary:   var(--cotton-950);
-  --text-secondary: var(--cotton-700);
-  --text-tertiary:  var(--cotton-500);
-  --text-disabled:  var(--cotton-300);
+  --text-secondary: var(--cotton-900);
+  --text-tertiary:  var(--cotton-800);
+  --text-disabled:  var(--cotton-600);
   --text-inverse:   var(--utility-white);
   --text-onAccent:  var(--utility-white);
   --text-link:      var(--accent-brand);
 
-  --border-subtle:  var(--cotton-100);
-  --border-default: var(--cotton-200);
-  --border-strong:  var(--cotton-400);
-  --border-focus:   var(--accent-brand);
-  --border-action:  var(--cotton-300);
+  --border-subtle:  var(--cotton-600);
+  --border-default: var(--cotton-800);
+  --border-strong:  var(--cotton-950);
+  --border-focus:   var(--strawberry-700);
+  --border-action:  var(--cotton-600);
 
-  --status-success: var(--mint-600);
+  --status-success: var(--mint-700);
   --status-success-subtle: var(--mint-100);
-  --status-info:    var(--sky-600);
+  --status-info:    var(--sky-800);
   --status-info-subtle: var(--sky-100);
-  --status-warning: var(--lemon-500);
+  --status-warning: var(--lemon-700);
   --status-warning-subtle: var(--lemon-100);
-  --status-danger:  var(--strawberry-700);
+  --status-danger:  var(--strawberry-800);
   --status-danger-subtle: var(--strawberry-100);
   --status-neutral: var(--cotton-500);
   --status-neutral-subtle: var(--cotton-100);
+
+  /* ── Decorative (from tokens file) ── */
+  --decorative-peach: var(--peach-700);
+  --decorative-peach-subtle: var(--peach-100);
+  --decorative-lavender: var(--lavender-700);
+  --decorative-lavender-subtle: var(--lavender-100);
+  --decorative-bubblegum: var(--bubblegum-700);
+  --decorative-bubblegum-subtle: var(--bubblegum-100);
+  --decorative-sky: var(--sky-700);
+  --decorative-sky-subtle: var(--sky-100);
+  --decorative-mint: var(--mint-700);
+  --decorative-mint-subtle: var(--mint-100);
+  --decorative-lemon: var(--lemon-700);
+  --decorative-lemon-subtle: var(--lemon-100);
 
   /* ── Radii ── */
   --radius-none: 0px;
@@ -207,59 +221,80 @@
   --size-avatar-56: 56px;
   --size-avatar-64: 64px;
 
-  /* ── Elevation shadows ── */
+  /* ── Elevation shadows (from tokens file) ── */
   --shadow-elevation-0: none;
-  --shadow-elevation-1: 0 1px 2px var(--shadow-6);
-  --shadow-elevation-2: 0 2px 6px var(--shadow-8), 0 1px 2px var(--shadow-4);
-  --shadow-elevation-3: 0 6px 16px var(--shadow-12), 0 2px 4px var(--shadow-6);
-  --shadow-elevation-4: 0 16px 32px var(--shadow-16), 0 4px 8px var(--shadow-8);
-  --shadow-elevation-5: 0 24px 48px var(--shadow-16), 0 8px 16px var(--shadow-12);
+  --shadow-elevation-1: 0 1px 4px var(--shadow-4);
+  --shadow-elevation-2: 0 4px 12px var(--shadow-6);
+  --shadow-elevation-3: 0 8px 24px var(--shadow-8);
+  --shadow-elevation-4: 0 16px 40px var(--shadow-12);
+  --shadow-elevation-5: 0 24px 64px var(--shadow-16);
 
   /* ── Typography ── */
   --font-display: "Fraunces", "Noto Kufi Arabic", ui-serif, serif;
   --font-body:    "Inter", "Almarai", ui-sans-serif, system-ui, sans-serif;
   --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --font-size-2xs:  10px;
+  --font-size-2xs:  11px;
   --font-size-xs:   12px;
   --font-size-sm:   13px;
   --font-size-base: 15px;
   --font-size-lg:   17px;
-  --font-size-xl:   20px;
-  --font-size-2xl:  24px;
-  --font-size-3xl:  30px;
-  --font-size-4xl:  36px;
-  --font-size-5xl:  48px;
-  --font-size-6xl:  64px;
-  --font-size-control-sm: 13px;
+  --font-size-xl:   18px;
+  --font-size-2xl:  20px;
+  --font-size-3xl:  22px;
+  --font-size-4xl:  26px;
+  --font-size-5xl:  32px;
+  --font-size-6xl:  40px;
+  --font-size-control-sm: 12px;
   --font-size-control-md: 14px;
-  --font-size-control-lg: 15px;
+  --font-size-control-lg: 16px;
 
   --font-lh-2xs:  14px;
   --font-lh-xs:   16px;
-  --font-lh-sm:   18px;
+  --font-lh-sm:   20px;
   --font-lh-base: 22px;
-  --font-lh-lg:   24px;
-  --font-lh-xl:   28px;
-  --font-lh-2xl:  32px;
-  --font-lh-3xl:  38px;
-  --font-lh-4xl:  44px;
-  --font-lh-5xl:  56px;
-  --font-lh-6xl:  72px;
-  --font-lh-control-sm: 18px;
+  --font-lh-lg:   26px;
+  --font-lh-xl:   24px;
+  --font-lh-2xl:  26px;
+  --font-lh-3xl:  28px;
+  --font-lh-4xl:  32px;
+  --font-lh-5xl:  38px;
+  --font-lh-6xl:  44px;
+  --font-lh-control-sm: 16px;
   --font-lh-control-md: 20px;
-  --font-lh-control-lg: 22px;
+  --font-lh-control-lg: 24px;
 
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  --font-tracking-tightest: -0.04em;
-  --font-tracking-tight:    -0.02em;
-  --font-tracking-normal:    0em;
-  --font-tracking-wide:      0.02em;
-  --font-tracking-wider:     0.06em;
+  --font-tracking-tightest: -1.5px;
+  --font-tracking-tight:    -0.5px;
+  --font-tracking-normal:    0px;
+  --font-tracking-wide:      0.5px;
+  --font-tracking-wider:     1px;
+
+  /* ── Typography composition styles ── */
+  --type-caption: 500 11px/14px var(--font-body);
+  --type-display-lg: 600 40px/44px var(--font-display);
+  --type-display-md: 600 32px/38px var(--font-display);
+  --type-display-sm: 600 26px/32px var(--font-display);
+  --type-heading-h1: 400 22px/28px var(--font-display);
+  --type-heading-h2: 400 20px/26px var(--font-display);
+  --type-heading-h3: 600 18px/24px var(--font-body);
+  --type-heading-h4: 600 17px/26px var(--font-body);
+  --type-body-lg: 400 17px/26px var(--font-body);
+  --type-body-md: 400 15px/22px var(--font-body);
+  --type-body-sm: 400 13px/20px var(--font-body);
+  --type-label-lg: 500 13px/20px var(--font-body);
+  --type-label-md: 500 12px/16px var(--font-body);
+  --type-control-sm: 600 12px/16px var(--font-body);
+  --type-control-md: 600 14px/20px var(--font-body);
+  --type-control-lg: 600 16px/24px var(--font-body);
+
+  /* ── Brand gradient ── */
+  --gradient-brand: linear-gradient(135deg, #ffe4eb, #ffe9da);
 
   /* ── Legacy aliases (site's existing code) ── */
   --background:  var(--surface-canvas);
@@ -267,7 +302,7 @@
   --card:        var(--surface-raised);
   --card-foreground: var(--text-primary);
   --popover:     var(--surface-overlay);
-  --popover-foreground: var(--text-primary);
+  --popover-foreground: var(--text-inverse);
   --primary:     var(--accent-brand);
   --primary-foreground: var(--text-onAccent);
   --secondary:   var(--accent-brand-subtle);
@@ -291,7 +326,7 @@
   --color-bg-3: var(--surface-sunken);
   --color-border: var(--border-default);
   --color-glass: rgba(255,255,255,0.6);
-  --color-glass-border: rgba(228,49,101,0.14);
+  --color-glass-border: rgba(196,40,85,0.14);
   --color-glass-strong: rgba(255,255,255,0.78);
   --color-gold: var(--accent-brand);
   --color-gold-light: var(--strawberry-400);
@@ -362,7 +397,7 @@
   --border-subtle:  #000000;
   --border-default: #000000;
   --border-strong:  #000000;
-  --border-focus:   var(--accent-brand);
+  --border-focus:   var(--strawberry-700);
   --border-action:  #000000;
 }
 
@@ -465,13 +500,14 @@
   --color-sky-900: var(--sky-900);
   --color-sky-950: var(--sky-950);
 
-  /* Semantic */
+  /* Semantic surfaces */
   --color-canvas:  var(--surface-canvas);
   --color-raised:  var(--surface-raised);
   --color-sunken:  var(--surface-sunken);
   --color-overlay: var(--surface-overlay);
   --color-inverse: var(--surface-inverse);
 
+  /* Semantic text */
   --color-fg:           var(--text-primary);
   --color-fg-secondary: var(--text-secondary);
   --color-fg-tertiary:  var(--text-tertiary);
@@ -479,17 +515,20 @@
   --color-fg-inverse:   var(--text-inverse);
   --color-fg-on-accent: var(--text-onAccent);
 
+  /* Semantic accent */
   --color-brand:          var(--accent-brand);
   --color-brand-hover:    var(--accent-brand-hover);
   --color-brand-pressed:  var(--accent-brand-pressed);
   --color-brand-subtle:   var(--accent-brand-subtle);
   --color-brand-subtle-hover: var(--accent-brand-subtle-hover);
 
+  /* Semantic borders */
   --color-line:         var(--border-default);
   --color-line-subtle:  var(--border-subtle);
   --color-line-strong:  var(--border-strong);
   --color-line-focus:   var(--border-focus);
 
+  /* Semantic status */
   --color-success: var(--status-success);
   --color-success-subtle: var(--status-success-subtle);
   --color-info:    var(--status-info);
@@ -500,6 +539,20 @@
   --color-danger-subtle: var(--status-danger-subtle);
   --color-neutral: var(--status-neutral);
   --color-neutral-subtle: var(--status-neutral-subtle);
+
+  /* Decorative */
+  --color-peach: var(--decorative-peach);
+  --color-peach-subtle: var(--decorative-peach-subtle);
+  --color-lavender-deco: var(--decorative-lavender);
+  --color-lavender-deco-subtle: var(--decorative-lavender-subtle);
+  --color-bubblegum-deco: var(--decorative-bubblegum);
+  --color-bubblegum-deco-subtle: var(--decorative-bubblegum-subtle);
+  --color-sky-deco: var(--decorative-sky);
+  --color-sky-deco-subtle: var(--decorative-sky-subtle);
+  --color-mint-deco: var(--decorative-mint);
+  --color-mint-deco-subtle: var(--decorative-mint-subtle);
+  --color-lemon-deco: var(--decorative-lemon);
+  --color-lemon-deco-subtle: var(--decorative-lemon-subtle);
 
   /* Legacy shadcn-esque aliases */
   --color-card: var(--card);
@@ -615,32 +668,32 @@ body {
   background: rgba(255,255,255,0.6);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(228,49,101,0.12);
+  border: 1px solid rgba(196,40,85,0.12);
 }
 .glass-strong {
   background: rgba(255,255,255,0.78);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(228,49,101,0.14);
+  border: 1px solid rgba(196,40,85,0.14);
 }
 .glass-subtle {
   background: rgba(255,255,255,0.35);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(228,49,101,0.08);
+  border: 1px solid rgba(196,40,85,0.08);
 }
 .glass-card {
   background: rgba(255,255,255,0.7);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(228,49,101,0.12);
+  border: 1px solid rgba(196,40,85,0.12);
   border-radius: var(--radius-2xl);
 }
 .glass-input {
   background: rgba(255,255,255,0.75);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(228,49,101,0.14);
+  border: 1px solid rgba(196,40,85,0.14);
   color: var(--text-primary);
 }
 .glass-input:focus {

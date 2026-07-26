@@ -28,31 +28,31 @@ export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen pt-24 pb-16">
       <div className="max-w-[800px] mx-auto px-4 sm:px-6">
-        <nav className="flex items-center gap-2 text-xs text-foreground/40 mb-8">
+        <nav className="flex items-center gap-2 text-xs text-fg/40 mb-8">
           <Link to="/" className="hover:text-ring transition-colors">الرئيسية</Link>
           <ChevronLeft size={12} />
-          <span className="text-foreground font-medium">سياسة الخصوصية</span>
+          <span className="text-fg font-medium">سياسة الخصوصية</span>
         </nav>
 
-        <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">سياسة <span className="text-primary">الخصوصية</span></h1>
-        <p className="text-sm text-foreground/50 mb-4 leading-relaxed">آخر تحديث: يوليو ٢٠٢٥</p>
-        <p className="text-sm text-foreground/50 mb-10 leading-relaxed">نحترم خصوصيتكِ ونلتزم بحماية بياناتكِ الشخصية. تعرفي على كيف نجمع ونستخدم ونحمي معلوماتكِ.</p>
+        <h1 className="font-display text-3xl md:text-4xl font-bold text-fg mb-4">سياسة <span className="text-accent-brand">الخصوصية</span></h1>
+        <p className="text-sm text-fg/50 mb-4 leading-relaxed">آخر تحديث: يوليو ٢٠٢٥</p>
+        <p className="text-sm text-fg/50 mb-10 leading-relaxed">نحترم خصوصيتكِ ونلتزم بحماية بياناتكِ الشخصية. تعرفي على كيف نجمع ونستخدم ونحمي معلوماتكِ.</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
           {sections.map((s, i) => (
             <div key={i} className="glass-card p-6 rounded-2xl">
               <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/10 flex items-center justify-center mb-4">
-                <s.icon className="text-primary" size={18} strokeWidth={1.5} />
+                <s.icon className="text-accent-brand" size={18} strokeWidth={1.5} />
               </div>
-              <h3 className="text-sm font-bold text-foreground mb-2">{s.title}</h3>
-              <p className="text-xs text-foreground/40 leading-relaxed">{s.content}</p>
+              <h3 className="text-sm font-bold text-fg mb-2">{s.title}</h3>
+              <p className="text-xs text-fg/40 leading-relaxed">{s.content}</p>
             </div>
           ))}
         </div>
 
         <div className="glass-card p-6 rounded-2xl space-y-4">
-          <h2 className="font-display text-lg font-bold text-foreground">حقوقكِ</h2>
-          <div className="space-y-3 text-xs text-foreground/50 leading-relaxed">
+          <h2 className="font-display text-lg font-bold text-fg">حقوقكِ</h2>
+          <div className="space-y-3 text-xs text-fg/50 leading-relaxed">
             <p>• الحق في الوصول إلى معلوماتكِ الشخصية المحفوظة لدينا.</p>
             <p>• الحق في طلب تعديل أو حذف معلوماتكِ الشخصية.</p>
             <p>• الحق في إلغاء الاشتراك من الرسائل التسويقية في أي وقت.</p>
@@ -61,8 +61,8 @@ export default function PrivacyPolicy() {
         </div>
 
         <div className="glass-card p-6 rounded-2xl mt-6">
-          <h2 className="font-display text-lg font-bold text-foreground mb-3">التواصل</h2>
-          <p className="text-xs text-foreground/50 leading-relaxed">أي استفسارات حول سياسة الخصوصية يُرجى التواصل معنا عبر الواتساب أو البريد الإلكتروني.</p>
+          <h2 className="font-display text-lg font-bold text-fg mb-3">التواصل</h2>
+          <p className="text-xs text-fg/50 leading-relaxed">أي استفسارات حول سياسة الخصوصية يُرجى التواصل معنا عبر الواتساب أو البريد الإلكتروني.</p>
         </div>
       </div>
     </div>

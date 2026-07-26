@@ -40,7 +40,7 @@ export function FeatureCard({ feature, className, index = 0 }: FeatureCardProps)
     >
       {/* Subtle gradient glow on hover */}
       <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-        <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute -top-24 -right-24 w-48 h-48 bg-accent-brand/5 rounded-full blur-3xl" />
       </div>
 
       {/* Grid pattern background */}
@@ -59,19 +59,19 @@ export function FeatureCard({ feature, className, index = 0 }: FeatureCardProps)
 
       {/* Icon */}
       <div className="relative z-10 w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:border-primary/25 transition-all duration-500">
-        <feature.icon className="text-primary size-5" strokeWidth={1.5} aria-hidden />
+        <feature.icon className="text-accent-brand size-5" strokeWidth={1.5} aria-hidden />
       </div>
 
       {/* Stat number */}
       {feature.stat && (
-        <span className="relative z-10 text-3xl font-bold text-primary/20 block mb-2 font-display">{feature.stat}</span>
+        <span className="relative z-10 text-3xl font-bold text-accent-brand/20 block mb-2 font-display">{feature.stat}</span>
       )}
 
       {/* Title */}
-      <h3 className="relative z-10 text-base md:text-lg font-bold text-foreground mb-2 group-hover:text-foreground transition-colors duration-300">{feature.title}</h3>
+      <h3 className="relative z-10 text-base md:text-lg font-bold text-fg mb-2 group-hover:text-fg transition-colors duration-300">{feature.title}</h3>
 
       {/* Description */}
-      <p className="relative z-10 text-xs md:text-sm font-light text-foreground/35 leading-relaxed group-hover:text-foreground/50 transition-colors duration-300">{feature.description}</p>
+      <p className="relative z-10 text-xs md:text-sm font-light text-fg/35 leading-relaxed group-hover:text-fg/50 transition-colors duration-300">{feature.description}</p>
 
       {/* Bottom accent line on hover */}
       <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

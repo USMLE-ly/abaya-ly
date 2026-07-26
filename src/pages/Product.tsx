@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones } from "lucide-react";
 import { findProduct, products } from "@/data/products";
+import { Button, Badge, Card } from "@/components/velar";
 
 const trustItems = [
   { icon: Truck, title: "شحن مجاني", description: "لجميع مدن ليبيا — التوصيل خلال 3-5 أيام عمل", stat: "7" },
@@ -23,10 +24,10 @@ export function Product() {
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center glass-card p-10">
-          <h1 className="text-3xl font-bold text-foreground mb-4">المنتج غير موجود</h1>
-          <Link to="/collections" className="text-primary hover:underline">العودة للمجموعات</Link>
-        </div>
+        <Card elevation="raised" padding="xl" className="text-center">
+          <h1 className="text-3xl font-bold text-fg mb-4">المنتج غير موجود</h1>
+          <Link to="/collections"><Button variant="primary">العودة للمجموعات</Button></Link>
+        </Card>
       </div>
     );
   }
@@ -38,7 +39,6 @@ export function Product() {
     if (index === selectedSize || checkingSize !== null) return;
     setCheckingSize(index);
     setSizeMessage('');
-    // Simulate availability check
     setTimeout(() => {
       setCheckingSize(null);
       setSelectedSize(index);
@@ -51,45 +51,41 @@ export function Product() {
 
   return (
     <div>
-      {/* ═══════════ 1. MAIN PRODUCT ═══════════ */}
+      {/* 1. MAIN PRODUCT */}
       <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-24 pb-12">
-        <nav className="flex items-center gap-2 text-xs text-foreground/40 mb-8">
+        <nav className="flex items-center gap-2 text-xs text-fg-tertiary mb-8">
           <Link to="/" className="hover:text-ring transition-colors">الرئيسية</Link>
           <ChevronLeft size={12} />
           <Link to="/collections" className="hover:text-ring transition-colors">المجموعات</Link>
           <ChevronLeft size={12} />
-          <span className="text-foreground font-medium">{product.name}</span>
+          <span className="text-fg font-medium">{product.name}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
           {/* LEFT: IMAGE GALLERY */}
           <div className="relative">
             {product.images.length === 1 ? (
-              /* Single image */
               <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0">
                 <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
                 {product.badge && (
-                  <span className="absolute top-4 right-4 px-4 py-1.5 bg-primary text-white text-xs font-semibold rounded-full">{product.badge}</span>
+                  <Badge tone="brand" className="absolute top-4 right-4">{product.badge}</Badge>
                 )}
               </div>
             ) : (
-              /* Main image + thumbnails on right */
               <div className="flex gap-3">
-                {/* Main image */}
                 <div className="flex-1 relative aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0">
                   <img src={product.images[activeImage]} alt={product.name} className="w-full h-full object-cover" />
                   {product.badge && (
-                    <span className="absolute top-4 right-4 px-4 py-1.5 bg-primary text-white text-xs font-semibold rounded-full">{product.badge}</span>
+                    <Badge tone="brand" className="absolute top-4 right-4">{product.badge}</Badge>
                   )}
                 </div>
-                {/* Thumbnails on right */}
                 <div className="flex flex-col gap-2 w-16 md:w-20 flex-shrink-0">
                   {product.images.map((src, i) => (
                     <button
                       key={i}
                       onClick={() => setActiveImage(i)}
                       className={`aspect-square rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
-                        i === activeImage ? "border-primary" : "border-black/10 hover:border-black/20"
+                        i === activeImage ? "border-primary" : "border-line-subtle hover:border-line-default"
                       }`}
                     >
                       <img src={src} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover" />
@@ -100,135 +96,99 @@ export function Product() {
             )}
           </div>
 
-          {/* RIGHT: PRODUCT INFO */}
+          {/* RIGHT: DETAILS */}
           <div className="flex flex-col">
-            <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">{product.name}</h1>
+            <h1 className="font-display text-3xl font-bold text-fg mb-2">{product.name}</h1>
+            <p className="text-sm text-fg-secondary mb-4">{product.fabric}</p>
+
+            {/* Rating */}
             <div className="flex items-center gap-2 mb-4">
-              <div className="flex gap-0.5">
-                {Array.from({ length: 5 }).map((_, s) => (
-                  <Star key={s} size={14} className={s < Math.round(product.rating) ? "fill-yellow-400 text-yellow-400" : "text-foreground/20"} />
+              <div className="flex items-center gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} size={14} className={i < Math.round(product.rating) ? "fill-accent-brand text-accent-brand" : "text-line-default"} />
                 ))}
               </div>
-              <span className="text-xs text-foreground/40">({product.reviewCount} تقييم)</span>
+              <span className="text-xs text-fg-tertiary">({product.reviewCount} تقييم)</span>
             </div>
+
+            {/* Price */}
             <div className="flex items-baseline gap-3 mb-6">
-              <span className="text-2xl font-bold text-primary">{product.price} د.ل</span>
+              <span className="text-3xl font-bold text-fg">{product.price} د.ل</span>
               {product.originalPrice && (
                 <>
-                  <span className="text-sm text-foreground/30 line-through">{product.originalPrice} د.ل</span>
-                  {savings > 0 && <span className="text-xs glass px-2 py-0.5 rounded-full font-semibold text-primary">وفّري {savings} د.ل</span>}
+                  <span className="text-lg text-fg-tertiary line-through">{product.originalPrice} د.ل</span>
+                  <Badge tone="danger" size="sm">وفر {savings} د.ل</Badge>
                 </>
               )}
             </div>
 
-            {/* More Details Toggle */}
-            {product.highlights && product.highlights.length > 0 && (
-              <div className="mb-5">
-                <details className="group">
-                  <summary className="flex items-center gap-2 cursor-pointer select-none list-none mb-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary group-open:scale-125 transition-transform" />
-                    <span className="text-xs font-semibold text-primary tracking-wide">المزيد من التفاصيل</span>
-                    <svg className="w-3 h-3 text-primary/60 group-open:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </summary>
-                  <div className="overflow-hidden transition-all duration-500 ease-out">
-                    <div className="rounded-2xl p-5 relative overflow-hidden" style={{ background: "var(--color-background)", border: "1px solid rgba(0,0,0,0.04)" }}>
-                      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-                      <div className="relative z-10 space-y-3">
-                        {product.highlights.map((h, i) => (
-                          <div key={i} className="flex items-start gap-3 group/item">
-                            <div className="w-6 h-6 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:scale-110 transition-transform">
-                              <Star size={10} className="text-primary fill-primary" />
-                            </div>
-                            <span className="text-xs text-foreground/60 leading-relaxed group-hover/item:text-foreground/80 transition-colors">{h}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </details>
-              </div>
-            )}
-
-            <p className="text-xs text-foreground/40 mb-4">القماش: {product.fabric}</p>
-
             {/* Colors */}
-            <div className="mb-5">
-              <p className="text-xs font-semibold text-foreground/60 mb-2">اللون: <span className="font-normal text-foreground/80">{primaryColor.name}</span></p>
-              <div className="flex gap-2">
+            <div className="mb-6">
+              <p className="text-xs font-medium text-fg-secondary mb-3">اللون: <span className="text-fg">{primaryColor.name}</span></p>
+              <div className="flex items-center gap-2">
                 {product.colors.map((color, i) => (
-                  <button
+                  <Link
                     key={i}
-                    onClick={() => color.linkTo ? navigate(`/product/${color.linkTo}`) : undefined}
-                    className={`block w-8 h-8 rounded-full border-2 cursor-pointer hover:scale-110 transition-transform ${i === 0 ? "border-primary shadow-lg shadow-primary/20" : "border-black/10 hover:border-black/30"}`}
+                    to={color.linkTo ? `/product/${color.linkTo}` : "#"}
+                    className={`w-8 h-8 rounded-full border-2 transition-all ${i === 0 ? "border-primary ring-2 ring-primary/20" : "border-line-subtle hover:border-line-default"}`}
                     style={{ backgroundColor: color.hex }}
                     title={color.name}
-                    aria-label={color.name}
-                    type="button"
                   />
                 ))}
               </div>
             </div>
 
             {/* Sizes */}
-            <div className="mb-5">
-              <p className="text-xs font-semibold text-foreground/60 mb-2">المقاس: <span className="font-normal text-foreground/80">{product.sizes[selectedSize]}</span></p>
-              <div className="flex gap-2">
-                {product.sizes.map((size, i) => {
-                  const isSelected = i === selectedSize;
-                  const isChecking = checkingSize === i;
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => handleSizeSelect(i)}
-                      disabled={isChecking}
-                      className={`relative w-12 h-12 rounded-xl border-2 text-xs font-bold transition-all duration-300 overflow-hidden ${
-                        isSelected
-                          ? "border-primary bg-primary text-white shadow-lg shadow-primary/20"
-                          : isChecking
-                            ? "border-primary/50 bg-primary/5 text-primary"
-                            : "border-black/10 text-foreground/60 hover:border-primary/40 hover:bg-primary/5"
-                      }`}
-                    >
-                      {isChecking ? (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-                        </div>
-                      ) : (
-                        <span className={isSelected ? "relative z-10" : ""}>{size}</span>
-                      )}
-                      {isSelected && !isChecking && (
-                        <div className="absolute inset-0 bg-primary animate-pulse opacity-20 rounded-xl" />
-                      )}
-                    </button>
-                  );
-                })}
+            <div className="mb-6">
+              <p className="text-xs font-medium text-fg-secondary mb-3">المقاس</p>
+              <div className="flex flex-wrap gap-2">
+                {product.sizes.map((size, i) => (
+                  <Button
+                    key={size}
+                    variant={i === selectedSize ? "primary" : "tertiary"}
+                    size="sm"
+                    onClick={() => handleSizeSelect(i)}
+                    loading={checkingSize === i}
+                  >
+                    {size}
+                  </Button>
+                ))}
               </div>
-              {/* Size availability message */}
               {sizeMessage && (
-                <div className={`mt-2.5 flex items-center gap-2 text-[11px] font-medium transition-all duration-300 ${sizeAvailable ? "text-green-600" : "text-red-400"}`}>
-                  <div className={`w-1.5 h-1.5 rounded-full ${sizeAvailable ? "bg-green-500" : "bg-red-400"} animate-pulse`} />
-                  {sizeMessage}
-                </div>
+                <p className="text-xs text-status-success mt-2">{sizeMessage}</p>
               )}
             </div>
 
             {/* Description */}
-            <div className="glass-card p-4 rounded-xl mb-5">
-              <p className="text-xs text-foreground/50 leading-relaxed">{product.description}</p>
+            <p className="text-sm text-fg-secondary leading-relaxed mb-6">{product.description}</p>
+
+            {/* Details */}
+            <div className="mb-6">
+              <p className="text-xs font-medium text-fg-secondary mb-2">التفاصيل</p>
+              <ul className="space-y-1">
+                {product.details.map((detail, i) => (
+                  <li key={i} className="text-xs text-fg-tertiary flex items-start gap-2">
+                    <span className="text-accent-brand mt-0.5">•</span>
+                    {detail}
+                  </li>
+                ))}
+              </ul>
             </div>
 
             {/* Quantity + Add to Cart */}
-            <div className="flex items-center gap-4 mb-2">
+            <div className="flex items-center gap-3 mb-3">
               <div className="flex items-center glass-card rounded-xl overflow-hidden">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-3 hover:bg-black/5 transition-colors"><Minus size={14} /></button>
-                <span className="px-4 text-sm font-semibold text-foreground min-w-[2rem] text-center">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="p-3 hover:bg-black/5 transition-colors"><Plus size={14} /></button>
+                <Button variant="ghost" iconOnly size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+                  <Minus size={14} />
+                </Button>
+                <span className="px-4 text-sm font-semibold text-fg min-w-[2rem] text-center">{quantity}</span>
+                <Button variant="ghost" iconOnly size="sm" onClick={() => setQuantity(quantity + 1)}>
+                  <Plus size={14} />
+                </Button>
               </div>
-              <button className="flex-1 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors">
+              <Button variant="primary" className="flex-1" size="lg">
                 أضيفي إلى السلة — {product.price * quantity} د.ل
-              </button>
+              </Button>
             </div>
 
             {/* Payment Methods */}
@@ -244,51 +204,53 @@ export function Product() {
         </div>
       </section>
 
-      {/* ═══════════ 2. TRUST ITEMS (Compact) ═══════════ */}
+      {/* 2. TRUST ITEMS */}
       <section className="py-6">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-black/[0.06] divide-x divide-black/[0.06]">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-line-subtle divide-x divide-line-subtle">
             {trustItems.map((item, i) => (
-              <div key={i} className="group relative overflow-hidden px-3 py-4 transition-all duration-500 hover:bg-black/[0.03]">
+              <div key={i} className="group relative overflow-hidden px-3 py-4 transition-all duration-500 hover:bg-sunken">
                 <div className="flex items-center gap-2.5">
-                  <div className="relative z-10 w-7 h-7 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-all duration-500">
-                    <item.icon className="text-primary" size={12} strokeWidth={1.5} />
+                  <div className="relative z-10 w-7 h-7 rounded-xl bg-gradient-to-br from-accent-brand/15 to-accent-brand/5 border border-accent-brand/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-all duration-500">
+                    <item.icon className="text-accent-brand" size={12} strokeWidth={1.5} />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-baseline gap-1.5">
                       {item.stat && (
-                        <span className="text-xs font-bold text-primary/30 font-display">{item.stat}</span>
+                        <span className="text-xs font-bold text-accent-brand/30 font-display">{item.stat}</span>
                       )}
-                      <h3 className="text-[11px] font-bold text-foreground truncate">{item.title}</h3>
+                      <h3 className="text-[11px] font-bold text-fg truncate">{item.title}</h3>
                     </div>
-                    <p className="text-[9px] font-light text-foreground/35 leading-tight truncate">{item.description}</p>
+                    <p className="text-[9px] font-light text-fg-tertiary leading-tight truncate">{item.description}</p>
                   </div>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-accent-brand/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════════ 3. RELATED PRODUCTS ═══════════ */}
+      {/* 3. RELATED PRODUCTS */}
       {related.length > 0 && (
         <section className="py-12">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-            <h2 className="font-display text-2xl font-bold text-foreground text-center mb-10">منتجات <span className="text-primary">ذات صلة</span></h2>
+            <h2 className="font-display text-2xl font-bold text-fg text-center mb-10">منتجات <span className="text-accent-brand">ذات صلة</span></h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {related.map((p) => (
-                <Link key={p.id} to={`/product/${p.id}`} className="glass-card rounded-2xl overflow-hidden hover:scale-[1.02] transition-transform">
-                  <div className="aspect-[3/4] overflow-hidden">
-                    <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="p-3 text-right">
-                    <p className="text-xs font-semibold text-foreground truncate">{p.name}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-sm font-bold text-primary">{p.price} د.ل</span>
-                      {p.originalPrice && <span className="text-xs text-foreground/30 line-through">{p.originalPrice} د.ل</span>}
+                <Link key={p.id} to={`/product/${p.id}`}>
+                  <Card elevation="subtle" padding="none" className="overflow-hidden hover:scale-[1.02] transition-transform">
+                    <div className="aspect-[3/4] overflow-hidden">
+                      <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
                     </div>
-                  </div>
+                    <div className="p-3 text-right">
+                      <p className="text-xs font-semibold text-fg truncate">{p.name}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-sm font-bold text-accent-brand">{p.price} د.ل</span>
+                        {p.originalPrice && <span className="text-xs text-fg-tertiary line-through">{p.originalPrice} د.ل</span>}
+                      </div>
+                    </div>
+                  </Card>
                 </Link>
               ))}
             </div>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Search, ShoppingBag } from "lucide-react";
-import { ThemeToggle } from "@/components/velar";
+import { Button, ThemeToggle } from "@/components/velar";
 
 const navLinks = [
   { label: "الرئيسية", href: "/" },
@@ -26,27 +26,33 @@ export function Header() {
             <Link
               key={link.href}
               to={link.href}
-              className="text-sm font-medium text-foreground/70 hover:text-foreground px-4 py-2 rounded-full hover:bg-black/5 transition-all duration-200"
+              className="text-sm font-medium text-fg-secondary hover:text-fg px-4 py-2 rounded-full hover:bg-sunken transition-all duration-200"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <ThemeToggle className="hidden md:inline-flex" />
-          <button className="p-2 text-foreground/60 hover:text-foreground hover:bg-black/5 rounded-full transition-all">
-            <Search size={20} />
-          </button>
-          <Link to="/cart" className="p-2 text-foreground/60 hover:text-foreground hover:bg-black/5 rounded-full transition-all relative">
-            <ShoppingBag size={20} />
+          <Button variant="ghost" iconOnly size="sm" aria-label="بحث">
+            <Search size={18} />
+          </Button>
+          <Link to="/cart">
+            <Button variant="ghost" iconOnly size="sm" aria-label="سلة التسوق">
+              <ShoppingBag size={18} />
+            </Button>
           </Link>
-          <button
-            className="md:hidden p-2 text-foreground/60 hover:text-foreground hover:bg-black/5 rounded-full transition-all"
+          <Button
+            variant="ghost"
+            iconOnly
+            size="sm"
+            className="md:hidden"
             onClick={() => setOpen(!open)}
+            aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
           >
-            {open ? <X size={22} /> : <Menu size={22} />}
-          </button>
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </Button>
         </div>
       </div>
 
@@ -56,7 +62,7 @@ export function Header() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden overflow-hidden glass-strong border-t border-black/5"
+            className="md:hidden overflow-hidden glass-strong border-t border-line-subtle"
           >
             <nav className="px-4 py-4 flex flex-col gap-1">
               {navLinks.map((link) => (
@@ -64,7 +70,7 @@ export function Header() {
                   key={link.href}
                   to={link.href}
                   onClick={() => setOpen(false)}
-                  className="text-sm font-medium text-foreground/70 hover:text-foreground hover:bg-black/5 px-4 py-3 rounded-xl transition-all"
+                  className="text-sm font-medium text-fg-secondary hover:text-fg hover:bg-sunken px-4 py-3 rounded-xl transition-all"
                 >
                   {link.label}
                 </Link>

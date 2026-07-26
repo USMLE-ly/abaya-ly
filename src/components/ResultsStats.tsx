@@ -11,10 +11,10 @@ export function ResultsStats() {
     <section className="py-16 md:py-24">
       <div className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
-            نتائج <span className="text-primary">عملائنا</span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">
+            نتائج <span className="text-accent-brand">عملائنا</span>
           </h2>
-          <p className="text-sm text-foreground/50">أكثر من ١٠٠٠ امرأة ليبية تثق بنا</p>
+          <p className="text-sm text-fg/50">أكثر من ١٠٠٠ امرأة ليبية تثق بنا</p>
         </div>
         <div className="space-y-8">
           {results.map((stat, i) => (
@@ -26,10 +26,10 @@ export function ResultsStats() {
               transition={{ delay: i * 0.15, duration: 0.5 }}
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-foreground/80">{stat.text}</span>
-                <span className="text-sm font-bold text-primary">{stat.percentage}%</span>
+                <span className="text-sm font-medium text-fg/80">{stat.text}</span>
+                <span className="text-sm font-bold text-accent-brand">{stat.percentage}%</span>
               </div>
-              <div className="w-full h-3 bg-white/60 rounded-full overflow-hidden border border-black/5">
+              <div className="w-full h-3 bg-raised/60 rounded-full overflow-hidden border border-line-subtle">
                 <motion.div
                   initial={{ width: 0 }}
                   whileInView={{ width: `${stat.percentage}%` }}

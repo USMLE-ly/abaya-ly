@@ -68,8 +68,8 @@ export function SlideshowHero() {
                   aria-label={`Go to slide ${i + 1}`}
                   className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
                     i === current
-                      ? "bg-white w-6"
-                      : "bg-white/60 hover:bg-black/5"
+                      ? "bg-raised w-6"
+                      : "bg-raised/60 hover:bg-surface-inverse/5"
                   }`}
                 />
               ))}
@@ -79,7 +79,7 @@ export function SlideshowHero() {
       </div>
 
       {/* Text Below — heading, subheading, button */}
-      <div className="bg-white py-8 md:py-10 text-center px-6">
+      <div className="bg-raised py-8 md:py-10 text-center px-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={current}
@@ -88,15 +88,15 @@ export function SlideshowHero() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.4 }}
           >
-            <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-3 leading-tight">
+            <h2 className="font-display text-3xl md:text-5xl font-bold text-fg mb-3 leading-tight">
               {slides[current].heading}
             </h2>
-            <p className="text-sm md:text-base text-foreground-light mb-6 max-w-lg mx-auto">
+            <p className="text-sm md:text-base text-fg-light mb-6 max-w-lg mx-auto">
               {slides[current].subheading}
             </p>
             <a
               href={slides[current].link}
-              className="inline-block px-8 py-3 bg-primary text-white font-semibold rounded-full hover:bg-primary/90 transition-colors text-sm"
+              className="inline-block px-8 py-3 bg-accent-brand text-fg-inverse font-semibold rounded-full hover:bg-accent-brand/90 transition-colors text-sm"
             >
               {slides[current].cta}
             </a>

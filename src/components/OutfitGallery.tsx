@@ -30,10 +30,10 @@ export function OutfitGallery() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
-            الوصلات <span className="text-primary">الجديدة</span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">
+            الوصلات <span className="text-accent-brand">الجديدة</span>
           </h2>
-          <p className="text-sm text-foreground/50 max-w-lg mx-auto">
+          <p className="text-sm text-fg/50 max-w-lg mx-auto">
             أحدث الإضافات إلى مجموعتنا — تصاميم حصرية بالخامات الفاخرة
           </p>
         </motion.div>
@@ -66,19 +66,19 @@ export function OutfitGallery() {
                 >
                   <button
                     onClick={() => navigate(`/product/${outfit.id}`)}
-                    className="px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-medium hover:bg-white/30 transition-colors flex items-center gap-2"
+                    className="px-4 py-2 rounded-full bg-raised/20 backdrop-blur-md border border-white/30 text-fg-inverse text-xs font-medium hover:bg-raised/30 transition-colors flex items-center gap-2"
                   >
                     <Eye size={14} />
                     عرض
                   </button>
-                  <button className="px-4 py-2 rounded-full bg-primary/80 backdrop-blur-md text-white text-xs font-medium hover:bg-primary transition-colors flex items-center gap-2">
+                  <button className="px-4 py-2 rounded-full bg-accent-brand/80 backdrop-blur-md text-fg-inverse text-xs font-medium hover:bg-accent-brand transition-colors flex items-center gap-2">
                     <ShoppingBag size={14} />
                     أضيفي
                   </button>
                 </div>
                 {/* Badge */}
                 {outfit.badge && (
-                  <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-sm text-white text-[10px] font-bold">
+                  <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-accent-brand/90 backdrop-blur-sm text-fg-inverse text-[10px] font-bold">
                     {outfit.badge}
                   </div>
                 )}
@@ -86,18 +86,18 @@ export function OutfitGallery() {
 
               {/* Info */}
               <div className="p-3 md:p-4 text-right">
-                <h3 className="text-xs md:text-sm font-bold text-foreground mb-1 line-clamp-2">
+                <h3 className="text-xs md:text-sm font-bold text-fg mb-1 line-clamp-2">
                   {outfit.name}
                 </h3>
-                <p className="text-[10px] md:text-[11px] text-foreground/40 mb-2">
+                <p className="text-[10px] md:text-[11px] text-fg/40 mb-2">
                   {outfit.fabric}
                 </p>
                 <div className="flex items-center justify-end gap-2">
-                  <span className="text-xs md:text-sm font-bold text-primary">
+                  <span className="text-xs md:text-sm font-bold text-accent-brand">
                     {outfit.price} د.ل
                   </span>
                   {outfit.originalPrice && (
-                    <span className="text-[10px] md:text-xs text-foreground/30 line-through">
+                    <span className="text-[10px] md:text-xs text-fg/30 line-through">
                       {outfit.originalPrice} د.ل
                     </span>
                   )}

@@ -54,26 +54,26 @@ export default function TermsOfService() {
   return (
     <div className="min-h-screen pt-24 pb-16">
       <div className="max-w-[800px] mx-auto px-4 sm:px-6">
-        <nav className="flex items-center gap-2 text-xs text-foreground/40 mb-8">
+        <nav className="flex items-center gap-2 text-xs text-fg/40 mb-8">
           <Link to="/" className="hover:text-ring transition-colors">الرئيسية</Link>
           <ChevronLeft size={12} />
-          <span className="text-foreground font-medium">شروط الاستخدام</span>
+          <span className="text-fg font-medium">شروط الاستخدام</span>
         </nav>
 
-        <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">شروط <span className="text-primary">الاستخدام</span></h1>
-        <p className="text-sm text-foreground/50 mb-4 leading-relaxed">آخر تحديث: يوليو ٢٠٢٥</p>
-        <p className="text-sm text-foreground/50 mb-10 leading-relaxed">يُرجى قراءة شروط الاستخدام هذه بعناية قبل استخدام موقعنا أو إجراء أي طلب.</p>
+        <h1 className="font-display text-3xl md:text-4xl font-bold text-fg mb-4">شروط <span className="text-accent-brand">الاستخدام</span></h1>
+        <p className="text-sm text-fg/50 mb-4 leading-relaxed">آخر تحديث: يوليو ٢٠٢٥</p>
+        <p className="text-sm text-fg/50 mb-10 leading-relaxed">يُرجى قراءة شروط الاستخدام هذه بعناية قبل استخدام موقعنا أو إجراء أي طلب.</p>
 
         <div className="space-y-6">
           {sections.map((s, i) => (
             <div key={i} className="glass-card p-6 rounded-2xl">
-              <h2 className="font-display text-sm font-bold text-foreground mb-3">{s.title}</h2>
-              <p className="text-xs text-foreground/40 leading-relaxed">
+              <h2 className="font-display text-sm font-bold text-fg mb-3">{s.title}</h2>
+              <p className="text-xs text-fg/40 leading-relaxed">
                 {s.content}
                 {s.link && (
                   <>
                     {" "}
-                    <Link to={s.link} className="text-primary hover:underline">{s.linkText}</Link>.
+                    <Link to={s.link} className="text-accent-brand hover:underline">{s.linkText}</Link>.
                   </>
                 )}
               </p>

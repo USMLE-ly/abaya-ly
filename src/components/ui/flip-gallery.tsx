@@ -122,20 +122,20 @@ export default function FlipGallery() {
       <div className="flex items-center justify-between w-full px-4 py-3 shrink-0">
         <div className="text-left">
           <p className="text-sm text-ring font-semibold leading-tight">{images[currentIndex].subtitle}</p>
-          <p className="text-base text-foreground/80 font-bold leading-tight">{images[currentIndex].title}</p>
+          <p className="text-base text-fg/80 font-bold leading-tight">{images[currentIndex].title}</p>
         </div>
         <div className="flex gap-2">
           <button
             type="button"
             onClick={() => updateIndex(-1)}
-            className="w-11 h-11 rounded-full border border-white/15 bg-white/70 flex items-center justify-center text-foreground/60 hover:text-foreground hover:bg-black/[0.08] transition-all"
+            className="w-11 h-11 rounded-full border border-line-subtle bg-raised/70 flex items-center justify-center text-fg/60 hover:text-fg hover:bg-sunken transition-all"
           >
             <ChevronRight size={18} />
           </button>
           <button
             type="button"
             onClick={() => updateIndex(1)}
-            className="w-11 h-11 rounded-full border border-white/15 bg-white/70 flex items-center justify-center text-foreground/60 hover:text-foreground hover:bg-black/[0.08] transition-all"
+            className="w-11 h-11 rounded-full border border-line-subtle bg-raised/70 flex items-center justify-center text-fg/60 hover:text-fg hover:bg-sunken transition-all"
           >
             <ChevronLeft size={18} />
           </button>

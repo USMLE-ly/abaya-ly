@@ -58,7 +58,7 @@ export default function LuminaHero() {
   };
 
   return (
-    <div className="relative w-full h-[70vh] md:h-[88vh] overflow-hidden bg-black">
+    <div className="relative w-full h-[70vh] md:h-[88vh] overflow-hidden bg-surface-inverse">
       {SLIDES.map((slide, i) => (
         <img
           key={i}
@@ -81,16 +81,16 @@ export default function LuminaHero() {
             {/* Right: text blocks */}
             <div className="flex-1 max-w-lg flex flex-col items-start gap-3">
               {/* Counter */}
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-white/70 backdrop-blur-xl px-5 py-3 self-start">
-                <span className="text-xs font-bold tracking-wider text-foreground/40">
+              <div className="inline-flex items-center gap-2 rounded-2xl border border-line-subtle/10 bg-raised/70 backdrop-blur-xl px-5 py-3 self-start">
+                <span className="text-xs font-bold tracking-wider text-fg/40">
                   {String(idx + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
                 </span>
-                <span className="w-px h-3 bg-black/10" />
-                <span className="text-xs text-foreground/50">الملكة</span>
+                <span className="w-px h-3 bg-surface-inverse/10" />
+                <span className="text-xs text-fg/50">الملكة</span>
               </div>
 
               {/* Subtitle */}
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-white/70 backdrop-blur-xl px-5 py-2 self-start">
+              <div className="inline-flex items-center gap-2 rounded-2xl border border-line-subtle/10 bg-raised/70 backdrop-blur-xl px-5 py-2 self-start">
                 <p className="text-sm font-medium" style={{ color: SLIDES[idx].accent }}>
                   {SLIDES[idx].subtitle}
                 </p>
@@ -99,14 +99,14 @@ export default function LuminaHero() {
               {/* CTA */}
               <a
                 href="/collections"
-                className="inline-block px-7 py-3 rounded-full text-sm font-semibold text-foreground transition-all duration-300 hover:scale-105 self-start"
+                className="inline-block px-7 py-3 rounded-full text-sm font-semibold text-fg transition-all duration-300 hover:scale-105 self-start"
                 style={{ backgroundColor: SLIDES[idx].accent }}
               >
                 اكتشفي المجموعة
               </a>
 
               {/* Progress bar */}
-              <div className="h-[2px] w-full max-w-md rounded-full bg-white/10 overflow-hidden mt-2 self-start">
+              <div className="h-[2px] w-full max-w-md rounded-full bg-raised/10 overflow-hidden mt-2 self-start">
                 <div
                   className="h-full rounded-full"
                   style={{ width: `${progress * 100}%`, backgroundColor: SLIDES[idx].accent, transition: "none" }}
@@ -115,20 +115,20 @@ export default function LuminaHero() {
             </div>
 
             {/* Left: nav dots + arrows */}
-            <div className="hidden md:flex flex-col gap-3 items-center rounded-2xl border border-black/10 bg-white/70 backdrop-blur-xl px-3 py-4">
+            <div className="hidden md:flex flex-col gap-3 items-center rounded-2xl border border-line-subtle/10 bg-raised/70 backdrop-blur-xl px-3 py-4">
               {SLIDES.map((slide, i) => (
                 <button key={i} onClick={() => goTo(i)}>
                   <div
-                    className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? "w-6" : "w-1.5 bg-black/10 hover:bg-black/10"}`}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? "w-6" : "w-1.5 bg-surface-inverse/10 hover:bg-surface-inverse/10"}`}
                     style={i === idx ? { backgroundColor: slide.accent } : undefined}
                   />
                 </button>
               ))}
-              <div className="w-px h-2 bg-white/10 my-1" />
-              <button onClick={() => goTo((idx - 1 + SLIDES.length) % SLIDES.length)} className="w-8 h-8 rounded-xl flex items-center justify-center text-foreground/50 hover:text-foreground hover:bg-black/[0.05] transition-all">
+              <div className="w-px h-2 bg-raised/10 my-1" />
+              <button onClick={() => goTo((idx - 1 + SLIDES.length) % SLIDES.length)} className="w-8 h-8 rounded-xl flex items-center justify-center text-fg/50 hover:text-fg hover:bg-surface-inverse/[0.05] transition-all">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
               </button>
-              <button onClick={() => goTo((idx + 1) % SLIDES.length)} className="w-8 h-8 rounded-xl flex items-center justify-center text-foreground/50 hover:text-foreground hover:bg-black/[0.05] transition-all">
+              <button onClick={() => goTo((idx + 1) % SLIDES.length)} className="w-8 h-8 rounded-xl flex items-center justify-center text-fg/50 hover:text-fg hover:bg-surface-inverse/[0.05] transition-all">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
               </button>
             </div>

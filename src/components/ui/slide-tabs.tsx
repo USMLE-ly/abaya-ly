@@ -30,7 +30,7 @@ export function SlideTabs({ tabs, selectedIndex, onSelect }: SlideTabsProps) {
   return (
     <ul
       onMouseLeave={onMouseLeave}
-      className="relative mx-auto flex w-fit rounded-full border border-black/10 bg-white/60 backdrop-blur-xl p-1"
+      className="relative mx-auto flex w-fit rounded-full border border-line-subtle bg-raised/60 backdrop-blur-xl p-1"
     >
       {tabs.map((tab, i) => (
         <Tab
@@ -61,7 +61,7 @@ const Tab = React.forwardRef<
         const { width } = el.current.getBoundingClientRect();
         setPosition({ left: el.current.offsetLeft, width, opacity: 1 });
       }}
-      className="relative z-10 block cursor-pointer px-4 py-2 text-xs font-medium text-foreground/50 hover:text-foreground transition-colors duration-200 md:px-6 md:py-3 md:text-sm"
+      className="relative z-10 block cursor-pointer px-4 py-2 text-xs font-medium text-fg/50 hover:text-fg transition-colors duration-200 md:px-6 md:py-3 md:text-sm"
     >
       {children}
     </li>
@@ -74,7 +74,7 @@ const Cursor = ({ position }: { position: { left: number; width: number; opacity
     <motion.li
       animate={{ ...position }}
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
-      className="absolute z-0 h-7 rounded-full bg-primary/20 border border-primary/30 md:h-10"
+      className="absolute z-0 h-7 rounded-full bg-accent-brand/20 border border-primary/30 md:h-10"
     />
   );
 };
