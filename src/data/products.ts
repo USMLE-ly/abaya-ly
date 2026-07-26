@@ -208,7 +208,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     description: "فستان الكتف الواحد المخملي — تصميم متماثل بكتف واحد وأكمام طويلة بقصة ميرميد تمنح حضوراً ملكياً.",
     details: ["القصة: ميرميد بكتف واحد وأكمام طويلة", "اللون: شوكولاتي داكن أنيق", "التطريز: يدوي بخيوط ذهبية", "العناية: غسيل جاف فقط"],
-    images: ["/outfits/gold-embroidered-abaya-3.jpg"],
+    images: ["/outfits/gold-embroidered-abaya-3.jpg", "/outfits/gold-embroidered-abaya-3-thumb.jpg"],
     highlights: ["تصميم الكتف الواحد يمنح جرأة أنثوية تخطف الأنظار في أي مناسبة.", "قصة الميرميد تنساب مع حركتكِ بأناقة ساحرة لا تُنسى.", "حضور ملكي يجمع بين الحداثة والأناقة الخالدة."],
     rating: 4.9,
     reviewCount: 62,
