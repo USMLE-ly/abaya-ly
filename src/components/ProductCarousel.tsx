@@ -38,7 +38,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={style}
-        className="relative w-[240px] md:w-[280px] flex-shrink-0 aspect-[9/12] rounded-3xl overflow-hidden cursor-pointer shadow-lg shadow-black/20"
+        className="relative w-[160px] md:w-[280px] flex-shrink-0 aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer shadow-lg shadow-black/20"
       >
         <img src={product.images[0]} alt={product.name} className="absolute inset-0 h-full w-full object-cover" style={{ transform: "translateZ(-20px) scale(1.1)" }} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

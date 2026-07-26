@@ -33,7 +33,7 @@ export function FeatureCard({ feature, className, index = 0 }: FeatureCardProps)
       viewport={{ once: true }}
       transition={{ delay: index * 0.08, duration: 0.5, ease: "easeOut" }}
       className={cn(
-        'group relative overflow-hidden p-8 transition-all duration-500',
+        'group relative overflow-hidden p-6 md:p-8 transition-all duration-500 w-full',
         'hover:bg-black/[0.03]',
         className
       )}
@@ -58,17 +58,17 @@ export function FeatureCard({ feature, className, index = 0 }: FeatureCardProps)
       </div>
 
       {/* Icon */}
-      <div className="relative z-10 w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:border-primary/25 transition-all duration-500">
+      <div className="relative z-10 w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 group-hover:border-primary/25 transition-all duration-500">
         <feature.icon className="text-accent-brand size-5" strokeWidth={1.5} aria-hidden />
       </div>
 
       {/* Stat number */}
       {feature.stat && (
-        <span className="relative z-10 text-3xl font-bold text-accent-brand/20 block mb-2 font-display">{feature.stat}</span>
+        <span className="relative z-10 text-2xl md:text-3xl font-bold text-accent-brand/20 block mb-2 font-display">{feature.stat}</span>
       )}
 
       {/* Title */}
-      <h3 className="relative z-10 text-base md:text-lg font-bold text-fg mb-2 group-hover:text-fg transition-colors duration-300">{feature.title}</h3>
+      <h3 className="relative z-10 text-sm md:text-lg font-bold text-fg mb-2 group-hover:text-fg transition-colors duration-300">{feature.title}</h3>
 
       {/* Description */}
       <p className="relative z-10 text-xs md:text-sm font-light text-fg/35 leading-relaxed group-hover:text-fg/50 transition-colors duration-300">{feature.description}</p>

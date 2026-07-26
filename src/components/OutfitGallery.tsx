@@ -30,7 +30,7 @@ export function OutfitGallery() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">
+          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-fg mb-3">
             الوصلات <span className="text-accent-brand">الجديدة</span>
           </h2>
           <p className="text-sm text-fg/50 max-w-lg mx-auto">
@@ -38,8 +38,8 @@ export function OutfitGallery() {
           </p>
         </motion.div>
 
-        {/* Outfits Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        {/* Outfits Grid — larger cards that fill space */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
           {newOutfits.map((outfit, index) => (
             <motion.div
               key={outfit.id}
@@ -51,8 +51,8 @@ export function OutfitGallery() {
               onMouseEnter={() => setHoveredId(outfit.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
-              {/* Image */}
-              <div className="relative aspect-[3/4] overflow-hidden">
+              {/* Image — fills the card completely */}
+              <div className="relative aspect-[3/4] w-full overflow-hidden">
                 <img
                   src={outfit.images[0]}
                   alt={outfit.name}
@@ -84,12 +84,12 @@ export function OutfitGallery() {
                 )}
               </div>
 
-              {/* Info */}
+              {/* Info — full width, no truncation */}
               <div className="p-3 md:p-4 text-right">
-                <h3 className="text-xs md:text-sm font-bold text-fg mb-1 line-clamp-2">
+                <h3 className="text-sm md:text-base font-bold text-fg mb-1 leading-snug">
                   {outfit.name}
                 </h3>
-                <p className="text-[10px] md:text-[11px] text-fg/40 mb-2">
+                <p className="text-[11px] md:text-xs text-fg/40 mb-2 leading-relaxed">
                   {outfit.fabric}
                 </p>
                 <div className="flex items-center justify-end gap-2">

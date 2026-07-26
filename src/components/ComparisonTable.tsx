@@ -15,7 +15,7 @@ export function ComparisonTable() {
     <section className="py-16 md:py-24">
       <div className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">
+          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-fg mb-3">
             لماذا <span className="text-accent-brand">الملكة</span>؟
           </h2>
           <p className="text-sm text-fg-tertiary max-w-xl mx-auto">
@@ -23,12 +23,13 @@ export function ComparisonTable() {
           </p>
         </div>
 
+        {/* Desktop: table view */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="glass-card overflow-hidden"
+          className="glass-card overflow-hidden hidden sm:block"
         >
           <table className="w-full text-sm">
             <thead>
@@ -68,6 +69,54 @@ export function ComparisonTable() {
               ))}
             </tbody>
           </table>
+        </motion.div>
+
+        {/* Mobile: card-based layout */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="sm:hidden space-y-3"
+        >
+          {rows.map((row, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05, duration: 0.3 }}
+              className="glass-card p-4 flex items-center justify-between"
+            >
+              <span className="text-sm font-medium text-fg-secondary flex-1">{row.benefit}</span>
+              <div className="flex items-center gap-4 mr-4">
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-[10px] text-accent-brand font-semibold">الملكة</span>
+                  {row.us ? (
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-status-success text-fg-inverse">
+                      <Check size={14} strokeWidth={3} />
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sunken text-fg-disabled">
+                      <X size={14} strokeWidth={3} />
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-[10px] text-fg-tertiary font-semibold">الآخرون</span>
+                  {row.others ? (
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-status-success text-fg-inverse">
+                      <Check size={14} strokeWidth={3} />
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sunken text-fg-disabled">
+                      <X size={14} strokeWidth={3} />
+                    </span>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </section>
