@@ -148,7 +148,7 @@ export const products: Product[] = [
     images: ["/outfits/white-lace-abaya.jpg", "/outfits/white-lace-abaya-thumb.jpg"],
     highlights: ["أناقة وردية ناعمة تمنحكي إطلالة راقية تخطف الأنظار في كل مناسبة.", "تصميم محتشم بتفاصيل رقيقة يجمع بين الفخامة والراحة في قطعة واحدة.", "لون وردي مخملي يعكس ذوقكِ الرفيع ويمنحكِ ثقة متألقة."],
     rating: 4.7,
-    reviewCount: 29,
+    reviewCount: 28,
   },
   {
     id: "floral-sleeve",
