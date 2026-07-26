@@ -230,8 +230,8 @@
   --shadow-elevation-5: 0 24px 64px var(--shadow-16);
 
   /* ── Typography ── */
-  --font-display: "Zodiak", "Arslan Wessam B", "Noto Kufi Arabic", ui-serif, serif;
-  --font-body:    "Inter", "Almarai", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Zodiak", "Arslan Wessam B", ui-serif, serif;
+  --font-body:    "Inter", "Arslan Wessam B", ui-sans-serif, system-ui, sans-serif;
   --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --font-size-2xs:  11px;
@@ -591,10 +591,10 @@
   --radius-full: 9999px;
 
   /* ── Typography (direct values, no self-refs) ── */
-  --font-display: "Zodiak", "Arslan Wessam B", "Noto Kufi Arabic", ui-serif, serif;
-  --font-body:    "Inter", "Almarai", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Zodiak", "Arslan Wessam B", ui-serif, serif;
+  --font-body:    "Inter", "Arslan Wessam B", ui-sans-serif, system-ui, sans-serif;
   --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-sans:    "Inter", "Almarai", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    "Inter", "Arslan Wessam B", ui-sans-serif, system-ui, sans-serif;
 
   --text-2xs: 11px;
   --text-2xs--line-height: 14px;
