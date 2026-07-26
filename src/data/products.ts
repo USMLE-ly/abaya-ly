@@ -358,6 +358,23 @@ export const products: Product[] = [
     rating: 4.8,
     reviewCount: 39,
   },
+  {
+    id: "navy-tie-neck",
+    name: "فستان الكحلي بأربطة الرقبة",
+    fabric: "شيفون فاخر",
+    category: "الكاجوال",
+    price: 310,
+    originalPrice: 380,
+    badge: "جديد",
+    colors: [{"name": "كحلي غامق", "hex": "#1a2744"}, {"name": "أسود", "hex": "#000000", "linkTo": "olive-ruffle"}, {"name": "أبيض", "hex": "#FFFFFF", "linkTo": "al-sahra-gold"}],
+    sizes: ["S", "M", "L", "XL"],
+    description: "فستان الكحلي بأربطة الرقبة — تصميم أنيق بأربطة مزخرفة عند الرقبة وأكمام منسابة تمنح إطلالة أنثوية راقية.",
+    details: ["القصة: أنيقة بأكمام طويلة منسابة", "اللون: كحلي غامق", "التفاصيل: أربطة مزخرفة عند الرقبة وحزام خصر", "الطول: ميدي", "العناية: غسيل يدوي بارد"],
+    images: ["/outfits/navy-tie-neck-abaya.jpg"],
+    highlights: ["أربطة مزخرفة عند الرقبة تضفي لمسة فريدة من الأناقة والعصرية على كل إطلالة.", "أكمام منسابة مع قصة محتشمة تجمع بين الراحة والرقي في تصميم واحد.", "قماش شيفون فاخر ينساب مع الحركة ليمنحكِ أناقة تخطف الأنظار في كل مناسبة."],
+    rating: 4.7,
+    reviewCount: 12,
+  },
 ];
 
 export const findProduct = (id: string) => products.find((p) => p.id === id);
