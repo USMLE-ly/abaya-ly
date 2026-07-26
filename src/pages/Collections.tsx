@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { products, collections } from "@/data/products";
-import { Star } from "lucide-react";
+import { Star, Eye, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/velar";
 import { Badge } from "@/components/velar";
 
 export function Collections() {
   const [active, setActive] = useState("all");
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
   const list = active === "all" ? products : products.filter((p) => p.category === active);
 
   return (
@@ -38,8 +39,8 @@ export function Collections() {
             ))}
           </div>
 
-          {/* Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          {/* Grid — glassmorphism cards matching OutfitGallery */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6" style={{ direction: "rtl" }}>
             {list.map((product, i) => (
               <motion.div
                 key={product.id}
@@ -47,25 +48,87 @@ export function Collections() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.04, duration: 0.35 }}
               >
-                <Link to={`/product/${product.id}`} className="group block">
-                  <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-3 glass-card border-0 p-0">
-                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    {product.badge && (
-                      <Badge tone="brand" size="sm" className="absolute top-3 right-3">{product.badge}</Badge>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-surface-inverse/60 via-transparent to-transparent" />
-                    <div className="absolute bottom-3 left-3 right-3">
-                      <h3 className="text-xs font-semibold text-fg line-clamp-1">{product.name}</h3>
-                      <div className="flex items-center gap-0.5 mt-1">
-                        {Array.from({ length: 5 }).map((_, s) => (
-                          <Star key={s} size={9} className={s < Math.round(product.rating) ? "fill-warning text-warning" : "text-fg-quaternary"} />
-                        ))}
-                        <span className="text-[8px] text-fg-quaternary mr-1">({product.reviewCount})</span>
+                <Link
+                  to={`/product/${product.id}`}
+                  className="group block"
+                  onMouseEnter={() => setHoveredId(product.id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                >
+                  <div
+                    className="relative overflow-hidden rounded-2xl transition-all duration-500"
+                    style={{
+                      background: "rgba(255,255,255,0.7)",
+                      backdropFilter: "blur(20px)",
+                      WebkitBackdropFilter: "blur(20px)",
+                      border: hoveredId === product.id ? "1px solid rgba(196,40,85,0.2)" : "1px solid rgba(196,40,85,0.12)",
+                      boxShadow: hoveredId === product.id ? "0 8px 24px rgba(17,15,13,0.08)" : "0 1px 4px rgba(17,15,13,0.04)",
+                    }}
+                  >
+                    {/* Image */}
+                    <div className="relative aspect-[3/4] w-full overflow-hidden">
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      {/* Glassmorphism overlay on hover */}
+                      <div
+                        className={`absolute inset-0 transition-all duration-500 flex flex-col items-center justify-center gap-3 ${
+                          hoveredId === product.id ? "opacity-100" : "opacity-0"
+                        }`}
+                        style={{
+                          background: "linear-gradient(135deg, rgba(255,228,235,0.3), rgba(255,233,218,0.3))",
+                          backdropFilter: "blur(8px)",
+                          WebkitBackdropFilter: "blur(8px)",
+                        }}
+                      >
+                        <button
+                          className="px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-md border border-white/40 text-fg text-xs font-semibold hover:bg-white/90 transition-all duration-300 flex items-center gap-2 shadow-e1"
+                        >
+                          <Eye size={14} />
+                          عرض
+                        </button>
+                        <button
+                          className="px-5 py-2.5 rounded-full backdrop-blur-md text-fg-inverse text-xs font-semibold transition-all duration-300 flex items-center gap-2 shadow-e2"
+                          style={{ backgroundColor: "#c42855" }}
+                        >
+                          <ShoppingBag size={14} />
+                          أضيفي
+                        </button>
                       </div>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs font-bold text-accent-brand">{product.price} د.ل</span>
+                      {/* Badge */}
+                      {product.badge && (
+                        <div
+                          className="absolute top-3 right-3 px-3 py-1 rounded-full text-fg-inverse text-[10px] font-bold"
+                          style={{ backgroundColor: "#c42855" }}
+                        >
+                          {product.badge}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Info */}
+                    <div className="p-3 sm:p-4 md:p-5 text-right">
+                      <h3
+                        className="text-sm sm:text-base md:text-lg font-bold text-fg mb-1 leading-snug font-display"
+                        style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
+                      >
+                        {product.name}
+                      </h3>
+                      <div className="flex items-center gap-0.5 mb-2 justify-end">
+                        {Array.from({ length: 5 }).map((_, s) => (
+                          <Star key={s} size={10} className={s < Math.round(product.rating) ? "fill-warning text-warning" : "text-fg-quaternary"} />
+                        ))}
+                        <span className="text-[9px] text-fg-quaternary mr-1">({product.reviewCount})</span>
+                      </div>
+                      <div className="flex items-center justify-end gap-2">
+                        <span className="text-xs sm:text-sm md:text-base font-bold text-accent-brand">
+                          {product.price} د.ل
+                        </span>
                         {product.originalPrice && (
-                          <span className="text-[10px] text-fg-quaternary line-through">{product.originalPrice} د.ل</span>
+                          <span className="text-[10px] md:text-xs text-fg-disabled line-through">
+                            {product.originalPrice} د.ل
+                          </span>
                         )}
                       </div>
                     </div>
