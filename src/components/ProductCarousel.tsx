@@ -67,7 +67,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
           {/* Title overlay — no backdrop-filter */}
           <div className="inline-block rounded-2xl border border-white/15 p-3 sm:p-4 mb-3 w-fit max-w-full" style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
             <h3
-              className="text-sm md:text-base font-bold text-white leading-tight mb-0.5"
+              className="text-sm md:text-base font-bold text-fg leading-tight mb-0.5"
               style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
             >
               {product.name}
@@ -77,7 +77,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
           <div className="inline-flex self-start">
             <div className="rounded-full border border-white/15 px-4 py-1.5 flex items-baseline gap-1.5" style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
               <span className="text-sm font-bold text-accent-brand">{product.price} د.ل</span>
-              {product.originalPrice && <span className="text-[10px] text-white/50 line-through">{product.originalPrice} د.ل</span>}
+              {product.originalPrice && <span className="text-[10px] text-fg/50 line-through">{product.originalPrice} د.ل</span>}
             </div>
           </div>
         </div>
