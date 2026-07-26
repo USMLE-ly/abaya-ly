@@ -192,7 +192,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     description: "فستان أناقة الكتف المنسابة — تصميم أنيق بأكمام طويلة وتفاصيل كتف منسدلة تمنح حضوراً ملكياً.",
     details: ["القصة: فضفاضة مع أكمام طويلة", "اللون: نبيذي غامق أنيق", "التطريز: يدوي بخيوط ذهبية", "العناية: غسيل جاف فقط"],
-    images: ["/outfits/gold-embroidered-abaya-2.jpg"],
+    images: ["/outfits/gold-embroidered-abaya-2.jpg", "/outfits/gold-embroidered-abaya-2-thumb.jpg"],
     highlights: ["تصميم الكتف المنساب يمنح ثقة ملكية لا تُضاهى.", "أكمام طويلة تنساب مع كل حركة بأناقة ساحرة.", "حضور مبهر يجمع بين الرقة والجرأة في مناسبة واحدة."],
     rating: 4.9,
     reviewCount: 62,
