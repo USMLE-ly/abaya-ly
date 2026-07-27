@@ -230,9 +230,9 @@
   --shadow-elevation-5: 0 24px 64px var(--shadow-16);
 
   /* ── Typography ── */
-  --font-display: "Zodiak", "Arslan Wessam B", ui-serif, serif;
-  --font-body:    "Inter", "Arslan Wessam B", ui-sans-serif, system-ui, sans-serif;
-  --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: "Tajawal", system-ui, sans-serif;
+  --font-body:    "Tajawal", system-ui, sans-serif;
+  --font-mono:    "Tajawal", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --font-size-2xs:  11px;
   --font-size-xs:   12px;
