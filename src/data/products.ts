@@ -392,16 +392,6 @@ export const products: Product[] = [
     rating: 4.8,
     reviewCount: 15,
   },
-];
-
-export const findProduct = (id: string) => products.find((p) => p.id === id);
-
-export const collections = [
-  { id: "all", name: "الكل" },
-  { id: "السهرة", name: "السهرة" },
-  { id: "الكاجوال", name: "الكاجوال" },
-  { id: "الرسمية", name: "الرسمية" },
-  { id: "المطرّزة", name: "المطرّزة" },
   {
     id: "olive-elegant",
     name: "فستان الزيتون الأنيق",
@@ -583,4 +573,13 @@ export const collections = [
     reviewCount: 0,
   },
 ];
-// redeploy 1785116749
+
+export const findProduct = (id: string) => products.find((p) => p.id === id);
+
+export const collections = [
+  { id: "all", name: "الكل" },
+  { id: "السهرة", name: "السهرة" },
+  { id: "الكاجوال", name: "الكاجوال" },
+  { id: "الرسمية", name: "الرسمية" },
+  { id: "المطرّزة", name: "المطرّزة" },
+];
