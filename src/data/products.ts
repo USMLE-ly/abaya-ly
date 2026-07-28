@@ -116,9 +116,7 @@ const base: BaseFields[] = [
   { id: "white-polka-dot", fabric: "شيفون فاخر", category: "الكاجوال", price: 290, originalPrice: 360, badge: "جديد",
     colors: [{name:"عنابي",hex:"#722F37"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/white-polka-dot-abaya.jpg","/outfits/white-polka-dot-abaya-thumb.jpg"], rating: 4.8, reviewCount: 15 },
-  { id: "olive-elegant", fabric: "شيفون فاخر", category: "الكاجوال", price: 300, originalPrice: 370, badge: "جديد",
-    colors: [{name:"أخضر زيتوني",hex:"#556B2F"},{name:"أسود",hex:"#000000",linkTo:"olive-ruffle"},{name:"كريمي",hex:"#f5f0e8",linkTo:"floral-sleeve"}],
-    sizes: ["S","M","L","XL"], images: ["/outfits/olive-elegant-abaya.jpg"], rating: 4.7, reviewCount: 18 },
+  
   { id: "midnight-rose", fabric: "ساتان مخملي", category: "السهرة", price: 420, originalPrice: 500, badge: "جديد",
     colors: [{name:"عنابي",hex:"#722F37"}], sizes: ["S","M","L","XL"], images: ["/outfits/midnight-rose-abaya.jpg"], rating: 4.9, reviewCount: 0 },
   { id: "pearl-dream", fabric: "شيفون حريري", category: "الرسمية", price: 370, originalPrice: 440,
@@ -500,21 +498,7 @@ const meta: Record<string, Meta> = {
     slug: "rouge-heritage-hana-فستان-عنابي-ميدي",
     tags: ["كاجوال","عنابي","ميدي","أكمام-طويلة","شيفون","محتشم","نسائي","نهاري","Rouge-Héritage","Hana","أنيق","راقي","دافئ","لون-موحّد","خالد","خريف","شتاء","تجمّعات","خروجات","احترافي"],
   },
-  "olive-elegant": {
-    collection: "Botanique", model: "Malak",
-    descriptor: "فستان كاجوال أخضر زيتي بأكمام ثلاثة أرباع بطول ميدي",
-    subtitle: "زيتي دافئ بأنوثة طبيعية.",
-    description: "من مجموعة Botanique، Malak فستان كاجوال بلون أخضر زيتي دافئ يستدعي طبيعة البحر المتوسط. قصّة محتشمة بأكمام ثلاثة أرباع تمنح حرية حركة وأناقة راقية. الطول ميدي مثالي لأوقات نهارية متعدّدة. شيفون فاخر خفيف يتماوج مع الحركة ويعكس الضوء بلطف. قطعة تجمع بين الراحة والأناقة في تصميم واحد، وتُقدّم الأخضر بلغة نباتية معاصرة. لون واحد دافئ يكفي وحده لبناء حضور طبيعي هادئ يعكس ذوقاً رفيعاً بعيداً عن الألوان الصاخبة.",
-    highlights: [
-      "لون أخضر زيتي دافئ.",
-      "أكمام ثلاثة أرباع مريحة.",
-      "قصّة ميدي محتشمة.",
-    ],
-    details: ["الطول: ميدي","القصة: محتشمة بأكمام ثلاثة أرباع","اللون: أخضر زيتي","الخامة: شيفون فاخر","العناية: غسيل يدوي بارد"],
-    seoName: "فستان كاجوال أخضر زيتي — مجموعة Botanique",
-    slug: "botanique-malak-فستان-زيتي-ميدي",
-    tags: ["كاجوال","أخضر-زيتي","ميدي","أكمام-ثلاثة-أرباع","شيفون","محتشم","نسائي","نهاري","Botanique","Malak","أنيق","راقي","طبيعي","دافئ","لون-موحّد","خالد","خريف","تجمّعات","خروجات","نباتي"],
-  },
+  
   "midnight-rose": {
     collection: "Rouge Héritage", model: "Farah",
     descriptor: "فستان سهرة عنابي مخملي بطول ميدي",
