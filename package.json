@@ -9,7 +9,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "validate": "npx tsx automation/validate-products.ts || echo '⚠ Validation warnings found (non-blocking)'"
+    "validate": "npx tsx automation/validate-products.ts || echo '\u26a0 Validation warnings found (non-blocking)'",
+    "prebuild": "npx tsx automation/validate-products.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
