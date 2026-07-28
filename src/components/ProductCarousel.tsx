@@ -37,7 +37,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onMouseEnter={handleMouseEnter}
-        className="relative w-[320px] md:w-[280px] flex-shrink-0 aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer"
+        className="relative min-w-[100vw] sm:min-w-0 sm:w-[280px] flex-shrink-0 aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer"
         style={{ willChange: "transform" }}
       >
         <img
@@ -66,9 +66,6 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
 
           {/* Title overlay */}
           <div className="inline-block rounded-2xl border border-white/15 p-3 sm:p-4 mb-3 w-fit max-w-full" style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
-            <p className="text-[9px] uppercase tracking-[0.2em] text-accent-brand font-semibold mb-0.5">
-              {product.collection} <span className="text-fg/40">•</span> {product.model}
-            </p>
             <h3
               className="text-sm md:text-base font-bold text-fg leading-tight mb-0.5"
               style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
@@ -97,8 +94,15 @@ export function ProductCarousel() {
   const checkScroll = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
-    setAtStart(el.scrollLeft <= 5);
-    setAtEnd(Math.abs(el.scrollWidth - el.scrollLeft - el.clientWidth) < 5);
+    const isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+    if (isRtl) {
+      // RTL: scrollLeft: 0 = rightmost (start), negative = scrolled left
+      setAtStart(el.scrollLeft >= 0);
+      setAtEnd(el.scrollLeft <= -(el.scrollWidth - el.clientWidth));
+    } else {
+      setAtStart(el.scrollLeft <= 5);
+      setAtEnd(Math.abs(el.scrollWidth - el.scrollLeft - el.clientWidth) < 5);
+    }
   }, []);
 
   useEffect(() => {
@@ -127,12 +131,11 @@ export function ProductCarousel() {
           <Link to="/collections" className="text-xs font-semibold text-accent-brand hover:underline hidden sm:block">عرض الكل ←</Link>
         </div>
 
-        {/* Horizontal scrollable carousel */}
-        <div className="relative group">
+        {/* Horizontal scrollable carousel — no snap, no smooth class */}
+        <div className="relative group -mx-4 sm:-mx-6 lg:-mx-10">
           <div
             ref={scrollRef}
             className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide"
-            dir="ltr"
             onScroll={checkScroll}
           >
             {products.map((product) => (
@@ -141,8 +144,8 @@ export function ProductCarousel() {
               </div>
             ))}
           </div>
-          {!atStart && <button onClick={() => scroll("left")} className="absolute left-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronLeft size={18} className="text-fg" /></button>}
-          {!atEnd && <button onClick={() => scroll("right")} className="absolute right-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronRight size={18} className="text-fg" /></button>}
+          {!atEnd && <button onClick={() => scroll("left")} className="absolute left-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronLeft size={18} className="text-fg" /></button>}
+          {!atStart && <button onClick={() => scroll("right")} className="absolute right-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronRight size={18} className="text-fg" /></button>}
         </div>
 
         <div className="text-center mt-6 sm:hidden">
