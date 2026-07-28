@@ -168,7 +168,7 @@ export function Product() {
       <JsonLdScript product={product} />
 
       {/* 1. MAIN PRODUCT */}
-      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-24 pb-12">
+      <section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-24 pb-12">
         <nav className="flex items-center gap-2 text-xs text-fg-tertiary mb-8">
           <Link to="/" className="hover:text-ring transition-colors">الرئيسية</Link>
           <ChevronLeft size={12} />
@@ -379,7 +379,7 @@ export function Product() {
       {/* 3. TAG-BASED RELATED PRODUCTS */}
       {related.length > 0 && (
         <section className="py-12">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+          <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
             <div className="text-center mb-10">
               <h2 className="font-display text-2xl font-bold text-fg mb-2">منتجات <span className="text-accent-brand">مختارة لكِ</span></h2>
               <p className="text-xs text-fg-tertiary">بناءً على المجموعة، الألوان، وستايل التصميم</p>
