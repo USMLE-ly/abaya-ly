@@ -66,11 +66,14 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
 
           {/* Title overlay */}
           <div className="inline-block rounded-2xl border border-white/15 p-3 sm:p-4 mb-3 w-fit max-w-full" style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
+            <p className="text-[9px] uppercase tracking-[0.2em] text-accent-brand font-semibold mb-0.5">
+              {product.collection} <span className="text-fg/40">•</span> {product.model}
+            </p>
             <h3
               className="text-sm md:text-base font-bold text-fg leading-tight mb-0.5"
               style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
             >
-              {product.name}
+              {product.name.split(" • ")[2] ?? product.name}
             </h3>
           </div>
 

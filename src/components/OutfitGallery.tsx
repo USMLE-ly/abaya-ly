@@ -122,11 +122,14 @@ export function OutfitGallery() {
 
               {/* Info — VELAR typography */}
               <div className="p-3 sm:p-4 md:p-5 text-right">
+                <p className="text-[10px] uppercase tracking-[0.15em] text-accent-brand/70 font-semibold mb-1">
+                  {outfit.collection} <span className="text-fg/40">•</span> {outfit.model}
+                </p>
                 <h3
                   className="text-sm sm:text-base md:text-lg font-bold text-fg mb-1 leading-snug font-display"
                   style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
                 >
-                  {outfit.name}
+                  {outfit.name.split(" • ")[2] ?? outfit.name}
                 </h3>
                 <p className="text-[10px] sm:text-xs md:text-sm text-fg-tertiary mb-2 leading-relaxed">
                 </p>

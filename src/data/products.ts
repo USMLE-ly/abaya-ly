@@ -48,7 +48,7 @@ type BaseFields = Pick<Product,
 
 const base: BaseFields[] = [
   { id: "al-sahra-gold", fabric: "ساتان فاخر", category: "السهرة", price: 380, originalPrice: 450, badge: "الأكثر مبيعاً",
-    colors: [{name:"أبيض",hex:"#FFFFFF"},{name:"أسود",hex:"#111827",linkTo:"mesh-geometric"}],
+    colors: [{name:"أبيض",hex:"#FFFFFF"},{name:"وردي",hex:"#E8A0BF"}],
     sizes: ["S","M","L","XL"], images: ["/images/products/abaya-1.jpg","/images/products/abaya-1-thumb.jpg"], rating: 4.9, reviewCount: 47 },
   { id: "olive-ruffle", fabric: "ساتان فاخر", category: "السهرة", price: 320, originalPrice: 400, badge: "جديد",
     colors: [{name:"أسود",hex:"#000000"},{name:"ذهبي",hex:"#FFD700",linkTo:"cream-silk"},{name:"أزرق سماوي",hex:"#a9d1e7",linkTo:"red-velvet"},{name:"وردي",hex:"#FFC0CB",linkTo:"white-lace"},{name:"كريمي",hex:"#f5f0e8",linkTo:"floral-sleeve"}],
