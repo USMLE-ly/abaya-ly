@@ -131,7 +131,7 @@ export function ProductCarousel() {
         <div className="relative group">
           <div
             ref={scrollRef}
-            className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide"
+            className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide" style={{ direction: "ltr" }}
             onScroll={checkScroll}
           >
             {products.map((product) => (
