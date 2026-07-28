@@ -32,7 +32,7 @@ export function ComparisonTable() {
           className="glass-card overflow-hidden"
         >
           <div className="overflow-x-auto">
-            <table className="w-full text-xs sm:text-sm min-w-[480px]" style={{ direction: "rtl" }}>
+            <table className="w-full text-xs sm:text-sm min-w-0" style={{ direction: "rtl" }}>
               <thead>
                 <tr className="glass-strong">
                   <th className="text-right p-3 sm:p-4 md:p-5 font-semibold text-fg w-1/2">الميزة</th>

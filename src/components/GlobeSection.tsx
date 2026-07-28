@@ -32,7 +32,7 @@ function GlobeCanvas() {
     canvas.style.margin = "0 auto"
     mount.appendChild(canvas)
 
-    const size = 420
+    const size = Math.min(420, mount.clientWidth || 420)
     const dpr = Math.min(window.devicePixelRatio, 2)
 
     canvas.width = size * dpr
@@ -147,8 +147,9 @@ function GlobeCanvas() {
     <div
       ref={mountRef}
       style={{
-        width: 420,
-        height: 420,
+        width: "100%",
+        maxWidth: 420,
+        aspectRatio: "1 / 1",
         opacity: ready ? 1 : 0,
         transition: "opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
       }}

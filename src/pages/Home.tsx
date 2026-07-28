@@ -60,7 +60,7 @@ export function Home() {
             اكتشفي أحدث تصميماتنا من الفساتين الفاخرة
           </p>
         </div>
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center overflow-hidden max-w-full">
           <IPhoneMockup model="15-pro" color="natural-titanium" scale={0.65}>
             <FlipGallery />
           </IPhoneMockup>
