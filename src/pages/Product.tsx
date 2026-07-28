@@ -147,7 +147,7 @@ export function Product() {
 
   const savings = product.originalPrice ? product.originalPrice - product.price : 0;
   const primaryColor = product.colors[0] ?? { name: "غير محدد", hex: "transparent" };
-  const descriptor = product.name;
+  const descriptor = product.name.split(" • ")[2] ?? product.name;
   const related = getRelatedProducts(product);
 
   const handleSizeSelect = (index: number) => {
@@ -404,7 +404,7 @@ export function Product() {
                     </div>
                     <div className="p-3 text-right">
                       <p className="text-[10px] uppercase tracking-[0.15em] text-accent-brand/70 font-semibold mb-0.5">{p.collection}</p>
-                      <p className="text-xs font-semibold text-fg truncate">{p.name}</p>
+                      <p className="text-xs font-semibold text-fg truncate">{p.name.split(" • ")[2] ?? p.name}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-sm font-bold text-accent-brand">{p.price} د.ل</span>
                         {p.originalPrice && <span className="text-xs text-fg-tertiary line-through">{p.originalPrice} د.ل</span>}
