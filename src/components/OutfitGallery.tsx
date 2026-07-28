@@ -11,7 +11,7 @@ const newOutfitIds = [
   "white-lace", "night-velvet", "floral-sleeve", "black-lace", "mesh-geometric",
   "gold-emb-1", "gold-emb-2", "gold-emb-3", "gold-emb-4", "gold-emb-5", "gold-emb-6",
   "geo-gold-1", "geo-gold-2", "geo-gold-3", "geo-gold-4", "geo-gold-5", "geo-gold-6", "geo-gold-7",
-  "navy-tie-neck", "white-polka-dot", ,
+  "navy-tie-neck", "white-polka-dot", "olive-elegant",
   "midnight-rose", "pearl-dream", "desert-gold", "moonlight-silver", "silk-cloud",
   "velvet-burgundy", "ocean-breeze", "ivory-grace", "cherry-blossom", "obsidian-mist",
 ];
