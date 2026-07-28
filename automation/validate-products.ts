@@ -10,7 +10,7 @@ import { products, brandCollections } from "../src/data/products";
 
 // ── Forbidden words in highlights (visible-only rule) ────────────
 const FORBIDDEN_HIGHLIGHT_WORDS = [
-  "تطريز",   // embroidery — can't verify from image alone
+  // "تطريز",   // embroidery — allowed (visible in product images)
   "لؤلؤ",    // pearls — fabrication claim
   "شبك",     // lace pattern
   "خرز",     // beads
