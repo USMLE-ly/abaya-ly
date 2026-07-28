@@ -58,7 +58,7 @@ export function Product() {
           <ChevronLeft size={12} />
           <Link to="/collections" className="hover:text-ring transition-colors">المجموعات</Link>
           <ChevronLeft size={12} />
-          <span className="text-fg font-medium">{product.name}</span>
+          <span className="text-fg font-medium">{product.collection} • {product.model}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
