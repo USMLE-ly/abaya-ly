@@ -1,88 +1,93 @@
 
-# Port the full VELAR design system into the site
+# Tajawal typography + Louis-Vuitton-style product architecture
 
-I decompressed `VELAR - Design System.fig` (fig-kiwi + zstd frame at offset 27116, 12.5 MB payload) and pulled out every published token, style, and component variant. Today `src/index.css` only mirrors ~5% of it (rose primary + blush surface + Fraunces/Inter). The rest — the full 8-family color ramp, semantic layers, elevation, radii, space scale, type scale, three theme modes, and the entire component set — is missing. This plan adds all of it.
+Two independent tracks that ship together.
 
-## What VELAR actually ships (extracted from the .fig)
+## Track 1 — Tajawal everywhere + RTL audit
 
-**Color primitives** — 8 named ramps × 11 steps (50 → 950):
-`strawberry`, `bubblegum`, `cotton`, `lavender`, `lemon`, `mint`, `peach`, `sky`
-plus `utility/white`, `utility/transparent`, `overlay/50|70|80`, `shadow/4|6|8|12|16`.
+**`index.html`**
+- Drop the Google Fonts request for Inter + JetBrains Mono, drop the self-hosted `@font-face` blocks for Zodiak and Arslan Wessam B (files stay in `/public/fonts/` but are no longer loaded).
+- Add one Google Fonts link: `Tajawal:wght@200;300;400;500;700;800;900`.
 
-**Semantic layer** (mode-aware):
-- `accent/brand`, `accent/brand-hover`, `accent/brand-pressed`, `accent/brand-subtle`, `accent/brand-subtle-hover`
-- `surface/canvas`, `surface/raised`, `surface/sunken`, `surface/overlay`, `surface/inverse`
-- `text/primary`, `text/secondary`, `text/tertiary`, `text/disabled`, `text/inverse`, `text/onAccent`
-- `border/default`, `border/subtle`, `border/strong`, `border/focus`, `border/action/normal`, sizes `border/0|sm|md|lg|xl`
-- Status: `Success`, `Info`, `Warning`, `Danger`, `Neutral` (Solid + Subtle pairs)
+**`src/index.css`**
+- Repoint every font token to Tajawal:
+  - `--font-display`, `--font-body`, `--font-mono` → `'Tajawal', system-ui, sans-serif` (mono keeps a monospaced fallback: `'Tajawal', ui-monospace, monospace` — kept only so `font-mono` utilities don't break; nothing in the shipped pages actually uses code type).
+  - Legacy aliases `--font-serif`, `--font-sans`, `--font-arabic-display`, `--font-arabic-body` all point to Tajawal so any lingering utility keeps working.
+- Keep `html[dir="rtl"]` defaults, Arabic numerals, and the RTL body class untouched.
 
-**Radii** — `none, xs, sm, md, lg, xl, 2xl, 3xl, full`
-**Space** — `0, 2xs, xs, sm, md, lg, xl, 2xl, 3xl, 4xl, 5xl, 6xl, 7xl, 8xl`
-**Elevation** — 6 shadows: `0 flat → 1 subtle → 2 raised → 3 overlay → 4 modal → 5 toast/popover`
-**Sizes** — `control-sm|md|lg`, `icon-sm|md|lg|xl`, `avatar-24|32|40|48|56|64`
+**RTL verification pass** (read-only, after the swap)
+- Playwright at 390×844 and 1280×1800 on `/`, `/collections`, a product page (`/product/al-sahra-gold`), `/cart`, `/contact`, `/faq`, `/design-system`.
+- Screenshot each. Check for: mirrored icons that shouldn't mirror, English strings bleeding into Arabic lines, VELAR components (Button leading/trailing icons, Input label/hint, Alert dismiss, Accordion chevron, Tabs underline, Tooltip arrow, Modal close, Checkbox/Radio label side) sitting on the correct side under `dir="rtl"`.
+- Any component that visibly breaks under RTL gets a targeted fix in `src/components/velar/<Component>.tsx` (swap `ml-*/mr-*` for logical `ms-*/me-*`, `left/right` for `start/end`, remove hardcoded `flex-row` where `flex-row-reverse` is implied by RTL, etc.). No API changes.
 
-**Typography** — families `display = Fraunces`, `body = Inter` (Inter Display for large), `mono = JetBrains Mono`. Sizes `xs, sm, base, lg, xl, 2xl…6xl` + `control-sm|md|lg`. Weights `regular, medium, semibold, bold`. Tracking `tightest, tight, normal, wide, wider`. Line-heights matched per size.
+## Track 2 — Luxury product naming architecture (Louis Vuitton / Hermès style)
 
-**Theme modes** — `Light`, `Dark`, `High Contrast`.
+Rewrite `src/data/products.ts` for all 14 products. Keep IDs, prices, images, sizes, ratings, color hexes, and `linkTo` cross-links **unchanged** — only naming/copy fields change.
 
-**Components** (every variant is published):
-- Button — 5 variants (Primary, Secondary, Tertiary, Ghost, Destructive) × 3 sizes (Sm/Md/Lg) × states (Default, Hover, Pressed, Focus, Loading, Disabled) × icon slots (None / Left / Right / Both / Icon-only)
-- Badge, Tag (Solid + Subtle, tones: Brand / Info / Success / Warning / Danger / Neutral)
-- Alert (title + supporting text + dismiss + inline action)
-- Card (flat / subtle / raised / overlay)
-- Modal (title, subtitle, body, footer with primary/secondary/cancel)
-- Accordion (default, with icon, with chevron)
-- Input, Textarea, Select — Default / Hover / Focus / Filled / Error / Disabled + label / sublabel / hint / error row / required asterisk / leading & trailing icons / clear
-- Switch, Radio, Checkbox (Default, Checked, Indeterminate, Disabled, with label & sublabel)
-- Avatar 24/32/40/48/56/64 (Icon / Image / Initials / Logo, with optional status dot)
-- Divider (inline / stacked)
-- Spinner, Progress
-- Toast, Tooltip
-- Tabs, Chip, Menu, List / ListItem, Table row, Pagination, Breadcrumb, Stepper, Slider
+### New per-product fields
 
-## Execution steps
+Extend the `Product` interface:
 
-1. **Rewrite `src/index.css`** — replace the current mini-token block with the full VELAR layer:
-   - Under `:root` (Light mode): declare all 8 × 11 palette variables as `--color-strawberry-50 … --color-sky-950`, plus utility, overlay, shadow tints.
-   - Add semantic aliases (`--surface-canvas`, `--text-primary`, `--accent-brand`, `--border-default`, etc.) pointing at palette steps per mode.
-   - Add `[data-theme="dark"]` and `[data-theme="hc"]` blocks that re-point the semantic layer for Dark + High Contrast modes.
-   - Add `--radius-*`, `--space-*`, `--shadow-elevation-0…5`, `--size-control-*`, `--size-icon-*`, `--size-avatar-*`.
-   - Add `--font-size-*`, `--font-lh-*`, `--font-weight-*`, `--font-tracking-*`.
-   - Repoint every legacy alias (`--color-gold`, `--color-cream`, `--color-primary`, `--color-foreground`, `--background`, etc.) onto the new semantic tokens so the existing site keeps rendering during the swap.
-   - In `@theme inline`, expose every new variable so Tailwind v4 auto-generates `bg-strawberry-500`, `text-mint-700`, `shadow-elevation-3`, `rounded-2xl` (mapped), `p-lg`, etc.
+```ts
+collection: string;        // e.g. "Noir Atelier"
+model: string;             // e.g. "Aurelia"
+edition: string;           // e.g. "إصدار 2026"
+subtitle: string;          // luxury one-liner
+seoName: string;           // clean searchable Arabic title
+slug: string;              // Arabic URL slug (kebab-case Arabic)
+tags: string[];            // 15–25 tags
+```
 
-2. **`index.html`** — extend the Google Fonts link to add `JetBrains Mono` alongside Fraunces + Inter + Almarai + Noto Kufi Arabic.
+`name` becomes the full hierarchy string: `«{collection} • {model} • {arabic descriptor} • {edition}»`.
+`description` is rewritten to 80–150 words, focused on craftsmanship / silhouette / versatility, no invented embellishments.
+`highlights` are rewritten to describe only what's visible in that product's image (neckline, sleeve, length, waist, pattern, movement) — no embroidery/lace/pearls unless clearly there.
+`details` is rewritten in the same visible-only spirit.
 
-3. **New primitive library at `src/components/velar/`** (each file self-contained, CVA-based variants, token-only styling):
-   `Button.tsx`, `IconButton.tsx`, `Badge.tsx`, `Tag.tsx`, `Alert.tsx`, `Card.tsx`, `Modal.tsx`, `Accordion.tsx`, `Input.tsx`, `Textarea.tsx`, `Select.tsx`, `Checkbox.tsx`, `Radio.tsx`, `Switch.tsx`, `Avatar.tsx`, `Divider.tsx`, `Spinner.tsx`, `Progress.tsx`, `Tooltip.tsx`, `Toast.tsx` (+ provider), `Tabs.tsx`, `Chip.tsx`, `Menu.tsx`, `List.tsx`, `Pagination.tsx`, `Breadcrumb.tsx`, `Stepper.tsx`, `Slider.tsx`. Each mirrors the Figma variant matrix exactly (variant × size × state × icon config).
+### Collection assignment (by the garment's actual primary color)
 
-4. **Wire the site to the new primitives**:
-   - Replace ad-hoc `<button>`/`<a>` CTAs in `Header`, `LuminaHero`, `ElegantCarousel`, `ProductCarousel`, `Product`, `Cart`, `Contact`, `Footer`, `ComparisonTable`, `ContactForm` with `<Button variant="primary|secondary|tertiary|ghost|destructive" size="sm|md|lg">`.
-   - Swap raw form fields on `Contact`, `TrackOrder`, `Cart` for `Input` / `Textarea` / `Select` / `Checkbox` / `Radio` with label + hint + error slots.
-   - Replace bespoke status pills / dots with `<Tag>` / `<Badge>`.
-   - Use `<Card elevation="raised|overlay">` for product cards, testimonial cards, FAQ cards.
-   - Use `<Accordion>` on `FAQ.tsx`.
-   - Add a `<ThemeToggle>` in the header exposing Light / Dark / High-Contrast (writes `data-theme` on `<html>`).
+| Collection | Palette | Products |
+|---|---|---|
+| **Noir Atelier** | black / charcoal | `olive-ruffle`, `night-velvet` (white-with-black-dots stays here because pattern reads black), `gold-embroidered-5` |
+| **Lumière** | ivory / pearl / champagne | `al-sahra-gold` (white), `gold-embroidered-2` (ivory), `floral-sleeve` (cream) |
+| **Rouge Héritage** | wine / ruby / burgundy | `white-beach` (wine), `gold-embroidered-3` (deep wine), `gold-embroidered-6` (wine) |
+| **Azure** | sky / navy / sapphire | `red-velvet` (sky blue), `black-lace` (deep navy) |
+| **Botanique** | rose / blossom | `white-lace` (pink) |
+| **Maison d'Or** | gold / bronze / cocoa | `cream-silk` (gold), `gold-embroidered-1` (antique gold), `gold-embroidered-4` (dark chocolate) |
 
-5. **Documentation surface** (optional but small): `src/pages/DesignSystem.tsx` on `/design-system` renders every token swatch and every component variant so the mapping is auditable. Not linked from public nav.
+Model names (never trademarked): Aurelia, Céleste, Ophélie, Sérène, Colette, Odile, Amélie, Margaux, Elodie, Solène, Inès, Livia, Noor, Yasmina, Salma — one per product, unique.
 
-6. **Verify**:
-   - `bun run build` clean.
-   - Playwright at 1280×1800 + 390×844: home, /collections, a product page, /cart, /contact, /faq, /design-system. Capture Light + Dark + HC.
-   - `rg -n '#[0-9a-fA-F]{6}|text-white|bg-white|bg-black|text-black|font-family:' src` returns nothing outside `src/index.css` and product-color swatches.
+### Example rewrite (for `al-sahra-gold`)
+
+- `name`: «Lumière • Céleste • فستان سهرة أبيض بنقاط سوداء كلاسيكية • إصدار 2026»
+- `collection`: "Lumière"
+- `model`: "Céleste"
+- `edition`: "إصدار 2026"
+- `subtitle`: "أناقة كلاسيكية بخطوط نظيفة ولمسة أنثوية معاصرة."
+- `seoName`: "فستان سهرة أبيض بنقاط سوداء — مجموعة Lumière"
+- `slug`: "lumiere-celeste-فستان-سهرة-أبيض-منقط"
+- `highlights` (visible-only): «قصة ميدي محددة الخصر تبرز القوام بأناقة.» / «أكمام قصيرة نظيفة الحواف ترسم خطاً نسائياً معاصراً.» / «نقشة النقاط السوداء الكلاسيكية على خلفية بيضاء تمنح إطلالة خالدة.»
+- `description` (80–150 words): editorial Arabic focused on silhouette, versatility, timeless appeal.
+- `tags`: ["سهرة","أبيض","منقط","ميدي","أكمام-قصيرة","محدد-الخصر","كلاسيكي","نسائي","مناسبات","ربيع-صيف","Lumière","Céleste","فستان-أبيض","نقاط-سوداء","إطلالة-خالدة","أنيق","راقي","ساتان","حفلات","خروجات-راقية"]
+
+Same treatment for the remaining 13 products, each anchored to what its image actually shows.
+
+### UI surfaces that render the new fields
+
+- **Product card** (`ProductCarousel`, `Collections`, `OutfitGallery` where applicable): small uppercase collection tag above the Arabic descriptor; model name as a subtle line under the title.
+- **Product page** (`src/pages/Product.tsx`): collection + edition as an eyebrow line, model as a secondary title, Arabic descriptor as the H1, `subtitle` under it, then price / description / highlights / details as today.
+- **`<head>`** on the product page: use `seoName` for `<title>` and `subtitle` for `<meta description>`.
 
 ## Technical notes
 
-- Tailwind v4 `@theme inline` means every VELAR variable becomes a first-class utility automatically — no `tailwind.config.ts` work needed.
-- Arabic RTL + Almarai/Noto Kufi Arabic stay intact; VELAR is layered on top, not a replacement of the RTL setup.
-- Product garment color hexes in `src/data/products.ts` stay untouched — they describe fabric, not brand.
-- No routing, data, or business-logic changes.
+- `Product` interface change is additive; existing consumers that only read `name`/`description` keep working through the transition.
+- Tag `slug` is stored for future routing but not wired to routes in this pass (would need a router change out of scope).
+- No business-logic, no cart, no data-shape breaking changes beyond the additive fields.
+- After edits: `bun run build`, then Playwright RTL screenshots on the 7 routes above for verification.
 
-## Out of scope (unless you say otherwise)
+## Out of scope
 
-- Rewriting page layouts / content
-- Product data changes
-- Adding a headless CMS or backend
-- Any Lovable Cloud integration
+- Changing product photography or reordering the catalog.
+- Routing by slug.
+- Any backend / Lovable Cloud work.
 
-Say the word and I'll switch to build mode and execute steps 1 → 6 in order.
+Say the word and I'll switch to build mode and execute Track 1 then Track 2.

@@ -58,7 +58,7 @@ export function Product() {
           <ChevronLeft size={12} />
           <Link to="/collections" className="hover:text-ring transition-colors">المجموعات</Link>
           <ChevronLeft size={12} />
-          <span className="text-fg font-medium">{product.name}</span>
+          <span className="text-fg font-medium">{product.collection} • {product.model}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
@@ -98,7 +98,16 @@ export function Product() {
 
           {/* RIGHT: DETAILS */}
           <div className="flex flex-col">
-            <h1 className="font-display text-3xl font-bold text-fg mb-2">{product.name}</h1>
+            <div className="mb-2 flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-fg-tertiary">
+              <span className="font-semibold text-accent-brand">{product.collection}</span>
+              <span aria-hidden>•</span>
+              <span>{product.edition}</span>
+            </div>
+            <p className="text-xs uppercase tracking-[0.22em] text-fg-secondary mb-2">{product.model}</p>
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-fg leading-tight mb-2">
+              {product.name.split(" • ")[2] ?? product.name}
+            </h1>
+            <p className="text-sm text-fg-secondary italic mb-4">{product.subtitle}</p>
 
             {/* Rating */}
             <div className="flex items-center gap-2 mb-4">
