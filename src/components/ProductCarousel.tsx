@@ -97,8 +97,15 @@ export function ProductCarousel() {
   const checkScroll = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
-    setAtStart(el.scrollLeft <= 5);
-    setAtEnd(Math.abs(el.scrollWidth - el.scrollLeft - el.clientWidth) < 5);
+    const isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+    if (isRtl) {
+      // RTL: scrollLeft: 0 = rightmost (start), negative = scrolled left
+      setAtStart(el.scrollLeft >= 0);
+      setAtEnd(el.scrollLeft <= -(el.scrollWidth - el.clientWidth));
+    } else {
+      setAtStart(el.scrollLeft <= 5);
+      setAtEnd(Math.abs(el.scrollWidth - el.scrollLeft - el.clientWidth) < 5);
+    }
   }, []);
 
   useEffect(() => {
@@ -131,7 +138,7 @@ export function ProductCarousel() {
         <div className="relative group">
           <div
             ref={scrollRef}
-            className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide" style={{ direction: "ltr" }}
+            className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide"
             onScroll={checkScroll}
           >
             {products.map((product) => (
@@ -140,8 +147,8 @@ export function ProductCarousel() {
               </div>
             ))}
           </div>
-          {!atStart && <button onClick={() => scroll("left")} className="absolute left-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronLeft size={18} className="text-fg" /></button>}
-          {!atEnd && <button onClick={() => scroll("right")} className="absolute right-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronRight size={18} className="text-fg" /></button>}
+          {!atEnd && <button onClick={() => scroll("left")} className="absolute left-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronLeft size={18} className="text-fg" /></button>}
+          {!atStart && <button onClick={() => scroll("right")} className="absolute right-0 top-1/3 -translate-y-1/2 w-9 h-9 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><ChevronRight size={18} className="text-fg" /></button>}
         </div>
 
         <div className="text-center mt-6 sm:hidden">
