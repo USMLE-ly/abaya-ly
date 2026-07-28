@@ -109,11 +109,14 @@ export function Collections() {
 
                     {/* Info */}
                     <div className="p-3 sm:p-4 md:p-5 text-right">
+                      <p className="text-[9px] uppercase tracking-[0.2em] text-accent-brand font-semibold mb-1">
+                        {product.collection} <span className="text-fg/40">•</span> {product.model}
+                      </p>
                       <h3
                         className="text-sm sm:text-base md:text-lg font-bold text-fg mb-1 leading-snug font-display"
                         style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
                       >
-                        {product.name}
+                        {product.name.split(" • ")[2] ?? product.name}
                       </h3>
                       <div className="flex items-center gap-0.5 mb-2 justify-end">
                         {Array.from({ length: 5 }).map((_, s) => (
