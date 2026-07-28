@@ -30,3 +30,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Playwright test files
+inspect*.spec.*
+inspect*.mjs
+playwright.config.ts
+test-inspect.spec.mjs
+test-results/
