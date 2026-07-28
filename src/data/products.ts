@@ -118,7 +118,7 @@ const base: BaseFields[] = [
     sizes: ["S","M","L","XL"], images: ["/outfits/white-polka-dot-abaya.jpg","/outfits/white-polka-dot-abaya-thumb.jpg"], rating: 4.8, reviewCount: 15 },
   { id: "olive-elegant", fabric: "شيفون فاخر", category: "الكاجوال", price: 300, originalPrice: 370, badge: "جديد",
     colors: [{name:"نبيذي غامق مع نقشة زاهية",hex:"#2C1810"},{name:"أسود",hex:"#000000",linkTo:"olive-ruffle"},{name:"كريمي",hex:"#f5f0e8",linkTo:"floral-sleeve"}],
-    sizes: ["S","M","L","XL"], images: ["/outfits/olive-elegant-abaya.jpg"], rating: 4.7, reviewCount: 18 },
+    sizes: ["S","M","L","XL"], images: ["/outfits/olive-elegant-abaya.jpg","/outfits/olive-elegant-abaya-thumb.jpg"], rating: 4.7, reviewCount: 18 },
   { id: "midnight-rose", fabric: "ساتان مخملي", category: "السهرة", price: 420, originalPrice: 500, badge: "جديد",
     colors: [{name:"عنابي",hex:"#722F37"}], sizes: ["S","M","L","XL"], images: ["/outfits/midnight-rose-abaya.jpg"], rating: 4.9, reviewCount: 0 },
   { id: "pearl-dream", fabric: "كريب فاخر", category: "السهرة", price: 370, originalPrice: 440,
