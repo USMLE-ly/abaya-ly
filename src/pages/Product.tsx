@@ -361,8 +361,9 @@ export function Product() {
                   <Plus size={14} />
                 </Button>
               </div>
-              <Button variant="primary" className="flex-1" size="lg">
-                أضيفي إلى السلة — {product.price * quantity} د.ل
+              <Button variant="primary" className="flex-1" size="lg" onClick={() => setShowBooking(true)}>
+                <ShoppingBag size={18} />
+                احجزي هذا الفستان — {product.price} د.ل
               </Button>
             </div>
 
