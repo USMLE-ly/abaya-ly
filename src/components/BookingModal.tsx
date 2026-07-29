@@ -304,13 +304,15 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
             </div>
             <h3 className="text-base font-bold text-fg mb-2">✅ تم استلام طلبك بنجاح!</h3>
             {orderId && (
-              <Link
-                to={`/track-order?phone=${encodeURIComponent(submittedPhone)}`}
+              <a
+                href={`https://wa.me/218944003708?text=السلام%20عليكم،%20أريد%20الاستفسار%20عن%20طلبي%20رقم%20${orderId}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-block text-sm font-semibold mb-2 transition-all hover:scale-105"
                 style={{ color: "#c42855" }}
               >
-                رقم الطلب: {orderId} ← اضغط للتتبع
-              </Link>
+                رقم الطلب: {orderId} ← استفسري عبر واتساب
+              </a>
             )}
             <p className="text-sm text-fg-tertiary leading-relaxed mt-2">
               سيتم الاتصال بسادتكم خلال 24 ساعه لتأكيد الطلب
