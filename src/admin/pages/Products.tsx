@@ -113,10 +113,10 @@ export default function Products() {
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-[26px] sm:text-[30px] font-extrabold leading-tight" style={{ color: "var(--ad-text)" }}>
+          <h1 className="text-[26px] sm:text-[30px] font-extrabold leading-tight" style={{ color: "var(--nd-text)" }}>
             المنتجات
           </h1>
-          <p className="text-[14px] mt-1" style={{ color: "var(--ad-text-3)" }}>
+          <p className="text-[14px] mt-1" style={{ color: "var(--nd-text-3)" }}>
             {products.length} منتج
           </p>
         </div>
@@ -170,19 +170,19 @@ export default function Products() {
                 {p.images[0] ? (
                   <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center" style={{ color: "var(--ad-text-4)" }}>
+                  <div className="w-full h-full flex items-center justify-center" style={{ color: "var(--nd-text-4)" }}>
                     <Package size={24} />
                   </div>
                 )}
               </div>
-              <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--ad-text-4)" }}>
+              <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--nd-text-4)" }}>
                 {p.collection || p.model}
               </p>
-              <p className="text-[13px] font-bold mt-0.5 truncate" style={{ color: "var(--ad-text)" }}>
+              <p className="text-[13px] font-bold mt-0.5 truncate" style={{ color: "var(--nd-text)" }}>
                 {p.name.split(" • ").slice(-2).join(" • ")}
               </p>
               <div className="flex items-center justify-between mt-2">
-                <span className="text-[14px] font-extrabold" style={{ color: "var(--ad-brand)" }}>
+                <span className="text-[14px] font-extrabold" style={{ color: "var(--nd-primary-500)" }}>
                   {p.price} د.ل
                 </span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{
@@ -193,7 +193,7 @@ export default function Products() {
                 </span>
               </div>
               {orderCounts[p.id] > 0 && (
-                <p className="text-[10px] mt-1" style={{ color: "var(--ad-text-4)" }}>
+                <p className="text-[10px] mt-1" style={{ color: "var(--nd-text-4)" }}>
                   {orderCounts[p.id]} طلب
                 </p>
               )}
@@ -203,23 +203,23 @@ export default function Products() {
       ) : (
         /* List view */
         <ACard className="overflow-hidden">
-          <div className="divide-y" style={{ borderColor: "var(--ad-border)" }}>
+          <div className="divide-y" style={{ borderColor: "var(--nd-border)" }}>
             {slice.map((p) => (
               <div key={p.id} className="flex items-center gap-4 px-5 py-3">
                 <div className="w-12 h-16 rounded-lg overflow-hidden bg-sunken flex-shrink-0">
                   {p.images[0] ? (
                     <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center" style={{ color: "var(--ad-text-4)" }}>
+                    <div className="w-full h-full flex items-center justify-center" style={{ color: "var(--nd-text-4)" }}>
                       <Package size={16} />
                     </div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-bold truncate" style={{ color: "var(--ad-text)" }}>{p.name}</p>
-                  <p className="text-[11px]" style={{ color: "var(--ad-text-4)" }}>{p.collection} · {p.model}</p>
+                  <p className="text-[13px] font-bold truncate" style={{ color: "var(--nd-text)" }}>{p.name}</p>
+                  <p className="text-[11px]" style={{ color: "var(--nd-text-4)" }}>{p.collection} · {p.model}</p>
                 </div>
-                <span className="text-[13px] font-extrabold" style={{ color: "var(--ad-brand)" }}>{p.price} د.ل</span>
+                <span className="text-[13px] font-extrabold" style={{ color: "var(--nd-primary-500)" }}>{p.price} د.ل</span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full font-bold" style={{
                   background: p.inStock ? "rgba(34,197,94,0.12)" : "rgba(239,68,68,0.12)",
                   color: p.inStock ? "#16a34a" : "#dc2626",
@@ -234,7 +234,7 @@ export default function Products() {
 
       {/* Pagination */}
       {pages > 1 && (
-        <div className="flex items-center justify-between" style={{ color: "var(--ad-text-3)" }}>
+        <div className="flex items-center justify-between" style={{ color: "var(--nd-text-3)" }}>
           <span className="text-[13px]">
             صفحة {current} من {pages} · {filtered.length} منتج
           </span>
