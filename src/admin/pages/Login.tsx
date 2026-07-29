@@ -1,27 +1,28 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Lock, Loader2 } from "lucide-react";
+import { Lock, Mail, Loader2, Store } from "lucide-react";
 import { setPassword, verifyPassword } from "../lib/api";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
-  const [pw, setPw] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPw] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!pw.trim()) return;
+    if (!email.trim() || !password.trim()) return;
     setLoading(true);
     setError("");
     try {
-      const ok = await verifyPassword(pw.trim());
+      const ok = await verifyPassword(password.trim());
       if (!ok) {
-        setError("كلمة المرور غير صحيحة");
+        setError("البريد الإلكتروني أو كلمة المرور غير صحيحة");
         return;
       }
-      setPassword(pw.trim());
+      setPassword(password.trim());
       navigate("/admin", { replace: true });
     } catch {
       setError("تعذّر الاتصال بالخادم");
@@ -32,74 +33,119 @@ export default function AdminLogin() {
 
   return (
     <div
-      className="admin-root grid place-items-center px-5"
-      dir="rtl"
-      style={{ minHeight: "100vh" }}
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{
+        background: "linear-gradient(135deg, #FDF2F5 0%, #fff 50%, #FDF2F5 100%)",
+        fontFamily: '"Plus Jakarta Sans", system-ui, sans-serif',
+      }}
     >
-      <motion.form
-        onSubmit={submit}
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-[400px] rounded-[var(--ad-r-xl)] p-8"
-        style={{
-          background: "var(--ad-surface)",
-          border: "1px solid var(--ad-border)",
-          boxShadow: "var(--ad-e3)",
-        }}
+        className="w-full max-w-md"
       >
         <div
-          className="w-12 h-12 rounded-[14px] grid place-items-center text-white font-extrabold text-lg mb-5"
-          style={{ background: "var(--ad-brand)" }}
-        >
-          N
-        </div>
-        <h1
-          className="text-[26px] font-extrabold leading-tight"
-          style={{ color: "var(--ad-text)", letterSpacing: "-0.02em" }}
-        >
-          لوحة إدارة Nadine
-        </h1>
-        <p className="text-[14px] mt-1.5 mb-7" style={{ color: "var(--ad-text-3)" }}>
-          أدخلي كلمة المرور للمتابعة
-        </p>
-
-        <div
-          className="flex items-center gap-2.5 h-12 px-4 rounded-[var(--ad-r-md)] focus-within:ring-4"
+          className="rounded-3xl p-8 sm:p-10 shadow-xl"
           style={{
-            background: "var(--ad-surface-2)",
-            border: `1px solid ${error ? "#EF4444" : "var(--ad-border-2)"}`,
-            // @ts-expect-error css var
-            "--tw-ring-color": "var(--ad-brand-ring)",
+            background: "rgba(255,255,255,0.9)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(206,44,96,0.1)",
           }}
         >
-          <Lock size={17} style={{ color: "var(--ad-text-4)" }} />
-          <input
-            type="password"
-            autoFocus
-            value={pw}
-            onChange={(e) => setPw(e.target.value)}
-            placeholder="كلمة المرور"
-            className="flex-1 min-w-0 bg-transparent outline-none text-[15px]"
-            style={{ color: "var(--ad-text)" }}
-          />
-        </div>
-        {error && (
-          <p className="text-[13px] mt-2" style={{ color: "#EF4444" }}>
-            {error}
-          </p>
-        )}
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
+              style={{ background: "linear-gradient(135deg, #CE2C60, #A81F47)" }}
+            >
+              <Store size={28} className="text-white" />
+            </div>
+            <h1 className="text-2xl font-bold" style={{ color: "#1A1C1E" }}>نادين</h1>
+            <p className="text-sm mt-1" style={{ color: "#6B7280" }}>لوحة الإدارة</p>
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full h-12 mt-6 rounded-[var(--ad-r-md)] text-white text-[15px] font-extrabold inline-flex items-center justify-center gap-2 disabled:opacity-60 transition-all active:scale-[0.99]"
-          style={{ background: "var(--ad-brand)" }}
-        >
-          {loading && <Loader2 size={18} className="animate-spin" />}
-          دخول
-        </button>
-      </motion.form>
+          <form onSubmit={submit} className="space-y-4">
+            {/* Email */}
+            <div>
+              <label className="text-[12px] font-semibold block mb-1.5" style={{ color: "#4B5563" }}>
+                البريد الإلكتروني
+              </label>
+              <div
+                className="flex items-center gap-3 h-12 px-4 rounded-xl transition-all focus-within:ring-4"
+                style={{
+                  background: "#F9FAFB",
+                  border: "1px solid #E5E7EB",
+                  "--tw-ring-color": "rgba(206,44,96,0.15)",
+                } as React.CSSProperties}
+              >
+                <Mail size={16} style={{ color: "#9CA3AF" }} />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@nadine.ly"
+                  required
+                  className="flex-1 bg-transparent outline-none text-[14px]"
+                  style={{ color: "#1A1C1E" }}
+                  dir="ltr"
+                />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="text-[12px] font-semibold block mb-1.5" style={{ color: "#4B5563" }}>
+                كلمة المرور
+              </label>
+              <div
+                className="flex items-center gap-3 h-12 px-4 rounded-xl transition-all focus-within:ring-4"
+                style={{
+                  background: "#F9FAFB",
+                  border: "1px solid #E5E7EB",
+                  "--tw-ring-color": "rgba(206,44,96,0.15)",
+                } as React.CSSProperties}
+              >
+                <Lock size={16} style={{ color: "#9CA3AF" }} />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPw(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  className="flex-1 bg-transparent outline-none text-[14px]"
+                  style={{ color: "#1A1C1E" }}
+                />
+              </div>
+            </div>
+
+            {error && (
+              <p className="text-[13px] font-medium text-center" style={{ color: "#CE2C60" }}>
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading || !email.trim() || !password.trim()}
+              className="w-full h-12 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-pink-200/50"
+              style={{
+                background: "linear-gradient(135deg, #CE2C60, #A81F47)",
+              }}
+            >
+              {loading ? (
+                <><Loader2 size={16} className="animate-spin" /> جاري تسجيل الدخول...</>
+              ) : (
+                "تسجيل الدخول"
+              )}
+            </button>
+          </form>
+
+          <p className="text-[11px] text-center mt-6" style={{ color: "#9CA3AF" }}>
+            نادين — بيت الفساتين الفاخرة في ليبيا
+          </p>
+        </div>
+      </motion.div>
     </div>
   );
 }
