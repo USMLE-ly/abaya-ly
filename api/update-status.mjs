@@ -27,33 +27,43 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Read current order
-    const readResp = await fetch(`${EC_URL}/item/order:${orderId.trim()}`);
+    // Read all items
+    const readResp = await fetch(EC_URL);
     if (!readResp.ok) {
-      return res.status(404).json({ error: "Order not found" });
+      return res.status(500).json({ error: "Failed to read Edge Config" });
     }
 
-    const order = await readResp.json();
+    const allData = await readResp.json();
+    const orderKey = `order:${orderId.trim()}`;
+    const order = allData[orderKey];
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
 
     // Update status
     order.status = status;
     order.statusLabel = statusLabels[status];
     order.updatedAt = new Date().toISOString();
 
-    // Write back
+    // Write back to Edge Config
     const writeResp = await fetch(`${EC_URL}/items`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        items: [{ operation: "upsert", key: `order:${orderId.trim()}`, value: order }],
+        items: [
+          { operation: "upsert", key: orderKey, value: order },
+        ],
       }),
     });
 
     if (!writeResp.ok) {
+      const errText = await writeResp.text();
+      console.error("Edge Config write error:", errText);
       return res.status(500).json({ error: "Failed to update" });
     }
 
-    // Send Telegram notification about status change
+    // Send Telegram notification
     const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
     const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
     if (BOT_TOKEN && CHAT_ID) {
