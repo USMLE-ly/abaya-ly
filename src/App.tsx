@@ -15,6 +15,12 @@ import TermsOfService from "@/pages/TermsOfService";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import DesignSystem from "@/pages/DesignSystem";
 import { NotFound } from "@/pages/NotFound";
+import { lazy } from "react";
+
+const AdminLogin = lazy(() => import("@/admin/pages/Login"));
+const AdminLayout = lazy(() => import("@/admin/layout/AdminLayout"));
+const AdminDashboard = lazy(() => import("@/admin/pages/Dashboard"));
+const AdminOrders = lazy(() => import("@/admin/pages/Orders"));
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 export default function App() {
@@ -37,6 +43,12 @@ export default function App() {
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/design-system" element={<DesignSystem />} />
+                      <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="orders/:id" element={<AdminOrders />} />
+            </Route>
           <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
