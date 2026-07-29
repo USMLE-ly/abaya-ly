@@ -241,7 +241,7 @@ export function Product() {
 
             {/* Price */}
             <div className="flex items-baseline gap-3 mb-6">
-              <span className="text-3xl font-bold bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 bg-clip-text text-transparent">{product.price} د.ل</span>
+              <span className="text-3xl font-bold bg-gradient-to-r from-pink-600 via-rose-600 to-pink-700 bg-clip-text text-transparent">{product.price} د.ل</span>
               {product.originalPrice && (
                 <>
                   <span className="text-lg text-fg-tertiary line-through">{product.originalPrice} د.ل</span>
