@@ -16,16 +16,23 @@ export default async function handler(req, res) {
   }
 
   try {
-    const resp = await fetch(`${EC_URL}/item/order:${orderNumber.trim()}`);
+    // URL-encode the key to handle special characters like ":"
+    const key = `order:${orderNumber.trim()}`;
+    const url = `${EC_URL}/item/${encodeURIComponent(key)}`;
+
+    console.log("Fetching:", url.replace(/\?token=.*$/, "?token=***")); // Log URL without token
+    
+    const resp = await fetch(url);
     
     if (!resp.ok) {
+      console.log("Edge Config response:", resp.status, resp.statusText);
       return res.status(200).json({ found: false });
     }
 
     const order = await resp.json();
 
     // Verify phone number matches
-    if (order.phone !== phone.trim()) {
+    if (!order || order.phone !== phone.trim()) {
       return res.status(200).json({ found: false });
     }
 
