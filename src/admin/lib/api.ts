@@ -86,6 +86,30 @@ export async function addNote(orderId: string, text: string): Promise<Note> {
   return data.note as Note;
 }
 
+
+/** GET /api/admin/settings — fetch store settings. */
+export async function fetchSettings(): Promise<any> {
+  const pw = getPassword();
+  const res = await fetch("/api/admin/settings", {
+    headers: { "x-admin-password": pw ?? "" },
+  });
+  if (res.status === 401) { clearPassword(); throw new Error("كلمة المرور غير صحيحة"); }
+  const data = await res.json();
+  return data.settings ?? {};
+}
+
+/** PUT /api/admin/settings — save store settings. */
+export async function saveSettings(settings: any): Promise<void> {
+  const pw = getPassword();
+  const res = await fetch("/api/admin/settings", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", "x-admin-password": pw ?? "" },
+    body: JSON.stringify({ settings }),
+  });
+  if (res.status === 401) { clearPassword(); throw new Error("كلمة المرور غير صحيحة"); }
+  if (!res.ok) throw new Error("فشل حفظ الإعدادات");
+}
+
 export interface Note {
   id: string;
   text: string;
