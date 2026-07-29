@@ -5,6 +5,7 @@ import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { isAuthed } from "../lib/api";
 import { useOrders } from "../lib/metrics";
+import "@/admin/styles/tokens.css";
 
 export function AdminLayout() {
   const location = useLocation();
@@ -19,30 +20,44 @@ export function AdminLayout() {
   const pending = orders.filter((o) => o.status === "pending").length;
 
   return (
-    <div className="admin-root flex" dir="rtl">
-      <div className="flex-1 min-w-0 flex flex-col">
-        <Topbar
-          onMenu={() => setMenuOpen(true)}
-          orders={orders}
-          onRefresh={() => refetch()}
-          refreshing={isFetching}
-        />
-        <motion.main
-          key={location.pathname}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25 }}
-          className="flex-1 p-4 sm:p-6 lg:p-8"
-        >
-          <Outlet />
-        </motion.main>
-      </div>
+    <div
+      className="admin-root flex min-h-screen"
+      dir="rtl"
+      style={{
+        background: "var(--nd-bg)",
+        fontFamily: "var(--nd-font)",
+      }}
+    >
+      {/* Sidebar on the right */}
       <Sidebar
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
         pendingCount={pending}
       />
+
+      {/* Main content on the left */}
+      <div className="flex-1 flex flex-col min-w-0 nd-content">
+        <Topbar
+          onMenu={() => setMenuOpen(true)}
+          onRefresh={() => refetch()}
+          refreshing={isFetching}
+        />
+
+        <motion.main
+          key={location.pathname}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto"
+          style={{
+            background: "var(--nd-bg)",
+          }}
+        >
+          <Outlet />
+        </motion.main>
+      </div>
     </div>
   );
 }
+
 export default AdminLayout;
