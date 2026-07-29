@@ -135,11 +135,11 @@ export default function Orders() {
         <div>
           <h1
             className="text-[26px] sm:text-[30px] font-extrabold leading-tight"
-            style={{ color: "var(--ad-text)", letterSpacing: "-0.025em" }}
+            style={{ color: "var(--nd-text)", letterSpacing: "-0.025em" }}
           >
             الطلبات
           </h1>
-          <p className="text-[14px] mt-1" style={{ color: "var(--ad-text-3)" }}>
+          <p className="text-[14px] mt-1" style={{ color: "var(--nd-text-3)" }}>
             {filtered.length} طلب
             {selected.size > 0 && ` · ${selected.size} محدد`}
           </p>
@@ -203,11 +203,11 @@ export default function Orders() {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr style={{ background: "var(--ad-surface-2)", color: "var(--ad-text-2)" }}>
+                  <tr style={{ background: "var(--nd-bg)", color: "var(--nd-text-2)" }}>
                     <th className="px-4 py-3.5 w-10">
                       <input
                         type="checkbox"
-                        className="w-4 h-4 accent-[var(--ad-brand)] cursor-pointer"
+                        className="w-4 h-4 accent-[var(--nd-primary-500)] cursor-pointer"
                         checked={slice.length > 0 && slice.every((o) => selected.has(o.orderId))}
                         onChange={toggleAll}
                       />
@@ -229,13 +229,13 @@ export default function Orders() {
                   {slice.map((o) => (
                     <tr
                       key={o.orderId}
-                      className="hover:bg-[var(--ad-surface-2)] transition-colors"
-                      style={{ borderTop: "1px solid var(--ad-border)" }}
+                      className="hover:bg-[var(--nd-bg)] transition-colors"
+                      style={{ borderTop: "1px solid var(--nd-border)" }}
                     >
                       <td className="px-4">
                         <input
                           type="checkbox"
-                          className="w-4 h-4 accent-[var(--ad-brand)] cursor-pointer"
+                          className="w-4 h-4 accent-[var(--nd-primary-500)] cursor-pointer"
                           checked={selected.has(o.orderId)}
                           onChange={() => {
                             const next = new Set(selected);
@@ -248,24 +248,24 @@ export default function Orders() {
                         <Link
                           to={`/admin/orders/${o.orderId}`}
                           className="font-extrabold"
-                          style={{ color: "var(--ad-brand)" }}
+                          style={{ color: "var(--nd-primary-500)" }}
                         >
                           {o.orderId}
                         </Link>
                       </td>
-                      <td className={td} style={{ color: "var(--ad-text-2)", direction: "ltr", textAlign: "right" }}>
+                      <td className={td} style={{ color: "var(--nd-text-2)", direction: "ltr", textAlign: "right" }}>
                         {o.phone}
                       </td>
-                      <td className={td} style={{ color: "var(--ad-text-2)" }}>{o.location || "—"}</td>
-                      <td className={td} style={{ color: "var(--ad-text-3)" }}>{o.code}</td>
-                      <td className={`${td} max-w-[220px] truncate`} style={{ color: "var(--ad-text)", fontWeight: 700 }}>
+                      <td className={td} style={{ color: "var(--nd-text-2)" }}>{o.location || "—"}</td>
+                      <td className={td} style={{ color: "var(--nd-text-3)" }}>{o.code}</td>
+                      <td className={`${td} max-w-[220px] truncate`} style={{ color: "var(--nd-text)", fontWeight: 700 }}>
                         {o.name}
                       </td>
-                      <td className={td} style={{ color: "var(--ad-text-2)" }}>{o.color || "—"}</td>
-                      <td className={td} style={{ color: "var(--ad-text-2)" }}>{o.size || "—"}</td>
+                      <td className={td} style={{ color: "var(--nd-text-2)" }}>{o.color || "—"}</td>
+                      <td className={td} style={{ color: "var(--nd-text-2)" }}>{o.size || "—"}</td>
                       <td className={td}><StatusBadge status={o.status} size="sm" /></td>
-                      <td className={td} style={{ color: "var(--ad-text-3)" }}>{fmtDate(o.createdAt)}</td>
-                      <td className={td} style={{ color: "var(--ad-text-3)" }}>{fmtDateTime(o.updatedAt)}</td>
+                      <td className={td} style={{ color: "var(--nd-text-3)" }}>{fmtDate(o.createdAt)}</td>
+                      <td className={td} style={{ color: "var(--nd-text-3)" }}>{fmtDateTime(o.updatedAt)}</td>
                       <td className={td}>
                         <Link to={`/admin/orders/${o.orderId}`}>
                           <AButton size="xs">تفاصيل</AButton>
@@ -287,7 +287,7 @@ export default function Orders() {
 
           {/* Pagination */}
           <div className="flex items-center justify-between gap-3">
-            <p className="text-[13px]" style={{ color: "var(--ad-text-3)" }}>
+            <p className="text-[13px]" style={{ color: "var(--nd-text-3)" }}>
               صفحة {current} من {pages}
             </p>
             <div className="flex items-center gap-2">
@@ -335,7 +335,7 @@ function SortTh({
       <button
         onClick={() => onClick(k)}
         className="inline-flex items-center gap-1"
-        style={{ color: active === k ? "var(--ad-brand)" : "inherit" }}
+        style={{ color: active === k ? "var(--nd-primary-500)" : "inherit" }}
       >
         {label}
         <ArrowUpDown size={12} className={active === k && dir === "asc" ? "rotate-180" : ""} />
@@ -350,22 +350,22 @@ function MobileOrderCard({ order: o }: { order: Order }) {
       <ACard className="p-4">
         <div className="flex items-start justify-between gap-3 mb-2.5">
           <div className="min-w-0">
-            <p className="text-[14.5px] font-extrabold truncate" style={{ color: "var(--ad-text)" }}>
+            <p className="text-[14.5px] font-extrabold truncate" style={{ color: "var(--nd-text)" }}>
               {o.name}
             </p>
-            <p className="text-[12.5px] font-bold" style={{ color: "var(--ad-brand)" }}>
+            <p className="text-[12.5px] font-bold" style={{ color: "var(--nd-primary-500)" }}>
               {o.orderId}
             </p>
           </div>
           <StatusBadge status={o.status} size="sm" />
         </div>
-        <div className="grid grid-cols-2 gap-y-1.5 text-[12.5px]" style={{ color: "var(--ad-text-2)" }}>
+        <div className="grid grid-cols-2 gap-y-1.5 text-[12.5px]" style={{ color: "var(--nd-text-2)" }}>
           <span>📞 <span style={{ direction: "ltr", display: "inline-block" }}>{o.phone}</span></span>
           <span>📍 {o.location || "—"}</span>
           <span>🎨 {o.color || "—"}</span>
           <span>📏 {o.size || "—"}</span>
         </div>
-        <p className="text-[11.5px] mt-2.5 pt-2.5" style={{ color: "var(--ad-text-3)", borderTop: "1px solid var(--ad-border)" }}>
+        <p className="text-[11.5px] mt-2.5 pt-2.5" style={{ color: "var(--nd-text-3)", borderTop: "1px solid var(--nd-border)" }}>
           {fmtDateTime(o.createdAt)}
         </p>
       </ACard>
