@@ -9,10 +9,12 @@ export default async function handler(req, res) {
   const { orderId, status } = req.body || {};
   if (!orderId || !status) return res.status(400).json({ error: "orderId and status required" });
 
-  const validStatuses = ["pending", "processing", "shipped", "delivered"];
+  const validStatuses = ["pending", "processing", "waiting_shipping", "shipped", "delivered"];
   const statusLabels = {
+    waiting_shipping: "في انتظار الشحن",
     pending: "انتظار التأكيد",
     processing: "جاري التجهيز",
+    waiting_shipping: "في انتظار الشحن",
     shipped: "جاري الشحن",
     delivered: "تم التوصيل",
   };
