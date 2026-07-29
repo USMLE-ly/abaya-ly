@@ -17,7 +17,7 @@ export function StatCard({
   hint?: ReactNode;
   delay?: number;
 }) {
-  const color = accent ?? "var(--ad-brand)";
+  const color = accent ?? "var(--nd-primary-500)";
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -29,18 +29,18 @@ export function StatCard({
           <div className="min-w-0">
             <p
               className="text-[13px] font-medium truncate"
-              style={{ color: "var(--ad-text-3)" }}
+              style={{ color: "var(--nd-text-3)" }}
             >
               {label}
             </p>
             <p
               className="text-[28px] font-extrabold leading-tight mt-1 tabular-nums"
-              style={{ color: "var(--ad-text)", letterSpacing: "-0.02em" }}
+              style={{ color: "var(--nd-text)", letterSpacing: "-0.02em" }}
             >
               {value}
             </p>
             {hint && (
-              <p className="text-[12px] mt-1" style={{ color: "var(--ad-text-3)" }}>
+              <p className="text-[12px] mt-1" style={{ color: "var(--nd-text-3)" }}>
                 {hint}
               </p>
             )}
