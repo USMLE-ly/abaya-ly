@@ -162,31 +162,31 @@ export default function Analytics() {
           icon={<ShoppingBag size={18} />}
           value={stats.total}
           label="إجمالي الطلبات"
-          color="#c42855"
+          accent="#c42855"
         />
         <StatCard
           icon={<Clock size={18} />}
           value={stats.pending}
           label="انتظار التأكيد"
-          color="#F5A524"
+          accent="#F5A524"
         />
         <StatCard
           icon={<Package size={18} />}
           value={stats.processing}
           label="قيد التجهيز"
-          color="#4892FE"
+          accent="#4892FE"
         />
         <StatCard
           icon={<Truck size={18} />}
           value={stats.shipped + stats.waitingShipping}
           label={stats.waitingShipping > 0 ? `شحن (${stats.waitingShipping} انتظار)` : "جاري الشحن"}
-          color="#4F56D3"
+          accent="#4F56D3"
         />
         <StatCard
           icon={<CheckCircle2 size={18} />}
           value={stats.delivered}
           label="تم التوصيل"
-          color="#89D233"
+          accent="#89D233"
         />
       </div>
 
@@ -196,19 +196,19 @@ export default function Analytics() {
           icon={<TrendingUp size={18} />}
           value={`${stats.deliveryRate}%`}
           label="نسبة التوصيل"
-          color="#4F56D3"
+          accent="#4F56D3"
         />
         <StatCard
           icon={<Clock size={18} />}
           value={stats.avgProcessing > 0 ? `${stats.avgProcessing} ساعة` : "—"}
           label="معدل وقت المعالجة"
-          color="#4892FE"
+          accent="#4892FE"
         />
         <StatCard
           icon={<CalendarDays size={18} />}
           value={stats.recent}
           label="اليوم"
-          color="#c42855"
+          accent="#c42855"
         />
       </div>
 

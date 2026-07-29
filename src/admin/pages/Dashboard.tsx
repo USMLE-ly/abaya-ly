@@ -141,7 +141,7 @@ export default function Dashboard() {
           icon={<ShoppingBag size={18} />}
           value={stats.total}
           label="إجمالي الطلبات"
-          accent={true}
+          accent="var(--nd-primary-500)"
         />
         <StatCard
           icon={<Clock size={18} />}

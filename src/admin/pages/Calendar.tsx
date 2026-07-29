@@ -61,8 +61,8 @@ export default function OrderCalendar() {
       .slice(0, 8);
   }, [orders]);
 
-  const prevMonth = () => { if (month === 0) { setMonth(11); setYear(y - 1); } else setMonth(m => m - 1); };
-  const nextMonth = () => { if (month === 11) { setMonth(0); setYear(y + 1); } else setMonth(m => m + 1); };
+  const prevMonth = () => { if (month === 0) { setMonth(11); setYear(year - 1); } else setMonth(m => m - 1); };
+  const nextMonth = () => { if (month === 11) { setMonth(0); setYear(year + 1); } else setMonth(m => m + 1); };
 
   if (isLoading) return <ASkeleton className="h-96 !rounded-2xl" />;
   if (!calendarData) return null;
