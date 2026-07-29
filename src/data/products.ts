@@ -49,96 +49,96 @@ type BaseFields = Pick<Product,
 
 const base: BaseFields[] = [
   { id: "lumiere-white-polka-midi", fabric: "ساتان فاخر", category: "السهرة", price: 840, originalPrice: 1190, badge: "الأكثر مبيعاً",
-    colors: [{name:"أبيض",hex:"#FFFFFF"},{name:"أسود",hex:"#111827",linkTo:"mesh-geometric"}],
+    colors: [{name:"أبيض",hex:"#FFFFFF"},{name:"أسود",hex:"#111827",linkTo:"noir-black-polka-mandarin"}],
     sizes: ["S","M","L","XL"], images: ["/images/products/abaya-1.jpg","/images/products/abaya-1-thumb.jpg"], rating: 4.9, reviewCount: 47 },
   { id: "noir-navy-polka-belted", fabric: "ساتان فاخر", category: "السهرة", price: 720, originalPrice: 990, badge: "جديد",
-    colors: [{name:"أسود",hex:"#000000"},{name:"ذهبي",hex:"#FFD700",linkTo:"maison-gold-polka-belted"},{name:"أزرق سماوي",hex:"#a9d1e7",linkTo:"red-velvet"},{name:"وردي",hex:"#FFC0CB",linkTo:"white-lace"},{name:"كريمي",hex:"#f5f0e8",linkTo:"floral-sleeve"}],
+    colors: [{name:"أسود",hex:"#000000"},{name:"ذهبي",hex:"#FFD700",linkTo:"maison-gold-polka-belted"},{name:"أزرق سماوي",hex:"#a9d1e7",linkTo:"azure-sky-blue-polka-belted"},{name:"وردي",hex:"#FFC0CB",linkTo:"botanique-pink-polka-belted"},{name:"كريمي",hex:"#f5f0e8",linkTo:"lumiere-cream-polka-maxi"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/olive-ruffle-abaya.jpg","/outfits/olive-ruffle-abaya-thumb.jpg"], rating: 4.8, reviewCount: 23 },
   { id: "maison-gold-polka-belted", fabric: "حرير طبيعي", category: "الرسمية", price: 690, originalPrice: 950,
-    colors: [{name:"ذهبي",hex:"#FFD700"},{name:"أسود",hex:"#000000",linkTo:"noir-navy-polka-belted"},{name:"أزرق سماوي",hex:"#a9d1e7",linkTo:"red-velvet"},{name:"وردي",hex:"#FFC0CB",linkTo:"white-lace"},{name:"كريمي",hex:"#f5f0e8",linkTo:"floral-sleeve"}],
+    colors: [{name:"ذهبي",hex:"#FFD700"},{name:"أسود",hex:"#000000",linkTo:"noir-navy-polka-belted"},{name:"أزرق سماوي",hex:"#a9d1e7",linkTo:"azure-sky-blue-polka-belted"},{name:"وردي",hex:"#FFC0CB",linkTo:"botanique-pink-polka-belted"},{name:"كريمي",hex:"#f5f0e8",linkTo:"lumiere-cream-polka-maxi"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/cream-abaya.jpg","/outfits/cream-abaya-thumb.jpg"], rating: 4.7, reviewCount: 19 },
-  { id: "white-beach", fabric: "شيفون فاخر", category: "الكاجوال", price: 590, originalPrice: 810,
-    colors: [{name:"نبيذي",hex:"#682849"},{name:"كحلي غامق",hex:"#121f3b",linkTo:"black-lace"}],
+  { id: "rouge-burgundy-polka-vneck", fabric: "شيفون فاخر", category: "الكاجوال", price: 590, originalPrice: 810,
+    colors: [{name:"نبيذي",hex:"#682849"},{name:"كحلي غامق",hex:"#121f3b",linkTo:"azure-navy-polka-puff"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/white-beach-abaya.jpg","/outfits/white-beach-abaya-thumb.jpg"], rating: 4.6, reviewCount: 31 },
-  { id: "red-velvet", fabric: "ساتان فاخر", category: "السهرة", price: 840, originalPrice: 1190, badge: "حصري",
-    colors: [{name:"أزرق سماوي",hex:"#a9d1e7"},{name:"أسود",hex:"#000000",linkTo:"noir-navy-polka-belted"},{name:"ذهبي",hex:"#FFD700",linkTo:"maison-gold-polka-belted"},{name:"وردي",hex:"#FFC0CB",linkTo:"white-lace"},{name:"كريمي",hex:"#f5f0e8",linkTo:"floral-sleeve"}],
+  { id: "azure-sky-blue-polka-belted", fabric: "ساتان فاخر", category: "السهرة", price: 840, originalPrice: 1190, badge: "حصري",
+    colors: [{name:"أزرق سماوي",hex:"#a9d1e7"},{name:"أسود",hex:"#000000",linkTo:"noir-navy-polka-belted"},{name:"ذهبي",hex:"#FFD700",linkTo:"maison-gold-polka-belted"},{name:"وردي",hex:"#FFC0CB",linkTo:"botanique-pink-polka-belted"},{name:"كريمي",hex:"#f5f0e8",linkTo:"lumiere-cream-polka-maxi"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/red-velvet-abaya.jpg","/outfits/red-velvet-abaya-thumb.jpg"], rating: 4.9, reviewCount: 56 },
-  { id: "black-lace", fabric: "ساتان مطرّز", category: "السهرة", price: 790, originalPrice: 1090,
-    colors: [{name:"كحلي غامق",hex:"#121f3b"},{name:"نبيذي",hex:"#682849",linkTo:"white-beach"}],
+  { id: "azure-navy-polka-puff", fabric: "ساتان مطرّز", category: "السهرة", price: 790, originalPrice: 1090,
+    colors: [{name:"كحلي غامق",hex:"#121f3b"},{name:"نبيذي",hex:"#682849",linkTo:"rouge-burgundy-polka-vneck"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/black-lace-abaya.jpg","/outfits/black-lace-abaya-thumb.jpg"], rating: 4.8, reviewCount: 34 },
-  { id: "night-velvet", fabric: "ساتان فاخر", category: "السهرة", price: 740, originalPrice: 1040, badge: "مميز",
-    colors: [{name:"أبيض",hex:"#FFFFFF"},{name:"أسود",hex:"#111827",linkTo:"mesh-geometric"}],
+  { id: "lumiere-white-polka-off-shoulder", fabric: "ساتان فاخر", category: "السهرة", price: 740, originalPrice: 1040, badge: "مميز",
+    colors: [{name:"أبيض",hex:"#FFFFFF"},{name:"أسود",hex:"#111827",linkTo:"noir-black-polka-mandarin"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/night-velvet-abaya.jpg","/outfits/night-velvet-abaya-thumb.jpg"], rating: 4.8, reviewCount: 42 },
-  { id: "white-lace", fabric: "ساتان مطري", category: "الرسمية", price: 670, originalPrice: 920,
-    colors: [{name:"وردي",hex:"#FFC0CB"},{name:"أسود",hex:"#000000",linkTo:"noir-navy-polka-belted"},{name:"ذهبي",hex:"#FFD700",linkTo:"maison-gold-polka-belted"},{name:"أزرق سماوي",hex:"#a9d1e7",linkTo:"red-velvet"},{name:"كريمي",hex:"#f5f0e8",linkTo:"floral-sleeve"}],
+  { id: "botanique-pink-polka-belted", fabric: "ساتان مطري", category: "الرسمية", price: 670, originalPrice: 920,
+    colors: [{name:"وردي",hex:"#FFC0CB"},{name:"أسود",hex:"#000000",linkTo:"noir-navy-polka-belted"},{name:"ذهبي",hex:"#FFD700",linkTo:"maison-gold-polka-belted"},{name:"أزرق سماوي",hex:"#a9d1e7",linkTo:"azure-sky-blue-polka-belted"},{name:"كريمي",hex:"#f5f0e8",linkTo:"lumiere-cream-polka-maxi"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/white-lace-abaya.jpg","/outfits/white-lace-abaya-thumb.jpg"], rating: 4.7, reviewCount: 28 },
-  { id: "floral-sleeve", fabric: "ساتان كلاسيكي", category: "الرسمية", price: 640, originalPrice: 880,
-    colors: [{name:"كريمي",hex:"#f5f0e8"},{name:"أسود",hex:"#000000",linkTo:"noir-navy-polka-belted"},{name:"ذهبي",hex:"#FFD700",linkTo:"maison-gold-polka-belted"},{name:"أزرق سماوي",hex:"#a9d1e7",linkTo:"red-velvet"},{name:"وردي",hex:"#FFC0CB",linkTo:"white-lace"}],
+  { id: "lumiere-cream-polka-maxi", fabric: "ساتان كلاسيكي", category: "الرسمية", price: 640, originalPrice: 880,
+    colors: [{name:"كريمي",hex:"#f5f0e8"},{name:"أسود",hex:"#000000",linkTo:"noir-navy-polka-belted"},{name:"ذهبي",hex:"#FFD700",linkTo:"maison-gold-polka-belted"},{name:"أزرق سماوي",hex:"#a9d1e7",linkTo:"azure-sky-blue-polka-belted"},{name:"وردي",hex:"#FFC0CB",linkTo:"botanique-pink-polka-belted"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/floral-sleeve-abaya.jpg","/outfits/floral-sleeve-abaya-thumb.jpg"], rating: 4.8, reviewCount: 35 },
-  { id: "gold-embroidered-1", fabric: "ساتان مع تطريز يدوي", category: "المطرّزة", price: 840, originalPrice: 1190, badge: "حصري",
-    colors: [{name:"ذهبي عتيق",hex:"#8B7355"},{name:"أزرق فضي",hex:"#7E96B1",linkTo:"geo-gold-1"}],
+  { id: "maison-gold-embroidered", fabric: "ساتان مع تطريز يدوي", category: "المطرّزة", price: 840, originalPrice: 1190, badge: "حصري",
+    colors: [{name:"ذهبي عتيق",hex:"#8B7355"},{name:"أزرق فضي",hex:"#7E96B1",linkTo:"azure-silver-mermaid"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/gold-embroidered-abaya-1.jpg","/outfits/gold-embroidered-abaya-1-thumb.jpg"], rating: 4.9, reviewCount: 62 },
-  { id: "gold-embroidered-3", fabric: "ساتان فاخر", category: "المطرّزة", price: 840, originalPrice: 1190,
-    colors: [{name:"نبيذي غامق",hex:"#4A0020"},{name:"شوكولاتي داكن",hex:"#4A3C31",linkTo:"gold-embroidered-4"}],
+  { id: "rouge-burgundy-embroidered", fabric: "ساتان فاخر", category: "المطرّزة", price: 840, originalPrice: 1190,
+    colors: [{name:"نبيذي غامق",hex:"#4A0020"},{name:"شوكولاتي داكن",hex:"#4A3C31",linkTo:"maison-chocolate-mermaid"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/gold-embroidered-abaya-2.jpg","/outfits/gold-embroidered-abaya-2-thumb.jpg"], rating: 4.9, reviewCount: 62 },
-  { id: "gold-embroidered-4", fabric: "ساتان فاخر", category: "المطرّزة", price: 860, originalPrice: 1250, badge: "نادر",
-    colors: [{name:"شوكولاتي داكن",hex:"#4A3C31"},{name:"نبيذي غامق",hex:"#4A0020",linkTo:"gold-embroidered-3"}],
+  { id: "maison-chocolate-mermaid", fabric: "ساتان فاخر", category: "المطرّزة", price: 860, originalPrice: 1250, badge: "نادر",
+    colors: [{name:"شوكولاتي داكن",hex:"#4A3C31"},{name:"نبيذي غامق",hex:"#4A0020",linkTo:"rouge-burgundy-embroidered"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/gold-embroidered-abaya-3.jpg","/outfits/gold-embroidered-abaya-3-thumb.jpg"], rating: 4.9, reviewCount: 62 },
-  { id: "gold-embroidered-2", fabric: "ساتان فاخر", category: "المطرّزة", price: 820, originalPrice: 1150,
-    colors: [{name:"أبيض عاجي",hex:"#FFFFF0"},{name:"أسود داكن",hex:"#111316",linkTo:"gold-embroidered-5"},{name:"نبيذي غامق",hex:"#6B2737",linkTo:"gold-embroidered-6"}],
+  { id: "lumiere-ivory-mermaid", fabric: "ساتان فاخر", category: "المطرّزة", price: 820, originalPrice: 1150,
+    colors: [{name:"أبيض عاجي",hex:"#FFFFF0"},{name:"أسود داكن",hex:"#111316",linkTo:"noir-black-mermaid"},{name:"نبيذي غامق",hex:"#6B2737",linkTo:"rouge-burgundy-mermaid"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/gold-embroidered-abaya-4.jpg","/outfits/gold-embroidered-abaya-4-thumb.jpg"], rating: 4.9, reviewCount: 58 },
-  { id: "gold-embroidered-5", fabric: "ساتان فاخر", category: "المطرّزة", price: 840, originalPrice: 1190,
-    colors: [{name:"أسود داكن",hex:"#111316"},{name:"أبيض عاجي",hex:"#FFFFF0",linkTo:"gold-embroidered-2"},{name:"نبيذي غامق",hex:"#6B2737",linkTo:"gold-embroidered-6"}],
+  { id: "noir-black-mermaid", fabric: "ساتان فاخر", category: "المطرّزة", price: 840, originalPrice: 1190,
+    colors: [{name:"أسود داكن",hex:"#111316"},{name:"أبيض عاجي",hex:"#FFFFF0",linkTo:"lumiere-ivory-mermaid"},{name:"نبيذي غامق",hex:"#6B2737",linkTo:"rouge-burgundy-mermaid"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/gold-embroidered-abaya-5.jpg","/outfits/gold-embroidered-abaya-5-thumb.jpg"], rating: 4.9, reviewCount: 58 },
-  { id: "gold-embroidered-6", fabric: "ساتان فاخر", category: "المطرّزة", price: 840, originalPrice: 1190,
-    colors: [{name:"نبيذي غامق",hex:"#6B2737"},{name:"أبيض عاجي",hex:"#FFFFF0",linkTo:"gold-embroidered-2"},{name:"أسود داكن",hex:"#111316",linkTo:"gold-embroidered-5"}],
+  { id: "rouge-burgundy-mermaid", fabric: "ساتان فاخر", category: "المطرّزة", price: 840, originalPrice: 1190,
+    colors: [{name:"نبيذي غامق",hex:"#6B2737"},{name:"أبيض عاجي",hex:"#FFFFF0",linkTo:"lumiere-ivory-mermaid"},{name:"أسود داكن",hex:"#111316",linkTo:"noir-black-mermaid"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/gold-embroidered-abaya-6.jpg","/outfits/gold-embroidered-abaya-6-thumb.jpg"], rating: 4.9, reviewCount: 58 },
-  { id: "geo-gold-1", fabric: "ساتان لامع", category: "السهرة", price: 820, originalPrice: 1150, badge: "الأكثر طلباً",
-    colors: [{name:"أزرق فضي",hex:"#7E96B1"},{name:"ذهبي عتيق",hex:"#8B7355",linkTo:"gold-embroidered-1"}],
+  { id: "azure-silver-mermaid", fabric: "ساتان لامع", category: "السهرة", price: 820, originalPrice: 1150, badge: "الأكثر طلباً",
+    colors: [{name:"أزرق فضي",hex:"#7E96B1"},{name:"ذهبي عتيق",hex:"#8B7355",linkTo:"maison-gold-embroidered"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/geometric-gold-abaya-1.jpg","/outfits/geometric-gold-abaya-1-thumb.jpg"], rating: 4.9, reviewCount: 45 },
-  { id: "geo-gold-2", fabric: "ساتان مخملي", category: "الكاجوال", price: 640, originalPrice: 880,
-    colors: [{name:"كريمي",hex:"#F5F5DC"},{name:"أسود",hex:"#000000",linkTo:"geo-gold-3"},{name:"أخضر فاتح",hex:"#E6F78D",linkTo:"geo-gold-6"},{name:"وردي فاتح",hex:"#f4c4d4",linkTo:"geo-gold-7"}],
+  { id: "lumiere-cream-wide-casual", fabric: "ساتان مخملي", category: "الكاجوال", price: 640, originalPrice: 880,
+    colors: [{name:"كريمي",hex:"#F5F5DC"},{name:"أسود",hex:"#000000",linkTo:"noir-black-wide-casual"},{name:"أخضر فاتح",hex:"#E6F78D",linkTo:"botanique-green-casual"},{name:"وردي فاتح",hex:"#f4c4d4",linkTo:"botanique-pink-casual"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/geometric-gold-abaya-2.jpg","/outfits/geometric-gold-abaya-2-thumb.jpg"], rating: 4.7, reviewCount: 31 },
-  { id: "geo-gold-3", fabric: "قطن فاخر", category: "الكاجوال", price: 590, originalPrice: 810,
-    colors: [{name:"أسود",hex:"#000000"},{name:"كريمي",hex:"#F5F5DC",linkTo:"geo-gold-2"},{name:"أخضر فاتح",hex:"#E6F78D",linkTo:"geo-gold-6"},{name:"وردي فاتح",hex:"#f4c4d4",linkTo:"geo-gold-7"}],
+  { id: "noir-black-wide-casual", fabric: "قطن فاخر", category: "الكاجوال", price: 590, originalPrice: 810,
+    colors: [{name:"أسود",hex:"#000000"},{name:"كريمي",hex:"#F5F5DC",linkTo:"lumiere-cream-wide-casual"},{name:"أخضر فاتح",hex:"#E6F78D",linkTo:"botanique-green-casual"},{name:"وردي فاتح",hex:"#f4c4d4",linkTo:"botanique-pink-casual"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/geometric-gold-abaya-3.jpg","/outfits/geometric-gold-abaya-3-thumb.jpg"], rating: 4.6, reviewCount: 22 },
-  { id: "geo-gold-6", fabric: "ساتان ناعم", category: "الكاجوال", price: 620, originalPrice: 850,
-    colors: [{name:"أخضر فاتح",hex:"#E6F78D"},{name:"كريمي",hex:"#F5F5DC",linkTo:"geo-gold-2"},{name:"أسود",hex:"#000000",linkTo:"geo-gold-3"},{name:"وردي فاتح",hex:"#f4c4d4",linkTo:"geo-gold-7"}],
+  { id: "botanique-green-casual", fabric: "ساتان ناعم", category: "الكاجوال", price: 620, originalPrice: 850,
+    colors: [{name:"أخضر فاتح",hex:"#E6F78D"},{name:"كريمي",hex:"#F5F5DC",linkTo:"lumiere-cream-wide-casual"},{name:"أسود",hex:"#000000",linkTo:"noir-black-wide-casual"},{name:"وردي فاتح",hex:"#f4c4d4",linkTo:"botanique-pink-casual"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/geometric-gold-abaya-6.jpg","/outfits/geometric-gold-abaya-6-thumb.jpg"], rating: 4.7, reviewCount: 26 },
-  { id: "geo-gold-7", fabric: "ساتان مخملي", category: "الكاجوال", price: 640, originalPrice: 880,
-    colors: [{name:"وردي فاتح",hex:"#f4c4d4"},{name:"كريمي",hex:"#F5F5DC",linkTo:"geo-gold-2"},{name:"أسود",hex:"#000000",linkTo:"geo-gold-3"},{name:"أخضر فاتح",hex:"#E6F78D",linkTo:"geo-gold-6"}],
+  { id: "botanique-pink-casual", fabric: "ساتان مخملي", category: "الكاجوال", price: 640, originalPrice: 880,
+    colors: [{name:"وردي فاتح",hex:"#f4c4d4"},{name:"كريمي",hex:"#F5F5DC",linkTo:"lumiere-cream-wide-casual"},{name:"أسود",hex:"#000000",linkTo:"noir-black-wide-casual"},{name:"أخضر فاتح",hex:"#E6F78D",linkTo:"botanique-green-casual"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/geometric-gold-abaya-7.jpg","/outfits/geometric-gold-abaya-7-thumb.jpg"], rating: 4.8, reviewCount: 33 },
-  { id: "mesh-geometric", fabric: "ساتان مطري", category: "المطرّزة", price: 790, originalPrice: 1100,
+  { id: "noir-black-polka-mandarin", fabric: "ساتان مطري", category: "المطرّزة", price: 790, originalPrice: 1100,
     colors: [{name:"أسود",hex:"#111827"},{name:"أبيض",hex:"#FFFFFF",linkTo:"lumiere-white-polka-midi"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/mesh-geometric-abaya.jpg","/outfits/mesh-geometric-abaya-thumb.jpg"], rating: 4.8, reviewCount: 39 },
-  { id: "navy-tie-neck", fabric: "شيفون فاخر", category: "الكاجوال", price: 610, originalPrice: 840, badge: "جديد",
-    colors: [{name:"أبيض",hex:"#FFFFFF"},{name:"أسود",hex:"#111827",linkTo:"mesh-geometric"}],
+  { id: "lumiere-cream-polka-lace", fabric: "شيفون فاخر", category: "الكاجوال", price: 610, originalPrice: 840, badge: "جديد",
+    colors: [{name:"أبيض",hex:"#FFFFFF"},{name:"أسود",hex:"#111827",linkTo:"noir-black-polka-mandarin"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/navy-tie-neck-abaya.jpg","/outfits/navy-tie-neck-abaya-thumb.jpg"], rating: 4.7, reviewCount: 12 },
-  { id: "white-polka-dot", fabric: "شيفون فاخر", category: "الكاجوال", price: 590, originalPrice: 810, badge: "جديد",
+  { id: "rouge-burgundy-off-shoulder", fabric: "شيفون فاخر", category: "الكاجوال", price: 590, originalPrice: 810, badge: "جديد",
     colors: [{name:"عنابي",hex:"#722F37"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/white-polka-dot-abaya.jpg","/outfits/white-polka-dot-abaya-thumb.jpg"], rating: 4.8, reviewCount: 15 },
-  { id: "olive-elegant", fabric: "شيفون فاخر", category: "الكاجوال", price: 650, originalPrice: 890, badge: "جديد",
+  { id: "rouge-black-abstract-bandeau", fabric: "شيفون فاخر", category: "الكاجوال", price: 650, originalPrice: 890, badge: "جديد",
     colors: [{name:"نبيذي غامق مع نقشة زاهية",hex:"#2C1810"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/olive-elegant-abaya.jpg","/outfits/olive-elegant-abaya-thumb.jpg"], rating: 4.7, reviewCount: 18 },
-  { id: "midnight-rose", fabric: "ساتان مخملي", category: "السهرة", price: 840, originalPrice: 1190, badge: "جديد",
+  { id: "rouge-red-polka-sweetheart", fabric: "ساتان مخملي", category: "السهرة", price: 840, originalPrice: 1190, badge: "جديد",
     colors: [{name:"عنابي",hex:"#722F37"}], sizes: ["S","M","L","XL"], images: ["/outfits/midnight-rose-abaya.jpg"], rating: 4.9, reviewCount: 0 },
-  { id: "pearl-dream", fabric: "كريب فاخر", category: "السهرة", price: 740, originalPrice: 1040,
+  { id: "noir-black-white-polka-bustier", fabric: "كريب فاخر", category: "السهرة", price: 740, originalPrice: 1040,
     colors: [{name:"أسود",hex:"#1C1C1C"}], sizes: ["S","M","L","XL"], images: ["/outfits/pearl-dream-abaya.jpg"], rating: 4.8, reviewCount: 0 },
-  { id: "desert-gold", fabric: "كريب فاخر", category: "السهرة", price: 790, originalPrice: 1090, badge: "حصري",
+  { id: "noir-black-asymmetric-draped", fabric: "كريب فاخر", category: "السهرة", price: 790, originalPrice: 1090, badge: "حصري",
     colors: [{name:"أسود",hex:"#1C1C1C"}], sizes: ["S","M","L","XL"], images: ["/outfits/desert-gold-abaya.jpg"], rating: 4.9, reviewCount: 0 },
-  { id: "moonlight-silver", fabric: "شيفون ساتان", category: "الكاجوال", price: 580, originalPrice: 790,
+  { id: "maison-brown-draped", fabric: "شيفون ساتان", category: "الكاجوال", price: 580, originalPrice: 790,
     colors: [{name:"بني غامق",hex:"#4A3C31"}], sizes: ["S","M","L","XL"], images: ["/outfits/moonlight-silver-abaya.jpg"], rating: 4.7, reviewCount: 0 },
-  { id: "silk-cloud", fabric: "حرير طبيعي 100%", category: "السهرة", price: 820, originalPrice: 1150, badge: "جديد",
+  { id: "rouge-burgundy-silk-fitted", fabric: "حرير طبيعي 100%", category: "السهرة", price: 820, originalPrice: 1150, badge: "جديد",
     colors: [{name:"نبيذي غامق",hex:"#4A0020"}], sizes: ["S","M","L","XL"], images: ["/outfits/silk-cloud-abaya.jpg"], rating: 4.8, reviewCount: 0 },
-  { id: "velvet-burgundy", fabric: "مخمل فاخر", category: "السهرة", price: 790, originalPrice: 1090, badge: "جديد",
+  { id: "rouge-burgundy-polka-halter", fabric: "مخمل فاخر", category: "السهرة", price: 790, originalPrice: 1090, badge: "جديد",
     colors: [{name:"عنابي غامق",hex:"#4A0020"}], sizes: ["S","M","L","XL"], images: ["/outfits/velvet-burgundy-abaya.jpg"], rating: 4.9, reviewCount: 0 },
-  { id: "ocean-breeze", fabric: "شيفون خفيف", category: "الكاجوال", price: 540, originalPrice: 750,
+  { id: "azure-white-polka-halter", fabric: "شيفون خفيف", category: "الكاجوال", price: 540, originalPrice: 750,
     colors: [{name:"أزرق محيطي",hex:"#1E90FF"}], sizes: ["S","M","L","XL"], images: ["/outfits/ocean-breeze-abaya.jpg"], rating: 4.6, reviewCount: 0 },
-  { id: "ivory-grace", fabric: "ساتان كريب", category: "السهرة", price: 790, originalPrice: 1090,
+  { id: "noir-black-lace-halter", fabric: "ساتان كريب", category: "السهرة", price: 790, originalPrice: 1090,
     colors: [{name:"أسود مع دانتيل",hex:"#1C1C1C"}], sizes: ["S","M","L","XL"], images: ["/outfits/ivory-grace-abaya.jpg"], rating: 4.8, reviewCount: 0 },
-  { id: "cherry-blossom", fabric: "شيفون مزدوج", category: "المطرّزة", price: 810, originalPrice: 1140, badge: "حصري",
+  { id: "botanique-pink-embroidered", fabric: "شيفون مزدوج", category: "المطرّزة", price: 810, originalPrice: 1140, badge: "حصري",
     colors: [{name:"وردي فاتح",hex:"#FFB7C5"}], sizes: ["S","M","L","XL"], images: ["/outfits/cherry-blossom-abaya.jpg"], rating: 4.9, reviewCount: 0 },
-  { id: "obsidian-mist", fabric: "كريب ناعم", category: "الكاجوال", price: 620, originalPrice: 850,
+  { id: "botanique-pink-leopard-maxi", fabric: "كريب ناعم", category: "الكاجوال", price: 620, originalPrice: 850,
     colors: [{name:"وردي غبار",hex:"#D8A49C"}], sizes: ["S","M","L","XL"], images: ["/outfits/obsidian-mist-abaya.jpg"], rating: 4.7, reviewCount: 0 },
 ];
 
@@ -205,7 +205,7 @@ const meta: Record<string, Meta> = {
     slug: "maison-dor-odile-فستان-ذهبي-رسمي",
     tags: ["رسمي","أصفر","ذهبي","نقاط-بيضاء","ميدي","حزام","حرير","كلاسيكي","نسائي","مناسبات","Maison d'Or","Odile","أنيق","راقي","نهاري","احتفالي","خالد","محدد-الخصر"],
   },
-  "white-beach": {
+  "rouge-burgundy-polka-vneck": {
     code: "RH26-01",
     collection: "Rouge Héritage", model: "Ophélie",
     descriptor: "فستان كاجوال نبيذي غامق بنقاط بيضاء بياقة V وأزرار",
@@ -221,7 +221,7 @@ const meta: Record<string, Meta> = {
     slug: "rouge-heritage-ophelie-فستان-نبيذي-منقط",
     tags: ["كاجوال","نبيذي","نقاط-بيضاء","ميدي","ياقة-V","أزرار","منفوش","شيفون","نسائي","نهاري","Rouge-Héritage","Ophélie","أنيق","راقي","عصري","ربيع","خروجات","إطلالة-نهارية"],
   },
-  "red-velvet": {
+  "azure-sky-blue-polka-belted": {
     code: "AZ26-01",
     collection: "Azure", model: "Sérène",
     descriptor: "فستان سهرة أزرق سماوي بنقاط بيضاء بقصة محدّدة الخصر بحزام",
@@ -237,7 +237,7 @@ const meta: Record<string, Meta> = {
     slug: "azure-serene-فستان-أزرق-منقط",
     tags: ["سهرة","أزرق-سماوي","نقاط-بيضاء","ميدي","حزام","ساتان","كلاسيكي","نسائي","مناسبات","Azure","Sérène","أنيق","راقي","ربيع","صيف","متوسطي","منعش","خالد"],
   },
-  "black-lace": {
+  "azure-navy-polka-puff": {
     code: "AZ26-02",
     collection: "Azure", model: "Colette",
     descriptor: "فستان سهرة كحلي غامق بنقاط بيضاء بقصة محدّدة الخصر بأكمام بوف",
@@ -253,7 +253,7 @@ const meta: Record<string, Meta> = {
     slug: "azure-colette-فستان-كحلي-منقط",
     tags: ["سهرة","كحلي","نقاط-بيضاء","ميدي","أكمام-بوف","ساتان","كلاسيكي","نسائي","مناسبات","Azure","Colette","أنيق","راقي","مساء","حفلات","خالد","إطلالة-مسائية"],
   },
-  "night-velvet": {
+  "lumiere-white-polka-off-shoulder": {
     code: "LM26-02",
     collection: "Lumière", model: "Amélie",
     descriptor: "فستان سهرة أبيض بنقاط سوداء بقصة كتف مكشوف وحزام",
@@ -269,7 +269,7 @@ const meta: Record<string, Meta> = {
     slug: "lumiere-amelie-فستان-أبيض-مكشوف",
     tags: ["سهرة","أبيض","نقاط-سوداء","ميدي","كتف-مكشوف","رقبة-قلب","حزام","ساتان","كلاسيكي","نسائي","مناسبات","Lumière","Amélie","أنيق","راقي","مساء","حفلات","عصري","خالد"],
   },
-  "white-lace": {
+  "botanique-pink-polka-belted": {
     code: "BT26-01",
     collection: "Botanique", model: "Margaux",
     descriptor: "فستان رسمي وردي فاتح بنقاط بيضاء بقصة محدّدة الخصر بحزام",
@@ -285,7 +285,7 @@ const meta: Record<string, Meta> = {
     slug: "botanique-margaux-فستان-وردي-منقط",
     tags: ["رسمي","وردي","نقاط-بيضاء","ميدي","حزام","ساتان","كلاسيكي","نسائي","مناسبات","Botanique","Margaux","أنيق","راقي","نهاري","ربيع","خالد","رقيق","إطلالة-نهارية"],
   },
-  "floral-sleeve": {
+  "lumiere-cream-polka-maxi": {
     code: "LM26-03",
     collection: "Lumière", model: "Elodie",
     descriptor: "فستان رسمي كريمي بنقاط داكنة بقصة محدّدة الخصر",
@@ -301,7 +301,7 @@ const meta: Record<string, Meta> = {
     slug: "lumiere-elodie-فستان-كريمي-منقط",
     tags: ["رسمي","كريمي","نقاط-داكنة","ميدي","حزام","ساتان","كلاسيكي","محتشم","نسائي","مناسبات","Lumière","Elodie","أنيق","راقي","نهاري","خالد","إطلالة-كلاسيكية"],
   },
-  "gold-embroidered-1": {
+  "maison-gold-embroidered": {
     code: "MD26-02",
     collection: "Maison d'Or", model: "Solène",
     descriptor: "فستان مطرّز بلون ذهبي عتيق بتصميم لامع",
@@ -317,7 +317,7 @@ const meta: Record<string, Meta> = {
     slug: "maison-dor-solene-فستان-ذهبي-عتيق",
     tags: ["مطرّز","ذهبي-عتيق","سهرة","لامع","توقيعي","ساتان","حِرفي","نسائي","مناسبات","Maison d'Or","Solène","فاخر","راقي","احتفالي","ملكي","خالد","دافئ","تطريز-يدوي","مساء","حفلات"],
   },
-  "gold-embroidered-3": {
+  "rouge-burgundy-embroidered": {
     code: "RH26-02",
     collection: "Rouge Héritage", model: "Inès",
     descriptor: "فستان مطرّز نبيذي غامق بأكمام طويلة وكتف منسدل",
@@ -333,7 +333,7 @@ const meta: Record<string, Meta> = {
     slug: "rouge-heritage-ines-فستان-نبيذي-مطرّز",
     tags: ["مطرّز","نبيذي","سهرة","أكمام-طويلة","كتف-منسدل","ساتان","تطريز-ذهبي","نسائي","مناسبات","Rouge-Héritage","Inès","فاخر","راقي","مساء","حفلات","ملكي","دافئ","خالد","خريف","شتاء"],
   },
-  "gold-embroidered-4": {
+  "maison-chocolate-mermaid": {
     code: "MD26-03",
     collection: "Maison d'Or", model: "Livia",
     descriptor: "فستان مطرّز شوكولاتي داكن بقصّة ميرميد بكتف واحد",
@@ -349,7 +349,7 @@ const meta: Record<string, Meta> = {
     slug: "maison-dor-livia-فستان-شوكولاتي-ميرميد",
     tags: ["مطرّز","شوكولاتي","سهرة","ميرميد","كتف-واحد","أكمام-طويلة","ساتان","تطريز-ذهبي","نسائي","مناسبات","Maison d'Or","Livia","فاخر","راقي","احتفالي","دافئ","عصري","خالد","خريف","شتاء"],
   },
-  "gold-embroidered-2": {
+  "lumiere-ivory-mermaid": {
     code: "LM26-06",
     collection: "Lumière", model: "Noor",
     descriptor: "فستان مطرّز عاجي بقصّة ميرميد بكتف واحد بطول أرضي",
@@ -365,7 +365,7 @@ const meta: Record<string, Meta> = {
     slug: "lumiere-noor-فستان-عاجي-ميرميد",
     tags: ["مطرّز","عاجي","سهرة","ميرميد","كتف-واحد","طول-أرضي","ساتان","تطريز-ذهبي","نسائي","مناسبات","Lumière","Noor","فاخر","راقي","احتفالي","ضوئي","دافئ","خالد","استثنائي","ربيع"],
   },
-  "gold-embroidered-5": {
+  "noir-black-mermaid": {
     code: "NA26-02",
     collection: "Noir Atelier", model: "Yasmina",
     descriptor: "فستان مطرّز أسود داكن بقصّة ميرميد بكتف واحد",
@@ -381,7 +381,7 @@ const meta: Record<string, Meta> = {
     slug: "noir-atelier-yasmina-فستان-أسود-ميرميد",
     tags: ["مطرّز","أسود","سهرة","ميرميد","كتف-واحد","أكمام-طويلة","ساتان","تطريز-ذهبي","نسائي","مناسبات","Noir-Atelier","Yasmina","فاخر","راقي","احتفالي","ملكي","خالد","مساء","حفلات","إطلالة-ليلية"],
   },
-  "gold-embroidered-6": {
+  "rouge-burgundy-mermaid": {
     code: "RH26-03",
     collection: "Rouge Héritage", model: "Salma",
     descriptor: "فستان مطرّز نبيذي غامق بقصّة ميرميد بكتف واحد",
@@ -397,7 +397,7 @@ const meta: Record<string, Meta> = {
     slug: "rouge-heritage-salma-فستان-نبيذي-ميرميد",
     tags: ["مطرّز","نبيذي","سهرة","ميرميد","كتف-واحد","أكمام-طويلة","ساتان","تطريز-ذهبي","نسائي","مناسبات","Rouge-Héritage","Salma","فاخر","راقي","احتفالي","دافئ","خالد","خريف","شتاء","إطلالة-ليلية"],
   },
-  "geo-gold-1": {
+  "azure-silver-mermaid": {
     code: "AZ26-03",
     collection: "Azure", model: "Léa",
     descriptor: "فستان سهرة أزرق فضي بقصّة ميرميد لامعة",
@@ -413,7 +413,7 @@ const meta: Record<string, Meta> = {
     slug: "azure-lea-فستان-أزرق-فضي-ميرميد",
     tags: ["سهرة","أزرق-فضي","ميرميد","لامع","معدني","ساتان","نسائي","مناسبات","Azure","Léa","فاخر","راقي","احتفالي","مساء","حفلات","خالد","عصري","إطلالة-ليلية","ربيع","صيف"],
   },
-  "geo-gold-2": {
+  "lumiere-cream-wide-casual": {
     code: "LM26-04",
     collection: "Lumière", model: "Anaïs",
     descriptor: "فستان كاجوال كريمي بقصة واسعة عصرية",
@@ -429,7 +429,7 @@ const meta: Record<string, Meta> = {
     slug: "lumiere-anais-طقم-كريمي-قطعتين",
     tags: ["كاجوال","كريمي","طقم","قطعتين","بنطلون-واسع","قمّة-قصيرة","ساتان","نسائي","نهاري","Lumière","Anaïs","أنيق","راقي","محايد","عصري","خالد","لون-موحّد","ربيع","صيف","خروجات"],
   },
-  "geo-gold-3": {
+  "noir-black-wide-casual": {
     code: "NA26-03",
     collection: "Noir Atelier", model: "Camille",
     descriptor: "فستان كاجوال أسود بقصة واسعة عصرية",
@@ -445,7 +445,7 @@ const meta: Record<string, Meta> = {
     slug: "noir-atelier-camille-طقم-أسود-قطعتين",
     tags: ["كاجوال","أسود","طقم","قطعتين","بنطلون-واسع","قمّة-قصيرة","قطن","نسائي","نهاري","Noir-Atelier","Camille","أنيق","راقي","معماري","عصري","خالد","لون-موحّد","خروجات","عملي","بسيط"],
   },
-  "geo-gold-6": {
+  "botanique-green-casual": {
     code: "BT26-02",
     collection: "Botanique", model: "Juliette",
     descriptor: "فستان كاجوال أخضر فاتح بقصة عصرية",
@@ -461,7 +461,7 @@ const meta: Record<string, Meta> = {
     slug: "botanique-juliette-طقم-أخضر-فاتح",
     tags: ["كاجوال","أخضر-فاتح","طقم","قطعتين","طيّات","ساتان","نسائي","نهاري","Botanique","Juliette","أنيق","راقي","منعش","عصري","نباتي","لون-موحّد","ربيع","صيف","خروجات","مبهج"],
   },
-  "geo-gold-7": {
+  "botanique-pink-casual": {
     code: "BT26-03",
     collection: "Botanique", model: "Zara",
     descriptor: "فستان كاجوال وردي فاتح بتفاصيل ناعمة",
@@ -477,7 +477,7 @@ const meta: Record<string, Meta> = {
     slug: "botanique-zara-طقم-وردي-فاتح",
     tags: ["كاجوال","وردي","طقم","قطعتين","ساتان","نسائي","نهاري","Botanique","Zara","أنيق","راقي","رقيق","عصري","نباتي","لون-موحّد","ربيع","صيف","خروجات","مبهج","محتشم"],
   },
-  "mesh-geometric": {
+  "noir-black-polka-mandarin": {
     code: "NA26-04",
     collection: "Noir Atelier", model: "Rania",
     descriptor: "فستان سهرة أسود بنقاط بيضاء بياقة عالية وأكمام قصيرة",
@@ -493,7 +493,7 @@ const meta: Record<string, Meta> = {
     slug: "noir-atelier-rania-فستان-أسود-بياقة-عالية",
     tags: ["سهرة","أسود","نقاط-بيضاء","ميدي","ياقة-عالية","أكمام-قصيرة","ساتان","محتشم","كلاسيكي","نسائي","مناسبات","Noir-Atelier","Rania","أنيق","راقي","مساء","حفلات","نهاري","خالد","إطلالة-كلاسيكية"],
   },
-  "navy-tie-neck": {
+  "lumiere-cream-polka-lace": {
     code: "LM26-05",
     collection: "Lumière", model: "Layla",
     descriptor: "فستان كاجوال كريمي بنقاط سوداء بياقة مربعة مع دانتيل وقوس",
@@ -509,7 +509,7 @@ const meta: Record<string, Meta> = {
     slug: "lumiere-layla-فستان-كريمي-دانتيل",
     tags: ["كاجوال","كريمي","نقاط-سوداء","ميدي","رقبة-مربعة","دانتيل","قوس","منفوش","شيفون","رومانسي","نسائي","نهاري","Lumière","Layla","أنيق","راقي","ربيع","صيف","خروجات","إطلالة-رومانسية"],
   },
-  "white-polka-dot": {
+  "rouge-burgundy-off-shoulder": {
     code: "RH26-04",
     collection: "Rouge Héritage", model: "Hana",
     descriptor: "فستان كاجوال عنابي غامق بقصة كتف مكشوف وأكمام شفافة بطول أرضي",
@@ -525,7 +525,7 @@ const meta: Record<string, Meta> = {
     slug: "rouge-heritage-hana-فستان-عنابي-مكشوف",
     tags: ["كاجوال","عنابي","ماكسي","كتف-مكشوف","أكمام-شفافة","محدد-الجسم","مجمّع","نسائي","مساء","Rouge-Héritage","Hana","أنيق","راقي","خريف","شتاء","إطلالة-مسائية","جريء"],
   },
-  "olive-elegant": {
+  "rouge-black-abstract-bandeau": {
     code: "RH26-05",
     collection: "Rouge Héritage", model: "Malak",
     descriptor: "فستان سهرة أسود بنقشة زاهية بألوان نارية بقصة باندو وأشرطة رفيعة",
@@ -541,7 +541,7 @@ const meta: Record<string, Meta> = {
     slug: "rouge-heritage-malak-فستان-نقشة-نارية",
     tags: ["سهرة","أسود","نقشة-نارية","ماكسي","باندو","أشرطة-رفيعة","محدد-الجسم","جريء","نسائي","مناسبات","Rouge-Héritage","Malak","فاخر","راقي","عصري","مساء","حفلات","فني","إطلالة-جريئة","طباعي"],
   },
-  "midnight-rose": {
+  "rouge-red-polka-sweetheart": {
     code: "RH26-06",
     collection: "Rouge Héritage", model: "Farah",
     descriptor: "فستان سهرة أحمر زاهي بنقاط بيضاء بقصة قلب وأشرطة رفيعة",
@@ -557,7 +557,7 @@ const meta: Record<string, Meta> = {
     slug: "rouge-heritage-farah-فستان-أحمر-منقط",
     tags: ["سهرة","أحمر","نقاط-بيضاء","ميدي","رقبة-قلب","أشرطة-رفيعة","محدد-الجسم","ساتان","جريء","نسائي","مناسبات","Rouge-Héritage","Farah","أنيق","راقي","مساء","حفلات","عصري","إطلالة-جريئة"],
   },
-  "pearl-dream": {
+  "noir-black-white-polka-bustier": {
     code: "NA26-05",
     collection: "Noir Atelier", model: "Dania",
     descriptor: "فستان سهرة أسود بنقاط بيضاء كلاسيكية بقصة بستيه وأكمام حمالات",
@@ -573,7 +573,7 @@ const meta: Record<string, Meta> = {
     slug: "noir-atelier-dania-فستان-أسود-بنقاط-بيضاء",
     tags: ["سهرة","أسود","نقاط-بيضاء","ميدي","بستيه","حمالات","محدد-الجسم","كلاسيكي","نسائي","مناسبات","Noir-Atelier","Dania","أنيق","راقي","مساء","حفلات","جريء","عصري","خالد","إطلالة-خالدة"],
   },
-  "desert-gold": {
+  "noir-black-asymmetric-draped": {
     code: "NA26-06",
     collection: "Noir Atelier", model: "Lina",
     descriptor: "فستان سهرة أسود بقصة غير متماثلة وثنيات جانبية",
@@ -589,7 +589,7 @@ const meta: Record<string, Meta> = {
     slug: "noir-atelier-lina-فستان-أسود-غير-متماثل",
     tags: ["سهرة","أسود","ماكسي","غير-متماثل","كتف-واحد","ثنيات","كريب","ملفوف","نسائي","مناسبات","Noir-Atelier","Lina","أنيق","راقي","عصري","جريء","حفلات","خالد","إطلالة-عصرية","مساء"],
   },
-  "moonlight-silver": {
+  "maison-brown-draped": {
     code: "MD26-04",
     collection: "Maison d'Or", model: "Rima",
     descriptor: "فستان كاجوال بني غامق بقصة محدّدة بثنيات غير متماثلة",
@@ -605,7 +605,7 @@ const meta: Record<string, Meta> = {
     slug: "maison-dor-rima-فستان-بني-غامق",
     tags: ["كاجوال","بني-غامق","ميدي","ثنيات","غير-متماثل","شيفون","نسائي","نهاري","Maison d'Or","Rima","أنيق","راقي","عصري","دافئ","لون-موحّد","خالد","خريف","شتاء","تجمّعات","خروجات"],
   },
-  "silk-cloud": {
+  "rouge-burgundy-silk-fitted": {
     code: "RH26-07",
     collection: "Rouge Héritage", model: "Nada",
     descriptor: "فستان سهرة نبيذي غامق حريري بقصة محدّدة للجسم",
@@ -621,7 +621,7 @@ const meta: Record<string, Meta> = {
     slug: "rouge-heritage-nada-فستان-نبيذي-حرير",
     tags: ["سهرة","نبيذي-غامق","ميدي","حرير","محدد-الجسم","نسائي","مناسبات","Rouge-Héritage","Nada","فاخر","راقي","مساء","حفلات","خالد","عميق","لون-موحّد","خريف","شتاء","سهرة-راقية","استثنائي"],
   },
-  "velvet-burgundy": {
+  "rouge-burgundy-polka-halter": {
     code: "RH26-08",
     collection: "Rouge Héritage", model: "Sara",
     descriptor: "فستان قصير عنابي غامق بنقاط بيضاء بقصة هالر وتنورة مجمعة بالكشكش",
@@ -637,7 +637,7 @@ const meta: Record<string, Meta> = {
     slug: "rouge-heritage-sara-فستان-قصير-عنابي-نقاط-بيضاء",
     tags: ["كاجوال","عنابي-غامق","نقاط-بيضاء","قصير","هالر","رقبة-V","كشكش","دانتيل","نسائي","مناسبات","Rouge-Héritage","Sara","أنيق","عصري","جريء","شبابي","ربيع","صيف","خروجات","إطلالة-منعشة"],
   },
-  "ocean-breeze": {
+  "azure-white-polka-halter": {
     code: "AZ26-04",
     collection: "Azure", model: "Reem",
     descriptor: "فستان قصير أزرق محيطي بنقاط بيضاء بقصة هالر وخصر مجمّع",
@@ -653,7 +653,7 @@ const meta: Record<string, Meta> = {
     slug: "azure-reem-فستان-أزرق-محيطي-نقاط-بيضاء",
     tags: ["كاجوال","أزرق-محيطي","نقاط-بيضاء","قصير","هالر","رقبة-V","كشكش","دانتيل","نسائي","نهاري","Azure","Reem","أنيق","منعش","عصري","ربيع","صيف","خروجات","إطلالة-صيفية","نزهات"],
   },
-  "ivory-grace": {
+  "noir-black-lace-halter": {
     code: "NA26-07",
     collection: "Noir Atelier", model: "Talia",
     descriptor: "فستان سهرة أسود مع دانتيل زهري شفاف بقصة هالر عالية",
@@ -669,7 +669,7 @@ const meta: Record<string, Meta> = {
     slug: "noir-atelier-talia-فستان-أسود-دانتيل-هالر",
     tags: ["سهرة","أسود","دانتيل","ماكسي","هالر","شفاف","بدون-أكمام","جريء","نسائي","مناسبات","Noir-Atelier","Talia","فاخر","راقي","مساء","حفلات","أنيق","مثير","خالد","إطلالة-مسائية"],
   },
-  "cherry-blossom": {
+  "botanique-pink-embroidered": {
     code: "BT26-04",
     collection: "Botanique", model: "Maya",
     descriptor: "فستان مطرّز وردي فاتح بتطريز أزهار يدوي",
@@ -685,7 +685,7 @@ const meta: Record<string, Meta> = {
     slug: "botanique-maya-فستان-وردي-أزهار-يدوية",
     tags: ["مطرّز","وردي","سهرة","تطريز-يدوي","أزهار","شيفون","حِرفي","نسائي","مناسبات","Botanique","Maya","فاخر","راقي","نهاري","احتفالي","رقيق","نباتي","لون-موحّد","خالد","توقيعي"],
   },
-  "obsidian-mist": {
+  "botanique-pink-leopard-maxi": {
     code: "BT26-05",
     collection: "Botanique", model: "Zeina",
     descriptor: "فستان كاجوال وردي غبار بنقشة فهد سوداء بقصة مربعة وأشرطة رفيعة",
