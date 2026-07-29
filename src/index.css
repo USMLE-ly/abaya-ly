@@ -715,3 +715,61 @@ body {
   box-shadow: 0 0 0 3px var(--accent-brand-subtle), 0 0 0 4px var(--accent-brand);
 }
 
+
+/* ════════════════════════════════════════════════════════════════
+   ADMIN DASHBOARD LAYER
+   Source: MasterPOS Figma (light version) + Elstar component kit.
+   Figma green accent #CDFF65 replaced with Nadine strawberry #c42855.
+   Scoped to .admin-root so the storefront theme is untouched.
+   ════════════════════════════════════════════════════════════════ */
+
+.admin-root {
+  --ad-brand:        #c42855;
+  --ad-brand-hover:  #a81f47;
+  --ad-brand-press:  #8c1839;
+  --ad-brand-subtle: #fdf2f5;
+  --ad-brand-ring:   rgba(196, 40, 85, 0.18);
+
+  --ad-bg:           #FBFBFB;
+  --ad-surface:      #FFFFFF;
+  --ad-surface-2:    #F6F6F6;
+  --ad-border:       #ECECEB;
+  --ad-border-2:     #E5E7EB;
+
+  --ad-text:         #202020;
+  --ad-text-2:       #515161;
+  --ad-text-3:       #878787;
+  --ad-text-4:       #B2B3B9;
+
+  --ad-sidebar:      #FFFFFF;
+  --ad-sidebar-w:    290px;
+
+  --ad-r-sm: 8px;
+  --ad-r-md: 12px;
+  --ad-r-lg: 16px;
+  --ad-r-xl: 20px;
+
+  --ad-e1: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --ad-e2: 0 4px 16px rgba(16, 24, 40, 0.06);
+  --ad-e3: 0 12px 32px rgba(16, 24, 40, 0.10);
+
+  font-family: "Tajawal", system-ui, sans-serif;
+  background: var(--ad-bg);
+  color: var(--ad-text);
+  min-height: 100vh;
+}
+
+.admin-root *,
+.admin-root *::before,
+.admin-root *::after { box-sizing: border-box; }
+
+.admin-root ::-webkit-scrollbar { width: 8px; height: 8px; }
+.admin-root ::-webkit-scrollbar-thumb {
+  background: #DCDCDC; border-radius: 999px;
+}
+.admin-root ::-webkit-scrollbar-track { background: transparent; }
+
+@media print {
+  .admin-no-print { display: none !important; }
+  .admin-root { background: #fff; }
+}
