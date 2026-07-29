@@ -1,6 +1,25 @@
-import { checkRateLimit } from "./_ratelimit.mjs";
 
 export default async function handler(req, res) {
+// Inline rate limiter (per-instance, mitigates brute force)
+const rl_attempts = new Map();
+const RL_WINDOW = 15 * 60 * 1000;
+const RL_MAX = 10;
+function rl_check(ip) {
+  const now = Date.now();
+  const key = `${ip}`;
+  const entry = rl_attempts.get(key);
+  if (!entry || now - entry.windowStart > RL_WINDOW) {
+    rl_attempts.set(key, { windowStart: now, count: 1 });
+    return { allowed: true, remaining: RL_MAX - 1 };
+  }
+  if (entry.count >= RL_MAX) {
+    const retryAfter = Math.ceil((RL_WINDOW - (now - entry.windowStart)) / 1000);
+    return { allowed: false, remaining: 0, retryAfter };
+  }
+  entry.count++;
+  return { allowed: true, remaining: RL_MAX - entry.count };
+}
+
   // Restrict CORS
   const origin = req.headers.origin || "";
   const allowedOrigins = [
@@ -18,7 +37,7 @@ export default async function handler(req, res) {
 
   // Rate limiting
   const ip = req.headers["x-forwarded-for"] || req.headers["x-real-ip"] || "unknown";
-  const rl = checkRateLimit(ip);
+  const rl = rl_check(ip);
   if (!rl.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: rl.retryAfter });
 
   const { code, name, color, size, location, phone } = req.body || {};
