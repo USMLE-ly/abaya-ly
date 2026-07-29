@@ -8,6 +8,7 @@ import FlipGallery from "@/components/ui/flip-gallery";
 import IPhoneMockup from "@/components/ui/iphone-mockup";
 import { ContactForm } from "@/components/ContactForm";
 import { OutfitGallery } from "@/components/OutfitGallery";
+import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 
 const faqs = [
   { q: "كيف يمكنني طلب فستان؟", a: "يمكنكِ تصفح المجموعات واختيار الفستان التي تفضلينها، ثم إضافتها إلى سلة التسوق وإتمام الطلب. يمكنكِ أيضًا التواصل معنا عبر الواتساب." },
@@ -20,7 +21,8 @@ const faqs = [
 
 function HomeFAQ() {
   return (
-    <section className="py-16 md:py-24">
+    <Reveal>
+      <section className="py-16 md:py-24">
       <div className="w-full max-w-[800px] mx-auto px-4 sm:px-6">
         <div className="text-center mb-10">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">
@@ -37,17 +39,22 @@ function HomeFAQ() {
         />
       </div>
     </section>
+    </Reveal>
   );
 }
 
 export function Home() {
+  return <PageTransition><HomeContent /></PageTransition>;
+}
+
+function HomeContent() {
   return (
     <>
       <LuminaHero />
       <ProductCarousel />
       <OutfitGallery />
       <ComparisonTable />
-      <IconBar />
+      <Reveal><IconBar /></Reveal>
       <GlobeSection />
 
       {/* FlipGallery inside iPhone mockup — centered on all devices */}

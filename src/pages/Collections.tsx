@@ -1,3 +1,4 @@
+import { PageTransition } from "@/components/PageTransition";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -7,6 +8,10 @@ import { Button } from "@/components/velar";
 import { Badge } from "@/components/velar";
 
 export function Collections() {
+  return <PageTransition><CollectionsContent /></PageTransition>;
+}
+
+function CollectionsContent() {
   const [active, setActive] = useState("all");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const list = active === "all" ? products : products.filter((p) => p.category === active);

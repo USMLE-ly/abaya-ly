@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PageTransition } from "@/components/PageTransition";
 import { motion } from "framer-motion";
 import { Package, CheckCircle, Truck, MapPin, Search, Loader2, Clock, MessageCircle } from "lucide-react";
 
@@ -12,7 +13,12 @@ const STATUS_STEPS = [
 
 const STATUS_ORDER = ["pending", "processing", "waiting_shipping", "shipped", "delivered"];
 
+
 export function TrackOrder() {
+  return <PageTransition><TrackOrderContent /></PageTransition>;
+}
+
+function TrackOrderContent() {
   const [orderNumber, setOrderNumber] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);

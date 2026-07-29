@@ -9,7 +9,13 @@ const faqs = [
   { q: "كيف أعرف مقاسي المناسب؟", a: "صفحتنا تحتوي على جدول المقاسات. يمكنكِ أيضًا التواصل معنا للحصول على إرشادات شخصية." },
 ];
 
+import { PageTransition } from "@/components/PageTransition";
+
 export function FAQ() {
+  return <PageTransition><FAQContent /></PageTransition>;
+}
+
+function FAQContent() {
   return (
     <div className="min-h-screen">
       <section className="pt-24 pb-10 md:pt-28 md:pb-14">

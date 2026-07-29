@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { products } from "@/data/products";
 
-function InteractiveCard({ product }: { product: typeof products[number] }) {
+function InteractiveCard({ product, index = 0 }: { product: typeof products[number]; index?: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -19,7 +19,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
   const handleMouseLeave = () => {
     if (!cardRef.current) return;
     cardRef.current.style.transform = "perspective(800px) rotateX(0deg) rotateY(0deg)";
-    cardRef.current.style.transition = "transform 0.3s ease-out";
+    cardRef.current.style.transition = "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)";
   };
 
   const handleMouseEnter = () => {
@@ -37,53 +37,69 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onMouseEnter={handleMouseEnter}
-        className="relative min-w-[100vw] sm:min-w-0 sm:w-[280px] flex-shrink-0 aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer"
+        className="group/card relative min-w-[100vw] sm:min-w-0 sm:w-[290px] flex-shrink-0 aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer"
         style={{ willChange: "transform" }}
       >
-        <img
-          src={product.images[0]}
-          alt={product.name}
-          className="absolute inset-0 h-full w-full object-cover"
-          loading="lazy"
-          decoding="async"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        {/* Image with zoom */}
+        <div className="absolute inset-0 overflow-hidden">
+          <img
+            src={product.images[0]}
+            alt={product.name}
+            className="absolute inset-0 h-full w-full object-cover transition-all duration-700 group-hover/card:scale-110"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        {product.images[1] && (
+          <img
+            src={product.images[1]}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"
+            loading="lazy"
+          />
+        )}
+
+        {/* Gradient overlay — deeper at bottom */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent group-hover/card:from-black/80 transition-all duration-300" />
 
         {product.badge && (
-          <div className="absolute top-3 right-3 z-20 px-2.5 py-1 bg-accent-brand text-fg-inverse text-[10px] font-bold rounded-full">{product.badge}</div>
+          <div className="absolute top-3 right-3 z-20 px-3 py-1 bg-white/90 backdrop-blur-md text-fg text-[10px] font-bold rounded-full shadow-lg border border-white/50">
+            {product.badge}
+          </div>
         )}
 
         <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-end">
-          {/* Stars */}
-          <div className="flex items-center gap-0.5 mb-2 self-start rounded-full px-3 py-1.5 w-fit border border-white/15" style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
+          {/* Stars — more subtle */}
+          <div className="flex items-center gap-0.5 mb-2 self-start rounded-full px-3 py-1.5 w-fit glass-subtle">
             {Array.from({ length: 5 }).map((_, s) => (
-              <svg key={s} className={`w-3 h-3 ${s < stars ? "text-warning" : "text-white/40"}`} fill="currentColor" viewBox="0 0 20 20">
+              <svg key={s} className={`w-3 h-3 ${s < stars ? "text-amber-400" : "text-white/30"}`} fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
             ))}
-            <span className="text-[9px] text-fg/70 mr-1">({reviewCount})</span>
+            <span className="text-[9px] text-white/70 mr-1">({reviewCount})</span>
           </div>
 
-          {/* Title overlay */}
-          <div className="inline-block rounded-2xl border border-white/15 p-3 sm:p-4 mb-3 w-fit max-w-full" style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
-            <p className="text-[9px] uppercase tracking-[0.2em] text-accent-brand font-semibold mb-0.5">
-              {product.collection} <span className="text-fg/40">•</span> {product.model}
+          {/* Title overlay — glass premium */}
+          <div className="inline-block rounded-2xl border border-white/20 p-3 sm:p-4 mb-3 w-fit max-w-full glass-subtle backdrop-blur-xl">
+            <p className="text-[9px] uppercase tracking-[0.2em] text-strawberry-400 font-semibold mb-0.5">
+              {product.collection} <span className="text-white/40">•</span> {product.model}
             </p>
-            <h3
-              className="text-sm md:text-base font-bold text-fg leading-tight mb-0.5"
-              style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
-            >
+            <h3 className="text-sm md:text-base font-bold text-white leading-tight mb-0.5 text-pretty" style={{ whiteSpace: "normal", overflow: "visible" }}>
               {product.name.split(" • ").slice(2).join(" • ") ?? product.name}
             </h3>
           </div>
 
+          {/* Price pill */}
           <div className="inline-flex self-start">
-            <div className="rounded-full border border-white/15 px-4 py-1.5 flex items-baseline gap-1.5" style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
-              <span className="text-sm font-bold text-accent-brand">{product.price} د.ل</span>
-              {product.originalPrice && <span className="text-[10px] text-fg/50 line-through">{product.originalPrice} د.ل</span>}
+            <div className="rounded-full border border-white/20 px-4 py-1.5 flex items-baseline gap-1.5 glass-subtle backdrop-blur-xl">
+              <span className="text-sm font-bold text-strawberry-400 tabular-nums">{product.price} د.ل</span>
+              {product.originalPrice && <span className="text-[10px] text-white/50 line-through">{product.originalPrice} د.ل</span>}
             </div>
           </div>
         </div>
+
+        {/* Shine effect on hover */}
+        <div className="absolute inset-0 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-tr from-white/0 via-white/08 to-white/0" />
       </div>
     </Link>
   );
@@ -141,9 +157,9 @@ export function ProductCarousel() {
             className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide"
             onScroll={checkScroll}
           >
-            {products.map((product) => (
-              <div key={product.id} className="flex-shrink-0">
-                <InteractiveCard product={product} />
+            {products.map((product, i) => (
+              <div key={product.id} className="flex-shrink-0" style={{ animation: `fadeUp 0.5s ease-out ${i * 0.06}s both` }}>
+                <InteractiveCard product={product} index={i} />
               </div>
             ))}
           </div>

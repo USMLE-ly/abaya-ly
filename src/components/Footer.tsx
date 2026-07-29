@@ -3,7 +3,7 @@ import { Instagram, Facebook, Twitter } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="glass-subtle border-t border-line-subtle">
+    <footer className="bg-gradient-to-b from-canvas to-sunken border-t border-line/5">
       <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10" style={{ direction: "rtl" }}>
           <div>
@@ -54,6 +54,7 @@ export function Footer() {
           <p>جميع الحقوق محفوظة © 2026 نادين</p>
         </div>
       </div>
+      <div className="h-0.5 bg-gradient-to-r from-transparent via-strawberry-300/30 to-transparent" />
     </footer>
   );
 }

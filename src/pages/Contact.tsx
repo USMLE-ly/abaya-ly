@@ -1,7 +1,13 @@
 import { ContactForm } from "@/components/ContactForm";
 import { MapPin, Phone, Mail } from "lucide-react";
 
+import { PageTransition } from "@/components/PageTransition";
+
 export function Contact() {
+  return <PageTransition><ContactContent /></PageTransition>;
+}
+
+function ContactContent() {
   return (
     <div className="min-h-screen">
       <section className="pt-24 pb-10 md:pt-28 md:pb-14">

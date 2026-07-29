@@ -1,3 +1,4 @@
+import { PageTransition } from "@/components/PageTransition";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
@@ -14,6 +15,10 @@ const loadCart = (): CartItem[] => {
 };
 
 export function Cart() {
+  return <PageTransition><CartContent /></PageTransition>;
+}
+
+function CartContent() {
   const [items, setItems] = useState<CartItem[]>(loadCart);
   const updateQty = (id: string, delta: number) => setItems((prev) => {
     const next = prev.map((item) => item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item);

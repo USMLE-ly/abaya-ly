@@ -49,7 +49,13 @@ export function Header() {
   }, [open]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 glass-strong">
+    <header className="fixed top-0 left-0 right-0 z-50" style={{
+    background: "rgba(255,255,255,0.88)",
+    backdropFilter: "blur(20px)",
+    WebkitBackdropFilter: "blur(20px)",
+    borderBottom: "1px solid rgba(196,40,85,0.08)",
+    boxShadow: "0 1px 3px rgba(17,15,13,0.04)"
+  }}>
       <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 h-16 grid grid-cols-[auto_1fr_auto] items-center">
         {/* Hamburger — right (col 1) */}
         <div className="relative" ref={menuRef}>
