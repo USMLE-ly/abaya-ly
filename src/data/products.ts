@@ -5,6 +5,7 @@
 
 export interface Product {
   id: string;
+  code: string;                 // product code e.g. "LM26-01"
   name: string;                 // full hierarchy: «Collection • Model • Arabic descriptor • Edition»
   collection: string;           // e.g. "Noir Atelier"
   model: string;                // e.g. "Aurelia"
@@ -47,7 +48,7 @@ type BaseFields = Pick<Product,
 >;
 
 const base: BaseFields[] = [
-  { id: "al-sahra-gold", fabric: "ساتان فاخر", category: "السهرة", price: 840, originalPrice: 1190, badge: "الأكثر مبيعاً",
+  { id: "lumiere-white-polka-midi", fabric: "ساتان فاخر", category: "السهرة", price: 840, originalPrice: 1190, badge: "الأكثر مبيعاً",
     colors: [{name:"أبيض",hex:"#FFFFFF"},{name:"أسود",hex:"#111827",linkTo:"mesh-geometric"}],
     sizes: ["S","M","L","XL"], images: ["/images/products/abaya-1.jpg","/images/products/abaya-1-thumb.jpg"], rating: 4.9, reviewCount: 47 },
   { id: "olive-ruffle", fabric: "ساتان فاخر", category: "السهرة", price: 720, originalPrice: 990, badge: "جديد",
@@ -108,7 +109,7 @@ const base: BaseFields[] = [
     colors: [{name:"وردي فاتح",hex:"#f4c4d4"},{name:"كريمي",hex:"#F5F5DC",linkTo:"geo-gold-2"},{name:"أسود",hex:"#000000",linkTo:"geo-gold-3"},{name:"أخضر فاتح",hex:"#E6F78D",linkTo:"geo-gold-6"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/geometric-gold-abaya-7.jpg","/outfits/geometric-gold-abaya-7-thumb.jpg"], rating: 4.8, reviewCount: 33 },
   { id: "mesh-geometric", fabric: "ساتان مطري", category: "المطرّزة", price: 790, originalPrice: 1100,
-    colors: [{name:"أسود",hex:"#111827"},{name:"أبيض",hex:"#FFFFFF",linkTo:"al-sahra-gold"}],
+    colors: [{name:"أسود",hex:"#111827"},{name:"أبيض",hex:"#FFFFFF",linkTo:"lumiere-white-polka-midi"}],
     sizes: ["S","M","L","XL"], images: ["/outfits/mesh-geometric-abaya.jpg","/outfits/mesh-geometric-abaya-thumb.jpg"], rating: 4.8, reviewCount: 39 },
   { id: "navy-tie-neck", fabric: "شيفون فاخر", category: "الكاجوال", price: 610, originalPrice: 840, badge: "جديد",
     colors: [{name:"أبيض",hex:"#FFFFFF"},{name:"أسود",hex:"#111827",linkTo:"mesh-geometric"}],
@@ -143,6 +144,7 @@ const base: BaseFields[] = [
 
 // ── Luxury metadata (per product, image-anchored) ──────────────────
 type Meta = {
+  code: string;         // product code e.g. "LM26-01"
   collection: string; model: string;
   descriptor: string;   // Arabic descriptor: type + silhouette + color
   subtitle: string;
@@ -155,7 +157,8 @@ type Meta = {
 };
 
 const meta: Record<string, Meta> = {
-  "al-sahra-gold": {
+  "lumiere-white-polka-midi": {
+    code: "LM26-01",
     collection: "Lumière", model: "Céleste",
     descriptor: "فستان سهرة أبيض بنقاط سوداء كلاسيكية بقصة محدّدة الخصر",
     subtitle: "أبيض نقي بنقاط سوداء بأناقة كلاسيكية خالدة.",
@@ -171,6 +174,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","أبيض","نقاط-سوداء","ميدي","حزام","محدد-الخصر","تنورة-A","ساتان","كلاسيكي","نسائي","مناسبات","Lumière","Céleste","أنيق","راقي","ربيع","صيف","كلاسيكي","حفلات","خالد"],
   },
   "olive-ruffle": {
+    code: "NA26-01",
     collection: "Noir Atelier", model: "Aurelia",
     descriptor: "فستان سهرة أسود بنقاط بيضاء بقصة محدّدة الخصر بحزام",
     subtitle: "أسود بنقاط بيضاء بأناقة عصرية محدّدة.",
@@ -186,6 +190,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","أسود","نقاط-بيضاء","ميدي","حزام","ساتان","كلاسيكي","نسائي","مناسبات","Noir-Atelier","Aurelia","أنيق","راقي","مساء","حفلات","خالد","إطلالة-كلاسيكية","محدد-الخصر"],
   },
   "cream-silk": {
+    code: "MD26-01",
     collection: "Maison d'Or", model: "Odile",
     descriptor: "فستان رسمي أصفر ذهبي بنقاط بيضاء بقصة محدّدة الخصر",
     subtitle: "ذهبي دافئ بنقشة نقاط بيضاء بأناقة رسمية.",
@@ -201,6 +206,7 @@ const meta: Record<string, Meta> = {
     tags: ["رسمي","أصفر","ذهبي","نقاط-بيضاء","ميدي","حزام","حرير","كلاسيكي","نسائي","مناسبات","Maison d'Or","Odile","أنيق","راقي","نهاري","احتفالي","خالد","محدد-الخصر"],
   },
   "white-beach": {
+    code: "RH26-01",
     collection: "Rouge Héritage", model: "Ophélie",
     descriptor: "فستان كاجوال نبيذي غامق بنقاط بيضاء بياقة V وأزرار",
     subtitle: "نبيذي غامق بنقشة نقاط بيضاء بأناقة عصرية.",
@@ -216,6 +222,7 @@ const meta: Record<string, Meta> = {
     tags: ["كاجوال","نبيذي","نقاط-بيضاء","ميدي","ياقة-V","أزرار","منفوش","شيفون","نسائي","نهاري","Rouge-Héritage","Ophélie","أنيق","راقي","عصري","ربيع","خروجات","إطلالة-نهارية"],
   },
   "red-velvet": {
+    code: "AZ26-01",
     collection: "Azure", model: "Sérène",
     descriptor: "فستان سهرة أزرق سماوي بنقاط بيضاء بقصة محدّدة الخصر بحزام",
     subtitle: "أزرق سماوي ناعم بنقشة نقاط بيضاء كلاسيكية.",
@@ -231,6 +238,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","أزرق-سماوي","نقاط-بيضاء","ميدي","حزام","ساتان","كلاسيكي","نسائي","مناسبات","Azure","Sérène","أنيق","راقي","ربيع","صيف","متوسطي","منعش","خالد"],
   },
   "black-lace": {
+    code: "AZ26-02",
     collection: "Azure", model: "Colette",
     descriptor: "فستان سهرة كحلي غامق بنقاط بيضاء بقصة محدّدة الخصر بأكمام بوف",
     subtitle: "كحلي عميق بنقشة نقاط بيضاء بحضور مسائي.",
@@ -246,6 +254,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","كحلي","نقاط-بيضاء","ميدي","أكمام-بوف","ساتان","كلاسيكي","نسائي","مناسبات","Azure","Colette","أنيق","راقي","مساء","حفلات","خالد","إطلالة-مسائية"],
   },
   "night-velvet": {
+    code: "LM26-02",
     collection: "Lumière", model: "Amélie",
     descriptor: "فستان سهرة أبيض بنقاط سوداء بقصة كتف مكشوف وحزام",
     subtitle: "أبيض نقي بنقشة نقاط سوداء بإطلالة عصرية.",
@@ -261,6 +270,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","أبيض","نقاط-سوداء","ميدي","كتف-مكشوف","رقبة-قلب","حزام","ساتان","كلاسيكي","نسائي","مناسبات","Lumière","Amélie","أنيق","راقي","مساء","حفلات","عصري","خالد"],
   },
   "white-lace": {
+    code: "BT26-01",
     collection: "Botanique", model: "Margaux",
     descriptor: "فستان رسمي وردي فاتح بنقاط بيضاء بقصة محدّدة الخصر بحزام",
     subtitle: "وردي فاتح ناعم بنقشة نقاط بيضاء رقيقة.",
@@ -276,6 +286,7 @@ const meta: Record<string, Meta> = {
     tags: ["رسمي","وردي","نقاط-بيضاء","ميدي","حزام","ساتان","كلاسيكي","نسائي","مناسبات","Botanique","Margaux","أنيق","راقي","نهاري","ربيع","خالد","رقيق","إطلالة-نهارية"],
   },
   "floral-sleeve": {
+    code: "LM26-03",
     collection: "Lumière", model: "Elodie",
     descriptor: "فستان رسمي كريمي بنقاط داكنة بقصة محدّدة الخصر",
     subtitle: "كريمي كلاسيكي بنقشة نقاط داكنة بأناقة محتشمة.",
@@ -291,6 +302,7 @@ const meta: Record<string, Meta> = {
     tags: ["رسمي","كريمي","نقاط-داكنة","ميدي","حزام","ساتان","كلاسيكي","محتشم","نسائي","مناسبات","Lumière","Elodie","أنيق","راقي","نهاري","خالد","إطلالة-كلاسيكية"],
   },
   "gold-embroidered-1": {
+    code: "MD26-02",
     collection: "Maison d'Or", model: "Solène",
     descriptor: "فستان مطرّز بلون ذهبي عتيق بتصميم لامع",
     subtitle: "ذهب عتيق بلمعان حِرفي دافئ.",
@@ -306,6 +318,7 @@ const meta: Record<string, Meta> = {
     tags: ["مطرّز","ذهبي-عتيق","سهرة","لامع","توقيعي","ساتان","حِرفي","نسائي","مناسبات","Maison d'Or","Solène","فاخر","راقي","احتفالي","ملكي","خالد","دافئ","تطريز-يدوي","مساء","حفلات"],
   },
   "gold-embroidered-3": {
+    code: "RH26-02",
     collection: "Rouge Héritage", model: "Inès",
     descriptor: "فستان مطرّز نبيذي غامق بأكمام طويلة وكتف منسدل",
     subtitle: "نبيذ عميق بحضور ملكي هادئ.",
@@ -321,6 +334,7 @@ const meta: Record<string, Meta> = {
     tags: ["مطرّز","نبيذي","سهرة","أكمام-طويلة","كتف-منسدل","ساتان","تطريز-ذهبي","نسائي","مناسبات","Rouge-Héritage","Inès","فاخر","راقي","مساء","حفلات","ملكي","دافئ","خالد","خريف","شتاء"],
   },
   "gold-embroidered-4": {
+    code: "MD26-03",
     collection: "Maison d'Or", model: "Livia",
     descriptor: "فستان مطرّز شوكولاتي داكن بقصّة ميرميد بكتف واحد",
     subtitle: "كاكاو داكن بحضور نحيف مبهر.",
@@ -336,6 +350,7 @@ const meta: Record<string, Meta> = {
     tags: ["مطرّز","شوكولاتي","سهرة","ميرميد","كتف-واحد","أكمام-طويلة","ساتان","تطريز-ذهبي","نسائي","مناسبات","Maison d'Or","Livia","فاخر","راقي","احتفالي","دافئ","عصري","خالد","خريف","شتاء"],
   },
   "gold-embroidered-2": {
+    code: "LM26-06",
     collection: "Lumière", model: "Noor",
     descriptor: "فستان مطرّز عاجي بقصّة ميرميد بكتف واحد بطول أرضي",
     subtitle: "عاج دافئ بحضور ضوئي.",
@@ -351,6 +366,7 @@ const meta: Record<string, Meta> = {
     tags: ["مطرّز","عاجي","سهرة","ميرميد","كتف-واحد","طول-أرضي","ساتان","تطريز-ذهبي","نسائي","مناسبات","Lumière","Noor","فاخر","راقي","احتفالي","ضوئي","دافئ","خالد","استثنائي","ربيع"],
   },
   "gold-embroidered-5": {
+    code: "NA26-02",
     collection: "Noir Atelier", model: "Yasmina",
     descriptor: "فستان مطرّز أسود داكن بقصّة ميرميد بكتف واحد",
     subtitle: "أسود عميق بحضور مسائي جريء.",
@@ -366,6 +382,7 @@ const meta: Record<string, Meta> = {
     tags: ["مطرّز","أسود","سهرة","ميرميد","كتف-واحد","أكمام-طويلة","ساتان","تطريز-ذهبي","نسائي","مناسبات","Noir-Atelier","Yasmina","فاخر","راقي","احتفالي","ملكي","خالد","مساء","حفلات","إطلالة-ليلية"],
   },
   "gold-embroidered-6": {
+    code: "RH26-03",
     collection: "Rouge Héritage", model: "Salma",
     descriptor: "فستان مطرّز نبيذي غامق بقصّة ميرميد بكتف واحد",
     subtitle: "نبيذ غامق بلمسة أنوثة هادئة.",
@@ -381,6 +398,7 @@ const meta: Record<string, Meta> = {
     tags: ["مطرّز","نبيذي","سهرة","ميرميد","كتف-واحد","أكمام-طويلة","ساتان","تطريز-ذهبي","نسائي","مناسبات","Rouge-Héritage","Salma","فاخر","راقي","احتفالي","دافئ","خالد","خريف","شتاء","إطلالة-ليلية"],
   },
   "geo-gold-1": {
+    code: "AZ26-03",
     collection: "Azure", model: "Léa",
     descriptor: "فستان سهرة أزرق فضي بقصّة ميرميد لامعة",
     subtitle: "فضي أزرق بلمعان مسائي هادئ.",
@@ -396,6 +414,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","أزرق-فضي","ميرميد","لامع","معدني","ساتان","نسائي","مناسبات","Azure","Léa","فاخر","راقي","احتفالي","مساء","حفلات","خالد","عصري","إطلالة-ليلية","ربيع","صيف"],
   },
   "geo-gold-2": {
+    code: "LM26-04",
     collection: "Lumière", model: "Anaïs",
     descriptor: "فستان كاجوال كريمي بقصة واسعة عصرية",
     subtitle: "كريمي هادئ بلغة نهارية عصرية.",
@@ -411,6 +430,7 @@ const meta: Record<string, Meta> = {
     tags: ["كاجوال","كريمي","طقم","قطعتين","بنطلون-واسع","قمّة-قصيرة","ساتان","نسائي","نهاري","Lumière","Anaïs","أنيق","راقي","محايد","عصري","خالد","لون-موحّد","ربيع","صيف","خروجات"],
   },
   "geo-gold-3": {
+    code: "NA26-03",
     collection: "Noir Atelier", model: "Camille",
     descriptor: "فستان كاجوال أسود بقصة واسعة عصرية",
     subtitle: "أسود صافٍ بلغة نهارية معمارية.",
@@ -426,6 +446,7 @@ const meta: Record<string, Meta> = {
     tags: ["كاجوال","أسود","طقم","قطعتين","بنطلون-واسع","قمّة-قصيرة","قطن","نسائي","نهاري","Noir-Atelier","Camille","أنيق","راقي","معماري","عصري","خالد","لون-موحّد","خروجات","عملي","بسيط"],
   },
   "geo-gold-6": {
+    code: "BT26-02",
     collection: "Botanique", model: "Juliette",
     descriptor: "فستان كاجوال أخضر فاتح بقصة عصرية",
     subtitle: "أخضر منعش بحيوية نباتية.",
@@ -441,6 +462,7 @@ const meta: Record<string, Meta> = {
     tags: ["كاجوال","أخضر-فاتح","طقم","قطعتين","طيّات","ساتان","نسائي","نهاري","Botanique","Juliette","أنيق","راقي","منعش","عصري","نباتي","لون-موحّد","ربيع","صيف","خروجات","مبهج"],
   },
   "geo-gold-7": {
+    code: "BT26-03",
     collection: "Botanique", model: "Zara",
     descriptor: "فستان كاجوال وردي فاتح بتفاصيل ناعمة",
     subtitle: "وردي هادئ بحضور نهاري رقيق.",
@@ -456,6 +478,7 @@ const meta: Record<string, Meta> = {
     tags: ["كاجوال","وردي","طقم","قطعتين","ساتان","نسائي","نهاري","Botanique","Zara","أنيق","راقي","رقيق","عصري","نباتي","لون-موحّد","ربيع","صيف","خروجات","مبهج","محتشم"],
   },
   "mesh-geometric": {
+    code: "NA26-04",
     collection: "Noir Atelier", model: "Rania",
     descriptor: "فستان سهرة أسود بنقاط بيضاء بياقة عالية وأكمام قصيرة",
     subtitle: "أسود بنقاط بيضاء بأناقة عصرية ناعمة.",
@@ -471,6 +494,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","أسود","نقاط-بيضاء","ميدي","ياقة-عالية","أكمام-قصيرة","ساتان","محتشم","كلاسيكي","نسائي","مناسبات","Noir-Atelier","Rania","أنيق","راقي","مساء","حفلات","نهاري","خالد","إطلالة-كلاسيكية"],
   },
   "navy-tie-neck": {
+    code: "LM26-05",
     collection: "Lumière", model: "Layla",
     descriptor: "فستان كاجوال كريمي بنقاط سوداء بياقة مربعة مع دانتيل وقوس",
     subtitle: "كريمي ناعم بنقشة نقاط سوداء مع لمسة دانتيل رومانسية.",
@@ -486,6 +510,7 @@ const meta: Record<string, Meta> = {
     tags: ["كاجوال","كريمي","نقاط-سوداء","ميدي","رقبة-مربعة","دانتيل","قوس","منفوش","شيفون","رومانسي","نسائي","نهاري","Lumière","Layla","أنيق","راقي","ربيع","صيف","خروجات","إطلالة-رومانسية"],
   },
   "white-polka-dot": {
+    code: "RH26-04",
     collection: "Rouge Héritage", model: "Hana",
     descriptor: "فستان كاجوال عنابي غامق بقصة كتف مكشوف وأكمام شفافة بطول أرضي",
     subtitle: "عنابي غامق بأناقة مسائية جريئة.",
@@ -501,6 +526,7 @@ const meta: Record<string, Meta> = {
     tags: ["كاجوال","عنابي","ماكسي","كتف-مكشوف","أكمام-شفافة","محدد-الجسم","مجمّع","نسائي","مساء","Rouge-Héritage","Hana","أنيق","راقي","خريف","شتاء","إطلالة-مسائية","جريء"],
   },
   "olive-elegant": {
+    code: "RH26-05",
     collection: "Rouge Héritage", model: "Malak",
     descriptor: "فستان سهرة أسود بنقشة زاهية بألوان نارية بقصة باندو وأشرطة رفيعة",
     subtitle: "أسود بنقشة نارية بإطلالة جريئة.",
@@ -516,6 +542,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","أسود","نقشة-نارية","ماكسي","باندو","أشرطة-رفيعة","محدد-الجسم","جريء","نسائي","مناسبات","Rouge-Héritage","Malak","فاخر","راقي","عصري","مساء","حفلات","فني","إطلالة-جريئة","طباعي"],
   },
   "midnight-rose": {
+    code: "RH26-06",
     collection: "Rouge Héritage", model: "Farah",
     descriptor: "فستان سهرة أحمر زاهي بنقاط بيضاء بقصة قلب وأشرطة رفيعة",
     subtitle: "أحمر زاهي بنقشة نقاط بيضاء بإطلالة جريئة.",
@@ -531,6 +558,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","أحمر","نقاط-بيضاء","ميدي","رقبة-قلب","أشرطة-رفيعة","محدد-الجسم","ساتان","جريء","نسائي","مناسبات","Rouge-Héritage","Farah","أنيق","راقي","مساء","حفلات","عصري","إطلالة-جريئة"],
   },
   "pearl-dream": {
+    code: "NA26-05",
     collection: "Noir Atelier", model: "Dania",
     descriptor: "فستان سهرة أسود بنقاط بيضاء كلاسيكية بقصة بستيه وأكمام حمالات",
     subtitle: "أسود ليلي بنقاط بيضاء خالدة.",
@@ -546,6 +574,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","أسود","نقاط-بيضاء","ميدي","بستيه","حمالات","محدد-الجسم","كلاسيكي","نسائي","مناسبات","Noir-Atelier","Dania","أنيق","راقي","مساء","حفلات","جريء","عصري","خالد","إطلالة-خالدة"],
   },
   "desert-gold": {
+    code: "NA26-06",
     collection: "Noir Atelier", model: "Lina",
     descriptor: "فستان سهرة أسود بقصة غير متماثلة وثنيات جانبية",
     subtitle: "أسود أنيق بلمسة عصرية غير متماثلة.",
@@ -561,6 +590,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","أسود","ماكسي","غير-متماثل","كتف-واحد","ثنيات","كريب","ملفوف","نسائي","مناسبات","Noir-Atelier","Lina","أنيق","راقي","عصري","جريء","حفلات","خالد","إطلالة-عصرية","مساء"],
   },
   "moonlight-silver": {
+    code: "MD26-04",
     collection: "Maison d'Or", model: "Rima",
     descriptor: "فستان كاجوال بني غامق بقصة محدّدة بثنيات غير متماثلة",
     subtitle: "بني غامق بحضور ترابي أنيق.",
@@ -576,6 +606,7 @@ const meta: Record<string, Meta> = {
     tags: ["كاجوال","بني-غامق","ميدي","ثنيات","غير-متماثل","شيفون","نسائي","نهاري","Maison d'Or","Rima","أنيق","راقي","عصري","دافئ","لون-موحّد","خالد","خريف","شتاء","تجمّعات","خروجات"],
   },
   "silk-cloud": {
+    code: "RH26-07",
     collection: "Rouge Héritage", model: "Nada",
     descriptor: "فستان سهرة نبيذي غامق حريري بقصة محدّدة للجسم",
     subtitle: "نبيذي غامق بأناقة حريرية استثنائية.",
@@ -591,6 +622,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","نبيذي-غامق","ميدي","حرير","محدد-الجسم","نسائي","مناسبات","Rouge-Héritage","Nada","فاخر","راقي","مساء","حفلات","خالد","عميق","لون-موحّد","خريف","شتاء","سهرة-راقية","استثنائي"],
   },
   "velvet-burgundy": {
+    code: "RH26-08",
     collection: "Rouge Héritage", model: "Sara",
     descriptor: "فستان قصير عنابي غامق بنقاط بيضاء بقصة هالر وتنورة مجمعة بالكشكش",
     subtitle: "عنابي غامق بنقاط بيضاء بأناقة شابة جريئة.",
@@ -606,6 +638,7 @@ const meta: Record<string, Meta> = {
     tags: ["كاجوال","عنابي-غامق","نقاط-بيضاء","قصير","هالر","رقبة-V","كشكش","دانتيل","نسائي","مناسبات","Rouge-Héritage","Sara","أنيق","عصري","جريء","شبابي","ربيع","صيف","خروجات","إطلالة-منعشة"],
   },
   "ocean-breeze": {
+    code: "AZ26-04",
     collection: "Azure", model: "Reem",
     descriptor: "فستان قصير أزرق محيطي بنقاط بيضاء بقصة هالر وخصر مجمّع",
     subtitle: "أزرق محيطي منعش بنقاط بيضاء بأناقة صيفية.",
@@ -621,6 +654,7 @@ const meta: Record<string, Meta> = {
     tags: ["كاجوال","أزرق-محيطي","نقاط-بيضاء","قصير","هالر","رقبة-V","كشكش","دانتيل","نسائي","نهاري","Azure","Reem","أنيق","منعش","عصري","ربيع","صيف","خروجات","إطلالة-صيفية","نزهات"],
   },
   "ivory-grace": {
+    code: "NA26-07",
     collection: "Noir Atelier", model: "Talia",
     descriptor: "فستان سهرة أسود مع دانتيل زهري شفاف بقصة هالر عالية",
     subtitle: "أسود مع دانتيل بأناقة مثيرة وجريئة.",
@@ -636,6 +670,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","أسود","دانتيل","ماكسي","هالر","شفاف","بدون-أكمام","جريء","نسائي","مناسبات","Noir-Atelier","Talia","فاخر","راقي","مساء","حفلات","أنيق","مثير","خالد","إطلالة-مسائية"],
   },
   "cherry-blossom": {
+    code: "BT26-04",
     collection: "Botanique", model: "Maya",
     descriptor: "فستان مطرّز وردي فاتح بتطريز أزهار يدوي",
     subtitle: "وردي بلمسة أزهار حِرفية.",
@@ -651,6 +686,7 @@ const meta: Record<string, Meta> = {
     tags: ["مطرّز","وردي","سهرة","تطريز-يدوي","أزهار","شيفون","حِرفي","نسائي","مناسبات","Botanique","Maya","فاخر","راقي","نهاري","احتفالي","رقيق","نباتي","لون-موحّد","خالد","توقيعي"],
   },
   "obsidian-mist": {
+    code: "BT26-05",
     collection: "Botanique", model: "Zeina",
     descriptor: "فستان كاجوال وردي غبار بنقشة فهد سوداء بقصة مربعة وأشرطة رفيعة",
     subtitle: "وردي غبار بنقشة فهد جريئة.",
@@ -673,6 +709,7 @@ export const products: Product[] = base.map((b): Product => {
   if (!m) throw new Error(`Missing luxury metadata for product: ${b.id}`);
   return {
     ...b,
+    code: m.code,
     collection: m.collection,
     model: m.model,
     edition: EDITION,
