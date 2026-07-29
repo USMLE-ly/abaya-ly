@@ -149,7 +149,7 @@ export default function Dashboard() {
                     direction: "rtl",
                   }}
                   labelStyle={{ fontWeight: 700 }}
-                  formatter={(v: number) => [`${v} طلب`, ""]}
+                  formatter={(v) => [`${v} طلب`, ""] as [string, string]}
                 />
                 <Area
                   type="monotone"
