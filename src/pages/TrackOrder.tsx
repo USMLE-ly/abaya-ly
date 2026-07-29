@@ -5,11 +5,12 @@ import { Package, CheckCircle, Truck, MapPin, Search, Loader2, Clock, MessageCir
 const STATUS_STEPS = [
   { key: "pending",   icon: Clock,       label: "انتظار التأكيد" },
   { key: "processing",icon: Package,      label: "جاري التجهيز" },
+  { key: "waiting_shipping", icon: Package, label: "في انتظار الشحن" },
   { key: "shipped",   icon: Truck,        label: "جاري الشحن" },
   { key: "delivered", icon: MapPin,       label: "تم التوصيل" },
 ];
 
-const STATUS_ORDER = ["pending", "processing", "shipped", "delivered"];
+const STATUS_ORDER = ["pending", "processing", "waiting_shipping", "shipped", "delivered"];
 
 export function TrackOrder() {
   const [orderNumber, setOrderNumber] = useState("");
