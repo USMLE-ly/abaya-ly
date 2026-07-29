@@ -18,7 +18,7 @@ import { NotFound } from "@/pages/NotFound";
 import { lazy } from "react";
 
 const AdminLogin = lazy(() => import("@/admin/pages/Login"));
-const AdminLayout = lazy(() => import("@/admin/layout/AdminLayout"));
+const AdminLayout = lazy(() => import("@/admin/layout/AdminLayout").then(m => ({ default: m.AdminLayout })));
 const AdminDashboard = lazy(() => import("@/admin/pages/Dashboard"));
 const AdminOrders = lazy(() => import("@/admin/pages/Orders"));
 const AdminOrderDetail = lazy(() => import("@/admin/pages/OrderDetail"));
