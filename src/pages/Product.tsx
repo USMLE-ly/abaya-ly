@@ -355,16 +355,17 @@ export function Product() {
               <ShoppingBag size={18} />
               احجزي هذا الفستان — {product.price} د.ل
             </Button>
-            <p className="text-[10px] text-fg-tertiary mb-3 text-center">الدفع عند الاستلام</p>
-
             {/* Payment Methods */}
-            <div className="flex items-center gap-1.5 mb-3 justify-center mr-32">
-              <img src="/images/payments/visa.svg" alt="Visa" className="h-[22px] w-auto object-contain" />
-              <img src="/images/payments/mastercard.svg" alt="Mastercard" className="h-[22px] w-auto object-contain" />
-              <img src="/images/payments/amex.svg" alt="Amex" className="h-[22px] w-auto object-contain" />
-              <img src="/images/payments/google-pay.svg" alt="Google Pay" className="h-[22px] w-auto object-contain" />
-              <img src="/images/payments/stripe.svg" alt="Stripe" className="h-[22px] w-auto object-contain" />
-              <img src="/images/payments/paypal.svg" alt="PayPal" className="h-[22px] w-auto object-contain" />
+            <div className="flex flex-col items-center gap-1.5 mb-1.5 mr-32">
+              <div className="flex items-center gap-1.5 justify-center">
+                <img src="/images/payments/visa.svg" alt="Visa" className="h-[22px] w-auto object-contain" />
+                <img src="/images/payments/mastercard.svg" alt="Mastercard" className="h-[22px] w-auto object-contain" />
+                <img src="/images/payments/amex.svg" alt="Amex" className="h-[22px] w-auto object-contain" />
+                <img src="/images/payments/google-pay.svg" alt="Google Pay" className="h-[22px] w-auto object-contain" />
+                <img src="/images/payments/stripe.svg" alt="Stripe" className="h-[22px] w-auto object-contain" />
+                <img src="/images/payments/paypal.svg" alt="PayPal" className="h-[22px] w-auto object-contain" />
+              </div>
+              <p className="text-[10px] font-bold text-center" style={{ color: "#e63d6a" }}>الدفع عند الاستلام</p>
             </div>
           </div>
         </div>
