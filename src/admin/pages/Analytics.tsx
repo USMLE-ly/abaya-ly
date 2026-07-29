@@ -142,10 +142,10 @@ export default function Analytics() {
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-[26px] sm:text-[30px] font-extrabold leading-tight" style={{ color: "var(--ad-text)" }}>
+          <h1 className="text-[26px] sm:text-[30px] font-extrabold leading-tight" style={{ color: "var(--nd-text)" }}>
             التحليلات
           </h1>
-          <p className="text-[14px] mt-1" style={{ color: "var(--ad-text-3)" }}>
+          <p className="text-[14px] mt-1" style={{ color: "var(--nd-text-3)" }}>
             {stats.total} طلب في النطاق المحدد
           </p>
         </div>
@@ -216,11 +216,11 @@ export default function Analytics() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Orders timeline */}
         <ACard className="p-5 sm:p-6">
-          <h3 className="text-[15px] font-extrabold mb-4" style={{ color: "var(--ad-text)" }}>
+          <h3 className="text-[15px] font-extrabold mb-4" style={{ color: "var(--nd-text)" }}>
             الطلبات عبر الوقت
           </h3>
           {stats.timelineChart.length === 0 ? (
-            <p className="text-[13px] py-8 text-center" style={{ color: "var(--ad-text-4)" }}>لا توجد بيانات كافية</p>
+            <p className="text-[13px] py-8 text-center" style={{ color: "var(--nd-text-4)" }}>لا توجد بيانات كافية</p>
           ) : (
             <ResponsiveContainer width="100%" height={260}>
               <AreaChart data={stats.timelineChart}>
@@ -241,11 +241,11 @@ export default function Analytics() {
 
         {/* Status distribution */}
         <ACard className="p-5 sm:p-6">
-          <h3 className="text-[15px] font-extrabold mb-4" style={{ color: "var(--ad-text)" }}>
+          <h3 className="text-[15px] font-extrabold mb-4" style={{ color: "var(--nd-text)" }}>
             توزيع الحالات
           </h3>
           {stats.statusChart.every((s) => s.value === 0) ? (
-            <p className="text-[13px] py-8 text-center" style={{ color: "var(--ad-text-4)" }}>لا توجد بيانات كافية</p>
+            <p className="text-[13px] py-8 text-center" style={{ color: "var(--nd-text-4)" }}>لا توجد بيانات كافية</p>
           ) : (
             <div className="flex items-center gap-6">
               <ResponsiveContainer width="60%" height={220}>
@@ -270,8 +270,8 @@ export default function Analytics() {
                 {stats.statusChart.filter((s) => s.value > 0).map((s) => (
                   <div key={s.name} className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full" style={{ background: s.color }} />
-                    <span className="text-[12px]" style={{ color: "var(--ad-text-2)" }}>{s.name}</span>
-                    <span className="text-[12px] font-bold" style={{ color: "var(--ad-text)" }}>{s.value}</span>
+                    <span className="text-[12px]" style={{ color: "var(--nd-text-2)" }}>{s.name}</span>
+                    <span className="text-[12px] font-bold" style={{ color: "var(--nd-text)" }}>{s.value}</span>
                   </div>
                 ))}
               </div>
@@ -281,22 +281,22 @@ export default function Analytics() {
 
         {/* Top cities */}
         <ACard className="p-5 sm:p-6">
-          <h3 className="text-[15px] font-extrabold mb-4" style={{ color: "var(--ad-text)" }}>
+          <h3 className="text-[15px] font-extrabold mb-4" style={{ color: "var(--nd-text)" }}>
             توزيع المدن
           </h3>
           {stats.cityChart.length === 0 ? (
-            <p className="text-[13px] py-8 text-center" style={{ color: "var(--ad-text-4)" }}>لا توجد بيانات كافية</p>
+            <p className="text-[13px] py-8 text-center" style={{ color: "var(--nd-text-4)" }}>لا توجد بيانات كافية</p>
           ) : (
             <div className="space-y-3">
               {stats.cityChart.map((c, i) => (
                 <div key={c.name} className="flex items-center gap-3">
-                  <span className="text-[12px] w-5 text-center font-bold" style={{ color: "var(--ad-text-4)" }}>{i + 1}</span>
+                  <span className="text-[12px] w-5 text-center font-bold" style={{ color: "var(--nd-text-4)" }}>{i + 1}</span>
                   <div className="flex-1">
                     <div className="flex justify-between mb-1">
-                      <span className="text-[13px] font-semibold" style={{ color: "var(--ad-text)" }}>{c.name}</span>
-                      <span className="text-[12px] font-bold" style={{ color: "var(--ad-brand)" }}>{c.value}</span>
+                      <span className="text-[13px] font-semibold" style={{ color: "var(--nd-text)" }}>{c.name}</span>
+                      <span className="text-[12px] font-bold" style={{ color: "var(--nd-primary-500)" }}>{c.value}</span>
                     </div>
-                    <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "var(--ad-border)" }}>
+                    <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "var(--nd-border)" }}>
                       <div
                         className="h-full rounded-full transition-all"
                         style={{
@@ -314,11 +314,11 @@ export default function Analytics() {
 
         {/* Top cities summary */}
         <ACard className="p-5 sm:p-6">
-          <h3 className="text-[15px] font-extrabold mb-4" style={{ color: "var(--ad-text)" }}>
+          <h3 className="text-[15px] font-extrabold mb-4" style={{ color: "var(--nd-text)" }}>
             أفضل المدن
           </h3>
           {stats.topCities.length === 0 ? (
-            <p className="text-[13px] py-8 text-center" style={{ color: "var(--ad-text-4)" }}>لا توجد بيانات كافية</p>
+            <p className="text-[13px] py-8 text-center" style={{ color: "var(--nd-text-4)" }}>لا توجد بيانات كافية</p>
           ) : (
             <div className="space-y-4">
               {stats.topCities.map((c, i) => (
@@ -326,11 +326,11 @@ export default function Analytics() {
                   <div className="flex items-center gap-3">
                     <span className="text-[18px] font-extrabold" style={{ color: COLORS[i] }}>{i + 1}</span>
                     <div>
-                      <p className="text-[14px] font-semibold" style={{ color: "var(--ad-text)" }}>{c.city}</p>
-                      <p className="text-[11px]" style={{ color: "var(--ad-text-4)" }}>{c.count} طلب</p>
+                      <p className="text-[14px] font-semibold" style={{ color: "var(--nd-text)" }}>{c.city}</p>
+                      <p className="text-[11px]" style={{ color: "var(--nd-text-4)" }}>{c.count} طلب</p>
                     </div>
                   </div>
-                  <span className="text-[13px] font-bold" style={{ color: "var(--ad-brand)" }}>{c.percent}%</span>
+                  <span className="text-[13px] font-bold" style={{ color: "var(--nd-primary-500)" }}>{c.percent}%</span>
                 </div>
               ))}
             </div>
