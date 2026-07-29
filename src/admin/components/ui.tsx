@@ -17,8 +17,8 @@ export function ACard({
     <div
       className={cn("rounded-[var(--ad-r-lg)]", className)}
       style={{
-        background: "var(--ad-surface)",
-        border: "1px solid var(--ad-border)",
+        background: "var(--nd-white)",
+        border: "1px solid var(--nd-border)",
         boxShadow: "var(--ad-e1)",
       }}
       {...rest}
@@ -38,11 +38,11 @@ export function ACardHeader({
   return (
     <div className="flex items-start justify-between gap-3 px-5 pt-5 pb-3">
       <div>
-        <h3 className="text-[18px] font-bold leading-7" style={{ color: "var(--ad-text)" }}>
+        <h3 className="text-[18px] font-bold leading-7" style={{ color: "var(--nd-text)" }}>
           {title}
         </h3>
         {subtitle && (
-          <p className="text-[13px] mt-0.5" style={{ color: "var(--ad-text-3)" }}>
+          <p className="text-[13px] mt-0.5" style={{ color: "var(--nd-text-3)" }}>
             {subtitle}
           </p>
         )}
@@ -69,18 +69,18 @@ export function AButton({
   icon?: ReactNode;
 }) {
   const sizes: Record<BtnSize, string> = {
-    xs: "h-8 px-3 text-[12px] gap-1.5 rounded-[var(--ad-r-sm)]",
-    sm: "h-9 px-3.5 text-[13px] gap-2 rounded-[var(--ad-r-sm)]",
-    md: "h-11 px-5 text-[14px] gap-2 rounded-[var(--ad-r-md)]",
+    xs: "h-8 px-3 text-[12px] gap-1.5 rounded-[10px]",
+    sm: "h-9 px-3.5 text-[13px] gap-2 rounded-[10px]",
+    md: "h-11 px-5 text-[14px] gap-2 rounded-[12px]",
   };
   const styles: Record<BtnVariant, React.CSSProperties> = {
-    solid: { background: "var(--ad-brand)", color: "#fff" },
+    solid: { background: "var(--nd-primary-500)", color: "#fff" },
     default: {
-      background: "var(--ad-surface)",
-      color: "var(--ad-text-2)",
-      border: "1px solid var(--ad-border-2)",
+      background: "var(--nd-white)",
+      color: "var(--nd-text-2)",
+      border: "1px solid var(--nd-border)",
     },
-    plain: { background: "transparent", color: "var(--ad-text-2)" },
+    plain: { background: "transparent", color: "var(--nd-text-2)" },
     danger: { background: "#EF4444", color: "#fff" },
   };
   return (
@@ -108,20 +108,20 @@ export function AInput({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 h-11 px-3.5 rounded-[var(--ad-r-md)] transition-colors focus-within:ring-4",
+        "flex items-center gap-2 h-11 px-3.5 rounded-[12px] transition-colors focus-within:ring-4",
         className
       )}
       style={{
-        background: "var(--ad-surface)",
-        border: "1px solid var(--ad-border-2)",
+        background: "var(--nd-white)",
+        border: "1px solid var(--nd-border)",
         // @ts-expect-error css var
-        "--tw-ring-color": "var(--ad-brand-ring)",
+        "--tw-ring-color": "rgba(206,44,96,0.15)",
       }}
     >
-      {icon && <span style={{ color: "var(--ad-text-4)" }}>{icon}</span>}
+      {icon && <span style={{ color: "var(--nd-text-4)" }}>{icon}</span>}
       <input
         className="flex-1 min-w-0 bg-transparent outline-none text-[14px]"
-        style={{ color: "var(--ad-text)" }}
+        style={{ color: "var(--nd-text)" }}
         {...rest}
       />
     </div>
@@ -136,13 +136,13 @@ export function ASelect({
   return (
     <select
       className={cn(
-        "h-11 px-3.5 rounded-[var(--ad-r-md)] text-[14px] outline-none cursor-pointer",
+        "h-11 px-3.5 rounded-[12px] text-[14px] outline-none cursor-pointer",
         className
       )}
       style={{
-        background: "var(--ad-surface)",
-        border: "1px solid var(--ad-border-2)",
-        color: "var(--ad-text-2)",
+        background: "var(--nd-white)",
+        border: "1px solid var(--nd-border)",
+        color: "var(--nd-text-2)",
       }}
       {...rest}
     >
@@ -175,8 +175,8 @@ export function StatusBadge({ status, size = "md" }: { status: string; size?: "s
 export function ASkeleton({ className }: { className?: string }) {
   return (
     <div
-      className={cn("animate-pulse rounded-[var(--ad-r-md)]", className)}
-      style={{ background: "var(--ad-surface-2)" }}
+      className={cn("animate-pulse rounded-[12px]", className)}
+      style={{ background: "var(--nd-bg)" }}
     />
   );
 }
@@ -193,12 +193,12 @@ export function AEmpty({
 }) {
   return (
     <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
-      {icon && <div style={{ color: "var(--ad-text-4)" }}>{icon}</div>}
-      <p className="text-[15px] font-bold" style={{ color: "var(--ad-text-2)" }}>
+      {icon && <div style={{ color: "var(--nd-text-4)" }}>{icon}</div>}
+      <p className="text-[15px] font-bold" style={{ color: "var(--nd-text-2)" }}>
         {title}
       </p>
       {hint && (
-        <p className="text-[13px]" style={{ color: "var(--ad-text-3)" }}>
+        <p className="text-[13px]" style={{ color: "var(--nd-text-3)" }}>
           {hint}
         </p>
       )}
