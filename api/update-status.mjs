@@ -1,13 +1,13 @@
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   const { orderId, status } = req.body || {};
-
-  if (!orderId || !status) {
-    return res.status(400).json({ error: "orderId and status required" });
-  }
+  if (!orderId || !status) return res.status(400).json({ error: "orderId and status required" });
 
   const validStatuses = ["pending", "processing", "shipped", "delivered"];
   const statusLabels = {
@@ -22,38 +22,31 @@ export default async function handler(req, res) {
   }
 
   const EC_URL = process.env.EDGE_CONFIG;
-  if (!EC_URL) {
-    return res.status(200).json({ success: false, note: "Edge Config not configured" });
-  }
+  if (!EC_URL) return res.status(200).json({ success: false, note: "Edge Config not configured" });
 
   try {
     // Read all items
     const readResp = await fetch(EC_URL);
-    if (!readResp.ok) {
-      return res.status(500).json({ error: "Failed to read Edge Config" });
-    }
+    if (!readResp.ok) return res.status(500).json({ error: "Failed to read Edge Config" });
 
     const allData = await readResp.json();
+    const items = allData.items || {}; // Edge Config wraps items under "items" key
     const orderKey = `order:${orderId.trim()}`;
-    const order = allData[orderKey];
+    const order = items[orderKey];
 
-    if (!order) {
-      return res.status(404).json({ error: "Order not found" });
-    }
+    if (!order) return res.status(404).json({ error: "Order not found" });
 
     // Update status
     order.status = status;
     order.statusLabel = statusLabels[status];
     order.updatedAt = new Date().toISOString();
 
-    // Write back to Edge Config
+    // Write back
     const writeResp = await fetch(`${EC_URL}/items`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        items: [
-          { operation: "upsert", key: orderKey, value: order },
-        ],
+        items: [{ operation: "upsert", key: orderKey, value: order }],
       }),
     });
 
