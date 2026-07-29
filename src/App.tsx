@@ -21,6 +21,7 @@ const AdminLogin = lazy(() => import("@/admin/pages/Login"));
 const AdminLayout = lazy(() => import("@/admin/layout/AdminLayout"));
 const AdminDashboard = lazy(() => import("@/admin/pages/Dashboard"));
 const AdminOrders = lazy(() => import("@/admin/pages/Orders"));
+const AdminOrderDetail = lazy(() => import("@/admin/pages/OrderDetail"));
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 export default function App() {
@@ -47,7 +48,7 @@ export default function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="orders" element={<AdminOrders />} />
-              <Route path="orders/:id" element={<AdminOrders />} />
+              <Route path="orders/:id" element={<AdminOrderDetail />} />
             </Route>
           <Route path="*" element={<NotFound />} />
           </Routes>
