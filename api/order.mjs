@@ -12,14 +12,18 @@ export default async function handler(req, res) {
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
+  // Generate unique order ID: NAD-XXXXXX
+  const orderId = "NAD-" + Date.now().toString(36).slice(-4).toUpperCase() + Math.random().toString(36).slice(2, 4).toUpperCase();
+
   if (!BOT_TOKEN || !CHAT_ID) {
-    console.log("Missing Telegram config. Would send:", { code, name, color, size, location, phone });
-    return res.status(200).json({ success: true, note: "Order received, Telegram not configured" });
+    console.log("Missing Telegram config. Would send:", { orderId, code, name, color, size, location, phone });
+    return res.status(200).json({ success: true, orderId, note: "Order received, Telegram not configured" });
   }
 
   const message = [
     "🆕 طلب جديد من متجر نادين",
     "━━━━━━━━━━━━━━━",
+    `🆔 رقم الطلب: ${orderId}`,
     `🆔 الكود: ${code}`,
     `👗 الفستان: ${name || "—"}`,
     `🎨 اللون: ${color || "—"}`,
@@ -44,10 +48,10 @@ export default async function handler(req, res) {
 
     if (!resp.ok) {
       console.error("Telegram error:", result);
-      return res.status(200).json({ success: false, error: "Telegram failed" });
+      return res.status(200).json({ success: false, orderId, error: "Telegram failed" });
     }
 
-    return res.status(200).json({ success: true });
+    return res.status(200).json({ success: true, orderId });
   } catch (err) {
     console.error("Error:", err);
     return res.status(500).json({ error: "Server error" });
