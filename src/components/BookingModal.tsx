@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Check, Loader2 } from "lucide-react";
+import { X, Check, Loader2, ChevronDown } from "lucide-react";
 
 interface BookingModalProps {
   open: boolean;
@@ -10,10 +10,49 @@ interface BookingModalProps {
   sizes: string[];
 }
 
+const LIBYAN_CITIES = [
+  "طرابلس",
+  "بنغازي",
+  "مصراتة",
+  "الزاوية",
+  "الخمس",
+  "زليتن",
+  "صبراتة",
+  "سرت",
+  "سبها",
+  "طبرق",
+  "درنة",
+  "البيضاء",
+  "المرج",
+  "إجدابيا",
+  "الكفرة",
+  "غريان",
+  "ترهونة",
+  "بني وليد",
+  "مزدة",
+  "نالوت",
+  "غات",
+  "غدامس",
+  "يفرن",
+  "زوارة",
+  "الأصابعة",
+  "جادو",
+  "أوباري",
+  "مرزق",
+  "البريقة",
+  "أوجلة",
+  "جالو",
+  "سلوق",
+  "قمينس",
+  "تازربو",
+  "أخرى",
+];
+
 export function BookingModal({ open, onClose, productCode, productName, colors, sizes }: BookingModalProps) {
   const [selectedColor, setSelectedColor] = useState(colors[0]?.name || "");
   const [selectedSize, setSelectedSize] = useState(sizes[0] || "");
-  const [location, setLocation] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [customLocation, setCustomLocation] = useState("");
   const [phone, setPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -21,6 +60,9 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const [orderId, setOrderId] = useState("");
 
   if (!open) return null;
+
+  const isOtherCity = selectedCity === "أخرى";
+  const locationValue = isOtherCity ? customLocation.trim() : selectedCity;
 
   const validatePhone = (value: string): string | null => {
     const digits = value.replace(/\s/g, "");
@@ -42,8 +84,13 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
       return;
     }
 
-    if (!location.trim()) {
-      setError("يرجى إدخال الموقع (المدينة أو المنطقة)");
+    if (!selectedCity) {
+      setError("يرجى اختيار المدينة أو المنطقة");
+      return;
+    }
+
+    if (isOtherCity && !customLocation.trim()) {
+      setError("يرجى كتابة اسم المدينة أو المنطقة");
       return;
     }
 
@@ -59,7 +106,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
           name: productName,
           color: selectedColor,
           size: selectedSize,
-          location: location.trim(),
+          location: locationValue,
           phone: phone.trim(),
         }),
       });
@@ -164,19 +211,43 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                 </div>
               )}
 
-              {/* Location — now mandatory */}
+              {/* Location — dropdown with cities + other option */}
               <div>
                 <label className="text-[11px] font-semibold text-fg-tertiary block mb-1">
-                  الموقع <span className="text-status-danger">*</span>
+                  المدينة / المنطقة <span className="text-status-danger">*</span>
                 </label>
-                <input
-                  type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="المدينة أو المنطقة"
-                  required
-                  className="w-full px-4 py-2.5 text-sm text-fg bg-white/60 rounded-xl border border-line-subtle outline-none focus:border-accent-brand transition-colors placeholder:text-fg-tertiary"
-                />
+                <div className="relative">
+                  <select
+                    value={selectedCity}
+                    onChange={(e) => setSelectedCity(e.target.value)}
+                    required
+                    className="w-full px-4 py-2.5 text-sm text-fg bg-white/60 rounded-xl border border-line-subtle outline-none focus:border-accent-brand transition-colors appearance-none cursor-pointer"
+                    style={{ direction: "rtl" }}
+                  >
+                    <option value="" disabled>اختر المدينة أو المنطقة</option>
+                    {LIBYAN_CITIES.map((city) => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={16}
+                    className="absolute top-1/2 -translate-y-1/2 pointer-events-none"
+                    style={{ left: "14px", color: "#999" }}
+                  />
+                </div>
+
+                {/* Show text input when "أخرى" is selected */}
+                {isOtherCity && (
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      value={customLocation}
+                      onChange={(e) => setCustomLocation(e.target.value)}
+                      placeholder="اكتب اسم المدينة أو المنطقة"
+                      className="w-full px-4 py-2.5 text-sm text-fg bg-white/60 rounded-xl border border-line-subtle outline-none focus:border-accent-brand transition-colors placeholder:text-fg-tertiary"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Phone */}
@@ -223,7 +294,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
             </form>
           </>
         ) : (
-          /* Success state — now shows order number */
+          /* Success state */
           <div className="p-8 text-center">
             <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(196,40,85,0.1)" }}>
               <Check size={28} className="text-accent-brand" />
