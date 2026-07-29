@@ -16,6 +16,7 @@ import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import DesignSystem from "@/pages/DesignSystem";
 import { NotFound } from "@/pages/NotFound";
 import { lazy } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const AdminLogin = lazy(() => import("@/admin/pages/Login"));
 const AdminLayout = lazy(() => import("@/admin/layout/AdminLayout").then(m => ({ default: m.AdminLayout })));
@@ -24,9 +25,12 @@ const AdminOrders = lazy(() => import("@/admin/pages/Orders"));
 const AdminOrderDetail = lazy(() => import("@/admin/pages/OrderDetail"));
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 
+const queryClient = new QueryClient();
+
 export default function App() {
   return (
-    <BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
       <div style={{ width: "100%", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <Header />
         <main style={{ flex: "1 1 auto", width: "100%" }}>
@@ -56,7 +60,8 @@ export default function App() {
         <Footer />
       </div>
             <WhatsAppButton />
-    </BrowserRouter>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 
