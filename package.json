@@ -9,11 +9,12 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "validate": "npx tsx automation/validate-products.ts || echo '\u26a0 Validation warnings found (non-blocking)'",
+    "validate": "npx tsx automation/validate-products.ts || echo '⚠ Validation warnings found (non-blocking)'",
     "prebuild": "npx tsx automation/validate-products.ts"
   },
   "dependencies": {
     "@playwright/test": "^1.62.0",
+    "@tanstack/react-query": "^5.101.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cobe": "^2.0.1",
@@ -22,6 +23,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.0.0",
+    "recharts": "^3.10.1",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
