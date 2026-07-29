@@ -18,15 +18,35 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+  const [orderId, setOrderId] = useState("");
 
   if (!open) return null;
 
+  const validatePhone = (value: string): string | null => {
+    const digits = value.replace(/\s/g, "");
+    if (!/^\d{10}$/.test(digits)) {
+      return "رقم الهاتف يجب أن يتكون من 10 أرقام";
+    }
+    if (!/^(091|092|093|094)/.test(digits)) {
+      return "رقم الهاتف يجب أن يبدأ بـ 091 أو 092 أو 093 أو 094";
+    }
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone.trim()) {
-      setError("يرجى إدخال رقم الهاتف");
+
+    const phoneError = validatePhone(phone);
+    if (phoneError) {
+      setError(phoneError);
       return;
     }
+
+    if (!location.trim()) {
+      setError("يرجى إدخال الموقع (المدينة أو المنطقة)");
+      return;
+    }
+
     setError("");
     setSubmitting(true);
 
@@ -39,13 +59,16 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
           name: productName,
           color: selectedColor,
           size: selectedSize,
-          location,
+          location: location.trim(),
           phone: phone.trim(),
         }),
       });
 
+      const data = await res.json();
+
       if (!res.ok) throw new Error("فشل الإرسال");
 
+      if (data.orderId) setOrderId(data.orderId);
       setDone(true);
     } catch {
       setError("حدث خطأ، يرجى المحاولة مرة أخرى أو الاتصال بنا عبر واتساب");
@@ -141,16 +164,17 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                 </div>
               )}
 
-              {/* Location */}
+              {/* Location — now mandatory */}
               <div>
                 <label className="text-[11px] font-semibold text-fg-tertiary block mb-1">
-                  الموقع <span className="text-fg-disabled">(اختياري)</span>
+                  الموقع <span className="text-status-danger">*</span>
                 </label>
                 <input
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="المدينة أو المنطقة"
+                  required
                   className="w-full px-4 py-2.5 text-sm text-fg bg-white/60 rounded-xl border border-line-subtle outline-none focus:border-accent-brand transition-colors placeholder:text-fg-tertiary"
                 />
               </div>
@@ -164,10 +188,11 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="091 234 5678"
+                  placeholder="0912345678"
                   required
                   className="w-full px-4 py-2.5 text-sm text-fg bg-white/60 rounded-xl border border-line-subtle outline-none focus:border-accent-brand transition-colors placeholder:text-fg-tertiary"
                 />
+                <p className="text-[10px] text-fg-tertiary mt-1">مثال: 0912345678 — 10 أرقام تبدأ بـ 091 أو 092 أو 093 أو 094</p>
               </div>
 
               {/* Error */}
@@ -198,12 +223,17 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
             </form>
           </>
         ) : (
-          /* Success state */
+          /* Success state — now shows order number */
           <div className="p-8 text-center">
             <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(196,40,85,0.1)" }}>
               <Check size={28} className="text-accent-brand" />
             </div>
             <h3 className="text-base font-bold text-fg mb-2">✅ تم استلام طلبك بنجاح!</h3>
+            {orderId && (
+              <p className="text-sm font-semibold mb-2" style={{ color: "#c42855" }}>
+                رقم الطلب: {orderId}
+              </p>
+            )}
             <p className="text-sm text-fg-tertiary leading-relaxed">
               سيتم الاتصال بسادتكم خلال 24 ساعه لتأكيد الطلب
             </p>
