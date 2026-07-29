@@ -73,6 +73,15 @@
   --nd-surface: #FFFFFF;
   --nd-border: #E5E7EB;
   --nd-border-2: #D1D5DB;
+  /* ── Radius / Elevation ── */
+  --nd-r-sm: 8px;
+  --nd-r-md: 12px;
+  --nd-r-lg: 16px;
+  --nd-r-xl: 24px;
+  --nd-e1: 0 1px 3px rgba(0,0,0,0.08);
+  --nd-e2: 0 4px 12px rgba(0,0,0,0.10);
+  --nd-e3: 0 8px 24px rgba(0,0,0,0.12);
+
   --nd-text: #1A1C1E;
   --nd-text-2: #4B5563;
   --nd-text-3: #9CA3AF;

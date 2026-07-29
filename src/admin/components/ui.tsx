@@ -15,11 +15,11 @@ export function ACard({
 }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("rounded-[var(--ad-r-lg)]", className)}
+      className={cn("rounded-[var(--nd-r-lg)]", className)}
       style={{
         background: "var(--nd-white)",
         border: "1px solid var(--nd-border)",
-        boxShadow: "var(--ad-e1)",
+        boxShadow: "var(--nd-e1)",
       }}
       {...rest}
     />

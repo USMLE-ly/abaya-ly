@@ -153,7 +153,7 @@ export default function OrderDetail() {
           <Link
             to="/admin/orders"
             className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-bold transition-colors"
-            style={{ color: "var(--ad-text-3)", background: "var(--ad-surface)" }}
+            style={{ color: "var(--nd-text-3)", background: "var(--nd-surface)" }}
           >
             <ArrowRight size={15} />
             الطلبات
@@ -161,12 +161,12 @@ export default function OrderDetail() {
           <div>
             <h1
               className="text-[22px] sm:text-[26px] font-extrabold leading-tight flex items-center gap-3"
-              style={{ color: "var(--ad-text)" }}
+              style={{ color: "var(--nd-text)" }}
             >
               {order.orderId}
               <StatusBadge status={order.status} />
             </h1>
-            <p className="text-[13px] mt-0.5" style={{ color: "var(--ad-text-3)" }}>
+            <p className="text-[13px] mt-0.5" style={{ color: "var(--nd-text-3)" }}>
               تم الإنشاء {fmtDateTime(order.createdAt)} · آخر تحديث {relativeAr(order.updatedAt)}
             </p>
           </div>
@@ -175,7 +175,7 @@ export default function OrderDetail() {
           <AButton
             variant="default"
             size="sm"
-            icon={copied ? <CheckCircle2 size={14} style={{ color: "var(--ad-brand)" }} /> : <Copy size={14} />}
+            icon={copied ? <CheckCircle2 size={14} style={{ color: "var(--nd-primary-500)" }} /> : <Copy size={14} />}
             onClick={copyOrder}
           >
             {copied ? "تم النسخ" : "نسخ رقم الطلب"}
@@ -193,7 +193,7 @@ export default function OrderDetail() {
           <ACard className="p-5 sm:p-6">
             <h3
               className="text-[15px] font-extrabold mb-5"
-              style={{ color: "var(--ad-text)" }}
+              style={{ color: "var(--nd-text)" }}
             >
               مسار الطلب
             </h3>
@@ -209,10 +209,10 @@ export default function OrderDetail() {
                         className="absolute h-0.5 w-full top-5"
                         style={{
                           background: i < currentIdx
-                            ? "var(--ad-brand)"
+                            ? "var(--nd-primary-500)"
                             : i === currentIdx
-                            ? "linear-gradient(90deg, var(--ad-brand) 50%, var(--ad-border-2) 50%)"
-                            : "var(--ad-border-2)",
+                            ? "linear-gradient(90deg, var(--nd-primary-500) 50%, var(--nd-border-2) 50%)"
+                            : "var(--nd-border-2)",
                           right: "50%",
                         }}
                       />
@@ -221,14 +221,14 @@ export default function OrderDetail() {
                     <div
                       className="w-10 h-10 rounded-full flex items-center justify-center z-10 transition-all"
                       style={{
-                        background: done ? "var(--ad-brand)" : "var(--ad-surface)",
-                        border: done ? "none" : "2px solid var(--ad-border-2)",
+                        background: done ? "var(--nd-primary-500)" : "var(--nd-surface)",
+                        border: done ? "none" : "2px solid var(--nd-border-2)",
                       }}
                     >
                       <step.icon
                         size={16}
                         className={done ? "text-white" : ""}
-                        style={!done ? { color: "var(--ad-text-4)" } : undefined}
+                        style={!done ? { color: "var(--nd-text-4)" } : undefined}
                       />
                     </div>
                     {/* Label */}
@@ -236,10 +236,10 @@ export default function OrderDetail() {
                       className="text-[11px] font-bold mt-2 text-center leading-tight"
                       style={{
                         color: isCurrent
-                          ? "var(--ad-brand)"
+                          ? "var(--nd-primary-500)"
                           : done
-                          ? "var(--ad-text)"
-                          : "var(--ad-text-4)",
+                          ? "var(--nd-text)"
+                          : "var(--nd-text-4)",
                       }}
                     >
                       {step.label}
@@ -254,7 +254,7 @@ export default function OrderDetail() {
           <ACard className="p-5 sm:p-6">
             <h3
               className="text-[15px] font-extrabold mb-4"
-              style={{ color: "var(--ad-text)" }}
+              style={{ color: "var(--nd-text)" }}
             >
               تفاصيل الطلب
             </h3>
@@ -270,12 +270,12 @@ export default function OrderDetail() {
                 { label: "آخر تحديث", value: fmtDateTime(order.updatedAt) },
               ].map((f) => (
                 <div key={f.label}>
-                  <p className="text-[11px] font-bold mb-1" style={{ color: "var(--ad-text-4)" }}>
+                  <p className="text-[11px] font-bold mb-1" style={{ color: "var(--nd-text-4)" }}>
                     {f.label}
                   </p>
                   <p
                     className="text-[14px] font-semibold"
-                    style={{ color: "var(--ad-text)", direction: f.ltr ? "ltr" : undefined, textAlign: f.ltr ? "left" : undefined }}
+                    style={{ color: "var(--nd-text)", direction: f.ltr ? "ltr" : undefined, textAlign: f.ltr ? "left" : undefined }}
                   >
                     {f.value || "—"}
                   </p>
@@ -288,7 +288,7 @@ export default function OrderDetail() {
           <ACard className="p-5 sm:p-6 print:hidden">
             <h3
               className="text-[15px] font-extrabold mb-4 flex items-center gap-2"
-              style={{ color: "var(--ad-text)" }}
+              style={{ color: "var(--nd-text)" }}
             >
               <MessageSquare size={16} />
               الملاحظات
@@ -303,9 +303,9 @@ export default function OrderDetail() {
                 placeholder="أضف ملاحظة..."
                 className="flex-1 h-11 px-3.5 rounded-xl text-[14px] outline-none"
                 style={{
-                  background: "var(--ad-surface)",
-                  border: "1px solid var(--ad-border-2)",
-                  color: "var(--ad-text)",
+                  background: "var(--nd-surface)",
+                  border: "1px solid var(--nd-border-2)",
+                  color: "var(--nd-text)",
                 }}
               />
               <AButton
@@ -320,7 +320,7 @@ export default function OrderDetail() {
             </div>
 
             {notes.length === 0 ? (
-              <p className="text-[13px]" style={{ color: "var(--ad-text-4)" }}>
+              <p className="text-[13px]" style={{ color: "var(--nd-text-4)" }}>
                 لا توجد ملاحظات بعد
               </p>
             ) : (
@@ -329,12 +329,12 @@ export default function OrderDetail() {
                   <div
                     key={note.id}
                     className="p-3 rounded-xl"
-                    style={{ background: "var(--ad-bg)", border: "1px solid var(--ad-border)" }}
+                    style={{ background: "var(--nd-bg)", border: "1px solid var(--nd-border)" }}
                   >
-                    <p className="text-[13px]" style={{ color: "var(--ad-text)" }}>
+                    <p className="text-[13px]" style={{ color: "var(--nd-text)" }}>
                       {note.text}
                     </p>
-                    <p className="text-[10px] mt-1" style={{ color: "var(--ad-text-4)" }}>
+                    <p className="text-[10px] mt-1" style={{ color: "var(--nd-text-4)" }}>
                       {fmtDateTime(note.createdAt)}
                     </p>
                   </div>
@@ -350,7 +350,7 @@ export default function OrderDetail() {
           <ACard className="p-5 sm:p-6">
             <h3
               className="text-[15px] font-extrabold mb-4"
-              style={{ color: "var(--ad-text)" }}
+              style={{ color: "var(--nd-text)" }}
             >
               تغيير الحالة
             </h3>
@@ -368,9 +368,9 @@ export default function OrderDetail() {
                     onClick={() => handleStatusChange(s)}
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[13px] font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-95"
                     style={{
-                      background: isCurrent ? m.bg : "var(--ad-surface)",
-                      border: `1px solid ${isCurrent ? m.color : "var(--ad-border-2)"}`,
-                      color: isCurrent ? m.color : "var(--ad-text-2)",
+                      background: isCurrent ? m.bg : "var(--nd-surface)",
+                      border: `1px solid ${isCurrent ? m.color : "var(--nd-border-2)"}`,
+                      color: isCurrent ? m.color : "var(--nd-text-2)",
                     }}
                   >
                     <div
@@ -401,30 +401,30 @@ export default function OrderDetail() {
           <ACard className="p-5 sm:p-6">
             <h3
               className="text-[15px] font-extrabold mb-4"
-              style={{ color: "var(--ad-text)" }}
+              style={{ color: "var(--nd-text)" }}
             >
               معلومات سريعة
             </h3>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-[12px]" style={{ color: "var(--ad-text-4)" }}>الحالة</span>
+                <span className="text-[12px]" style={{ color: "var(--nd-text-4)" }}>الحالة</span>
                 <StatusBadge status={order.status} size="sm" />
               </div>
               <div className="flex justify-between">
-                <span className="text-[12px]" style={{ color: "var(--ad-text-4)" }}>العميل</span>
-                <span className="text-[13px] font-semibold" style={{ color: "var(--ad-text)" }}>{order.name}</span>
+                <span className="text-[12px]" style={{ color: "var(--nd-text-4)" }}>العميل</span>
+                <span className="text-[13px] font-semibold" style={{ color: "var(--nd-text)" }}>{order.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[12px]" style={{ color: "var(--ad-text-4)" }}>الهاتف</span>
-                <span className="text-[13px] font-semibold" dir="ltr" style={{ color: "var(--ad-text)" }}>{order.phone}</span>
+                <span className="text-[12px]" style={{ color: "var(--nd-text-4)" }}>الهاتف</span>
+                <span className="text-[13px] font-semibold" dir="ltr" style={{ color: "var(--nd-text)" }}>{order.phone}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[12px]" style={{ color: "var(--ad-text-4)" }}>المدينة</span>
-                <span className="text-[13px] font-semibold" style={{ color: "var(--ad-text)" }}>{order.location}</span>
+                <span className="text-[12px]" style={{ color: "var(--nd-text-4)" }}>المدينة</span>
+                <span className="text-[13px] font-semibold" style={{ color: "var(--nd-text)" }}>{order.location}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[12px]" style={{ color: "var(--ad-text-4)" }}>السعر</span>
-                <span className="text-[13px] font-semibold" style={{ color: "var(--ad-text)" }}>—</span>
+                <span className="text-[12px]" style={{ color: "var(--nd-text-4)" }}>السعر</span>
+                <span className="text-[13px] font-semibold" style={{ color: "var(--nd-text)" }}>—</span>
               </div>
             </div>
           </ACard>
