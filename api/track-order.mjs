@@ -3,39 +3,35 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { phone } = req.query;
+  const { orderNumber, phone } = req.query;
 
-  if (!phone) {
-    return res.status(400).json({ error: "رقم الهاتف مطلوب" });
+  if (!orderNumber || !phone) {
+    return res.status(400).json({ error: "رقم الطلب ورقم الهاتف مطلوبان" });
   }
 
-  const cleanPhone = phone.trim();
+  const EC_URL = process.env.EDGE_CONFIG;
+
+  if (!EC_URL) {
+    return res.status(200).json({ found: false, note: "Edge Config not configured" });
+  }
 
   try {
-    const { kv } = await import("@vercel/kv");
-    if (typeof kv?.smembers !== "function") {
-      return res.status(200).json({ orders: [], note: "KV not configured" });
+    const resp = await fetch(`${EC_URL}/item/order:${orderNumber.trim()}`);
+    
+    if (!resp.ok) {
+      return res.status(200).json({ found: false });
     }
 
-    // Get all order IDs for this phone number
-    const orderIds = await kv.smembers(`phone:${cleanPhone}`);
+    const order = await resp.json();
 
-    if (!orderIds || orderIds.length === 0) {
-      return res.status(200).json({ orders: [] });
+    // Verify phone number matches
+    if (order.phone !== phone.trim()) {
+      return res.status(200).json({ found: false });
     }
 
-    // Fetch each order
-    const orderKeys = orderIds.map((id) => `order:${id}`);
-    const orders = await kv.mget(...orderKeys);
-
-    // Filter out nulls and sort by date (newest first)
-    const validOrders = orders
-      .filter(Boolean)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-    return res.status(200).json({ orders: validOrders });
+    return res.status(200).json({ found: true, order });
   } catch (err) {
     console.error("Track error:", err);
-    return res.status(200).json({ orders: [], note: "KV not available" });
+    return res.status(500).json({ error: "Server error" });
   }
 }
