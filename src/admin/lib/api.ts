@@ -61,3 +61,34 @@ export async function verifyPassword(pw: string): Promise<boolean> {
   });
   return res.ok;
 }
+
+/** GET /api/admin/notes — fetch notes for an order. */
+export async function fetchNotes(orderId: string): Promise<Note[]> {
+  const pw = getPassword();
+  const res = await fetch(`/api/admin/notes?orderId=${encodeURIComponent(orderId)}`, {
+    headers: { "x-admin-password": pw ?? "" },
+  });
+  if (res.status === 401) { clearPassword(); throw new Error("كلمة المرور غير صحيحة"); }
+  const data = await jsonOrThrow(res);
+  return (data.notes ?? []) as Note[];
+}
+
+/** POST /api/admin/notes — add a note to an order. */
+export async function addNote(orderId: string, text: string): Promise<Note> {
+  const pw = getPassword();
+  const res = await fetch("/api/admin/notes", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-admin-password": pw ?? "" },
+    body: JSON.stringify({ orderId, text }),
+  });
+  if (res.status === 401) { clearPassword(); throw new Error("كلمة المرور غير صحيحة"); }
+  const data = await jsonOrThrow(res);
+  return data.note as Note;
+}
+
+export interface Note {
+  id: string;
+  text: string;
+  createdAt: string;
+}
+
