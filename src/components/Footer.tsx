@@ -41,7 +41,7 @@ export function Footer() {
             <h4 className="font-semibold text-fg mb-4 text-sm">تواصلي معنا</h4>
             <ul className="space-y-2.5 text-sm text-fg-tertiary">
               <li>بنغازي، ليبيا</li>
-              <li><a href="mailto:info@nadine.luxor.ly" className="hover:text-accent-brand transition-colors">info@nadine.luxor.ly</a></li>
+              <li><a href="mailto:nadine.luxor@gmail.com" className="hover:text-accent-brand transition-colors">nadine.luxor@gmail.com</a></li>
             </ul>
             <div className="flex gap-3 mt-4">
               <a href="https://instagram.com/nadine.ly" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full glass flex items-center justify-center text-fg-tertiary hover:text-accent-brand hover:bg-sunken transition-all"><Instagram size={16} /></a>
