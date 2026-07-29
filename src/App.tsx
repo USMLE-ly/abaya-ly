@@ -26,6 +26,7 @@ const AdminOrderDetail = lazy(() => import("@/admin/pages/OrderDetail"));
 const AdminProducts = lazy(() => import("@/admin/pages/Products"));
 const AdminAnalytics = lazy(() => import("@/admin/pages/Analytics"));
 const AdminSettings = lazy(() => import("@/admin/pages/Settings"));
+const AdminCalendar = lazy(() => import("@/admin/pages/Calendar"));
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 const queryClient = new QueryClient();
@@ -59,6 +60,7 @@ export default function App() {
               <Route path="products" element={<AdminProducts />} />
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="settings" element={<AdminSettings />} />
+              <Route path="calendar" element={<AdminCalendar />} />
             </Route>
           <Route path="*" element={<NotFound />} />
           </Routes>
