@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 const slides = [
   {
@@ -90,10 +91,10 @@ export function SlideshowHero() {
                 transform: `translate(${mouseX * -12}px, ${mouseY * -8}px) scale(1.08)`,
               }}
             >
-              <img
+              <OptimizedImage
                 src={slides[current].image}
                 alt={slides[current].heading}
-                className="w-full h-full object-cover"
+                className="w-full h-full"
               />
             </div>
 

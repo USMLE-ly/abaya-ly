@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 const SLIDES_DESKTOP = [
   {
@@ -90,16 +91,16 @@ export default function LuminaHero() {
             zIndex: i === idx ? 1 : 0,
           }}
         >
-          <img
+          <OptimizedImage
             src={slide.media}
             alt=""
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full "
             style={{ filter: "blur(20px) brightness(0.6)", transform: "scale(1.1)" }}
           />
-          <img
+          <OptimizedImage
             src={slide.media}
             alt=""
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full "
           />
         </div>
       ))}

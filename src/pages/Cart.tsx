@@ -1,4 +1,5 @@
 import { PageTransition } from "@/components/PageTransition";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
@@ -61,7 +62,7 @@ function CartContent() {
                 {items.map((item) => (
                   <motion.div key={item.id} layout className="grid grid-cols-12 gap-4 py-5 border-b border-line-subtle items-center">
                     <div className="col-span-12 md:col-span-6 flex gap-4">
-                      <img src={item.image} alt={item.name} className="w-20 h-24 object-cover rounded-xl flex-shrink-0" />
+                      <OptimizedImage src={item.image} alt={item.name} className="w-20 h-24 rounded-xl flex-shrink-0" />
                       <div>
                         <h3 className="text-sm font-semibold text-fg">{item.name}</h3>
                         <p className="text-[10px] text-fg-tertiary mt-1">اللون: {item.color} | المقاس: {item.size}</p>

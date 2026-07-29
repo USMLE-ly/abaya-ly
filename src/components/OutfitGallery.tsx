@@ -6,6 +6,7 @@ import { ShoppingBag, Eye } from "lucide-react";
 import { products } from "@/data/products";
 import { useNavigate } from "react-router-dom";
 import { StaggerGrid, StaggerItem, Reveal } from "@/components/PageTransition";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 const newOutfitIds = [
   "lumiere-white-polka-midi",

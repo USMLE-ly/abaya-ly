@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 const slides = [
   {
@@ -144,7 +145,7 @@ export default function ElegantCarousel() {
                   : "scale(1.08)",
               }}
             >
-              <img src={slide.image} alt={slide.heading} className="w-full h-full object-cover" />
+              <OptimizedImage src={slide.image} alt={slide.heading} className="w-full h-full" />
             </div>
 
             {/* Premium gradient overlay */}

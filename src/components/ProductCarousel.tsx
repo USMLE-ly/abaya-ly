@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { Link } from "react-router-dom";
 import { products } from "@/data/products";
 
@@ -42,20 +43,17 @@ function InteractiveCard({ product, index = 0 }: { product: typeof products[numb
       >
         {/* Image with zoom */}
         <div className="absolute inset-0 overflow-hidden">
-          <img
+          <OptimizedImage
             src={product.images[0]}
             alt={product.name}
-            className="absolute inset-0 h-full w-full object-cover transition-all duration-700 group-hover/card:scale-110"
-            loading="lazy"
-            decoding="async"
+            className="absolute inset-0 h-full w-full transition-all duration-700 group-hover/card:scale-110"
           />
         </div>
         {product.images[1] && (
-          <img
+          <OptimizedImage
             src={product.images[1]}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"
-            loading="lazy"
+            className="absolute inset-0 h-full w-full opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"
           />
         )}
 
