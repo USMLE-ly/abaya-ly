@@ -1,93 +1,76 @@
+# لوحة تحكم Nadine الإدارية
 
-# Tajawal typography + Louis-Vuitton-style product architecture
+## ما استخرجته فعليًا من الفيجما
 
-Two independent tracks that ship together.
+الملفان `.fig` ثنائيان ولا يمكن فتحهما، لكن مرافقيهما `.design.json` يحتويان على المواصفات الحقيقية:
 
-## Track 1 — Tajawal everywhere + RTL audit
+**MasterPOS** — هيكل الصفحات (Light + Dark)، بثلاث نسخ لكل صفحة:
+- Desktop 1905px · Tablet 800px · Mobile 390px
+- الصفحات: Dashboard، Products، Add New Product، Categories، Add New Category (+30 إطارًا إضافيًا في القائمة المقطوعة)
+- Sidebar: 345px عرض، نسختان Light/Dark
+- اللون المميز الأخضر `#CDFF65` والثانوي `#4F56D3` — سيُستبدلان بالوردي `#c42855`
+- الرمادي: `#FBFBFB` خلفية، `#515161`/`#878787`/`#B2B3B9` نصوص، `#ECECEB` حدود
+- الخط الأساسي في التصميم هو **Cairo** فعلًا (ExtraBold 25، Bold 16/20/24، Regular 14) — سنستبدله بـ Tajawal بنفس المقاييس
 
-**`index.html`**
-- Drop the Google Fonts request for Inter + JetBrains Mono, drop the self-hosted `@font-face` blocks for Zodiak and Arslan Wessam B (files stay in `/public/fonts/` but are no longer loaded).
-- Add one Google Fonts link: `Tajawal:wght@200;300;400;500;700;800;900`.
+**Elstar** — مكتبة المكوّنات: Alert, Avatar, Button, Badge, Calendar, Card, Checkbox, DatePicker, Dialog, Drawer, DropdownMenu, Heading, Input, InputGroup, MenuItem, Pagination, Progress + 5 تخطيطات (Classic / Modern / Stacked Side / Decked / Simple). سلم الرمادي: `#F9FAFB #F3F4F6 #E5E7EB #9CA3AF #6B7280 #4B5563 #374151 #1F2937 #111827 #0F172A`. المقاييس: 14/100%، 14/24، 12/16، 18/28، 16/24.
 
-**`src/index.css`**
-- Repoint every font token to Tajawal:
-  - `--font-display`, `--font-body`, `--font-mono` → `'Tajawal', system-ui, sans-serif` (mono keeps a monospaced fallback: `'Tajawal', ui-monospace, monospace` — kept only so `font-mono` utilities don't break; nothing in the shipped pages actually uses code type).
-  - Legacy aliases `--font-serif`, `--font-sans`, `--font-arabic-display`, `--font-arabic-body` all point to Tajawal so any lingering utility keeps working.
-- Keep `html[dir="rtl"]` defaults, Arabic numerals, and the RTL body class untouched.
+**الحدّ الوارد:** بدون رندر بصري لا يمكنني ضمان "pixel-perfect" حرفيًا. سأبني على القيم المستخرجة (المقاسات، السلم اللوني، سلم الخط، بنية الصفحات، Sidebar 345px، breakpoints 390/800/1905) — وهي دقيقة. أي تفصيل بصري دقيق يمكن ضبطه بعدها بلقطة شاشة من الفيجما.
 
-**RTL verification pass** (read-only, after the swap)
-- Playwright at 390×844 and 1280×1800 on `/`, `/collections`, a product page (`/product/al-sahra-gold`), `/cart`, `/contact`, `/faq`, `/design-system`.
-- Screenshot each. Check for: mirrored icons that shouldn't mirror, English strings bleeding into Arabic lines, VELAR components (Button leading/trailing icons, Input label/hint, Alert dismiss, Accordion chevron, Tabs underline, Tooltip arrow, Modal close, Checkbox/Radio label side) sitting on the correct side under `dir="rtl"`.
-- Any component that visibly breaks under RTL gets a targeted fix in `src/components/velar/<Component>.tsx` (swap `ml-*/mr-*` for logical `ms-*/me-*`, `left/right` for `start/end`, remove hardcoded `flex-row` where `flex-row-reverse` is implied by RTL, etc.). No API changes.
+## القرارات المعمارية
 
-## Track 2 — Luxury product naming architecture (Louis Vuitton / Hermès style)
+**المكان:** داخل نفس المشروع تحت `/admin/*`. سبب: الـ APIs موجودة هنا (`api/*.mjs` على Vercel)، فلا CORS ولا نشر ثانٍ. لاحقًا يمكن توجيه `admin.nadine.luxor.ly` لنفس النشر.
 
-Rewrite `src/data/products.ts` for all 14 products. Keep IDs, prices, images, sizes, ratings, color hexes, and `linkTo` cross-links **unchanged** — only naming/copy fields change.
+**فجوة في الـ API:** لا يوجد endpoint يسرد كل الطلبات — `track-order` يعيد طلبًا واحدًا فقط بعد التحقق من الهاتف. لوحة التحكم مستحيلة بدونه. سأضيف `GET /api/admin/orders` فقط (قراءة من نفس Edge Config، محمي بهيدر كلمة المرور). لن أمسّ `POST /api/order` ولا `POST /api/update-status` ولا `GET /api/track-order` إطلاقًا.
 
-### New per-product fields
+## نظام التصميم
 
-Extend the `Product` interface:
+طبقة `admin` منفصلة داخل `src/index.css` لا تكسر تصميم المتجر:
 
-```ts
-collection: string;        // e.g. "Noir Atelier"
-model: string;             // e.g. "Aurelia"
-edition: string;           // e.g. "إصدار 2026"
-subtitle: string;          // luxury one-liner
-seoName: string;           // clean searchable Arabic title
-slug: string;              // Arabic URL slug (kebab-case Arabic)
-tags: string[];            // 15–25 tags
+```
+--admin-brand:        #c42855   (بديل الأخضر #CDFF65)
+--admin-brand-hover:  #a81f47
+--admin-brand-subtle: #fdf2f5
+--admin-bg:           #FBFBFB
+--admin-surface:      #FFFFFF
+--admin-border:       #ECECEB
+--admin-text:         #202020
+--admin-text-2:       #515161
+--admin-text-3:       #878787
+```
+الحالات: pending `#F5A524` · processing `#4892FE` · waiting_shipping `#8F8F8F` · shipped `#4F56D3` · delivered `#89D233`
+الخط: Tajawal · `dir="rtl"` على غلاف اللوحة · سلم Elster للنوع.
+
+## الصفحات
+
+```
+/admin/login        كلمة مرور واحدة، sessionStorage، تحمي كل ما تحت /admin
+/admin              نظرة عامة تنفيذية
+/admin/orders       جدول الطلبات
+/admin/orders/:id   تفاصيل الطلب
+/admin/products     كتالوج من src/data/products.ts (قراءة فقط)
+/admin/analytics    تحليلات
+/admin/settings     إعدادات
 ```
 
-`name` becomes the full hierarchy string: `«{collection} • {model} • {arabic descriptor} • {edition}»`.
-`description` is rewritten to 80–150 words, focused on craftsmanship / silhouette / versatility, no invented embellishments.
-`highlights` are rewritten to describe only what's visible in that product's image (neckline, sleeve, length, waist, pattern, movement) — no embroidery/lace/pearls unless clearly there.
-`details` is rewritten in the same visible-only spirit.
+**النظرة العامة:** بطاقات إحصائية (إجمالي / قيد الانتظار / تجهيز / انتظار شحن / تم التوصيل / اليوم / الأسبوع / الشهر)، مخطط اتجاه، توزيع الحالات (دائري)، أحدث الطلبات، خط زمني للنشاط، بحث وإجراءات سريعة.
 
-### Collection assignment (by the garment's actual primary color)
+**جدول الطلبات:** رقم الطلب · العميل · الهاتف · المدينة · كود المنتج · الاسم · اللون · المقاس · الحالة · التاريخ · آخر تحديث · إجراءات. بحث، فرز، فلترة بالحالة/المدينة/التاريخ، ترقيم، تحديد جماعي، تصدير CSV، وعلى الجوال تتحول لبطاقات (كما في إطار 390px).
 
-| Collection | Palette | Products |
-|---|---|---|
-| **Noir Atelier** | black / charcoal | `olive-ruffle`, `night-velvet` (white-with-black-dots stays here because pattern reads black), `gold-embroidered-5` |
-| **Lumière** | ivory / pearl / champagne | `al-sahra-gold` (white), `gold-embroidered-2` (ivory), `floral-sleeve` (cream) |
-| **Rouge Héritage** | wine / ruby / burgundy | `white-beach` (wine), `gold-embroidered-3` (deep wine), `gold-embroidered-6` (wine) |
-| **Azure** | sky / navy / sapphire | `red-velvet` (sky blue), `black-lace` (deep navy) |
-| **Botanique** | rose / blossom | `white-lace` (pink) |
-| **Maison d'Or** | gold / bronze / cocoa | `cream-silk` (gold), `gold-embroidered-1` (antique gold), `gold-embroidered-4` (dark chocolate) |
+**تفاصيل الطلب:** كل الحقول + خط زمني للحالة + تحديث الحالة (يستدعي `POST /api/update-status` بنفس الحمولة) + نسخ رقم الطلب + طباعة.
 
-Model names (never trademarked): Aurelia, Céleste, Ophélie, Sérène, Colette, Odile, Amélie, Margaux, Elodie, Solène, Inès, Livia, Noor, Yasmina, Salma — one per product, unique.
+**التحليلات:** طلبات يومية/أسبوعية/شهرية، أفضل المنتجات، المدن، متوسط زمن المعالجة، نسبة التسليم، نسبة الانتظار.
 
-### Example rewrite (for `al-sahra-gold`)
+**التنبيهات:** طلبات معلّقة أكثر من 24 ساعة، طلبات جديدة، تغيّرات الحالة، أخطاء.
 
-- `name`: «Lumière • Céleste • فستان سهرة أبيض بنقاط سوداء كلاسيكية • إصدار 2026»
-- `collection`: "Lumière"
-- `model`: "Céleste"
-- `edition`: "إصدار 2026"
-- `subtitle`: "أناقة كلاسيكية بخطوط نظيفة ولمسة أنثوية معاصرة."
-- `seoName`: "فستان سهرة أبيض بنقاط سوداء — مجموعة Lumière"
-- `slug`: "lumiere-celeste-فستان-سهرة-أبيض-منقط"
-- `highlights` (visible-only): «قصة ميدي محددة الخصر تبرز القوام بأناقة.» / «أكمام قصيرة نظيفة الحواف ترسم خطاً نسائياً معاصراً.» / «نقشة النقاط السوداء الكلاسيكية على خلفية بيضاء تمنح إطلالة خالدة.»
-- `description` (80–150 words): editorial Arabic focused on silhouette, versatility, timeless appeal.
-- `tags`: ["سهرة","أبيض","منقط","ميدي","أكمام-قصيرة","محدد-الخصر","كلاسيكي","نسائي","مناسبات","ربيع-صيف","Lumière","Céleste","فستان-أبيض","نقاط-سوداء","إطلالة-خالدة","أنيق","راقي","ساتان","حفلات","خروجات-راقية"]
+## التفاصيل التقنية
 
-Same treatment for the remaining 13 products, each anchored to what its image actually shows.
+- حزم جديدة: `@tanstack/react-query`، `recharts`
+- `src/admin/` مستقل: `layout/` (Sidebar 345px قابل للطي + Topbar + بحث + تنبيهات)، `components/` (StatCard, DataTable, StatusBadge, Chart wrappers, Pagination, Drawer, Dialog — مطابقة لمكوّنات Elstar)، `pages/`، `lib/api.ts`، `lib/status.ts`
+- مسارات `/admin/*` كلها `React.lazy` فلا تزيد حجم حزمة المتجر
+- كل الأنواع من `Order` المذكور في الطلب، بدون `any`
+- Framer Motion لانتقالات الصفحات والبطاقات
+- breakpoints مطابقة للفيجما: `<640` جوال، `640–1024` تابلت، `>1024` سطح مكتب
 
-### UI surfaces that render the new fields
+## ما لن أفعله
 
-- **Product card** (`ProductCarousel`, `Collections`, `OutfitGallery` where applicable): small uppercase collection tag above the Arabic descriptor; model name as a subtle line under the title.
-- **Product page** (`src/pages/Product.tsx`): collection + edition as an eyebrow line, model as a secondary title, Arabic descriptor as the H1, `subtitle` under it, then price / description / highlights / details as today.
-- **`<head>`** on the product page: use `seoName` for `<title>` and `subtitle` for `<meta description>`.
-
-## Technical notes
-
-- `Product` interface change is additive; existing consumers that only read `name`/`description` keep working through the transition.
-- Tag `slug` is stored for future routing but not wired to routes in this pass (would need a router change out of scope).
-- No business-logic, no cart, no data-shape breaking changes beyond the additive fields.
-- After edits: `bun run build`, then Playwright RTL screenshots on the 7 routes above for verification.
-
-## Out of scope
-
-- Changing product photography or reordering the catalog.
-- Routing by slug.
-- Any backend / Lovable Cloud work.
-
-Say the word and I'll switch to build mode and execute Track 1 then Track 2.
+لن أنشئ باكند جديدًا، ولن أغيّر حمولات أو ردود الـ APIs الثلاثة القائمة، ولن ألمس صفحات المتجر الحالية أو مكوّنات VELAR.
