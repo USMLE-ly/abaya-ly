@@ -223,7 +223,7 @@ export function Product() {
                 <span className="text-fg-tertiary">{product.edition}</span>
               </div>
               <p className="text-sm uppercase tracking-[0.18em] text-fg-secondary font-medium mb-1">{product.model}</p>
-              <span className="text-[10px] uppercase tracking-[0.25em] text-fg-tertiary/60 font-mono mb-1 block">{product.code}</span>
+              <span className="text-[10px] uppercase tracking-[0.25em] font-mono mb-1 block bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 bg-clip-text text-transparent">{product.code}</span>
               <h1 className="font-display text-2xl md:text-3xl font-bold text-fg leading-tight mb-2">{descriptor}</h1>
               <p className="text-sm text-fg-secondary italic mb-1">{product.subtitle}</p>
               <div className="mt-3 w-16 h-[1px] bg-gradient-to-r from-accent-brand/40 to-transparent" />
@@ -241,7 +241,7 @@ export function Product() {
 
             {/* Price */}
             <div className="flex items-baseline gap-3 mb-6">
-              <span className="text-3xl font-bold text-fg">{product.price} د.ل</span>
+              <span className="text-3xl font-bold bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 bg-clip-text text-transparent">{product.price} د.ل</span>
               {product.originalPrice && (
                 <>
                   <span className="text-lg text-fg-tertiary line-through">{product.originalPrice} د.ل</span>
