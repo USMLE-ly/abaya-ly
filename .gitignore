@@ -36,3 +36,4 @@ inspect*.mjs
 playwright.config.ts
 test-inspect.spec.mjs
 test-results/
+.env

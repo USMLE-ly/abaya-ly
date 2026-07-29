@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Sparkles, Tag } from "lucide-react";
+import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Sparkles, Tag, ShoppingBag } from "lucide-react";
+import { BookingModal } from "@/components/BookingModal";
 import { findProduct, products, Product as ProductType } from "@/data/products";
 import { Button, Badge, Card } from "@/components/velar";
 
@@ -156,6 +157,7 @@ export function Product() {
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [showBooking, setShowBooking] = useState(false);
   const [checkingSize, setCheckingSize] = useState<number | null>(null);
   const [sizeMessage, setSizeMessage] = useState('');
   const [sizeAvailable, setSizeAvailable] = useState(true);
@@ -417,6 +419,16 @@ export function Product() {
           </div>
         </div>
       )}
+
+      {/* 2. Booking Modal */}
+      <BookingModal
+        open={showBooking}
+        onClose={() => setShowBooking(false)}
+        productCode={product.code}
+        productName={product.name.split(" • ").slice(2).join(" • ") ?? product.name}
+        colors={product.colors}
+        sizes={product.sizes}
+      />
 
       {/* 2. TRUST ITEMS */}
       <section className="py-6">
