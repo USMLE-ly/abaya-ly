@@ -14,7 +14,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
       initial="initial"
       animate="animate"
       exit="exit"
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] as const }}
     >
       {children}
     </motion.div>
@@ -28,7 +28,7 @@ const container = {
 
 const item = {
   hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
 export function StaggerGrid({ children, className }: { children: ReactNode; className?: string }) {
@@ -53,7 +53,7 @@ export function Reveal({ children, className }: { children: ReactNode; className
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
       className={className}
     >
       {children}

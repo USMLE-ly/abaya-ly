@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { PageTransition } from "@/components/PageTransition";
 import { ChevronLeft, Truck, Clock, MapPin, Package } from "lucide-react";
 
 const sections = [

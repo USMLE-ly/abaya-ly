@@ -1,6 +1,11 @@
 import { motion } from "framer-motion";
+import { PageTransition } from "@/components/PageTransition";
 
 export function About() {
+  return <PageTransition><AboutContent /></PageTransition>;
+}
+
+function AboutContent() {
   return (
     <div className="min-h-screen">
       <section className="relative h-72 md:h-96 overflow-hidden">

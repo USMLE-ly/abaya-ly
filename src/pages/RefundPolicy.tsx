@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { PageTransition } from "@/components/PageTransition";
 import { ChevronLeft, RotateCcw, Clock, CheckCircle, XCircle } from "lucide-react";
 
 const conditions = [

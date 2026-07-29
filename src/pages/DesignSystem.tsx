@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { PageTransition } from "@/components/PageTransition";
 import { Badge, Tag, Alert, Card, Button, Input, Textarea, Select, Checkbox, Radio, Switch, Avatar, Divider, Progress, Accordion, Tabs, Tooltip, Chip, Spinner } from "@/components/velar";
 import { Sparkles } from "lucide-react";
 

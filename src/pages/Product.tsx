@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Sparkles, Tag, ShoppingBag } from "lucide-react";
 import { BookingModal } from "@/components/BookingModal";
+import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 import { findProduct, products, Product as ProductType } from "@/data/products";
 import { Button, Badge, Card } from "@/components/velar";
 
@@ -151,6 +152,10 @@ function JsonLdScript({ product }: { product: ProductType }) {
 }
 
 export function Product() {
+  return <PageTransition><ProductContent /></PageTransition>;
+}
+
+function ProductContent() {
   const { id } = useParams();
   const navigate = useNavigate();
   const product = findProduct(id || "");

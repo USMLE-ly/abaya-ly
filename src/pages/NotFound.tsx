@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
+import { PageTransition } from "@/components/PageTransition";
 
 export function NotFound() {
+  return <PageTransition><NotFoundContent /></PageTransition>;
+}
+
+function NotFoundContent() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
       <h1 className="font-display text-7xl md:text-9xl font-bold text-accent-brand mb-4">404</h1>
