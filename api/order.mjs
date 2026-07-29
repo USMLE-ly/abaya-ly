@@ -1,13 +1,51 @@
+import { checkRateLimit } from "./_ratelimit.mjs";
+
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+  // Restrict CORS
+  const origin = req.headers.origin || "";
+  const allowedOrigins = [
+    "https://nadine.luxor.ly",
+    "https://abaya-ly.vercel.app",
+    "http://localhost:5173",
+  ];
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
   }
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+
+  // Rate limiting
+  const ip = req.headers["x-forwarded-for"] || req.headers["x-real-ip"] || "unknown";
+  const rl = checkRateLimit(ip);
+  if (!rl.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: rl.retryAfter });
 
   const { code, name, color, size, location, phone } = req.body || {};
 
+  // Validate required fields
   if (!code || !phone) {
     return res.status(400).json({ error: "Missing required fields" });
   }
+
+  // Validate Libyan phone number (091, 092, 093, 094 + 7 digits = 10 total)
+  const phoneClean = phone.trim().replace(/[^0-9]/g, "");
+  const libyanPattern = /^(091|092|093|094)\d{7}$/;
+  if (!libyanPattern.test(phoneClean)) {
+    return res.status(400).json({
+      error: "رقم الهاتف يجب أن يبدأ بـ 091 أو 092 أو 093 أو 094 ويتكون من 10 أرقام",
+    });
+  }
+
+  // Sanitize text inputs
+  const sanitize = (str) => (str || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const sanitized = {
+    code: sanitize(code),
+    name: sanitize(name),
+    color: sanitize(color),
+    size: sanitize(size),
+    location: sanitize(location),
+  };
 
   const EC_URL = process.env.EDGE_CONFIG;
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -19,12 +57,12 @@ export default async function handler(req, res) {
 
   const order = {
     orderId,
-    code,
-    name,
-    color,
-    size,
-    location,
-    phone: phone.trim(),
+    code: sanitized.code,
+    name: sanitized.name,
+    color: sanitized.color,
+    size: sanitized.size,
+    location: sanitized.location,
+    phone: phoneClean,
     status: "pending",
     statusLabel: "انتظار التأكيد",
     createdAt: now,
@@ -35,7 +73,6 @@ export default async function handler(req, res) {
   let stored = false;
   if (EC_URL) {
     try {
-      // Store order by ID
       await fetch(`${EC_URL}/items`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -45,8 +82,8 @@ export default async function handler(req, res) {
           ],
         }),
       });
-      // Index by phone number (append to phone index array)
-      const phoneResp = await fetch(`${EC_URL}/item/phone:${phone.trim()}`);
+
+      const phoneResp = await fetch(`${EC_URL}/item/phone:${phoneClean}`);
       if (phoneResp.ok) {
         const existing = await phoneResp.json();
         const ids = Array.isArray(existing) ? existing : [];
@@ -55,7 +92,7 @@ export default async function handler(req, res) {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            items: [{ operation: "upsert", key: `phone:${phone.trim()}`, value: ids }],
+            items: [{ operation: "upsert", key: `phone:${phoneClean}`, value: ids }],
           }),
         });
       } else {
@@ -63,29 +100,27 @@ export default async function handler(req, res) {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            items: [{ operation: "upsert", key: `phone:${phone.trim()}`, value: [orderId] }],
+            items: [{ operation: "upsert", key: `phone:${phoneClean}`, value: [orderId] }],
           }),
         });
       }
       stored = true;
     } catch (e) {
-      console.error("Edge Config error:", e.message);
+      console.error("Edge Config write error:", e);
     }
   }
 
-  // Send to Telegram
-  if (BOT_TOKEN && CHAT_ID) {
+  // Send Telegram notification
+  if (BOT_TOKEN && CHAT_ID && stored) {
     const message = [
-      "🆕 طلب جديد من متجر نادين",
+      `🛒 طلب جديد ${orderId}`,
       "━━━━━━━━━━━━━━━",
-      `🆔 رقم الطلب: ${orderId}`,
-      `🆔 الكود: ${code}`,
-      `👗 الفستان: ${name || "—"}`,
-      `🎨 اللون: ${color || "—"}`,
-      `📏 المقاس: ${size || "—"}`,
-      `📍 الموقع: ${location || "—"}`,
-      `📞 الهاتف: ${phone}`,
-      `📦 الحالة: انتظار التأكيد`,
+      `🆔 الكود: ${sanitized.code}`,
+      `👗 الفستان: ${sanitized.name || "—"}`,
+      `🎨 اللون: ${sanitized.color || "—"}`,
+      `📏 المقاس: ${sanitized.size || "—"}`,
+      `📍 الموقع: ${sanitized.location || "—"}`,
+      `📞 الهاتف: ${phoneClean}`,
       "━━━━━━━━━━━━━━━",
       `📅 ${new Date().toLocaleDateString("ar-LY", {
         weekday: "long", year: "numeric", month: "long", day: "numeric",
@@ -98,10 +133,12 @@ export default async function handler(req, res) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chat_id: CHAT_ID, text: message }),
       });
-    } catch (e) {
-      console.error("Telegram error:", e.message);
-    }
+    } catch (e) { /* ignore */ }
   }
 
-  return res.status(200).json({ success: true, orderId, stored });
+  return res.status(200).json({
+    success: true,
+    orderId,
+    message: "سيتم الاتصال بسادتكم خلال 24 ساعه لتاكيد الطلب",
+  });
 }

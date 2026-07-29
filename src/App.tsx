@@ -29,6 +29,16 @@ const AdminSettings = lazy(() => import("@/admin/pages/Settings"));
 const AdminCalendar = lazy(() => import("@/admin/pages/Calendar"));
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 
+// Admin dashboard is hidden behind a secret path for security.
+// The public /admin route returns 404 to prevent discovery.
+// Change this value and redeploy to move the dashboard.
+import { ADMIN_PATH } from "@/admin/lib/config";
+
+// Decoy admin page that looks like a 404
+function AdminDecoy() {
+  return <NotFound />;
+}
+
 const queryClient = new QueryClient();
 
 export default function App() {
@@ -39,6 +49,7 @@ export default function App() {
         <Header />
         <main style={{ flex: "1 1 auto", width: "100%" }}>
           <Routes>
+            {/* Public routes */}
             <Route path="/" element={<Home />} />
             <Route path="/product/:id" element={<Product />} />
             <Route path="/collections" element={<Collections />} />
@@ -52,8 +63,14 @@ export default function App() {
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/design-system" element={<DesignSystem />} />
-                      <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminLayout />}>
+
+            {/* Decoy: /admin returns 404 to hide dashboard location */}
+            <Route path="/admin" element={<AdminDecoy />} />
+            <Route path="/admin/*" element={<AdminDecoy />} />
+
+            {/* Secret admin dashboard route (path set via VITE_ADMIN_PATH env var) */}
+            <Route path={`/${ADMIN_PATH}/login`} element={<AdminLogin />} />
+            <Route path={`/${ADMIN_PATH}`} element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="orders" element={<AdminOrders />} />
               <Route path="orders/:id" element={<AdminOrderDetail />} />
@@ -62,7 +79,9 @@ export default function App() {
               <Route path="settings" element={<AdminSettings />} />
               <Route path="calendar" element={<AdminCalendar />} />
             </Route>
-          <Route path="*" element={<NotFound />} />
+
+            {/* Catch-all 404 */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />
@@ -72,8 +91,3 @@ export default function App() {
     </QueryClientProvider>
   );
 }
-
-
-
-
-

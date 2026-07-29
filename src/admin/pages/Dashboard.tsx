@@ -12,6 +12,7 @@ import { useOrders } from "../lib/metrics";
 import { fmtDate, fmtDateTime, relativeAr, STATUSES } from "../lib/types";
 import { StatCard } from "../components/StatCard";
 import { AButton, AEmpty, StatusBadge, ACard, ASkeleton } from "../components/ui";
+import { ADMIN_PATH } from "../lib/config";
 
 const STATUS_COLORS = ["#F5A524", "#4892FE", "#8F8F8F", "#4F56D3", "#89D233"];
 
@@ -262,7 +263,7 @@ export default function Dashboard() {
       <div className="rounded-2xl overflow-hidden" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
         <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: "var(--nd-border)" }}>
           <h3 className="text-sm font-bold" style={{ color: "var(--nd-text)" }}>آخر الطلبات</h3>
-          <Link to="/admin/orders">
+          <Link to={`/${ADMIN_PATH}/orders`}>
             <AButton variant="default" size="xs" icon={<ArrowLeft size={14} />}>عرض الكل</AButton>
           </Link>
         </div>

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, Search, Bell, ChevronDown, RefreshCw } from "lucide-react";
 import { useOrders } from "../lib/metrics";
+import { ADMIN_PATH } from "../lib/config";
 
 export function Topbar({
   onMenu,
@@ -181,7 +182,7 @@ export function Topbar({
         {/* Profile */}
         <div
           className="flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-colors hover:bg-gray-50"
-          onClick={() => navigate("/admin/settings")}
+          onClick={() => navigate("/dashboard-nadine-admin/settings")}
         >
           <div
             className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"

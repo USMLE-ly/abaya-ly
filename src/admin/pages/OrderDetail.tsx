@@ -25,6 +25,7 @@ import {
   ASkeleton,
   AEmpty,
 } from "../components/ui";
+import { ADMIN_PATH } from "../lib/config";
 import {
   statusMeta,
   STATUSES,
@@ -130,7 +131,7 @@ export default function OrderDetail() {
           hint="لم يتم العثور على طلب بهذا الرقم"
         />
         <div className="text-center mt-4">
-          <Link to="/admin/orders">
+          <Link to={`/${ADMIN_PATH}/orders`}>
             <AButton variant="default" size="sm" icon={<ArrowRight size={15} />}>
               العودة للطلبات
             </AButton>
@@ -151,7 +152,7 @@ export default function OrderDetail() {
       <div className="flex flex-wrap items-center justify-between gap-3 print:flex-col print:items-start">
         <div className="flex items-center gap-3">
           <Link
-            to="/admin/orders"
+            to={`/${ADMIN_PATH}/orders`}
             className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-bold transition-colors"
             style={{ color: "var(--nd-text-3)", background: "var(--nd-surface)" }}
           >

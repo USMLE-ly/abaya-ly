@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Lock, Mail, Loader2, Store } from "lucide-react";
 import { setPassword, verifyPassword } from "../lib/api";
+import { ADMIN_PATH } from "../lib/config";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function AdminLogin() {
         return;
       }
       setPassword(password.trim());
-      navigate("/admin", { replace: true });
+      navigate("/dashboard-nadine-admin", { replace: true });
     } catch {
       setError("تعذّر الاتصال بالخادم");
     } finally {

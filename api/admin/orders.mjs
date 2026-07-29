@@ -1,15 +1,21 @@
-// Read-only listing endpoint for the admin dashboard.
-// Reads the same Edge Config store written by /api/order — it does not
-// modify or replace any existing production endpoint.
+import { checkRateLimit } from "../_ratelimit.mjs";
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  res.setHeader("Access-Control-Allow-Origin", "https://nadine.luxor.ly");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-admin-password");
+  
+  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
 
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "nadine2026";
-  const provided = req.headers["x-admin-password"];
-  if (provided !== ADMIN_PASSWORD) {
+  // Rate limiting
+  const ip = req.headers["x-forwarded-for"] || req.headers["x-real-ip"] || "unknown";
+  const rl = checkRateLimit(ip);
+  if (!rl.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: rl.retryAfter });
+
+  // Auth
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+  if (!ADMIN_PASSWORD) return res.status(500).json({ error: "Server configuration error" });
+  if (req.headers["x-admin-password"] !== ADMIN_PASSWORD) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
@@ -32,6 +38,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ orders });
   } catch (err) {
     console.error("Admin orders error:", err);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(200).json({ orders: [] });
   }
 }

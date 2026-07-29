@@ -13,6 +13,7 @@ import {
   Store,
 } from "lucide-react";
 import { clearPassword } from "../lib/api";
+import { ADMIN_PATH } from "../lib/config";
 
 interface NavItem {
   to: string;
@@ -23,12 +24,12 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  { to: "/admin", label: "لوحة القيادة", icon: LayoutDashboard, end: true },
-  { to: "/admin/orders", label: "الطلبات", icon: ShoppingBag, badge: 0 },
-  { to: "/admin/products", label: "المنتجات", icon: Package },
-  { to: "/admin/analytics", label: "التحليلات", icon: BarChart3 },
-  { to: "/admin/calendar", label: "تقويم الشحن", icon: Calendar },
-  { to: "/admin/settings", label: "الإعدادات", icon: Settings },
+  { to: "/dashboard-nadine-admin", label: "لوحة القيادة", icon: LayoutDashboard, end: true },
+  { to: "/dashboard-nadine-admin/orders", label: "الطلبات", icon: ShoppingBag, badge: 0 },
+  { to: "/dashboard-nadine-admin/products", label: "المنتجات", icon: Package },
+  { to: "/dashboard-nadine-admin/analytics", label: "التحليلات", icon: BarChart3 },
+  { to: "/dashboard-nadine-admin/calendar", label: "تقويم الشحن", icon: Calendar },
+  { to: "/dashboard-nadine-admin/settings", label: "الإعدادات", icon: Settings },
 ];
 
 export function Sidebar({
@@ -45,7 +46,7 @@ export function Sidebar({
 
   const logout = () => {
     clearPassword();
-    navigate("/admin/login", { replace: true });
+    navigate(`/${ADMIN_PATH}/login`, { replace: true });
   };
 
   return (
@@ -96,7 +97,7 @@ export function Sidebar({
           {NAV.map((item) => {
             const itemsWithBadge = [...NAV];
             const navItem = { ...item };
-            if (navItem.to === "/admin/orders") navItem.badge = pendingCount;
+            if (navItem.to === "/dashboard-nadine-admin/orders") navItem.badge = pendingCount;
             return (
               <NavLink
                 key={item.to}

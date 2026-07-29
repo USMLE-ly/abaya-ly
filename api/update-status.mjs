@@ -1,17 +1,44 @@
+import { checkRateLimit } from "../_ratelimit.mjs";
+// Update order status — requires x-admin-password header
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  // Only allow specific origins instead of wildcard
+  const origin = req.headers.origin || "";
+  const allowedOrigins = [
+    "https://nadine.luxor.ly",
+    "https://abaya-ly.vercel.app",
+    "http://localhost:5173",
+  ];
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-admin-password");
 
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  
+  // Rate limiting
+  const cf = req.headers["x-forwarded-for"] || req.headers["x-real-ip"] || "unknown";
+  const rl = checkRateLimit(cf);
+  if (!rl.allowed) {
+    return res.status(429).json({ error: "Too many requests", retryAfter: rl.retryAfter });
+  }
+
+  // --- AUTH CHECK ---
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+  if (!ADMIN_PASSWORD) {
+    return res.status(500).json({ error: "Server configuration error" });
+  }
+  const provided = req.headers["x-admin-password"];
+  if (provided !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
   const { orderId, status } = req.body || {};
   if (!orderId || !status) return res.status(400).json({ error: "orderId and status required" });
 
   const validStatuses = ["pending", "processing", "waiting_shipping", "shipped", "delivered"];
   const statusLabels = {
-    waiting_shipping: "في انتظار الشحن",
     pending: "انتظار التأكيد",
     processing: "جاري التجهيز",
     waiting_shipping: "في انتظار الشحن",
@@ -27,23 +54,20 @@ export default async function handler(req, res) {
   if (!EC_URL) return res.status(200).json({ success: false, note: "Edge Config not configured" });
 
   try {
-    // Read all items
     const readResp = await fetch(EC_URL);
     if (!readResp.ok) return res.status(500).json({ error: "Failed to read Edge Config" });
 
     const allData = await readResp.json();
-    const items = allData.items || {}; // Edge Config wraps items under "items" key
+    const items = allData.items || {};
     const orderKey = `order:${orderId.trim()}`;
     const order = items[orderKey];
 
     if (!order) return res.status(404).json({ error: "Order not found" });
 
-    // Update status
     order.status = status;
     order.statusLabel = statusLabels[status];
     order.updatedAt = new Date().toISOString();
 
-    // Write back
     const writeResp = await fetch(`${EC_URL}/items`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
