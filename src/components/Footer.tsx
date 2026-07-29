@@ -42,7 +42,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm text-fg-tertiary">
               <li>طرابلس، ليبيا</li>
               <li>+218 91 234 5678</li>
-              <li>info@nadine.luxor.ly</li>
+              <li><a href="mailto:info@nadine.luxor.ly" className="hover:text-accent-brand transition-colors">info@nadine.luxor.ly</a></li>
             </ul>
             <div className="flex gap-3 mt-4">
               <a href="https://instagram.com/nadine.ly" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full glass flex items-center justify-center text-fg-tertiary hover:text-accent-brand hover:bg-sunken transition-all"><Instagram size={16} /></a>
