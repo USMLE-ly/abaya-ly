@@ -8,6 +8,7 @@ import { Button, ThemeToggle } from "@/components/velar";
 const navLinks = [
   { label: "الرئيسية", href: "/" },
   { label: "المجموعات", href: "/collections" },
+  { label: "تتبع الطلب", href: "/track-order" },
   { label: "عن نادين", href: "/about" },
   { label: "تواصلي معنا", href: "/contact" },
 ];
