@@ -73,7 +73,7 @@ function InteractiveCard({ product }: { product: typeof products[number] }) {
               className="text-sm md:text-base font-bold text-fg leading-tight mb-0.5"
               style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
             >
-              {product.name.split(" • ")[2] ?? product.name}
+              {product.name.split(" • ").slice(2).join(" • ") ?? product.name}
             </h3>
           </div>
 

@@ -129,7 +129,7 @@ export function OutfitGallery() {
                   className="text-sm sm:text-base md:text-lg font-bold text-fg mb-1 leading-snug font-display"
                   style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
                 >
-                  {outfit.name.split(" • ")[2] ?? outfit.name}
+                  {outfit.name.split(" • ").slice(2).join(" • ") ?? outfit.name}
                 </h3>
                 <p className="text-[10px] sm:text-xs md:text-sm text-fg-tertiary mb-2 leading-relaxed">
                 </p>

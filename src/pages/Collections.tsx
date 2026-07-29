@@ -116,7 +116,7 @@ export function Collections() {
                         className="text-sm sm:text-base md:text-lg font-bold text-fg mb-1 leading-snug font-display"
                         style={{ whiteSpace: "normal", overflow: "visible", wordBreak: "normal" }}
                       >
-                        {product.name}
+                        {product.name.split(" • ").slice(2).join(" • ") ?? product.name}
                       </h3>
                       <div className="flex items-center gap-0.5 mb-2 justify-end">
                         {Array.from({ length: 5 }).map((_, s) => (
