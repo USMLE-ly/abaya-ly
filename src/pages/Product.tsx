@@ -350,22 +350,12 @@ export function Product() {
               </ul>
             </div>
 
-            {/* Quantity + Add to Cart */}
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex items-center glass-card rounded-xl overflow-hidden">
-                <Button variant="ghost" iconOnly size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-                  <Minus size={14} />
-                </Button>
-                <span className="px-4 text-sm font-semibold text-fg min-w-[2rem] text-center">{quantity}</span>
-                <Button variant="ghost" iconOnly size="sm" onClick={() => setQuantity(quantity + 1)}>
-                  <Plus size={14} />
-                </Button>
-              </div>
-              <Button variant="primary" className="flex-1" size="lg" onClick={() => setShowBooking(true)}>
-                <ShoppingBag size={18} />
-                احجزي هذا الفستان — {product.price} د.ل
-              </Button>
-            </div>
+            {/* Booking */}
+            <Button variant="primary" block size="lg" onClick={() => setShowBooking(true)} className="mb-3">
+              <ShoppingBag size={18} />
+              احجزي هذا الفستان — {product.price} د.ل
+            </Button>
+            <p className="text-[10px] text-fg-tertiary mb-3 text-center">الدفع عند الاستلام</p>
 
             {/* Payment Methods */}
             <div className="flex items-center gap-1.5 mb-3 justify-center mr-32">
