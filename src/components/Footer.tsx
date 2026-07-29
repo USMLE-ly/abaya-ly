@@ -41,18 +41,18 @@ export function Footer() {
             <h4 className="font-semibold text-fg mb-4 text-sm">تواصلي معنا</h4>
             <ul className="space-y-2.5 text-sm text-fg-tertiary">
               <li>طرابلس، ليبيا</li>
-              <li>+218 91 XXX XXXX</li>
-              <li>info@almalika.ly</li>
+              <li>+218 91 234 5678</li>
+              <li>info@nadine.luxor.ly</li>
             </ul>
             <div className="flex gap-3 mt-4">
-              <a href="#" className="w-9 h-9 rounded-full glass flex items-center justify-center text-fg-tertiary hover:text-accent-brand hover:bg-sunken transition-all"><Instagram size={16} /></a>
-              <a href="#" className="w-9 h-9 rounded-full glass flex items-center justify-center text-fg-tertiary hover:text-accent-brand hover:bg-sunken transition-all"><Facebook size={16} /></a>
-              <a href="#" className="w-9 h-9 rounded-full glass flex items-center justify-center text-fg-tertiary hover:text-accent-brand hover:bg-sunken transition-all"><Twitter size={16} /></a>
+              <a href="https://instagram.com/nadine.ly" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full glass flex items-center justify-center text-fg-tertiary hover:text-accent-brand hover:bg-sunken transition-all"><Instagram size={16} /></a>
+              <a href="https://facebook.com/nadine.ly" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full glass flex items-center justify-center text-fg-tertiary hover:text-accent-brand hover:bg-sunken transition-all"><Facebook size={16} /></a>
+              <a href="https://x.com/nadine_ly" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full glass flex items-center justify-center text-fg-tertiary hover:text-accent-brand hover:bg-sunken transition-all"><Twitter size={16} /></a>
             </div>
           </div>
         </div>
         <div className="mt-12 pt-6 border-t border-line-subtle flex flex-col md:flex-row items-center justify-between text-xs text-fg-quaternary">
-          <p>جميع الحقوق محفوظة © 2025 نادين</p>
+          <p>جميع الحقوق محفوظة © 2026 نادين</p>
           <p>صُنع بـ ❤ لكل امرأة ليبية</p>
         </div>
       </div>

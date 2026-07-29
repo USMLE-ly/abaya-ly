@@ -44,7 +44,7 @@ function useIsMobile() {
 
 export default function LuminaHero() {
   const isMobile = useIsMobile();
-  const SLIDES = SLIDES_DESKTOP;
+  const SLIDES = isMobile ? SLIDES_MOBILE : SLIDES_DESKTOP;
   const [idx, setIdx] = useState(0);
   const [progress, setProgress] = useState(0);
   const idxRef = useRef(0);
@@ -172,4 +172,3 @@ export default function LuminaHero() {
 
 
 
-// redeploy

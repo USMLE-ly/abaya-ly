@@ -109,6 +109,32 @@ function JsonLdScript({ product }: { product: ProductType }) {
         reviewCount: product.reviewCount,
       } : undefined,
     };
+    // Set OG meta tags
+    document.title = product.seoName + " — نادين";
+    let ogDesc = document.querySelector('meta[name="description"]');
+    if (!ogDesc) { ogDesc = document.createElement("meta"); ogDesc.setAttribute("name", "description"); document.head.appendChild(ogDesc); }
+    ogDesc.setAttribute("content", product.subtitle);
+    const ogTags = [
+      { property: "og:title", content: product.seoName },
+      { property: "og:description", content: product.subtitle },
+      { property: "og:image", content: imageUrl },
+      { property: "og:url", content: productUrl },
+      { property: "og:type", content: "product" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: product.seoName },
+      { name: "twitter:description", content: product.subtitle },
+      { name: "twitter:image", content: imageUrl },
+    ];
+    for (const tag of ogTags) {
+      let el = document.querySelector(`meta[property="${tag.property}"]`) || document.querySelector(`meta[name="${tag.property}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        if (tag.property) el.setAttribute("property", tag.property);
+        else el.setAttribute("name", tag.name!);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", tag.content);
+    }
 
     const script = document.createElement("script");
     script.type = "application/ld+json";
@@ -129,6 +155,7 @@ export function Product() {
   const product = findProduct(id || "");
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [checkingSize, setCheckingSize] = useState<number | null>(null);
   const [sizeMessage, setSizeMessage] = useState('');
   const [sizeAvailable, setSizeAvailable] = useState(true);
@@ -349,6 +376,47 @@ export function Product() {
           </div>
         </div>
       </section>
+
+      {/* Size Guide Modal */}
+      {showSizeGuide && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+          style={{ background: "rgba(17,15,13,0.70)", backdropFilter: "blur(8px)" }}
+          onClick={() => setShowSizeGuide(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl overflow-hidden"
+            style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(24px)", border: "1px solid rgba(196,40,85,0.12)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-fg">دليل المقاسات</h3>
+                <button onClick={() => setShowSizeGuide(false)} className="text-fg-tertiary hover:text-fg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-right text-sm">
+                  <thead>
+                    <tr className="border-b border-line-subtle">
+                      <th className="py-2 pl-4 text-fg font-semibold">المقاس</th>
+                      <th className="py-2 pl-4 text-fg font-semibold">الصدر (سم)</th>
+                      <th className="py-2 pl-4 text-fg font-semibold">الخصر (سم)</th>
+                      <th className="py-2 text-fg font-semibold">الأرداف (سم)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-line-subtle"><td className="py-2 pl-4">S</td><td className="py-2 pl-4">86-91</td><td className="py-2 pl-4">66-71</td><td className="py-2">91-97</td></tr>
+                    <tr className="border-b border-line-subtle"><td className="py-2 pl-4">M</td><td className="py-2 pl-4">91-97</td><td className="py-2 pl-4">71-76</td><td className="py-2">97-102</td></tr>
+                    <tr className="border-b border-line-subtle"><td className="py-2 pl-4">L</td><td className="py-2 pl-4">97-102</td><td className="py-2 pl-4">76-81</td><td className="py-2">102-107</td></tr>
+                    <tr><td className="py-2 pl-4">XL</td><td className="py-2 pl-4">102-107</td><td className="py-2 pl-4">81-86</td><td className="py-2">107-112</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-[10px] text-fg-tertiary mt-4 leading-relaxed">مقاسات تقريبية — يرجى التواصل عبر واتساب للحصول على مقاسات دقيقة حسب طلبك.</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 2. TRUST ITEMS */}
       <section className="py-6">

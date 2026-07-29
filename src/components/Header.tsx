@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { products } from "@/data/products";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Search, ShoppingBag } from "lucide-react";
 import { Button, ThemeToggle } from "@/components/velar";
@@ -13,7 +14,28 @@ const navLinks = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const searchResults = searchQuery.trim()
+    ? products.filter(p =>
+        p.name.includes(searchQuery) ||
+        p.collection.includes(searchQuery) ||
+        p.model.includes(searchQuery) ||
+        p.tags.some(t => t.includes(searchQuery))
+      ).slice(0, 6)
+    : [];
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchResults.length > 0) {
+      navigate(`/product/${searchResults[0].id}`);
+      setSearchOpen(false);
+      setSearchQuery("");
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -81,7 +103,7 @@ export function Header() {
         {/* Icons — left (col 3) */}
         <div className="flex items-center gap-2">
           <ThemeToggle className="hidden md:inline-flex" />
-          <Button variant="ghost" iconOnly size="sm" aria-label="بحث">
+          <Button variant="ghost" iconOnly size="sm" aria-label="بحث" onClick={() => setSearchOpen(true)}>
             <Search size={18} />
           </Button>
           <Link to="/cart">
@@ -91,6 +113,73 @@ export function Header() {
           </Link>
         </div>
       </div>
+      {/* Search overlay */}
+      <AnimatePresence>
+        {searchOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-start justify-center pt-24 px-4"
+            style={{ background: "rgba(17,15,13,0.70)", backdropFilter: "blur(8px)" }}
+            onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="w-full max-w-lg rounded-2xl overflow-hidden"
+              style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(24px)", border: "1px solid rgba(196,40,85,0.12)" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <form onSubmit={handleSearch} className="relative">
+                <Search size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-fg-tertiary" />
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="ابحثي عن فستان..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-12 py-4 text-sm bg-transparent border-b border-line-subtle outline-none text-fg placeholder:text-fg-tertiary"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-fg-tertiary hover:text-fg"
+                  >
+                    <X size={16} />
+                  </button>
+                )}
+              </form>
+              {searchQuery && (
+                <div className="max-h-80 overflow-y-auto p-2">
+                  {searchResults.length === 0 ? (
+                    <p className="text-center text-sm text-fg-tertiary py-8">لا توجد نتائج</p>
+                  ) : (
+                    searchResults.map((p) => (
+                      <button
+                        key={p.id}
+                        onClick={() => { navigate(`/product/${p.id}`); setSearchOpen(false); setSearchQuery(""); }}
+                        className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-sunken transition-colors text-right"
+                      >
+                        <div className="w-10 h-13 rounded-lg overflow-hidden flex-shrink-0 bg-sunken">
+                          <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-semibold text-fg truncate">{p.name.split(" • ").slice(2).join(" • ")}</p>
+                          <p className="text-[10px] text-fg-tertiary">{p.price} د.ل</p>
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

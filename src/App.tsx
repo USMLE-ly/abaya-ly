@@ -14,6 +14,8 @@ import RefundPolicy from "@/pages/RefundPolicy";
 import TermsOfService from "@/pages/TermsOfService";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import DesignSystem from "@/pages/DesignSystem";
+import { NotFound } from "@/pages/NotFound";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 export default function App() {
   return (
@@ -35,10 +37,12 @@ export default function App() {
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/design-system" element={<DesignSystem />} />
+          <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />
       </div>
+            <WhatsAppButton />
     </BrowserRouter>
   );
 }

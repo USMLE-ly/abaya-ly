@@ -6,14 +6,25 @@ import { Button, Card } from "@/components/velar";
 
 interface CartItem { id: string; name: string; fabric: string; price: number; image: string; color: string; size: string; quantity: number; }
 
-const initialItems: CartItem[] = [
-  { id: "lumiere-white-polka-midi", name: "فستان السهرة الذهبية", fabric: "جورجيت إيطالي", price: 380, image: "/images/products/abaya-1.jpg", color: "ذهبي", size: "M", quantity: 1 },
-];
+const loadCart = (): CartItem[] => {
+  try {
+    const saved = localStorage.getItem("nadine-cart");
+    return saved ? JSON.parse(saved) : [];
+  } catch { return []; }
+};
 
 export function Cart() {
-  const [items, setItems] = useState(initialItems);
-  const updateQty = (id: string, delta: number) => setItems((prev) => prev.map((item) => item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item));
-  const remove = (id: string) => setItems((prev) => prev.filter((item) => item.id !== id));
+  const [items, setItems] = useState<CartItem[]>(loadCart);
+  const updateQty = (id: string, delta: number) => setItems((prev) => {
+    const next = prev.map((item) => item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item);
+    localStorage.setItem("nadine-cart", JSON.stringify(next));
+    return next;
+  });
+  const remove = (id: string) => setItems((prev) => {
+    const next = prev.filter((item) => item.id !== id);
+    localStorage.setItem("nadine-cart", JSON.stringify(next));
+    return next;
+  });
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (

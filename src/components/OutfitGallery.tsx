@@ -7,13 +7,18 @@ import { products } from "@/data/products";
 import { useNavigate } from "react-router-dom";
 
 const newOutfitIds = [
-  "olive-ruffle", "cream-silk", "white-beach", "red-velvet",
-  "white-lace", "night-velvet", "floral-sleeve", "black-lace", "mesh-geometric",
-  "gold-emb-1", "gold-emb-2", "gold-emb-3", "gold-emb-4", "gold-emb-5", "gold-emb-6",
-  "geo-gold-1", "geo-gold-2", "geo-gold-3", "geo-gold-4", "geo-gold-5", "geo-gold-6", "geo-gold-7",
-  "navy-tie-neck", "white-polka-dot", "olive-elegant",
-  "midnight-rose", "pearl-dream", "desert-gold", "moonlight-silver", "silk-cloud",
-  "velvet-burgundy", "ocean-breeze", "ivory-grace", "cherry-blossom", "obsidian-mist",
+  "lumiere-white-polka-midi",
+  "noir-navy-polka-belted",
+  "maison-gold-polka-belted",
+  "rouge-burgundy-polka-vneck",
+  "azure-sky-blue-polka-belted",
+  "lumiere-white-polka-off-shoulder",
+  "botanique-pink-polka-belted",
+  "lumiere-cream-polka-maxi",
+  "noir-black-polka-mandarin",
+  "rouge-burgundy-off-shoulder",
+  "noir-black-asymmetric-draped",
+  "botanique-pink-embroidered",
 ];
 
 export function OutfitGallery() {
