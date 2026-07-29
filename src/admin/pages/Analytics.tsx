@@ -26,7 +26,8 @@ import {
   Legend,
 } from "recharts";
 import { useOrders } from "../lib/metrics";
-import { ACard, AButton, ASelect, ASkeleton, StatCard } from "../components/ui";
+import { ACard, AButton, ASelect, ASkeleton } from "../components/ui";
+import { StatCard } from "../components/StatCard";
 import { STATUSES, fmtDate, type OrderStatus } from "../lib/types";
 
 const COLORS = ["#c42855", "#F5A524", "#4892FE", "#4F56D3", "#89D233", "#8F8F8F"];
