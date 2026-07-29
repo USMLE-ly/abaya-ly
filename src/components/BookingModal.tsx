@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { X, Check, Loader2, ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface BookingModalProps {
   open: boolean;
@@ -58,6 +59,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const [orderId, setOrderId] = useState("");
+  const [submittedPhone, setSubmittedPhone] = useState("");
 
   if (!open) return null;
 
@@ -116,6 +118,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
       if (!res.ok) throw new Error("فشل الإرسال");
 
       if (data.orderId) setOrderId(data.orderId);
+      setSubmittedPhone(phone.trim());
       setDone(true);
     } catch {
       setError("حدث خطأ، يرجى المحاولة مرة أخرى أو الاتصال بنا عبر واتساب");
@@ -294,18 +297,22 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
             </form>
           </>
         ) : (
-          /* Success state */
+          /* Success state — order number is now clickable */
           <div className="p-8 text-center">
             <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(196,40,85,0.1)" }}>
               <Check size={28} className="text-accent-brand" />
             </div>
             <h3 className="text-base font-bold text-fg mb-2">✅ تم استلام طلبك بنجاح!</h3>
             {orderId && (
-              <p className="text-sm font-semibold mb-2" style={{ color: "#c42855" }}>
-                رقم الطلب: {orderId}
-              </p>
+              <Link
+                to={`/track-order?phone=${encodeURIComponent(submittedPhone)}`}
+                className="inline-block text-sm font-semibold mb-2 transition-all hover:scale-105"
+                style={{ color: "#c42855" }}
+              >
+                رقم الطلب: {orderId} ← اضغط للتتبع
+              </Link>
             )}
-            <p className="text-sm text-fg-tertiary leading-relaxed">
+            <p className="text-sm text-fg-tertiary leading-relaxed mt-2">
               سيتم الاتصال بسادتكم خلال 24 ساعه لتأكيد الطلب
             </p>
             <button
