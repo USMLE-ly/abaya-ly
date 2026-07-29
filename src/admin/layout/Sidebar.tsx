@@ -8,15 +8,26 @@ import {
   Settings,
   LogOut,
   X,
+  Calendar,
+  ChevronDown,
+  Store,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { clearPassword } from "../lib/api";
 
-const NAV = [
+interface NavItem {
+  to: string;
+  label: string;
+  icon: any;
+  end?: boolean;
+  badge?: number;
+}
+
+const NAV: NavItem[] = [
   { to: "/admin", label: "لوحة القيادة", icon: LayoutDashboard, end: true },
-  { to: "/admin/orders", label: "الطلبات", icon: ShoppingBag },
+  { to: "/admin/orders", label: "الطلبات", icon: ShoppingBag, badge: 0 },
   { to: "/admin/products", label: "المنتجات", icon: Package },
   { to: "/admin/analytics", label: "التحليلات", icon: BarChart3 },
+  { to: "/admin/calendar", label: "تقويم الشحن", icon: Calendar },
   { to: "/admin/settings", label: "الإعدادات", icon: Settings },
 ];
 
@@ -30,7 +41,7 @@ export function Sidebar({
   pendingCount: number;
 }) {
   const navigate = useNavigate();
-  const [confirming, setConfirming] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
 
   const logout = () => {
     clearPassword();
@@ -39,137 +50,137 @@ export function Sidebar({
 
   return (
     <>
+      {/* Mobile overlay */}
       {open && (
         <div
-          className="fixed inset-0 z-40 lg:hidden admin-no-print"
-          style={{ background: "rgba(16,24,40,0.45)" }}
+          className="fixed inset-0 z-40 lg:hidden"
+          style={{ background: "rgba(16,24,40,0.5)" }}
           onClick={onClose}
         />
       )}
+
       <aside
-        className={cn(
-          "admin-no-print fixed lg:sticky top-0 z-50 h-screen shrink-0 flex flex-col transition-transform duration-300",
-          open ? "translate-x-0" : "translate-x-full lg:translate-x-0"
-        )}
+        className="fixed lg:sticky top-0 h-screen z-50 flex flex-col transition-all duration-300 overflow-hidden nd-sidebar"
         style={{
-          width: "var(--ad-sidebar-w)",
-          background: "var(--ad-sidebar)",
-          borderInlineStart: "1px solid var(--ad-border)",
+          width: open ? "var(--nd-sidebar-w)" : "0",
+          minWidth: open ? "var(--nd-sidebar-w)" : "0",
+          background: "var(--nd-white)",
+          borderLeft: "1px solid var(--nd-border)",
           insetInlineEnd: 0,
         }}
       >
         {/* Brand */}
-        <div className="flex items-center justify-between gap-2 px-6 h-[76px] shrink-0">
-          <div className="flex items-center gap-2.5">
+        <div className="flex items-center justify-between h-16 px-5 shrink-0 border-b" style={{ borderColor: "var(--nd-border)" }}>
+          <div className="flex items-center gap-3">
             <div
-              className="w-9 h-9 rounded-[10px] grid place-items-center text-white font-extrabold text-[15px]"
-              style={{ background: "var(--ad-brand)" }}
+              className="w-9 h-9 rounded-xl grid place-items-center text-white font-bold text-sm"
+              style={{ background: "var(--nd-primary-500)" }}
             >
               N
             </div>
-            <div className="leading-tight">
-              <p className="text-[17px] font-extrabold" style={{ color: "var(--ad-text)" }}>
-                Nadine
-              </p>
-              <p className="text-[11px]" style={{ color: "var(--ad-text-3)" }}>
-                لوحة الإدارة
-              </p>
+            <div>
+              <p className="text-sm font-bold" style={{ color: "var(--nd-text)" }}>نادين</p>
+              <p className="text-[10px]" style={{ color: "var(--nd-text-3)" }}>لوحة الإدارة</p>
             </div>
           </div>
-          <button
-            className="lg:hidden p-1.5 rounded-md"
-            onClick={onClose}
-            aria-label="إغلاق القائمة"
-            style={{ color: "var(--ad-text-3)" }}
-          >
+          <button onClick={onClose} className="lg:hidden p-1 rounded-lg" style={{ color: "var(--nd-text-3)" }}>
             <X size={18} />
           </button>
         </div>
 
-        <p
-          className="px-6 pb-2 text-[11px] font-bold tracking-widest"
-          style={{ color: "var(--ad-text-4)" }}
-        >
-          القائمة الرئيسية
-        </p>
-
-        <nav className="flex-1 overflow-y-auto px-3 pb-4 flex flex-col gap-1">
-          {NAV.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              onClick={onClose}
-              className={({ isActive }) =>
-                cn(
-                  "flex items-center gap-3 h-[46px] px-3.5 rounded-[var(--ad-r-md)] text-[14px] font-bold transition-colors"
-                )
-              }
-              style={({ isActive }) =>
-                isActive
-                  ? { background: "var(--ad-brand)", color: "#fff" }
-                  : { color: "var(--ad-text-2)" }
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  <item.icon size={19} />
-                  <span className="flex-1">{item.label}</span>
-                  {item.to === "/admin/orders" && pendingCount > 0 && (
-                    <span
-                      className="text-[11px] font-extrabold px-2 py-0.5 rounded-full tabular-nums"
-                      style={
-                        isActive
-                          ? { background: "rgba(255,255,255,0.24)", color: "#fff" }
-                          : { background: "var(--ad-brand-subtle)", color: "var(--ad-brand)" }
-                      }
-                    >
-                      {pendingCount}
-                    </span>
-                  )}
-                </>
-              )}
-            </NavLink>
-          ))}
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto p-3 space-y-1">
+          <p className="text-[10px] font-bold uppercase tracking-widest px-3 pb-2 pt-2" style={{ color: "var(--nd-text-3)" }}>
+            القائمة
+          </p>
+          {NAV.map((item) => {
+            const itemsWithBadge = [...NAV];
+            const navItem = { ...item };
+            if (navItem.to === "/admin/orders") navItem.badge = pendingCount;
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                onClick={onClose}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 h-11 px-3.5 rounded-xl text-[13px] font-bold transition-all duration-150 ${
+                    isActive ? "nd-nav-active" : ""
+                  }`
+                }
+                style={({ isActive }) => ({
+                  background: isActive ? "var(--nd-primary-500)" : "transparent",
+                  color: isActive ? "#fff" : "var(--nd-text-2)",
+                })}
+              >
+                <item.icon size={18} />
+                <span className="flex-1">{item.label}</span>
+                {item.badge !== undefined && item.badge > 0 && (
+                  <span
+                    className="text-[10px] font-extrabold px-2 py-0.5 rounded-full"
+                    style={{
+                      background: "rgba(255,255,255,0.2)",
+                      color: "#fff",
+                    }}
+                  >
+                    {item.badge}
+                  </span>
+                )}
+              </NavLink>
+            );
+          })}
         </nav>
 
-        <div className="px-3 pb-5">
-          {confirming ? (
+        {/* User */}
+        <div className="p-3 border-t shrink-0" style={{ borderColor: "var(--nd-border)" }}>
+          <div className="flex items-center gap-3 px-3.5 py-2">
             <div
-              className="p-3 rounded-[var(--ad-r-md)] flex flex-col gap-2"
-              style={{ background: "var(--ad-surface-2)" }}
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+              style={{ background: "var(--nd-primary-200)", color: "var(--nd-primary-500)" }}
             >
-              <p className="text-[13px]" style={{ color: "var(--ad-text-2)" }}>
-                تأكيد تسجيل الخروج؟
-              </p>
-              <div className="flex gap-2">
+              A
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[12px] font-bold truncate" style={{ color: "var(--nd-text)" }}>Admin</p>
+              <p className="text-[10px] truncate" style={{ color: "var(--nd-text-3)" }}>admin@nadine.ly</p>
+            </div>
+            <button
+              onClick={() => setConfirmLogout(true)}
+              className="p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+              style={{ color: "var(--nd-text-3)" }}
+            >
+              <LogOut size={15} />
+            </button>
+          </div>
+        </div>
+
+        {/* Logout confirmation */}
+        {confirmLogout && (
+          <div
+            className="absolute inset-0 z-10 flex items-center justify-center p-4"
+            style={{ background: "rgba(255,255,255,0.95)" }}
+          >
+            <div className="text-center">
+              <p className="text-sm font-bold mb-3" style={{ color: "var(--nd-text)" }}>تأكيد تسجيل الخروج؟</p>
+              <div className="flex gap-2 justify-center">
                 <button
                   onClick={logout}
-                  className="flex-1 h-9 rounded-[var(--ad-r-sm)] text-[13px] font-bold text-white"
-                  style={{ background: "var(--ad-brand)" }}
+                  className="px-5 py-2 rounded-xl text-xs font-bold text-white"
+                  style={{ background: "var(--nd-primary-500)" }}
                 >
                   خروج
                 </button>
                 <button
-                  onClick={() => setConfirming(false)}
-                  className="flex-1 h-9 rounded-[var(--ad-r-sm)] text-[13px] font-bold"
-                  style={{ background: "#fff", border: "1px solid var(--ad-border-2)", color: "var(--ad-text-2)" }}
+                  onClick={() => setConfirmLogout(false)}
+                  className="px-5 py-2 rounded-xl text-xs font-bold"
+                  style={{ background: "var(--nd-bg)", color: "var(--nd-text-2)", border: "1px solid var(--nd-border)" }}
                 >
                   إلغاء
                 </button>
               </div>
             </div>
-          ) : (
-            <button
-              onClick={() => setConfirming(true)}
-              className="w-full flex items-center gap-3 h-[46px] px-3.5 rounded-[var(--ad-r-md)] text-[14px] font-bold transition-colors"
-              style={{ color: "var(--ad-text-3)" }}
-            >
-              <LogOut size={19} />
-              تسجيل الخروج
-            </button>
-          )}
-        </div>
+          </div>
+        )}
       </aside>
     </>
   );
