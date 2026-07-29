@@ -40,8 +40,7 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-fg mb-4 text-sm">تواصلي معنا</h4>
             <ul className="space-y-2.5 text-sm text-fg-tertiary">
-              <li>طرابلس، ليبيا</li>
-              <li>+218 91 234 5678</li>
+              <li>بنغازي، ليبيا</li>
               <li><a href="mailto:info@nadine.luxor.ly" className="hover:text-accent-brand transition-colors">info@nadine.luxor.ly</a></li>
             </ul>
             <div className="flex gap-3 mt-4">
@@ -53,7 +52,6 @@ export function Footer() {
         </div>
         <div className="mt-12 pt-6 border-t border-line-subtle flex flex-col md:flex-row items-center justify-between text-xs text-fg-quaternary">
           <p>جميع الحقوق محفوظة © 2026 نادين</p>
-          <p>صُنع بـ ❤ لكل امرأة ليبية</p>
         </div>
       </div>
     </footer>
