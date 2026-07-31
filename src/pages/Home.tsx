@@ -55,6 +55,8 @@ function HomeContent() {
   return (
     <>
       <LuminaHero />
+      <TrustStrip />
+      <BestSellers />
       <ProductCarousel />
       <FeaturedCollection />
       <OutfitGallery />
