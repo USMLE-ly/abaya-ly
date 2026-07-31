@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { isAuthed } from "../lib/api";
+import { ADMIN_PATH } from "../lib/config";
 import { useOrders } from "../lib/metrics";
 import "@/admin/styles/tokens.css";
-import { ADMIN_PATH } from "../lib/config";
 
 export function AdminLayout() {
   const location = useLocation();
@@ -16,7 +16,7 @@ export function AdminLayout() {
   const orders = data ?? [];
 
   if (!isAuthed()) {
-    return <Navigate to="/dashboard-nadine-admin/login" replace state={{ from: location.pathname }} />;
+    return <Navigate to={`/${ADMIN_PATH}/login`} replace state={{ from: location.pathname }} />;
   }
 
   const pending = orders.filter((o) => o.status === "pending").length;

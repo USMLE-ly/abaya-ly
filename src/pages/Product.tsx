@@ -98,6 +98,9 @@ function getRelatedProducts(current: ProductType, max = 4): ProductType[] {
 
 // ── JSON-LD component ─────────────────────────────────────────────
 function JsonLdScript({ product }: { product: ProductType }) {
+  const stockMap = useStock();
+  const liveStock = stockMap[product.id] ?? product.stock ?? 0;
+
   useEffect(() => {
     const productUrl = `${SITE_URL}/product/${product.id}`;
     const imageUrl = product.images[0]?.startsWith("http")
@@ -119,7 +122,7 @@ function JsonLdScript({ product }: { product: ProductType }) {
         "@type": "Offer",
         price: product.price,
         priceCurrency: "LYD",
-        availability: "https://schema.org/InStock",
+        availability: liveStock > 0 ? "https://schema.org/InStock" : "https://schema.org/PreOrder",
         url: productUrl,
         seller: { "@type": "Brand", name: "Nadine" },
       },
@@ -164,7 +167,7 @@ function JsonLdScript({ product }: { product: ProductType }) {
     return () => {
       document.head.removeChild(script);
     };
-  }, [product]);
+  }, [product, liveStock]);
 
   return null;
 }

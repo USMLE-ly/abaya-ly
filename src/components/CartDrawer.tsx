@@ -31,7 +31,7 @@ export function CartDrawer() {
     refresh();
     const unsub = () => {};
     const onCart = () => refresh();
-    const onOpen = () => setOpen(true);
+    const onOpen = () => { setOpen(true); setBookingOpen(false); };
     window.addEventListener("nadine-cart", onCart);
     window.addEventListener(CART_DRAWER_EVENT, onOpen);
     return () => {
@@ -73,9 +73,9 @@ export function CartDrawer() {
         }),
       }
     : null;
-  const firstItem = items[0];
 
   return (
+    <>
     <AnimatePresence>
       {open && (
         <>
@@ -204,21 +204,19 @@ export function CartDrawer() {
               </>
             )}
           </motion.aside>
-
-          {firstItem && cartCtx && (
-            <BookingModal
-              open={bookingOpen}
-              onClose={() => setBookingOpen(false)}
-              productCode={cartCtx.codes}
-              productName={cartCtx.names}
-              colors={[{ name: firstItem.color || "غير محدد", hex: "transparent" }]}
-              sizes={[firstItem.size || "M"]}
-              cart={cartCtx}
-              onSuccess={() => setCart([])}
-            />
-          )}
         </>
       )}
     </AnimatePresence>
+    <BookingModal
+      open={bookingOpen}
+      onClose={() => setBookingOpen(false)}
+      productCode={cartCtx?.codes ?? ""}
+      productName={cartCtx?.names ?? ""}
+      colors={cartCtx?.items[0] ? [{ name: cartCtx.items[0].color || "غير محدد", hex: "transparent" }] : []}
+      sizes={cartCtx?.items[0] ? [cartCtx.items[0].size || "M"] : []}
+      cart={cartCtx}
+      onSuccess={() => setCart([])}
+    />
+    </>
   );
 }

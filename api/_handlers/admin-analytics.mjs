@@ -1,9 +1,14 @@
-import { cors, readItems, isAdmin } from "./shared.mjs";
+import { cors, createRateLimiter, clientIp, readItems, isAdmin } from "./shared.mjs";
+
+const rl = createRateLimiter();
 
 export default async function handler(req, res) {
   cors(req, res, { methods: "GET, OPTIONS", headers: "Content-Type, x-admin-password" });
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
+
+  const r = rl(clientIp(req));
+  if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
 
   if (!isAdmin(req)) return res.status(401).json({ error: "Unauthorized" });
 

@@ -4,6 +4,7 @@
 // which Vercel does not deploy as separate functions.
 import order from "./_handlers/order.mjs";
 import newsletter from "./_handlers/newsletter.mjs";
+import contact from "./_handlers/contact.mjs";
 import coupons from "./_handlers/coupons.mjs";
 import analytics from "./_handlers/analytics.mjs";
 import debugEc from "./_handlers/debug-ec.mjs";
@@ -46,6 +47,7 @@ export default async function handler(req, res) {
     switch (second) {
       case "order": return await order(req, res);
       case "newsletter": return await newsletter(req, res);
+      case "contact": return await contact(req, res);
       case "coupons": return await coupons(req, res);
       case "analytics": return await analytics(req, res);
       case "debug-ec": return await debugEc(req, res);

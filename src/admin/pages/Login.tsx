@@ -24,7 +24,7 @@ export default function AdminLogin() {
         return;
       }
       setPassword(password.trim());
-      navigate("/dashboard-nadine-admin", { replace: true });
+      navigate(`/${ADMIN_PATH}`, { replace: true });
     } catch {
       setError("تعذّر الاتصال بالخادم");
     } finally {

@@ -1,10 +1,15 @@
-import { cors, readItems, writeItem, isAdmin } from "./shared.mjs";
+import { cors, createRateLimiter, clientIp, readItems, writeItem, isAdmin } from "./shared.mjs";
+
+const rl = createRateLimiter();
 
 const STOCK_KEY = "stockLevels";
 
 export default async function handler(req, res) {
   cors(req, res, { methods: "GET, PUT, DELETE, OPTIONS", headers: "Content-Type, x-admin-password" });
   if (req.method === "OPTIONS") return res.status(200).end();
+
+  const r = rl(clientIp(req));
+  if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
 
   if (!isAdmin(req)) return res.status(401).json({ error: "Unauthorized" });
 

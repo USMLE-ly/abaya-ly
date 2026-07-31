@@ -46,11 +46,16 @@ export async function fetchOrders(): Promise<Order[]> {
 
 /** POST /api/update-status — existing production endpoint, payload unchanged. */
 export async function updateStatus(orderId: string, status: OrderStatus) {
+  const pw = getPassword();
   const res = await fetch("/api/update-status", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "x-admin-password": pw ?? "" },
     body: JSON.stringify({ orderId, status }),
   });
+  if (res.status === 401) {
+    clearPassword();
+    throw new Error("كلمة المرور غير صحيحة أو انتهت الجلسة");
+  }
   return jsonOrThrow(res);
 }
 

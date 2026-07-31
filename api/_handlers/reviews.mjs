@@ -1,6 +1,11 @@
-import { cors, readItems, writeItem, isAdmin, sanitize } from "./shared.mjs";
+import { cors, createRateLimiter, clientIp, readItems, writeItem, isAdmin, sanitize } from "./shared.mjs";
 
 const VALID_RATINGS = [1, 2, 3, 4, 5];
+
+// Reads: generous so product pages never throttle while browsing.
+// Writes: strict so a single visitor can't flood the reviews.
+const rlRead = createRateLimiter({ windowMs: 60_000, max: 120 });
+const rlWrite = createRateLimiter({ windowMs: 15 * 60_000, max: 5 });
 
 function sanitizeImage(url) {
   const clean = sanitize(String(url || "")).trim().slice(0, 500);
@@ -11,6 +16,9 @@ function sanitizeImage(url) {
 export default async function handler(req, res) {
   cors(req, res, { methods: "GET, POST, PUT, DELETE, OPTIONS", headers: "Content-Type, x-admin-password" });
   if (req.method === "OPTIONS") return res.status(200).end();
+
+  const r = req.method === "GET" ? rlRead(clientIp(req)) : rlWrite(clientIp(req));
+  if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
 
   const EC_URL = process.env.EDGE_CONFIG;
   if (!EC_URL) return res.status(200).json({ reviews: [] });

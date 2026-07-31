@@ -55,10 +55,10 @@ export function FrequentlyBoughtTogether({ product, partner }: { product: Produc
             ))}
           </div>
 
-          <ul className="flex-1 space-y-1.5 list-none p-0 m-0">
+          <ul className="flex-1 min-w-0 space-y-1.5 list-none p-0 m-0">
             {[product, partner].map((p) => (
               <li key={p.id} className="text-xs text-fg-secondary flex items-baseline justify-between gap-3">
-                <Link to={`/product/${p.id}`} className="truncate hover:text-accent-brand">{shortName(p.name)}</Link>
+                <Link to={`/product/${p.id}`} className="min-w-0 truncate hover:text-accent-brand">{shortName(p.name)}</Link>
                 <span className="font-semibold text-fg whitespace-nowrap">{p.price} د.ل</span>
               </li>
             ))}

@@ -1,8 +1,13 @@
-import { cors, readItems, writeItem, isAdmin } from "./shared.mjs";
+import { cors, createRateLimiter, clientIp, readItems, writeItem, isAdmin } from "./shared.mjs";
+
+const rl = createRateLimiter({ windowMs: 60_000, max: 60 });
 
 export default async function handler(req, res) {
   cors(req, res, { methods: "GET, POST, DELETE, OPTIONS", headers: "Content-Type, x-admin-password" });
   if (req.method === "OPTIONS") return res.status(200).end();
+
+  const r = rl(clientIp(req));
+  if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
 
   const EC_URL = process.env.EDGE_CONFIG;
   if (!EC_URL) return res.status(200).json({ coupons: [] });

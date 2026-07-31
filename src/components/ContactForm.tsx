@@ -1,11 +1,43 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Send, CheckCircle } from "lucide-react";
+import { Send, CheckCircle, Loader2 } from "lucide-react";
 import { Button, Input, Textarea } from "@/components/velar";
 
 export function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); setSubmitted(true); };
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    setSending(true);
+    setError("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: String(data.get("name") || "").trim(),
+          email: String(data.get("email") || "").trim(),
+          phone: String(data.get("phone") || "").trim(),
+          message: String(data.get("message") || "").trim(),
+        }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(body.error || "حدث خطأ، يرجى المحاولة لاحقاً");
+        return;
+      }
+      form.reset();
+      setSubmitted(true);
+    } catch {
+      setError("تعذر الاتصال بالخادم، يرجى المحاولة لاحقاً");
+    } finally {
+      setSending(false);
+    }
+  };
 
   return (
     <section className="py-16 md:py-24">
@@ -25,13 +57,14 @@ export function ContactForm() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 glass-card p-6 md:p-8" style={{ direction: "rtl" }}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input label="الاسم" required type="text" placeholder="" />
-              <Input label="البريد الإلكتروني" required type="email" placeholder="" />
+              <Input label="الاسم" required type="text" name="name" placeholder="اسمكِ الكريم" />
+              <Input label="البريد الإلكتروني" required type="email" name="email" placeholder="example@email.com" dir="ltr" />
             </div>
-            <Input label="رقم الهاتف" type="tel" placeholder="" />
-            <Textarea label="الرسالة" required rows={4} className="resize-none" />
-            <Button type="submit" variant="primary" block leadingIcon={<Send size={16} />}>
-              إرسال
+            <Input label="رقم الهاتف" type="tel" name="phone" placeholder="09XXXXXXXX" />
+            <Textarea label="الرسالة" required name="message" rows={4} className="resize-none" placeholder="كيف يمكننا مساعدتكِ؟" />
+            {error && <p className="text-xs text-status-danger">{error}</p>}
+            <Button type="submit" variant="primary" block leadingIcon={sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />} disabled={sending}>
+              {sending ? "جاري الإرسال..." : "إرسال"}
             </Button>
           </form>
         )}
