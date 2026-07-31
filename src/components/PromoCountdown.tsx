@@ -59,7 +59,7 @@ export function PromoCountdown({ label = "عرض اليوم — خصم 10% عل�
           <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-start">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-subtle px-3 py-1 text-[11px] uppercase tracking-[0.22em] font-semibold text-brand mb-3">
-                عرض محدود
+                DEBUG PROMO ACTIVE
               </span>
               <h2 className="font-display text-xl md:text-2xl font-bold text-fg mb-1">{label}</h2>
               <p className="text-xs text-fg-tertiary">استخدمي كود <span className="font-bold text-brand" dir="ltr">NADINE10</span> عند الحجز — ينتهي العداد أدناه</p>

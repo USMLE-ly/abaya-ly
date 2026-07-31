@@ -442,7 +442,7 @@ function ProductContent() {
             {/* Urgency + clickable discount */}
             <div className="mb-4 space-y-3">
               <UrgencyText />
-              <ClickableDiscount code="NADINE10" label="كوبون خصم 10% على طلبكِ" onReveal={(c) => setRevealedCoupon(c)} />
+              <ClickableDiscount code="NADINE10" label="DEBUG COUPON ACTIVE" onReveal={(c) => setRevealedCoupon(c)} />
             </div>
 
             {/* Booking — Shrine-style add to cart / pre-order when sold out */}
