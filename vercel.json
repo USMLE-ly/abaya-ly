@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/assets/:path*",
+      "destination": "/404.html",
+      "statusCode": 404
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/:path*",
