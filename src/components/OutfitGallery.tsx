@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ShoppingBag, Eye } from "lucide-react";
+import { WishlistButton } from "@/components/WishlistButton";
 import { products } from "@/data/products";
 import { useNavigate } from "react-router-dom";
 import { StaggerGrid, StaggerItem, Reveal } from "@/components/PageTransition";
@@ -116,6 +117,9 @@ export function OutfitGallery() {
                       {outfit.badge}
                     </div>
                   )}
+                  <div className="absolute top-3 left-3 z-10">
+                    <WishlistButton productId={outfit.id} size={14} className="shadow-md" />
+                  </div>
                 </div>
 
                 {/* Info — VELAR typography */}

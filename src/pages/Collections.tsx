@@ -7,6 +7,7 @@ import { Star, Eye, ShoppingBag, Search, SlidersHorizontal, X } from "lucide-rea
 import { Button } from "@/components/velar";
 import { Badge } from "@/components/velar";
 import { OptimizedImage } from "@/components/OptimizedImage";
+import { WishlistButton } from "@/components/WishlistButton";
 
 export function Collections() {
   return <PageTransition><CollectionsContent /></PageTransition>;
@@ -196,6 +197,9 @@ function CollectionsContent() {
                           {product.badge}
                         </div>
                       )}
+                      <div className="absolute top-3 left-3 z-10">
+                        <WishlistButton productId={product.id} size={14} className="shadow-md" />
+                      </div>
                     </div>
 
                     {/* Info */}

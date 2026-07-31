@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { OptimizedImage } from "@/components/OptimizedImage";
+import { WishlistButton } from "@/components/WishlistButton";
 import { Link } from "react-router-dom";
 import { products } from "@/data/products";
 
@@ -65,6 +66,10 @@ function InteractiveCard({ product, index = 0 }: { product: typeof products[numb
             {product.badge}
           </div>
         )}
+        {/* Wishlist button */}
+        <div className="absolute top-3 left-3 z-20">
+          <WishlistButton productId={product.id} size={14} className="shadow-md" />
+        </div>
 
         <div className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-end">
           {/* Stars — more subtle */}

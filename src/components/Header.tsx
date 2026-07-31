@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { products } from "@/data/products";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Search, ShoppingBag } from "lucide-react";
+import { Menu, X, Search, ShoppingBag, Heart } from "lucide-react";
+import { useWishlist } from "@/lib/wishlist";
 import { Button, ThemeToggle } from "@/components/velar";
 
 const navLinks = [
@@ -12,6 +13,25 @@ const navLinks = [
   { label: "عن نادين", href: "/about" },
   { label: "تواصلي معنا", href: "/contact" },
 ];
+
+function WishlistCountWrapper() {
+  const { ids } = useWishlist();
+  return (
+    <Link to="/wishlist" className="relative">
+      <Button variant="ghost" iconOnly size="sm" aria-label="المفضلة">
+        <Heart size={18} />
+      </Button>
+      {ids.length > 0 && (
+        <span
+          className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white"
+          style={{ background: "#c42855" }}
+        >
+          {ids.length > 9 ? "9+" : ids.length}
+        </span>
+      )}
+    </Link>
+  );
+}
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -113,6 +133,7 @@ export function Header() {
           <Button variant="ghost" iconOnly size="sm" aria-label="بحث" onClick={() => setSearchOpen(true)}>
             <Search size={18} />
           </Button>
+          <WishlistCountWrapper />
           <Link to="/cart">
             <Button variant="ghost" iconOnly size="sm" aria-label="سلة التسوق">
               <ShoppingBag size={18} />

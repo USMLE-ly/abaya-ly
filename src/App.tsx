@@ -14,6 +14,7 @@ const RefundPolicy = lazy(() => import("@/pages/RefundPolicy"));
 const TermsOfService = lazy(() => import("@/pages/TermsOfService"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const DesignSystem = lazy(() => import("@/pages/DesignSystem"));
+const Wishlist = lazy(() => import("@/pages/Wishlist").then(m => ({ default: m.Wishlist })));
 import { NotFound } from "@/pages/NotFound";
 import { lazy } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -63,6 +64,7 @@ export default function App() {
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/design-system" element={<DesignSystem />} />
+            <Route path="/wishlist" element={<Wishlist />} />
 
             {/* Decoy: /admin returns 404 to hide dashboard location */}
             <Route path="/admin" element={<AdminDecoy />} />
