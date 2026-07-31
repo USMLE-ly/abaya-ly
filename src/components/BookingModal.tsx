@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X, Check, Loader2, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -9,6 +9,7 @@ interface BookingModalProps {
   productName: string;
   colors: { name: string; hex: string }[];
   sizes: string[];
+  presetCoupon?: string;
 }
 
 const LIBYAN_CITIES = [
@@ -49,7 +50,7 @@ const LIBYAN_CITIES = [
   "أخرى",
 ];
 
-export function BookingModal({ open, onClose, productCode, productName, colors, sizes }: BookingModalProps) {
+export function BookingModal({ open, onClose, productCode, productName, colors, sizes, presetCoupon = "" }: BookingModalProps) {
   const [selectedColor, setSelectedColor] = useState(colors[0]?.name || "");
   const [selectedSize, setSelectedSize] = useState(sizes[0] || "");
   const [selectedCity, setSelectedCity] = useState("");
@@ -65,6 +66,15 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const [couponApplied, setCouponApplied] = useState<{ code: string; label: string; discount: number } | null>(null);
   const [couponChecking, setCouponChecking] = useState(false);
   const [couponError, setCouponError] = useState("");
+
+  // Auto-apply a code revealed by the clickable discount block.
+  useEffect(() => {
+    if (open && presetCoupon) {
+      setCouponCode(presetCoupon);
+      setCouponApplied(null);
+      setCouponError("");
+    }
+  }, [open, presetCoupon]);
 
 
   if (!open) return null;

@@ -4,6 +4,7 @@ import { products } from "@/data/products";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Search, ShoppingBag, Heart } from "lucide-react";
 import { useWishlist } from "@/lib/wishlist";
+import { openCartDrawer } from "@/components/CartDrawer";
 import { Button, ThemeToggle } from "@/components/velar";
 
 const navLinks = [
@@ -80,10 +81,13 @@ function CartCountWrapper() {
   }, []);
 
   return (
-    <Link to="/cart" className="relative">
-      <Button variant="ghost" iconOnly size="sm" aria-label="سلة التسوق">
-        <ShoppingBag size={18} />
-      </Button>
+    <button
+      type="button"
+      onClick={openCartDrawer}
+      aria-label="سلة التسوق"
+      className="relative inline-flex h-8 w-8 items-center justify-center rounded-md text-fg transition-all duration-150 hover:bg-sunken active:bg-cotton-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+    >
+      <ShoppingBag size={18} />
       {count > 0 && (
         <span
           className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white"
@@ -92,7 +96,7 @@ function CartCountWrapper() {
           {count > 9 ? "9+" : count}
         </span>
       )}
-    </Link>
+    </button>
   );
 }
 

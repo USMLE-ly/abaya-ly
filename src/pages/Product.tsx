@@ -21,6 +21,8 @@ import { StockIndicator } from "@/components/StockIndicator";
 import { FrequentlyBoughtTogether, CompleteTheLook } from "@/components/CompleteTheLook";
 import { trackViewItem } from "@/lib/analytics";
 import { useStock } from "@/lib/useStock";
+import { addToCart } from "@/lib/cart";
+import { openCartDrawer } from "@/components/CartDrawer";
 
 const SITE_URL = "https://nadine.luxor.ly";
 
@@ -179,8 +181,24 @@ function ProductContent() {
   const [selectedSize, setSelectedSize] = useState(0);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
+  const [revealedCoupon, setRevealedCoupon] = useState("");
   const [checkingSize, setCheckingSize] = useState<number | null>(null);
   const [sizeMessage, setSizeMessage] = useState('');
+
+  const handleAddToCart = () => {
+    if (!product) return;
+    addToCart({
+      id: product.id,
+      name: product.name,
+      fabric: product.fabric || "",
+      price: product.price,
+      image: product.images[0],
+      color: primaryColor.name,
+      size: product.sizes[selectedSize] || product.sizes[0] || "M",
+      quantity: 1,
+    });
+    openCartDrawer();
+  };
   const [sizeAvailable, setSizeAvailable] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -421,14 +439,14 @@ function ProductContent() {
             {/* Urgency + clickable discount */}
             <div className="mb-4 space-y-3">
               <UrgencyText />
-              <ClickableDiscount code="NADINE10" label="كوبون خصم 10% على طلبكِ" />
+              <ClickableDiscount code="NADINE10" label="كوبون خصم 10% على طلبكِ" onReveal={(c) => setRevealedCoupon(c)} />
             </div>
 
             {/* Booking — Shrine-style add to cart */}
             <AddToCartButton
               price={product.price}
               disabled={(stockMap[product.id] ?? product.stock) === 0}
-              onClick={() => setShowBooking(true)}
+              onClick={handleAddToCart}
               className="mb-3"
             />
             {/* Payment Method */}
@@ -442,7 +460,8 @@ function ProductContent() {
       {/* 2. Booking Modal */}
       <BookingModal
         open={showBooking}
-        onClose={() => setShowBooking(false)}
+        onClose={() => { setShowBooking(false); setRevealedCoupon(""); }}
+        presetCoupon={revealedCoupon}
         productCode={product.code}
         productName={product.name.split(" • ").slice(2).join(" • ") ?? product.name}
         colors={product.colors}

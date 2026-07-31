@@ -11,6 +11,7 @@ import { Product } from "@/pages/Product";
 import { NotFound } from "@/pages/NotFound";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { CartDrawer } from "@/components/CartDrawer";
 import { CookieConsent } from "@/components/CookieConsent";
 import { ADMIN_PATH } from "@/admin/lib/config";
 
@@ -119,6 +120,7 @@ export default function App() {
       </div>
             <WhatsAppButton />
             <ScrollToTop />
+            <CartDrawer />
             <CookieConsent />
             {!isAdmin && <PromoPopups />}
       </BrowserRouter>

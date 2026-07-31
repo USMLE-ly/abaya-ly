@@ -18,6 +18,7 @@ import { InstaStories } from "@/components/InstaStories";
 import { TickerMarquee } from "@/components/TickerMarquee";
 import { FashionVideo } from "@/components/FashionVideo";
 import { Testimonials } from "@/components/Testimonials";
+import { PromoCountdown } from "@/components/PromoCountdown";
 
 const faqs = [
   { q: "كيف يمكنني طلب فستان؟", a: "يمكنكِ تصفح المجموعات واختيار الفستان التي تفضلينها، ثم إضافتها إلى سلة التسوق وإتمام الطلب. يمكنكِ أيضًا التواصل معنا عبر الواتساب." },
@@ -62,6 +63,7 @@ function HomeContent() {
     <>
       <LuminaHero />
       <TickerMarquee />
+      <PromoCountdown />
       <TrustStrip />
       <BestSellers />
       <ProductCarousel />

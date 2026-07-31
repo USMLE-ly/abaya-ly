@@ -4,10 +4,11 @@ import { Ticket, Check, Copy } from "lucide-react";
 interface Props {
   code: string;
   label?: string;
+  onReveal?: (code: string) => void;
 }
 
 /** Shrine-style clickable discount: tap to reveal + copy the code. */
-export function ClickableDiscount({ code, label = "كوبون خصم خاص بكِ" }: Props) {
+export function ClickableDiscount({ code, label = "كوبون خصم خاص بكِ", onReveal }: Props) {
   const [copied, setCopied] = useState(false);
 
   const handleClick = async () => {
@@ -17,6 +18,7 @@ export function ClickableDiscount({ code, label = "كوبون خصم خاص بك
       /* clipboard unavailable — still show success state */
     }
     setCopied(true);
+    onReveal?.(code);
     setTimeout(() => setCopied(false), 2500);
   };
 
