@@ -48,11 +48,32 @@ function AdminDecoy() {
 
 const queryClient = new QueryClient();
 
+/** Fires GA4 page_view on every SPA route change + scroll-depth tracking. */
+function AnalyticsTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    initAnalytics();
+    return startScrollDepthTracking();
+  }, []);
+
+  useEffect(() => {
+    trackPageView(location.pathname + location.search);
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+  }, [location.pathname, location.search]);
+
+  return null;
+}
+
 export default function App() {
+  const isAdmin = typeof window !== "undefined" && window.location.pathname.includes(ADMIN_PATH);
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+      <AnalyticsTracker />
       <div style={{ width: "100%", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        {!isAdmin && <AnnouncementBar />}
         <Header />
         <main style={{ flex: "1 1 auto", width: "100%" }}>
           <Routes>
