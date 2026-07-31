@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Sparkles, Tag, ShoppingBag } from "lucide-react";
 import { BookingModal } from "@/components/BookingModal";
+import { ImageLightbox } from "@/components/ImageLightbox";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 import { findProduct, products, Product as ProductType } from "@/data/products";
@@ -168,6 +169,8 @@ function ProductContent() {
   const [sizeMessage, setSizeMessage] = useState('');
   const [sizeAvailable, setSizeAvailable] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   if (!product) {
     return (
@@ -225,7 +228,12 @@ function ProductContent() {
             ) : (
               <div className="flex gap-3">
                 <div className="flex-1 relative aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0">
-                  <img src={product.images[activeImage]} alt={product.name} className="w-full h-full object-cover" />
+                  <OptimizedImage
+              src={product.images[activeImage]}
+              alt={product.name}
+              className="w-full h-full cursor-zoom-in"
+              onClick={() => { setLightboxIndex(activeImage); setLightboxOpen(true); }}
+            />
                   {product.badge && (
                     <Badge tone="brand" className="absolute top-4 right-4">{product.badge}</Badge>
                   )}
@@ -239,7 +247,11 @@ function ProductContent() {
                         i === activeImage ? "border-primary" : "border-line-subtle hover:border-line-default"
                       }`}
                     >
-                      <img src={src} alt={`${product.name} ${i + 1}`} className="w-full h-full object-contain" />
+                      <OptimizedImage
+                      src={src}
+                      alt={`${product.name} ${i + 1}`}
+                      className="w-full h-full"
+                    />
                     </button>
                   ))}
                 </div>
@@ -496,6 +508,15 @@ function ProductContent() {
           </div>
         </section>
       )}
+
+      {/* Image lightbox */}
+      <ImageLightbox
+        images={product.images}
+        initialIndex={lightboxIndex}
+        open={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        productName={product.name}
+      />
     </div>
   );
 }

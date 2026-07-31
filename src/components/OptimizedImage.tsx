@@ -8,13 +8,12 @@ interface Props {
   decoding?: "async" | "sync" | "auto";
   fallback?: string;
   onLoad?: () => void;
+  onClick?: () => void;
   style?: React.CSSProperties;
 }
 
 /**
  * OptimizedImage — renders <picture> with WebP + original fallback.
- * Converts e.g. /images/hero/abaya-gold-1.jpg → /images/hero/abaya-gold-1.webp
- * Falls back to the original .jpg/.png if WebP is not supported.
  */
 export function OptimizedImage({
   src,
@@ -24,16 +23,16 @@ export function OptimizedImage({
   decoding = "async",
   fallback,
   onLoad,
+  onClick,
   style,
 }: Props) {
   const [loaded, setLoaded] = useState(false);
 
-  // Derive WebP path from original
   const webpSrc = src.replace(/\.(jpg|jpeg|png)$/i, ".webp");
   const actualFallback = fallback || src;
 
   return (
-    <picture className={className} style={style}>
+    <picture className={className} style={style} onClick={onClick}>
       <source srcSet={webpSrc} type="image/webp" />
       <img
         src={actualFallback}
