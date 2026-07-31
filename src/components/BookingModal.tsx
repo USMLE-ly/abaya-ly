@@ -61,7 +61,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const [orderId, setOrderId] = useState("");
   const [submittedPhone, setSubmittedPhone] = useState("");
   const [whatsappConsent, setWhatsappConsent] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"cod" | "transfer" | "card">("cod");
+
 
   if (!open) return null;
 
@@ -113,7 +113,6 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
           location: locationValue,
           phone: phone.trim(),
           whatsappConsent,
-          paymentMethod,
         }),
       });
 
@@ -274,53 +273,6 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               </div>
 
               {/* Error */}
-              {/* Payment method */}
-              <div>
-                <label className="text-[11px] font-semibold text-fg-tertiary block mb-2">
-                  طريقة الدفع <span className="text-status-danger">*</span>
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { id: "cod", label: "عند الاستلام", icon: "💵" },
-                    { id: "transfer", label: "حوالة بنكية", icon: "🏦" },
-                    { id: "card", label: "بطاقة", icon: "💳" },
-                  ].map((opt) => (
-                    <button
-                      key={opt.id}
-                      type="button"
-                      onClick={() => setPaymentMethod(opt.id as any)}
-                      className={`py-2.5 rounded-xl text-[11px] font-semibold transition-all duration-200 border ${
-                        paymentMethod === opt.id
-                          ? "text-white border-transparent"
-                          : "bg-white/50 border-line-subtle hover:border-accent-brand/40"
-                      }`}
-                      style={paymentMethod === opt.id ? { background: "linear-gradient(135deg, #e63d6a, #c42855)" } : undefined}
-                    >
-                      <span className="block text-base mb-0.5">{opt.icon}</span>
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Bank transfer details */}
-                {paymentMethod === "transfer" && (
-                  <div className="mt-2 p-3 rounded-xl text-[11px] leading-relaxed" style={{ background: "rgba(196,40,85,0.06)", border: "1px solid rgba(196,40,85,0.12)" }}>
-                    <p className="font-bold text-fg mb-1">بيانات الحوالة البنكية:</p>
-                    <p className="text-fg-tertiary">اسم الحساب: نادين</p>
-                    <p className="text-fg-tertiary">رقم الحساب: <span dir="ltr" className="font-mono text-fg">0000-0000-0000-0000</span></p>
-                    <p className="text-fg-tertiary">المصرف: مصرف التجارة والتنمية</p>
-                    <p className="text-[10px] text-fg-tertiary mt-1">* بعد التحويل يرجى إرسال صورة الإيصال عبر واتساب لتأكيد الطلب</p>
-                  </div>
-                )}
-
-                {/* Card payment note */}
-                {paymentMethod === "card" && (
-                  <div className="mt-2 p-3 rounded-xl text-[11px] leading-relaxed" style={{ background: "rgba(196,40,85,0.06)", border: "1px solid rgba(196,40,85,0.12)" }}>
-                    <p className="text-fg-tertiary">💳 سيتم إرسال رابط الدفع الآمن إلى هاتفك بعد تأكيد الطلب</p>
-                  </div>
-                )}
-              </div>
-
               {/* WhatsApp consent */}
               <div className="flex items-start gap-2">
                 <input
@@ -357,7 +309,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               </button>
 
               <p className="text-[10px] text-fg-tertiary text-center leading-relaxed">
-                {paymentMethod === "cod" ? "الدفع عند الاستلام" : paymentMethod === "transfer" ? "حوالة بنكية" : "بطاقة"} • سيتم تأكيد الطلب عبر الاتصال الهاتفي
+                الدفع عند الاستلام • سيتم تأكيد الطلب عبر الاتصال الهاتفي
               </p>
             </form>
           </>
@@ -382,16 +334,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
             <p className="text-sm text-fg-tertiary leading-relaxed mt-2">
               سيتم الاتصال بسادتكم خلال 24 ساعة لتأكيد الطلب
             </p>
-            {paymentMethod === "transfer" && (
-              <p className="text-xs text-fg-tertiary mt-2 px-4 py-2 rounded-lg inline-block" style={{ background: "rgba(196,40,85,0.06)" }}>
-                🏦 يرجى إرسال إيصال الحوالة البنكية عبر واتساب لتأكيد الطلب
-              </p>
-            )}
-            {paymentMethod === "card" && (
-              <p className="text-xs text-fg-tertiary mt-2 px-4 py-2 rounded-lg inline-block" style={{ background: "rgba(196,40,85,0.06)" }}>
-                💳 سيصلك رابط الدفع الآمن على هاتفك
-              </p>
-            )}
+
             <button
               onClick={onClose}
               className="mt-6 px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-300 hover:scale-105"

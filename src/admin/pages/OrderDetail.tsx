@@ -269,11 +269,7 @@ export default function OrderDetail() {
                 { label: "رقم الهاتف", value: order.phone, ltr: true },
                 { label: "تاريخ الإنشاء", value: fmtDateTime(order.createdAt) },
                 { label: "آخر تحديث", value: fmtDateTime(order.updatedAt) },
-                {
-                  label: "طريقة الدفع",
-                  value: order.paymentMethod === "transfer" ? "حوالة بنكية 🏦" :
-                          order.paymentMethod === "card" ? "بطاقة 💳" : "عند الاستلام 💵",
-                },
+                { label: "طريقة الدفع", value: "عند الاستلام 💵" },
                 { label: "إشعار واتساب", value: order.whatsappConsent ? "✅ مفعّل" : "❌ غير مفعّل" },
               ].map((f) => (
                 <div key={f.label}>

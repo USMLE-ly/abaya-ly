@@ -297,8 +297,7 @@ function TrackOrderContent() {
                 <div className="flex items-center justify-between">
                   <p className="text-[12px] font-bold text-fg">طريقة الدفع</p>
                   <span className="text-[12px] font-semibold text-fg-secondary">
-                    {order.paymentMethod === "transfer" ? "حوالة بنكية 🏦" :
-                     order.paymentMethod === "card" ? "بطاقة 💳" : "عند الاستلام 💵"}
+                    عند الاستلام 💵
                   </span>
                 </div>
               </div>
