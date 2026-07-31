@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Sparkles, Tag, Ruler, Clock } from "lucide-react";
+import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Tag, Ruler, Clock } from "lucide-react";
 import { BookingModal } from "@/components/BookingModal";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { ProductShippingEstimate } from "@/components/ProductShippingEstimate";
@@ -310,7 +310,6 @@ function ProductContent() {
             {/* ── Premium Typographic Hierarchy ── */}
             <div className="mb-4">
               <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] font-semibold text-accent-brand mb-2">
-                <Sparkles size={12} className="text-accent-brand/60" />
                 <span>{product.collection}</span>
                 <span className="text-fg-tertiary/40">•</span>
                 <span className="text-fg-tertiary">{product.edition}</span>
@@ -409,7 +408,6 @@ function ProductContent() {
             {product.highlights && product.highlights.length > 0 && (
               <div className="mb-6">
                 <p className="text-xs font-medium text-fg-secondary mb-3 flex items-center gap-1.5">
-                  <Sparkles size={12} className="text-accent-brand/60" />
                   مميزات التصميم
                 </p>
                 <ul className="space-y-2">

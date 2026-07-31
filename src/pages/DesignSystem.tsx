@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import { Badge, Tag, Alert, Card, Button, Input, Textarea, Select, Checkbox, Radio, Switch, Avatar, Divider, Progress, Accordion, Tabs, Tooltip, Chip, Spinner } from "@/components/velar";
-import { Sparkles } from "lucide-react";
 import { usePageMeta } from "@/lib/usePageMeta";
 
 const RAMPS = ["strawberry","bubblegum","cotton","lavender","lemon","mint","peach","sky"] as const;
@@ -64,7 +63,7 @@ export default function DesignSystem() {
               <Button size="lg">Large</Button>
               <Button loading>Loading</Button>
               <Button disabled>Disabled</Button>
-              <Button leadingIcon={<Sparkles size={14} />}>With icon</Button>
+              <Button>With icon</Button>
             </div>
           </Card>
         </section>

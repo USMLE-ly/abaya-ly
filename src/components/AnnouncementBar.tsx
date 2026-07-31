@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { X, Truck, Sparkles, ShoppingBag } from "lucide-react";
+import { X, Truck, Banknote, ShoppingBag } from "lucide-react";
 import { cartCount, subscribeToCart } from "@/lib/cart";
 import { trackCta } from "@/lib/analytics";
 import {
@@ -12,7 +12,7 @@ import {
 
 const messages = [
   { icon: Truck, text: "شحن مجاني لجميع مدن ليبيا · التوصيل خلال 3-5 أيام", to: "/shipping-policy" },
-  { icon: Sparkles, text: "الدفع عند الاستلام · إرجاع سهل خلال 7 أيام", to: "/refund-policy" },
+  { icon: Banknote, text: "الدفع عند الاستلام · إرجاع سهل خلال 7 أيام", to: "/refund-policy" },
 ];
 
 export function AnnouncementBar() {

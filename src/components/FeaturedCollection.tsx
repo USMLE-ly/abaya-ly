@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { products, brandCollections } from "@/data/products";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
@@ -38,7 +38,6 @@ export function FeaturedCollection() {
         <Reveal>
           <div className="text-center mb-10 md:mb-12">
             <p className="flex items-center justify-center gap-1.5 text-[11px] font-bold tracking-widest uppercase mb-3" style={{ color: "#c42855" }}>
-              <Sparkles size={13} />
               المجموعة المميزة • إصدار 2026
             </p>
             <h2 className="font-display text-3xl md:text-5xl font-bold text-fg">

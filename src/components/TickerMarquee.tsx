@@ -1,5 +1,3 @@
-import { Sparkles } from "lucide-react";
-
 const PHRASES = [
   "توصيل مجاني لجميع مدن ليبيا",
   "الدفع عند الاستلام",
@@ -19,7 +17,6 @@ export function TickerMarquee() {
       <div className="flex w-max animate-[nadineTicker_28s_linear_infinite]" dir="rtl">
         {row.map((phrase, i) => (
           <span key={i} className="flex items-center gap-3 px-6 text-xs font-bold tracking-wide text-brand whitespace-nowrap">
-            <Sparkles size={12} />
             {phrase}
           </span>
         ))}
