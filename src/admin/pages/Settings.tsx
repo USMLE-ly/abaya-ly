@@ -18,18 +18,23 @@ import {
   Lock,
   Eye,
   EyeOff,
+  Tag,
+  Trash2,
+  Plus,
 } from "lucide-react";
 import { fetchSettings, saveSettings } from "../lib/api";
-import { ACard, AButton, AInput, ASkeleton } from "../components/ui";
+import { ACard, AButton, AInput, ASelect, ASkeleton } from "../components/ui";
 
-type Tab = "general" | "notifications" | "account" | "security";
+type Tab = "general" | "notifications" | "account" | "security" | "coupons";
 
 const TABS: { id: Tab; label: string; icon: any }[] = [
   { id: "general", label: "عام", icon: Store },
   { id: "notifications", label: "الإشعارات", icon: Bell },
   { id: "account", label: "الحساب", icon: User },
   { id: "security", label: "الأمان", icon: Shield },
+  { id: "coupons", label: "أكواد الخصم", icon: Tag },
 ];
+
 
 interface StoreSettings {
   storeName: string;
@@ -72,6 +77,12 @@ export default function Settings() {
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
   const [showPw, setShowPw] = useState(false);
+  const [coupons, setCoupons] = useState<any[]>([]);
+  const [newCouponCode, setNewCouponCode] = useState("");
+  const [newCouponType, setNewCouponType] = useState<"percent" | "fixed">("percent");
+  const [newCouponValue, setNewCouponValue] = useState("");
+  const [newCouponLabel, setNewCouponLabel] = useState("");
+  const [couponMsg, setCouponMsg] = useState("");
   const [pwChanged, setPwChanged] = useState(false);
 
   // Notifications tab
@@ -87,6 +98,53 @@ export default function Settings() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  // Load coupons
+  useEffect(() => {
+    const pw = sessionStorage.getItem("nadine_admin_pw") || "";
+    fetch("/api/coupons", { headers: { "x-admin-password": pw } })
+      .then((r) => r.json())
+      .then((d) => setCoupons(d.coupons || []))
+      .catch(() => {});
+  }, []);
+
+  const handleCreateCoupon = async () => {
+    if (!newCouponCode.trim() || !Number(newCouponValue)) return;
+    try {
+      const pw = sessionStorage.getItem("nadine_admin_pw") || "";
+      const res = await fetch("/api/coupons", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-password": pw },
+        body: JSON.stringify({
+          code: newCouponCode.trim(),
+          type: newCouponType,
+          value: Number(newCouponValue),
+          label: newCouponLabel.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "فشل الإنشاء");
+      setCoupons((prev) => [...prev, data.coupon]);
+      setNewCouponCode(""); setNewCouponValue(""); setNewCouponLabel("");
+      setCouponMsg("تم إنشاء الكود بنجاح");
+      setTimeout(() => setCouponMsg(""), 3000);
+    } catch (err: any) {
+      setCouponMsg(err.message || "فشل الإنشاء");
+    }
+  };
+
+  const handleDeleteCoupon = async (code: string) => {
+    try {
+      const pw = sessionStorage.getItem("nadine_admin_pw") || "";
+      const res = await fetch("/api/coupons", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", "x-admin-password": pw },
+        body: JSON.stringify({ code }),
+      });
+      if (!res.ok) throw new Error("فشل الحذف");
+      setCoupons((prev) => prev.filter((c) => c.code !== code));
+    } catch { /* ignore */ }
+  };
 
   const update = (key: keyof StoreSettings, value: string) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
@@ -410,6 +468,75 @@ export default function Settings() {
               <p>📋 يتم تسجيل جميع العمليات الحساسة</p>
               <p>⏱️ timeout الجلسة: 24 ساعة</p>
             </div>
+          </ACard>
+        </div>
+      )}
+
+      {/* ── COUPONS TAB ── */}
+      {tab === "coupons" && (
+        <div className="flex flex-col gap-5">
+          <ACard className="p-5 sm:p-6">
+            <h3 className="text-[15px] font-extrabold mb-4 flex items-center gap-2" style={{ color: "var(--nd-text)" }}>
+              <Tag size={16} /> إنشاء كود خصم جديد
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <p className="text-[12px] font-bold mb-1.5" style={{ color: "var(--nd-text-4)" }}>الكود</p>
+                <AInput value={newCouponCode} onChange={(e: any) => setNewCouponCode(e.target.value)} placeholder="NADINE10" style={{ direction: "ltr" } as any} />
+              </div>
+              <div>
+                <p className="text-[12px] font-bold mb-1.5" style={{ color: "var(--nd-text-4)" }}>النوع</p>
+                <ASelect value={newCouponType} onChange={(e: any) => setNewCouponType(e.target.value)}>
+                  <option value="percent">نسبة %</option>
+                  <option value="fixed">مبلغ ثابت</option>
+                </ASelect>
+              </div>
+              <div>
+                <p className="text-[12px] font-bold mb-1.5" style={{ color: "var(--nd-text-4)" }}>القيمة</p>
+                <AInput type="number" value={newCouponValue} onChange={(e: any) => setNewCouponValue(e.target.value)} placeholder={newCouponType === "percent" ? "10" : "50"} style={{ direction: "ltr" } as any} />
+              </div>
+              <div>
+                <p className="text-[12px] font-bold mb-1.5" style={{ color: "var(--nd-text-4)" }}>الوصف (اختياري)</p>
+                <AInput value={newCouponLabel} onChange={(e: any) => setNewCouponLabel(e.target.value)} placeholder="خصم 10% على جميع الفساتين" />
+              </div>
+            </div>
+            {couponMsg && <p className="text-[12px] mt-3 font-bold" style={{ color: couponMsg.includes("فشل") ? "#dc2626" : "#16a34a" }}>{couponMsg}</p>}
+            <div className="mt-4 flex justify-end">
+              <AButton variant="solid" size="md" icon={<Plus size={15} />} onClick={handleCreateCoupon}>
+                إنشاء الكود
+              </AButton>
+            </div>
+          </ACard>
+
+          <ACard className="p-5 sm:p-6">
+            <h3 className="text-[15px] font-extrabold mb-4 flex items-center gap-2" style={{ color: "var(--nd-text)" }}>
+              <Tag size={16} /> الأكواد الحالية ({coupons.length})
+            </h3>
+            {coupons.length === 0 ? (
+              <p className="text-[13px]" style={{ color: "var(--nd-text-3)" }}>لا توجد أكواد خصم بعد — أنشئ أول كود من الأعلى</p>
+            ) : (
+              <div className="space-y-2">
+                {coupons.map((c) => (
+                  <div key={c.code} className="flex items-center justify-between p-3 rounded-xl" style={{ background: "var(--nd-bg)" }}>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[13px] font-bold font-mono" style={{ color: "var(--nd-primary-500)", direction: "ltr" }}>{c.code}</span>
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "var(--nd-primary-100)", color: "var(--nd-primary-600)" }}>
+                          {c.type === "percent" ? `${c.value}%` : `${c.value} د.ل`}
+                        </span>
+                      </div>
+                      {c.label && <p className="text-[11px] mt-0.5" style={{ color: "var(--nd-text-3)" }}>{c.label}</p>}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px]" style={{ color: "var(--nd-text-3)" }}>استخدام: {c.usedCount || 0}{c.maxUses ? `/${c.maxUses}` : ""}</span>
+                      <button onClick={() => handleDeleteCoupon(c.code)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors" style={{ color: "#dc2626" }}>
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </ACard>
         </div>
       )}

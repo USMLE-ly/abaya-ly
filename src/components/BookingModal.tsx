@@ -61,6 +61,10 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const [orderId, setOrderId] = useState("");
   const [submittedPhone, setSubmittedPhone] = useState("");
   const [whatsappConsent, setWhatsappConsent] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [couponApplied, setCouponApplied] = useState<{ code: string; label: string; discount: number } | null>(null);
+  const [couponChecking, setCouponChecking] = useState(false);
+  const [couponError, setCouponError] = useState("");
 
 
   if (!open) return null;
@@ -113,6 +117,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
           location: locationValue,
           phone: phone.trim(),
           whatsappConsent,
+          couponCode: couponApplied?.code || "",
         }),
       });
 
@@ -273,6 +278,58 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               </div>
 
               {/* Error */}
+              {/* Coupon */}
+              <div>
+                <label className="text-[11px] font-semibold text-fg-tertiary block mb-1">
+                  كود الخصم (اختياري)
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponCode}
+                    onChange={(e) => { setCouponCode(e.target.value); setCouponApplied(null); setCouponError(""); }}
+                    placeholder="أدخلي كود الخصم"
+                    className="flex-1 px-4 py-2.5 text-sm rounded-xl outline-none transition-colors text-center"
+                    style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(196,40,85,0.12)" }}
+                    dir="ltr"
+                  />
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!couponCode.trim() || couponChecking) return;
+                      setCouponChecking(true);
+                      setCouponError("");
+                      try {
+                        const res = await fetch(`/api/coupons?code=${encodeURIComponent(couponCode.trim())}`);
+                        const data = await res.json();
+                        if (!res.ok) throw new Error(data.error || "كود غير صالح");
+                        setCouponApplied({
+                          code: data.coupon.code,
+                          label: data.coupon.label || "",
+                          discount: data.coupon.type === "percent" ? data.coupon.value : data.coupon.value,
+                        });
+                      } catch (err: any) {
+                        setCouponError(err.message || "كود غير صالح");
+                        setCouponApplied(null);
+                      } finally {
+                        setCouponChecking(false);
+                      }
+                    }}
+                    className="px-4 py-2.5 rounded-xl text-xs font-semibold text-white transition-all disabled:opacity-60"
+                    style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
+                    disabled={couponChecking}
+                  >
+                    {couponChecking ? "..." : "تطبيق"}
+                  </button>
+                </div>
+                {couponApplied && (
+                  <p className="text-[11px] text-status-success mt-1.5 flex items-center gap-1">
+                    ✅ تم تطبيق الكود{couponApplied.label ? ` — ${couponApplied.label}` : ""}
+                  </p>
+                )}
+                {couponError && <p className="text-[11px] text-status-danger mt-1.5">{couponError}</p>}
+              </div>
+
               {/* WhatsApp consent */}
               <div className="flex items-start gap-2">
                 <input

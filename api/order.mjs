@@ -40,7 +40,7 @@ function rl_check(ip) {
   const rl = rl_check(ip);
   if (!rl.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: rl.retryAfter });
 
-  const { code, name, color, size, location, phone, whatsappConsent, paymentMethod } = req.body || {};
+  const { code, name, color, size, location, phone, whatsappConsent, paymentMethod, couponCode } = req.body || {};
 
   // Validate required fields
   if (!code || !phone) {
@@ -63,6 +63,7 @@ function rl_check(ip) {
     name: sanitize(name),
     color: sanitize(color),
     paymentMethod: "cod",
+    couponCode: sanitize(couponCode).toUpperCase(),
     whatsappConsent: !!whatsappConsent,
     size: sanitize(size),
     location: sanitize(location),
@@ -146,6 +147,7 @@ function rl_check(ip) {
       `📞 الهاتف: ${phoneClean}`,
       `💬 إشعار واتساب: ${consentEmoji}`,
       `💳 طريقة الدفع: عند الاستلام 💵`,
+      sanitized.couponCode ? `🏷️ كود الخصم: ${sanitized.couponCode}` : null,
       "━━━━━━━━━━━━━━━",
       `📅 ${new Date().toLocaleDateString("ar-LY", {
         weekday: "long", year: "numeric", month: "long", day: "numeric",
@@ -158,6 +160,25 @@ function rl_check(ip) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chat_id: CHAT_ID, text: message }),
       });
+    } catch (e) { /* ignore */ }
+  }
+
+  // Increment coupon usage
+  if (sanitized.couponCode && stored) {
+    try {
+      const cResp = await fetch(EC_URL);
+      const cData = cResp.ok ? await cResp.json() : { items: {} };
+      const cItems = cData.items || {};
+      const coupons = cItems.coupons || [];
+      const cIdx = coupons.findIndex((c) => c.code === sanitized.couponCode);
+      if (cIdx >= 0) {
+        coupons[cIdx] = { ...coupons[cIdx], usedCount: (coupons[cIdx].usedCount || 0) + 1 };
+        await fetch(`${EC_URL}/items`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ items: [{ operation: "upsert", key: "coupons", value: coupons }] }),
+        });
+      }
     } catch (e) { /* ignore */ }
   }
 
