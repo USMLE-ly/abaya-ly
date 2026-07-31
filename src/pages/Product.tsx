@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Sparkles, Tag, ShoppingBag } from "lucide-react";
+import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Sparkles, Tag, ShoppingBag, Ruler } from "lucide-react";
 import { BookingModal } from "@/components/BookingModal";
 import { ImageLightbox } from "@/components/ImageLightbox";
+import { SizeGuide } from "@/components/SizeGuide";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 import { findProduct, products, Product as ProductType } from "@/data/products";
@@ -315,7 +316,16 @@ function ProductContent() {
 
             {/* Sizes */}
             <div className="mb-6">
-              <p className="text-xs font-medium text-fg-secondary mb-3">المقاس</p>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-medium text-fg-secondary">المقاس</p>
+                <button
+                  onClick={() => setShowSizeGuide(true)}
+                  className="text-[10px] font-semibold text-accent-brand hover:underline flex items-center gap-1"
+                >
+                  <Ruler size={11} />
+                  دليل المقاسات
+                </button>
+              </div>
               <div className="flex flex-wrap gap-2">
                 {product.sizes.map((size, i) => (
                   <Button
@@ -388,47 +398,6 @@ function ProductContent() {
           </div>
         </div>
       </section>
-
-      {/* Size Guide Modal */}
-      {showSizeGuide && (
-        <div
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
-          style={{ background: "rgba(17,15,13,0.70)", backdropFilter: "blur(8px)" }}
-          onClick={() => setShowSizeGuide(false)}
-        >
-          <div
-            className="w-full max-w-md rounded-2xl overflow-hidden"
-            style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(24px)", border: "1px solid rgba(196,40,85,0.12)" }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-fg">دليل المقاسات</h3>
-                <button onClick={() => setShowSizeGuide(false)} className="text-fg-tertiary hover:text-fg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-right text-sm">
-                  <thead>
-                    <tr className="border-b border-line-subtle">
-                      <th className="py-2 pl-4 text-fg font-semibold">المقاس</th>
-                      <th className="py-2 pl-4 text-fg font-semibold">الصدر (سم)</th>
-                      <th className="py-2 pl-4 text-fg font-semibold">الخصر (سم)</th>
-                      <th className="py-2 text-fg font-semibold">الأرداف (سم)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-line-subtle"><td className="py-2 pl-4">S</td><td className="py-2 pl-4">86-91</td><td className="py-2 pl-4">66-71</td><td className="py-2">91-97</td></tr>
-                    <tr className="border-b border-line-subtle"><td className="py-2 pl-4">M</td><td className="py-2 pl-4">91-97</td><td className="py-2 pl-4">71-76</td><td className="py-2">97-102</td></tr>
-                    <tr className="border-b border-line-subtle"><td className="py-2 pl-4">L</td><td className="py-2 pl-4">97-102</td><td className="py-2 pl-4">76-81</td><td className="py-2">102-107</td></tr>
-                    <tr><td className="py-2 pl-4">XL</td><td className="py-2 pl-4">102-107</td><td className="py-2 pl-4">81-86</td><td className="py-2">107-112</td></tr>
-                  </tbody>
-                </table>
-              </div>
-              <p className="text-[10px] text-fg-tertiary mt-4 leading-relaxed">مقاسات تقريبية — يرجى التواصل عبر واتساب للحصول على مقاسات دقيقة حسب طلبك.</p>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* 2. Booking Modal */}
       <BookingModal
@@ -517,6 +486,9 @@ function ProductContent() {
         onClose={() => setLightboxOpen(false)}
         productName={product.name}
       />
+
+      {/* Size guide */}
+      <SizeGuide open={showSizeGuide} onClose={() => setShowSizeGuide(false)} />
     </div>
   );
 }
