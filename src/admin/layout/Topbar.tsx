@@ -6,10 +6,14 @@ import { ADMIN_PATH } from "../lib/config";
 
 export function Topbar({
   onMenu,
+  onCollapse,
+  collapsed,
   onRefresh,
   refreshing,
 }: {
   onMenu: () => void;
+  onCollapse?: () => void;
+  collapsed?: boolean;
   onRefresh?: () => void;
   refreshing?: boolean;
 }) {
@@ -57,6 +61,14 @@ export function Topbar({
           style={{ color: "var(--nd-text-2)" }}
         >
           <Menu size={20} />
+        </button>
+        <button
+          onClick={onCollapse}
+          className="hidden lg:flex p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          style={{ color: "var(--nd-text-2)" }}
+          title={collapsed ? "توسيع القائمة" : "طي القائمة"}
+        >
+          <Menu size={18} />
         </button>
       </div>
 

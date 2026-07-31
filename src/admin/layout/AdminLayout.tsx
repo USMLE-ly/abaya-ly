@@ -11,6 +11,7 @@ import { ADMIN_PATH } from "../lib/config";
 export function AdminLayout() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { data, refetch, isFetching } = useOrders();
   const orders = data ?? [];
 
@@ -33,13 +34,20 @@ export function AdminLayout() {
       <Sidebar
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         pendingCount={pending}
       />
 
       {/* Main content on the left */}
-      <div className="flex-1 flex flex-col min-w-0 nd-content">
+      <div className="flex-1 flex flex-col min-w-0 nd-content" style={{
+          marginInlineStart: sidebarCollapsed ? "80px" : "var(--nd-sidebar-w, 280px)",
+          transition: "margin-inline-start 0.3s ease",
+        }}>
         <Topbar
           onMenu={() => setMenuOpen(true)}
+          onCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+          collapsed={sidebarCollapsed}
           onRefresh={() => refetch()}
           refreshing={isFetching}
         />
