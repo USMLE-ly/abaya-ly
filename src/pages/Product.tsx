@@ -4,6 +4,7 @@ import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, C
 import { BookingModal } from "@/components/BookingModal";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import { SizeGuide } from "@/components/SizeGuide";
+import { ReviewsSection } from "@/components/ReviewsSection";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 import { findProduct, products, Product as ProductType } from "@/data/products";
@@ -477,6 +478,13 @@ function ProductContent() {
           </div>
         </section>
       )}
+
+      {/* Customer reviews */}
+      <ReviewsSection
+        productId={product.id}
+        baseRating={product.rating}
+        baseCount={product.reviewCount}
+      />
 
       {/* Image lightbox */}
       <ImageLightbox
