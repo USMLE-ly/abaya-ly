@@ -1,6 +1,6 @@
 import { PageTransition } from "@/components/PageTransition";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { products, collections } from "@/data/products";
 import { Star, Eye, ShoppingBag, Search, SlidersHorizontal, X } from "lucide-react";
@@ -16,14 +16,16 @@ export function Collections() {
 }
 
 function CollectionsContent() {
-  const [active, setActive] = useState("all");
+  const [params] = useSearchParams();
+  const [active, setActive] = useState(params.get("collection") || "all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "rating">("default");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000]);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  // Filter by collection
-  let filtered = active === "all" ? products : products.filter((p) => p.category === active);
+  // Filter by collection (id → name)
+  const activeName = active === "all" ? null : collections.find((c) => c.id === active)?.name;
+  let filtered = activeName ? products.filter((p) => p.collection === activeName) : products;
 
   // Filter by search
   if (searchQuery.trim()) {
@@ -111,6 +113,14 @@ function CollectionsContent() {
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
           {/* Filter tabs */}
           <div className="flex flex-wrap justify-center gap-2 mb-10">
+            <Button
+              onClick={() => setActive("all")}
+              variant={active === "all" ? "primary" : "tertiary"}
+              size="sm"
+              className="rounded-full"
+            >
+              الكل
+            </Button>
             {collections.map((c) => (
               <Button
                 key={c.id}

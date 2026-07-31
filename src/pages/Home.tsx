@@ -9,6 +9,7 @@ import IPhoneMockup from "@/components/ui/iphone-mockup";
 import { ContactForm } from "@/components/ContactForm";
 import { NewsletterSection } from "@/components/NewsletterSection";
 import { OutfitGallery } from "@/components/OutfitGallery";
+import { FeaturedCollection } from "@/components/FeaturedCollection";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 import { usePageMeta } from "@/lib/usePageMeta";
 
@@ -55,6 +56,7 @@ function HomeContent() {
     <>
       <LuminaHero />
       <ProductCarousel />
+      <FeaturedCollection />
       <OutfitGallery />
       <ComparisonTable />
       <Reveal><IconBar /></Reveal>
