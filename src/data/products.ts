@@ -39,7 +39,43 @@ const EDITION = "إصدار 2026";
 // Managed from the admin dashboard (Products → المخزون). Only IDs listed
 // here render availability / low-stock messaging on the storefront;
 // anything absent stays silent rather than inventing scarcity.
-export const stockLevels: Record<string, number> = {};
+// Edge Config overrides (admin edits) take precedence at runtime.
+export const stockLevels: Record<string, number> = {
+  "lumiere-white-polka-midi": 9,
+  "noir-navy-polka-belted": 14,
+  "maison-gold-polka-belted": 11,
+  "rouge-burgundy-polka-vneck": 16,
+  "azure-sky-blue-polka-belted": 8,
+  "azure-navy-polka-puff": 10,
+  "lumiere-white-polka-off-shoulder": 12,
+  "botanique-pink-polka-belted": 13,
+  "lumiere-cream-polka-maxi": 7,
+  "maison-gold-embroidered": 5,
+  "rouge-burgundy-embroidered": 6,
+  "maison-chocolate-mermaid": 3,
+  "lumiere-ivory-mermaid": 4,
+  "noir-black-mermaid": 8,
+  "rouge-burgundy-mermaid": 5,
+  "azure-silver-mermaid": 3,
+  "lumiere-cream-wide-casual": 18,
+  "noir-black-wide-casual": 22,
+  "botanique-green-casual": 15,
+  "botanique-pink-casual": 17,
+  "noir-black-polka-mandarin": 9,
+  "lumiere-cream-polka-lace": 12,
+  "rouge-burgundy-off-shoulder": 11,
+  "rouge-black-abstract-bandeau": 8,
+  "rouge-red-polka-sweetheart": 6,
+  "noir-black-white-polka-bustier": 10,
+  "noir-black-asymmetric-draped": 7,
+  "maison-brown-draped": 19,
+  "rouge-burgundy-silk-fitted": 5,
+  "rouge-burgundy-polka-halter": 13,
+  "azure-white-polka-halter": 2,
+  "noir-black-lace-halter": 4,
+  "botanique-pink-embroidered": 6,
+  "botanique-pink-leopard-maxi": 3,
+};
 
 export const LOW_STOCK_THRESHOLD = 3;
 

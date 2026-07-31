@@ -138,6 +138,7 @@ export interface AdminProduct {
   tags: string[];
   rating: number;
   reviewCount: number;
+  stock?: number;
   inStock: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -222,4 +223,35 @@ export async function deleteReview(productId: string, reviewId: string): Promise
     method: "DELETE",
     body: JSON.stringify({ productId, reviewId }),
   });
+}
+
+/** ── Stock levels (admin) ──────────────────────────────────────── */
+
+/** GET /api/admin/stock — full stock map (productId → units). */
+export async function fetchStockLevels(): Promise<Record<string, number>> {
+  const data = await apiCall("/api/admin/stock");
+  return data.stock ?? {};
+}
+
+/** PUT /api/admin/stock — set a product's stock (0-9999). */
+export async function updateStock(productId: string, stock: number): Promise<any> {
+  return apiCall("/api/admin/stock", {
+    method: "PUT",
+    body: JSON.stringify({ productId, stock }),
+  });
+}
+
+/** DELETE /api/admin/stock — clear the override (back to default). */
+export async function clearStock(productId: string): Promise<any> {
+  return apiCall("/api/admin/stock", {
+    method: "DELETE",
+    body: JSON.stringify({ productId }),
+  });
+}
+
+/** ── Storefront analytics (admin) ──────────────────────────────── */
+
+/** GET /api/admin/analytics — aggregated storefront event stats. */
+export async function fetchStorefrontAnalytics(): Promise<any> {
+  return apiCall("/api/admin/analytics");
 }

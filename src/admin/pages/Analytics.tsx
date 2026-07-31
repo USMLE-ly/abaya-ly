@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   ShoppingBag,
   Clock,
@@ -9,6 +9,12 @@ import {
   TrendingUp,
   MapPin as MapIcon,
   CalendarDays,
+  Eye,
+  Users,
+  ShoppingCart,
+  Mail,
+  Gift,
+  Activity,
 } from "lucide-react";
 import {
   AreaChart,
@@ -26,15 +32,56 @@ import {
   Legend,
 } from "recharts";
 import { useOrders } from "../lib/metrics";
-import { ACard, AButton, ASelect, ASkeleton } from "../components/ui";
+import { useQuery } from "@tanstack/react-query";
+import { fetchStorefrontAnalytics } from "../lib/api";
+import { ACard, AButton, ASelect, ASkeleton, AEmpty } from "../components/ui";
 import { StatCard } from "../components/StatCard";
 import { STATUSES, fmtDate, type OrderStatus } from "../lib/types";
 
 const COLORS = ["#c42855", "#F5A524", "#4892FE", "#4F56D3", "#89D233", "#8F8F8F"];
 
+const EVENT_LABELS: Record<string, string> = {
+  page_view: "مشاهدة صفحة",
+  view_item: "مشاهدة منتج",
+  add_to_cart: "إضافة للسلة",
+  remove_from_cart: "إزالة من السلة",
+  add_to_wishlist: "إضافة للمفضلة",
+  begin_checkout: "بدء الدفع",
+  purchase: "شراء",
+  cta_click: "نقرة CTA",
+  newsletter_signup: "اشتراك نشرة",
+  scroll_depth: "عمق التمرير",
+  popup_shown: "ظهور نافذة",
+  popup_converted: "تحويل نافذة",
+  popup_dismissed: "إغلاق نافذة",
+  coupon_applied: "كوبون مطبق",
+  coupon_rejected: "كوبون مرفوض",
+};
+
 export default function Analytics() {
   const { data: orders, isLoading, error } = useOrders();
   const [range, setRange] = useState<"7" | "30" | "90" | "all">("30");
+  const { data: store, isLoading: storeLoading } = useQuery({
+    queryKey: ["admin", "storefront-analytics"],
+    queryFn: fetchStorefrontAnalytics,
+    refetchInterval: 60_000,
+  });
+  const [productNames, setProductNames] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    let alive = true;
+    import("@/data/products")
+      .then((m) => {
+        if (!alive) return;
+        const map: Record<string, string> = {};
+        for (const p of m.products) {
+          map[p.id] = (p.name || "").split(" • ").slice(2).join(" • ") || p.name;
+        }
+        setProductNames(map);
+      })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
 
   const stats = useMemo(() => {
     if (!orders) return null;
@@ -336,6 +383,133 @@ export default function Analytics() {
             </div>
           )}
         </ACard>
+      </div>
+
+      {/* ── Storefront analytics (internal, no third-party) ── */}
+      <div className="mt-2">
+        <div className="flex flex-wrap items-end justify-between gap-3 mb-4">
+          <div>
+            <h2 className="text-lg font-extrabold" style={{ color: "var(--nd-text)" }}>
+              نشاط المتجر
+            </h2>
+            <p className="text-[12.5px] mt-0.5" style={{ color: "var(--nd-text-3)" }}>
+              تحليلات داخلية من متجرنا — بدون Google أو أي خدمة خارجية
+            </p>
+          </div>
+        </div>
+
+        {storeLoading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            {Array.from({ length: 5 }).map((_, i) => <ASkeleton key={i} className="h-28" />)}
+          </div>
+        ) : !store || !store.analytics || Object.keys(store.analytics.counts || {}).length === 0 ? (
+          <ACard className="p-10">
+            <AEmpty
+              icon={<Activity size={34} />}
+              title="لا توجد بيانات بعد"
+              hint="ستظهر هنا مشاهدات المتجر فور بدء الزيارات"
+            />
+          </ACard>
+        ) : (
+          <>
+            {/* Storefront stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+              <StatCard icon={<Eye size={18} />} value={store.analytics.counts.page_view ?? 0} label="مشاهدات الصفحات" accent="#c42855" />
+              <StatCard icon={<Users size={18} />} value={store.analytics.visitors ?? 0} label="زوار فريدون (30 يوم)" accent="#4892FE" />
+              <StatCard icon={<ShoppingCart size={18} />} value={store.analytics.counts.add_to_cart ?? 0} label="إضافات للسلة" accent="#4F56D3" />
+              <StatCard icon={<Mail size={18} />} value={store.analytics.counts.newsletter_signup ?? 0} label="اشتراكات النشرة" accent="#89D233" />
+              <StatCard icon={<Gift size={18} />} value={store.analytics.counts.popup_converted ?? 0} label="تحويلات النوافذ" accent="#F5A524" />
+            </div>
+
+            {/* Top pages + products */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+              <ACard className="p-5 sm:p-6">
+                <h3 className="text-[15px] font-extrabold mb-4" style={{ color: "var(--nd-text)" }}>
+                  أفضل الصفحات
+                </h3>
+                {store.analytics.topPages.length === 0 ? (
+                  <p className="text-[13px] py-8 text-center" style={{ color: "var(--nd-text-4)" }}>لا توجد بيانات كافية</p>
+                ) : (
+                  <div className="space-y-3">
+                    {store.analytics.topPages.map((p: { path: string; count: number }, i: number) => (
+                      <div key={p.path} className="flex items-center gap-3">
+                        <span className="text-[12px] w-5 text-center font-bold" style={{ color: "var(--nd-text-4)" }}>{i + 1}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between gap-2 mb-1">
+                            <span className="text-[12.5px] font-semibold truncate" style={{ color: "var(--nd-text)", direction: "ltr", textAlign: "right" }}>{p.path}</span>
+                            <span className="text-[12px] font-bold whitespace-nowrap" style={{ color: "var(--nd-primary-500)" }}>{p.count}</span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: "var(--nd-border)" }}>
+                            <div className="h-full rounded-full" style={{ width: `${(p.count / store.analytics.topPages[0].count) * 100}%`, background: COLORS[i % COLORS.length] }} />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </ACard>
+
+              <ACard className="p-5 sm:p-6">
+                <h3 className="text-[15px] font-extrabold mb-4" style={{ color: "var(--nd-text)" }}>
+                  أفضل المنتجات (مشاهدة + إضافة)
+                </h3>
+                {store.analytics.topProducts.length === 0 ? (
+                  <p className="text-[13px] py-8 text-center" style={{ color: "var(--nd-text-4)" }}>لا توجد بيانات كافية</p>
+                ) : (
+                  <div className="space-y-3">
+                    {store.analytics.topProducts.map((p: { id: string; count: number }, i: number) => (
+                      <div key={p.id} className="flex items-center gap-3">
+                        <span className="text-[12px] w-5 text-center font-bold" style={{ color: "var(--nd-text-4)" }}>{i + 1}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[12.5px] font-semibold truncate" style={{ color: "var(--nd-text)" }}>
+                            {productNames[p.id] || p.id}
+                          </p>
+                          <p className="text-[10.5px] mt-0.5 truncate" style={{ color: "var(--nd-text-4)", direction: "ltr", textAlign: "right" }}>{p.id}</p>
+                        </div>
+                        <span className="text-[12px] font-bold whitespace-nowrap" style={{ color: "var(--nd-primary-500)" }}>{p.count}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </ACard>
+            </div>
+
+            {/* Recent events */}
+            <ACard className="p-5 sm:p-6 mt-6 overflow-hidden">
+              <h3 className="text-[15px] font-extrabold mb-4" style={{ color: "var(--nd-text)" }}>
+                آخر الأحداث
+              </h3>
+              {store.analytics.recent.length === 0 ? (
+                <p className="text-[13px] py-8 text-center" style={{ color: "var(--nd-text-4)" }}>لا توجد أحداث بعد</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-right text-xs">
+                    <thead>
+                      <tr className="border-b" style={{ borderColor: "var(--nd-border)" }}>
+                        <th className="p-3 font-bold" style={{ color: "var(--nd-text-3)" }}>الحدث</th>
+                        <th className="p-3 font-bold" style={{ color: "var(--nd-text-3)" }}>الصفحة</th>
+                        <th className="p-3 font-bold" style={{ color: "var(--nd-text-3)" }}>الوقت</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {store.analytics.recent.map((e: { name: string; path: string; ts: string }, i: number) => (
+                        <tr key={i} className="border-b last:border-0" style={{ borderColor: "var(--nd-border)" }}>
+                          <td className="p-3 font-semibold" style={{ color: "var(--nd-text)" }}>
+                            {EVENT_LABELS[e.name] || e.name}
+                          </td>
+                          <td className="p-3 max-w-[260px] truncate" style={{ color: "var(--nd-text-2)", direction: "ltr", textAlign: "right" }}>{e.path || "—"}</td>
+                          <td className="p-3 whitespace-nowrap" style={{ color: "var(--nd-text-3)" }}>
+                            {new Date(e.ts).toLocaleString("ar-LY", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </ACard>
+          </>
+        )}
       </div>
     </div>
   );

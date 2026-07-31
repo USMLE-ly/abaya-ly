@@ -8,6 +8,7 @@ import {
 } from "../components/ui";
 import {
   fetchAdminProducts, createProduct, updateProduct, deleteProduct,
+  fetchStockLevels, updateStock, clearStock,
   type AdminProduct,
 } from "../lib/api";
 
@@ -23,6 +24,7 @@ const EMPTY_FORM: Partial<AdminProduct> = {
 
 export default function Products() {
   const [products, setProducts] = useState<AdminProduct[]>([]);
+  const [stockMap, setStockMap] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [collection, setCollection] = useState("");
@@ -50,6 +52,7 @@ export default function Products() {
         badge: p.badge || "", description: p.description || "",
         details: p.details || [], highlights: p.highlights || [], tags: p.tags || [],
         rating: p.rating || 0, reviewCount: p.reviewCount || 0, inStock: true,
+        stock: p.stock,
       }));
 
       // Merge: Edge Config products override static ones by ID
@@ -60,6 +63,8 @@ export default function Products() {
         else merged.push(p);
       }
       setProducts(merged);
+      const stock = await fetchStockLevels().catch(() => ({}));
+      setStockMap(stock);
     } catch (e) {
       setError("فشل تحميل المنتجات");
     } finally {
@@ -425,6 +430,7 @@ export default function Products() {
                   <th className="p-3 font-bold" style={{ color: "var(--nd-text-3)" }}>الاسم</th>
                   <th className="p-3 font-bold" style={{ color: "var(--nd-text-3)" }}>المجموعة</th>
                   <th className="p-3 font-bold" style={{ color: "var(--nd-text-3)" }}>السعر</th>
+                  <th className="p-3 font-bold" style={{ color: "var(--nd-text-3)" }}>المخزون</th>
                   <th className="p-3 font-bold" style={{ color: "var(--nd-text-3)" }}>الإجراءات</th>
                 </tr>
               </thead>
@@ -435,6 +441,14 @@ export default function Products() {
                     <td className="p-3 font-semibold" style={{ color: "var(--nd-text)" }}>{p.name}</td>
                     <td className="p-3" style={{ color: "var(--nd-text-2)" }}>{p.collection}</td>
                     <td className="p-3 font-bold" style={{ color: "var(--nd-primary-500)" }}>{p.price} د.ل</td>
+                    <td className="p-3">
+                      <StockCell
+                        productId={p.id}
+                        fallback={p.stock}
+                        value={stockMap[p.id]}
+                        onSaved={(map) => setStockMap(map)}
+                      />
+                    </td>
                     <td className="p-3">
                       <div className="flex gap-1">
                         <button onClick={() => openEdit(p)} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors" style={{ color: "var(--nd-text-3)" }}>
@@ -459,6 +473,84 @@ export default function Products() {
           )}
         </ACard>
       )}
+    </div>
+  );
+}
+
+function StockCell({
+  productId,
+  fallback,
+  value,
+  onSaved,
+}: {
+  productId: string;
+  fallback?: number;
+  value?: number;
+  onSaved: (map: Record<string, number>) => void;
+}) {
+  const [draft, setDraft] = useState<string>(value !== undefined ? String(value) : fallback !== undefined ? String(fallback) : "");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(false);
+
+  const save = async () => {
+    const trimmed = draft.trim();
+    if (trimmed === "") {
+      setSaving(true);
+      setError(false);
+      try {
+        const data = await clearStock(productId);
+        onSaved(data.stock ?? {});
+        setDraft("");
+      } catch {
+        setError(true);
+      } finally {
+        setSaving(false);
+      }
+      return;
+    }
+    const num = Number(trimmed);
+    if (!Number.isInteger(num) || num < 0 || num > 9999) {
+      setError(true);
+      return;
+    }
+    setSaving(true);
+    setError(false);
+    try {
+      const data = await updateStock(productId, num);
+      onSaved(data.stock ?? {});
+      setDraft(String(num));
+    } catch {
+      setError(true);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <input
+        type="number"
+        min={0}
+        max={9999}
+        value={draft}
+        onChange={(e) => {
+          setDraft(e.target.value);
+          setError(false);
+        }}
+        onBlur={save}
+        onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+        placeholder="—"
+        disabled={saving}
+        className="w-16 px-2 py-1.5 rounded-lg text-[12px] text-center outline-none transition-colors disabled:opacity-60"
+        style={{
+          background: error ? "rgba(239,68,68,0.08)" : "var(--nd-bg)",
+          border: `1px solid ${error ? "#EF4444" : "var(--nd-border)"}`,
+          color: "var(--nd-text)",
+        }}
+        title="أدخلي الرقم واضغطي Enter للحفظ — فارغ = إزالة التحديد"
+      />
+      {saving && <Loader2 size={13} className="animate-spin" style={{ color: "var(--nd-text-3)" }} />}
+      {error && <span className="text-[10px] font-bold" style={{ color: "#EF4444" }}>خطأ</span>}
     </div>
   );
 }

@@ -16,6 +16,7 @@ import { Button, Badge, Card } from "@/components/velar";
 import { StockIndicator } from "@/components/StockIndicator";
 import { FrequentlyBoughtTogether, CompleteTheLook } from "@/components/CompleteTheLook";
 import { trackViewItem } from "@/lib/analytics";
+import { useStock } from "@/lib/useStock";
 
 const SITE_URL = "https://nadine.luxor.ly";
 
@@ -180,6 +181,7 @@ function ProductContent() {
   const [quantity, setQuantity] = useState(1);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const stockMap = useStock();
 
   if (!product) {
     return (
@@ -404,7 +406,7 @@ function ProductContent() {
 
             {/* Real availability — silent when stock is unknown */}
             <div className="mb-3">
-              <StockIndicator stock={product.stock} lowStockThreshold={product.lowStockThreshold} />
+              <StockIndicator stock={stockMap[product.id] ?? product.stock} lowStockThreshold={product.lowStockThreshold} />
             </div>
 
             {/* Booking */}

@@ -1,47 +1,94 @@
 // ─────────────────────────────────────────────────────────────
-// GA4 analytics — safe no-op when no measurement ID is present.
+// Internal storefront analytics — buffered + batched to our own API.
+// No third-party scripts, no Google/Lovable connectors.
+// Data appears in the admin dashboard (التحليلات → نشاط المتجر).
 // ─────────────────────────────────────────────────────────────
 
-declare global {
-  interface Window {
-    dataLayer?: unknown[];
-    __nadineGaReady?: boolean;
+const FLUSH_INTERVAL = 15_000;
+const FLUSH_BATCH = 25;
+const MAX_BUFFER = 100;
+
+interface AnalyticsEvent {
+  name: string;
+  params: Record<string, unknown>;
+  path: string;
+  ts: string;
+  sid: string;
+}
+
+let buffer: AnalyticsEvent[] = [];
+let timer: number | null = null;
+let listenersBound = false;
+let sessionId = "";
+
+function getSid(): string {
+  if (sessionId) return sessionId;
+  try {
+    sessionId = sessionStorage.getItem("nadine-sid") || "";
+    if (!sessionId) {
+      sessionId = Math.random().toString(36).slice(2) + Date.now().toString(36);
+      sessionStorage.setItem("nadine-sid", sessionId);
+    }
+  } catch {
+    sessionId = "s-" + Math.random().toString(36).slice(2);
+  }
+  return sessionId;
+}
+
+export const analyticsEnabled = true;
+
+export function initAnalytics() {
+  if (typeof window === "undefined" || listenersBound) return;
+  listenersBound = true;
+  window.addEventListener("pagehide", flush);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flush();
+  });
+}
+
+export function flush() {
+  if (timer !== null) {
+    window.clearTimeout(timer);
+    timer = null;
+  }
+  if (buffer.length === 0) return;
+  const payload = buffer;
+  buffer = [];
+  try {
+    fetch("/api/analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ events: payload }),
+      keepalive: true,
+    }).catch(() => {
+      // Re-buffer small batches on failure so nothing is silently lost.
+      if (payload.length <= 5) buffer = [...payload, ...buffer].slice(0, MAX_BUFFER);
+    });
+  } catch {
+    buffer = [...payload, ...buffer].slice(0, MAX_BUFFER);
   }
 }
 
-const MEASUREMENT_ID =
-  (import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY as string | undefined) ||
-  (import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined) ||
-  "";
-
-export const analyticsEnabled = Boolean(MEASUREMENT_ID);
-
-function pushEvent(args: unknown[]) {
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push(args);
-}
-
-export function initAnalytics() {
-  if (!MEASUREMENT_ID || typeof window === "undefined" || window.__nadineGaReady) return;
-  window.__nadineGaReady = true;
-
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-  document.head.appendChild(script);
-
-  pushEvent(["js", new Date()]);
-  pushEvent(["config", MEASUREMENT_ID, { send_page_view: false }]);
+function scheduleFlush() {
+  if (timer !== null) return;
+  timer = window.setTimeout(flush, FLUSH_INTERVAL);
 }
 
 export function track(event: string, params: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
-  if (!MEASUREMENT_ID) {
-    if (import.meta.env.DEV) console.debug("[analytics]", event, params);
-    return;
-  }
-  pushEvent(["event", event, params]);
+  if (import.meta.env.DEV) console.debug("[analytics]", event, params);
+  buffer.push({
+    name: event,
+    params,
+    path: window.location.pathname + window.location.search,
+    ts: new Date().toISOString(),
+    sid: getSid(),
+  });
+  if (buffer.length >= FLUSH_BATCH) flush();
+  else scheduleFlush();
 }
+
+// ── Typed event helpers (same API as before, internal backend) ──
 
 export const trackPageView = (path: string, title?: string) =>
   track("page_view", { page_path: path, page_title: title ?? document.title });
@@ -65,33 +112,33 @@ const toItem = (p: TrackableProduct, quantity = 1) => ({
 });
 
 export const trackViewItem = (p: TrackableProduct) =>
-  track("view_item", { currency: "LYD", value: p.price, items: [toItem(p)] });
+  track("view_item", { value: p.price, items: [toItem(p)] });
 
 export const trackAddToCart = (p: TrackableProduct, quantity = 1) =>
-  track("add_to_cart", { currency: "LYD", value: p.price * quantity, items: [toItem(p, quantity)] });
+  track("add_to_cart", { value: p.price * quantity, items: [toItem(p, quantity)] });
 
 export const trackRemoveFromCart = (p: TrackableProduct, quantity = 1) =>
-  track("remove_from_cart", { currency: "LYD", value: p.price * quantity, items: [toItem(p, quantity)] });
+  track("remove_from_cart", { value: p.price * quantity, items: [toItem(p, quantity)] });
 
 export const trackAddToWishlist = (p: TrackableProduct) =>
-  track("add_to_wishlist", { currency: "LYD", value: p.price, items: [toItem(p)] });
+  track("add_to_wishlist", { value: p.price, items: [toItem(p)] });
 
 export const trackBeginCheckout = (value: number, items: TrackableProduct[]) =>
-  track("begin_checkout", { currency: "LYD", value, items: items.map((i) => toItem(i)) });
+  track("begin_checkout", { value, items: items.map((i) => toItem(i)) });
 
 export const trackPurchase = (transactionId: string, value: number, items: TrackableProduct[]) =>
-  track("purchase", { transaction_id: transactionId, currency: "LYD", value, items: items.map((i) => toItem(i)) });
+  track("purchase", { transaction_id: transactionId, value, items: items.map((i) => toItem(i)) });
 
 export const trackCta = (label: string, location: string) =>
   track("cta_click", { cta_label: label, cta_location: location });
 
 export const trackCoupon = (code: string, status: "applied" | "rejected") =>
-  track("coupon_applied", { coupon: code, status });
+  track(status === "applied" ? "coupon_applied" : "coupon_rejected", { coupon: code });
 
 export const trackNewsletter = (source: string) => track("newsletter_signup", { source });
 
 export const trackPopup = (name: string, action: "shown" | "converted" | "dismissed") =>
-  track("popup_" + action, { popup_name: name });
+  track(`popup_${action}`, { popup_name: name });
 
 // ── Scroll depth (25 / 50 / 75 / 100) ────────────────────────
 export function startScrollDepthTracking() {
