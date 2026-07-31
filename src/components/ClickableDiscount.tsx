@@ -29,11 +29,11 @@ export function ClickableDiscount({ code, label = "كوبون خصم خاص بك
       className={`group flex w-full items-center justify-between gap-3 rounded-xl border px-4 py-3 text-start transition-all duration-300 ${
         copied
           ? "border-success bg-success/5"
-          : "border-dashed border-brand/40 bg-brand-subtle/40 hover:border-brand hover:bg-brand-subtle"
+          : "border-dashed border-strawberry-300/70 bg-strawberry-50/70 hover:border-brand hover:bg-brand-subtle/60"
       }`}
     >
       <span className="flex items-center gap-2.5 min-w-0">
-        <span className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${copied ? "bg-success/10" : "bg-brand/10"}`}>
+        <span className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${copied ? "bg-success/10" : "bg-brand-subtle"}`}>
           {copied ? <Check size={15} className="text-success" /> : <Ticket size={15} className="text-brand" />}
         </span>
         <span className="min-w-0">

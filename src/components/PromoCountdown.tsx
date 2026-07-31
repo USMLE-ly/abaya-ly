@@ -17,7 +17,7 @@ interface Props {
   label?: string;
 }
 
-/** Shrine-style daily countdown timer for the active promo. */
+/** Rose/white/strawberry daily countdown timer for the active promo. */
 export function PromoCountdown({ label = "عرض اليوم — خصم 10% على جميع الفساتين" }: Props) {
   const target = useMemo(() => {
     const t = getTarget();
@@ -49,30 +49,29 @@ export function PromoCountdown({ label = "عرض اليوم — خصم 10% عل�
     <section className="py-10 md:py-14">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10">
         <div
-          className="relative overflow-hidden rounded-3xl px-6 py-8 md:px-10 md:py-10 text-white"
-          style={{ background: "linear-gradient(135deg, #c42855 0%, #8f1439 100%)" }}
+          className="relative overflow-hidden rounded-3xl border border-strawberry-100 bg-gradient-to-b from-strawberry-50/70 via-canvas to-strawberry-50/70 px-6 py-8 md:px-10 md:py-10"
         >
           {/* decorative glows */}
-          <div className="absolute -top-16 -left-16 w-56 h-56 rounded-full bg-white/10 blur-3xl" aria-hidden="true" />
-          <div className="absolute -bottom-20 -right-10 w-64 h-64 rounded-full bg-white/10 blur-3xl" aria-hidden="true" />
+          <div className="absolute -top-16 -left-16 w-56 h-56 rounded-full bg-strawberry-200/40 blur-3xl" aria-hidden="true" />
+          <div className="absolute -bottom-20 -right-10 w-64 h-64 rounded-full bg-strawberry-100/50 blur-3xl" aria-hidden="true" />
 
           <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-start">
-              <p className="flex items-center justify-center md:justify-start gap-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold text-white/80 mb-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-subtle px-3 py-1 text-[11px] uppercase tracking-[0.22em] font-semibold text-brand mb-3">
                 عرض محدود
-              </p>
-              <h2 className="font-display text-xl md:text-2xl font-bold mb-1">{label}</h2>
-              <p className="text-xs text-white/70">استخدمي كود <span className="font-bold text-white" dir="ltr">NADINE10</span> عند الحجز — ينتهي العداد أدناه</p>
+              </span>
+              <h2 className="font-display text-xl md:text-2xl font-bold text-fg mb-1">{label}</h2>
+              <p className="text-xs text-fg-tertiary">استخدمي كود <span className="font-bold text-brand" dir="ltr">NADINE10</span> عند الحجز — ينتهي العداد أدناه</p>
             </div>
 
             <div className="flex items-center gap-2 md:gap-3" dir="ltr">
               {cells.map((c, i) => (
                 <div key={i} className="flex items-center gap-2 md:gap-3">
-                  <div className="w-16 h-16 md:w-[72px] md:h-[72px] rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 flex flex-col items-center justify-center">
-                    <span className="text-xl md:text-2xl font-bold tabular-nums leading-none">{String(c.value).padStart(2, "0")}</span>
-                    <span className="text-[9px] text-white/70 mt-1">{c.label}</span>
+                  <div className="w-16 h-16 md:w-[72px] md:h-[72px] rounded-2xl bg-white/85 border border-strawberry-200/60 shadow-sm backdrop-blur-sm flex flex-col items-center justify-center">
+                    <span className="text-xl md:text-2xl font-bold tabular-nums leading-none text-brand">{String(c.value).padStart(2, "0")}</span>
+                    <span className="text-[9px] text-fg-disabled mt-1">{c.label}</span>
                   </div>
-                  {i < cells.length - 1 && <span className="text-lg font-bold text-white/60">:</span>}
+                  {i < cells.length - 1 && <span className="text-lg font-bold text-brand/30">:</span>}
                 </div>
               ))}
             </div>
