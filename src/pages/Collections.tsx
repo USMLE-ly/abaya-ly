@@ -3,9 +3,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { products, collections } from "@/data/products";
-import { Star, Eye, ShoppingBag } from "lucide-react";
+import { Star, Eye, ShoppingBag, Search, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/velar";
 import { Badge } from "@/components/velar";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 export function Collections() {
   return <PageTransition><CollectionsContent /></PageTransition>;
@@ -13,8 +14,37 @@ export function Collections() {
 
 function CollectionsContent() {
   const [active, setActive] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "rating">("default");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000]);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const list = active === "all" ? products : products.filter((p) => p.category === active);
+
+  // Filter by collection
+  let filtered = active === "all" ? products : products.filter((p) => p.category === active);
+
+  // Filter by search
+  if (searchQuery.trim()) {
+    const q = searchQuery.trim().toLowerCase();
+    filtered = filtered.filter((p) =>
+      p.name.toLowerCase().includes(q) ||
+      p.collection.toLowerCase().includes(q) ||
+      p.model.toLowerCase().includes(q) ||
+      (p.fabric || "").toLowerCase().includes(q) ||
+      (p.tags || []).some((t) => t.toLowerCase().includes(q))
+    );
+  }
+
+  // Filter by price
+  filtered = filtered.filter((p) => p.price >= priceRange[0] && p.price <= priceRange[1]);
+
+  // Sort
+  const list = [...filtered].sort((a, b) => {
+    if (sortBy === "price-asc") return a.price - b.price;
+    if (sortBy === "price-desc") return b.price - a.price;
+    if (sortBy === "rating") return (b.rating || 0) - (a.rating || 0);
+    return 0;
+  });
+  const totalCount = filtered.length;
 
   return (
     <div className="min-h-screen">
@@ -23,6 +53,53 @@ function CollectionsContent() {
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 text-center">
           <h1 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">المجموعات</h1>
           <p className="text-sm text-fg-tertiary max-w-lg mx-auto">اكتشفي مجموعتنا من الفساتين الفاخرة — كل قطعة قصة، كل تطريزة فن</p>
+        </div>
+      </section>
+
+      {/* Search & Filter Bar */}
+      <section className="-mt-4 pb-6">
+        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
+            {/* Search */}
+            <div className="relative flex-1 max-w-md">
+              <Search size={15} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: "var(--color-fg-quaternary, #8c8276)" }} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="ابحثي عن فستان..."
+                className="w-full h-10 pr-9 pl-3 rounded-xl text-sm outline-none transition-all glass-input"
+                style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(196,40,85,0.12)" }}
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery("")} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--color-fg-quaternary, #8c8276)" }}>
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+
+            {/* Sort */}
+            <div className="flex items-center gap-2 text-xs">
+              <SlidersHorizontal size={14} className="text-fg-tertiary" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="h-10 px-3 rounded-xl text-sm outline-none glass-input appearance-none cursor-pointer"
+                style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(196,40,85,0.12)" }}
+              >
+                <option value="default">ترتيب افتراضي</option>
+                <option value="price-asc">السعر: الأقل أولاً</option>
+                <option value="price-desc">السعر: الأعلى أولاً</option>
+                <option value="rating">التقييم</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Results count */}
+          <p className="text-[11px] text-fg-tertiary">
+            {totalCount === 0 ? "لا توجد نتائج" : `عرض ${totalCount} ${totalCount === 1 ? "فستان" : "فساتين"}`}
+            {searchQuery && ` — "${searchQuery}"`}
+          </p>
         </div>
       </section>
 
@@ -46,7 +123,16 @@ function CollectionsContent() {
 
           {/* Grid — glassmorphism cards matching OutfitGallery */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6" style={{ direction: "rtl" }}>
-            {list.map((product, i) => (
+            {list.length === 0 ? (
+              <div className="col-span-full text-center py-20">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(196,40,85,0.08)" }}>
+                  <Search size={24} className="text-accent-brand/40" />
+                </div>
+                <p className="text-sm font-bold text-fg mb-1">لا توجد منتجات</p>
+                <p className="text-xs text-fg-tertiary">جربي تغيير معايير البحث أو تصفح جميع المجموعات</p>
+              </div>
+            ) : (
+              list.map((product, i) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 15 }}
@@ -143,7 +229,7 @@ function CollectionsContent() {
                   </div>
                 </Link>
               </motion.div>
-            ))}
+            )))}
           </div>
         </div>
       </section>
