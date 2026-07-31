@@ -11,6 +11,7 @@ import {
   Calendar,
   ChevronLeft,
   Store,
+  Star,
 } from "lucide-react";
 import { clearPassword } from "../lib/api";
 import { ADMIN_PATH } from "../lib/config";
@@ -27,6 +28,7 @@ const NAV: NavItem[] = [
   { to: "/dashboard-nadine-admin", label: "لوحة القيادة", icon: LayoutDashboard, end: true },
   { to: "/dashboard-nadine-admin/orders", label: "الطلبات", icon: ShoppingBag, badge: 0 },
   { to: "/dashboard-nadine-admin/products", label: "المنتجات", icon: Package },
+  { to: "/dashboard-nadine-admin/reviews", label: "التقييمات", icon: Star },
   { to: "/dashboard-nadine-admin/analytics", label: "التحليلات", icon: BarChart3 },
   { to: "/dashboard-nadine-admin/calendar", label: "تقويم الشحن", icon: Calendar },
   { to: "/dashboard-nadine-admin/settings", label: "الإعدادات", icon: Settings },

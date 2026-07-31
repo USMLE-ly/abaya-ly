@@ -33,6 +33,30 @@ function WishlistCountWrapper() {
   );
 }
 
+function WishlistMenuLink({ onNavigate }: { onNavigate: () => void }) {
+  const { ids } = useWishlist();
+  return (
+    <Link
+      to="/wishlist"
+      onClick={onNavigate}
+      className="flex items-center justify-between text-sm font-medium text-fg-secondary hover:text-fg hover:bg-sunken px-5 py-3 transition-all"
+    >
+      <span className="flex items-center gap-2">
+        <Heart size={16} />
+        المفضلة
+      </span>
+      {ids.length > 0 && (
+        <span
+          className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
+          style={{ background: "#c42855" }}
+        >
+          {ids.length > 9 ? "9+" : ids.length}
+        </span>
+      )}
+    </Link>
+  );
+}
+
 export function Header() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -116,6 +140,8 @@ export function Header() {
                       {link.label}
                     </Link>
                   ))}
+                  <div className="my-1 border-t" style={{ borderColor: "rgba(196,40,85,0.08)" }} />
+                  <WishlistMenuLink onNavigate={() => setOpen(false)} />
                 </nav>
               </motion.div>
             )}

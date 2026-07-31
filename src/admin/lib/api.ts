@@ -186,3 +186,40 @@ export async function deleteProduct(id: string): Promise<any> {
     body: JSON.stringify({ id }),
   });
 }
+
+/** ── Product Reviews (admin) ─────────────────────────────────── */
+
+export interface AdminReview {
+  id: string;
+  productId: string;
+  rating: number;
+  name: string;
+  comment: string;
+  createdAt: string;
+}
+
+/** GET /api/reviews?all=1 — list every review across all products. */
+export async function fetchAllReviews(): Promise<AdminReview[]> {
+  const data = await apiCall("/api/reviews?all=1");
+  return data.reviews ?? [];
+}
+
+/** PUT /api/reviews — edit a review (rating / name / comment). */
+export async function updateReview(
+  productId: string,
+  reviewId: string,
+  patch: { rating?: number; name?: string; comment?: string }
+): Promise<any> {
+  return apiCall("/api/reviews", {
+    method: "PUT",
+    body: JSON.stringify({ productId, reviewId, ...patch }),
+  });
+}
+
+/** DELETE /api/reviews — remove a review. */
+export async function deleteReview(productId: string, reviewId: string): Promise<any> {
+  return apiCall("/api/reviews", {
+    method: "DELETE",
+    body: JSON.stringify({ productId, reviewId }),
+  });
+}
