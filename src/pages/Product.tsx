@@ -5,6 +5,7 @@ import { BookingModal } from "@/components/BookingModal";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import { SizeGuide } from "@/components/SizeGuide";
 import { ReviewsSection } from "@/components/ReviewsSection";
+import { SocialShare } from "@/components/SocialShare";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 import { findProduct, products, Product as ProductType } from "@/data/products";
@@ -313,6 +314,14 @@ function ProductContent() {
                   />
                 ))}
               </div>
+            </div>
+
+            {/* Social share */}
+            <div className="mb-6">
+              <SocialShare
+                productName={descriptor}
+                productUrl={`/product/${product.id}`}
+              />
             </div>
 
             {/* Sizes */}
