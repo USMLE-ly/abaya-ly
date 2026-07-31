@@ -68,6 +68,7 @@ export default function Reviews() {
   const [editRating, setEditRating] = useState(5);
   const [editName, setEditName] = useState("");
   const [editComment, setEditComment] = useState("");
+  const [editImage, setEditImage] = useState("");
   const [msg, setMsg] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
   const flash = (type: "ok" | "err", text: string) => {
@@ -100,6 +101,7 @@ export default function Reviews() {
     setEditRating(r.rating);
     setEditName(r.name);
     setEditComment(r.comment);
+    setEditImage(r.image || "");
   };
 
   const saveMut = useMutation({
@@ -108,6 +110,7 @@ export default function Reviews() {
         rating: editRating,
         name: editName,
         comment: editComment,
+        image: editImage.trim(),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "reviews"] });
@@ -325,6 +328,19 @@ export default function Reviews() {
                 {viewing.comment}
               </div>
             </div>
+            {viewing.image && (
+              <div>
+                <p className="text-[11px] font-bold mb-1" style={{ color: "var(--nd-text-4)" }}>صورة العميلة</p>
+                <a href={viewing.image} target="_blank" rel="noopener noreferrer" className="block">
+                  <img
+                    src={viewing.image}
+                    alt={`صورة من ${viewing.name}`}
+                    className="w-full max-h-80 object-cover rounded-xl"
+                    style={{ border: "1px solid var(--nd-border)" }}
+                  />
+                </a>
+              </div>
+            )}
             <div className="flex justify-end gap-2 pt-2">
               <AButton variant="default" onClick={() => setViewing(null)}>إغلاق</AButton>
             </div>
@@ -365,6 +381,24 @@ export default function Reviews() {
                 className="w-full px-3.5 py-2.5 rounded-xl text-[13px] outline-none resize-none"
                 style={{ background: "var(--nd-bg)", border: "1px solid var(--nd-border)", color: "var(--nd-text)" }}
               />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold mb-1" style={{ color: "var(--nd-text-4)" }}>رابط صورة العميلة (اختياري)</p>
+              <AInput
+                value={editImage}
+                onChange={(e) => setEditImage(e.target.value)}
+                placeholder="https://example.com/photo.jpg"
+                dir="ltr"
+              />
+              {editImage.trim() && (
+                <img
+                  src={editImage.trim()}
+                  alt="معاينة"
+                  className="mt-2 w-24 h-24 object-cover rounded-xl"
+                  style={{ border: "1px solid var(--nd-border)" }}
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.25"; }}
+                />
+              )}
             </div>
             <div className="flex justify-end gap-2 pt-2">
               <AButton variant="default" onClick={() => setEditing(null)}>إلغاء</AButton>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { X, Check, Loader2, ChevronDown } from "lucide-react";
+import { X, Check, Loader2, ChevronDown, PackageSearch } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
@@ -565,6 +565,18 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
             <p className="text-sm text-fg-tertiary leading-relaxed mt-2">
               سيتم الاتصال بسادتكم خلال 24 ساعة لتأكيد الطلب
             </p>
+
+            {orderId && submittedPhone && (
+              <Link
+                to={`/track-order?orderNumber=${encodeURIComponent(orderId)}&phone=${encodeURIComponent(submittedPhone)}`}
+                onClick={onClose}
+                className="inline-flex items-center gap-1.5 mt-4 px-5 py-2.5 rounded-xl text-xs font-bold text-white transition-all hover:scale-105"
+                style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
+              >
+                <PackageSearch size={14} />
+                تتبعي طلبكِ الآن
+              </Link>
+            )}
 
             <button
               onClick={onClose}

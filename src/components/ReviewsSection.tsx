@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Star, MessageSquare, Loader2, CheckCircle2, User } from "lucide-react";
+import { Star, MessageSquare, Loader2, CheckCircle2, User, ImagePlus, X } from "lucide-react";
 
 interface Review {
   id: string;
   rating: number;
   name: string;
   comment: string;
+  image?: string;
   createdAt: string;
 }
 
@@ -29,6 +30,7 @@ export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [comment, setComment] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -57,13 +59,20 @@ export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
       const res = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId, rating, name: name.trim() || "عميلة نادين", comment: comment.trim() }),
+        body: JSON.stringify({
+          productId,
+          rating,
+          name: name.trim() || "عميلة نادين",
+          comment: comment.trim(),
+          image: imageUrl.trim(),
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "فشل الإرسال");
       setReviews((prev) => [data.review, ...prev]);
       setComment("");
       setName("");
+      setImageUrl("");
       setRating(5);
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), 4000);
@@ -131,6 +140,23 @@ export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
                     </div>
                   </div>
                   <p className="text-sm text-fg-secondary leading-relaxed">{review.comment}</p>
+                  {review.image && (
+                    <a
+                      href={review.image}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block mt-3 group"
+                    >
+                      <img
+                        src={review.image}
+                        alt={`صورة من ${review.name}`}
+                        loading="lazy"
+                        className="w-full max-h-64 object-cover rounded-xl transition-all duration-300 group-hover:scale-[1.01] group-hover:shadow-md"
+                        style={{ border: "1px solid rgba(196,40,85,0.12)" }}
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                      />
+                    </a>
+                  )}
                 </motion.div>
               ))
             )}
@@ -197,6 +223,46 @@ export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
                       className="w-full px-4 py-2.5 text-sm rounded-xl outline-none resize-none transition-colors glass-input"
                       style={{ background: "rgba(255,255,255,0.7)", border: "1px solid rgba(196,40,85,0.12)" }}
                     />
+                  </div>
+
+                  {/* Photo (optional URL) */}
+                  <div>
+                    <p className="text-[11px] font-semibold text-fg-tertiary mb-1">رابط صورة الفستان عندك (اختياري)</p>
+                    <div className="flex items-center gap-2">
+                      <div className="relative flex-1">
+                        <ImagePlus size={14} className="absolute start-3 top-1/2 -translate-y-1/2 text-fg-quaternary" />
+                        <input
+                          type="url"
+                          value={imageUrl}
+                          onChange={(e) => setImageUrl(e.target.value)}
+                          placeholder="https://example.com/photo.jpg"
+                          dir="ltr"
+                          className="w-full ps-9 pe-4 py-2.5 text-sm rounded-xl outline-none transition-colors glass-input"
+                          style={{ background: "rgba(255,255,255,0.7)", border: "1px solid rgba(196,40,85,0.12)" }}
+                        />
+                        {imageUrl && (
+                          <button
+                            type="button"
+                            onClick={() => setImageUrl("")}
+                            className="absolute end-2 top-1/2 -translate-y-1/2 text-fg-quaternary hover:text-status-danger transition-colors"
+                            aria-label="إزالة الصورة"
+                          >
+                            <X size={13} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    {imageUrl.trim() && (
+                      <div className="relative mt-2 w-fit">
+                        <img
+                          src={imageUrl.trim()}
+                          alt="معاينة"
+                          className="w-24 h-24 object-cover rounded-xl"
+                          style={{ border: "1px solid rgba(196,40,85,0.12)" }}
+                          onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.25"; }}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   {error && <p className="text-xs text-status-danger">{error}</p>}

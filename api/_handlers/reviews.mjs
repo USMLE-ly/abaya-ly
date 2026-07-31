@@ -2,6 +2,12 @@ import { cors, readItems, writeItem, isAdmin, sanitize } from "./shared.mjs";
 
 const VALID_RATINGS = [1, 2, 3, 4, 5];
 
+function sanitizeImage(url) {
+  const clean = sanitize(String(url || "")).trim().slice(0, 500);
+  if (!/^https?:\/\//i.test(clean)) return "";
+  return clean;
+}
+
 export default async function handler(req, res) {
   cors(req, res, { methods: "GET, POST, PUT, DELETE, OPTIONS", headers: "Content-Type, x-admin-password" });
   if (req.method === "OPTIONS") return res.status(200).end();
@@ -24,6 +30,7 @@ export default async function handler(req, res) {
             rating: r.rating,
             name: r.name,
             comment: r.comment,
+            image: r.image || "",
             createdAt: r.createdAt,
           });
         }
@@ -44,7 +51,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-      const { rating, name, comment } = req.body || {};
+      const { rating, name, comment, image } = req.body || {};
       if (!rating || !VALID_RATINGS.includes(Number(rating))) {
         return res.status(400).json({ error: "Rating must be 1-5" });
       }
@@ -57,6 +64,7 @@ export default async function handler(req, res) {
         rating: Number(rating),
         name: sanitize(name || "عميلة نادين"),
         comment: sanitize(comment.trim()),
+        image: sanitizeImage(image),
         createdAt: new Date().toISOString(),
       };
 
@@ -68,7 +76,7 @@ export default async function handler(req, res) {
     if (!isAdmin(req)) return res.status(401).json({ error: "Unauthorized" });
 
     if (req.method === "PUT") {
-      const { reviewId, rating, name, comment } = req.body || {};
+      const { reviewId, rating, name, comment, image } = req.body || {};
       const idx = reviews.findIndex((r) => r.id === reviewId);
       if (idx < 0) return res.status(404).json({ error: "Review not found" });
       if (rating !== undefined && !VALID_RATINGS.includes(Number(rating))) {
@@ -80,6 +88,7 @@ export default async function handler(req, res) {
       if (rating !== undefined) reviews[idx].rating = Number(rating);
       if (name !== undefined) reviews[idx].name = sanitize(name);
       if (comment !== undefined) reviews[idx].comment = sanitize(comment.trim());
+      if (image !== undefined) reviews[idx].image = sanitizeImage(image);
       reviews[idx].updatedAt = new Date().toISOString();
       await writeItem(EC_URL, REVIEW_KEY, reviews);
       return res.status(200).json({ success: true, review: reviews[idx] });

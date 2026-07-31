@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { motion } from "framer-motion";
@@ -30,16 +31,30 @@ export function TrackOrder() {
 }
 
 function TrackOrderContent() {
-  const [orderNumber, setOrderNumber] = useState("");
-  const [phone, setPhone] = useState("");
+  const [params] = useSearchParams();
+  const [orderNumber, setOrderNumber] = useState(params.get("orderNumber") || "");
+  const [phone, setPhone] = useState(params.get("phone") || "");
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [error, setError] = useState("");
   const [order, setOrder] = useState<any>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Auto-search when arriving with ?orderNumber=&phone= (from booking success).
+  useEffect(() => {
+    const qOrder = params.get("orderNumber");
+    const qPhone = params.get("phone");
+    if (qOrder && qPhone) {
+      const timer = setTimeout(() => {
+        handleSubmitRef.current?.();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  const handleSubmitRef = useRef<() => void>(() => {});
+
+  const submit = async () => {
     if (!orderNumber.trim() || !phone.trim()) {
       setError("يرجى إدخال رقم الطلب ورقم الهاتف");
       return;
@@ -72,6 +87,12 @@ function TrackOrderContent() {
     } finally {
       setLoading(false);
     }
+  };
+  handleSubmitRef.current = submit;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    void submit();
   };
 
   const getStatusIndex = (status: string) => {

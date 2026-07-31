@@ -14,6 +14,7 @@ import {
   AlertTriangle,
   MessageSquare,
   Send,
+  MessageCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useOrders } from "../lib/metrics";
@@ -199,6 +200,19 @@ export default function OrderDetail() {
           <AButton variant="default" size="sm" icon={<Printer size={14} />} onClick={printOrder}>
             طباعة
           </AButton>
+          {order.phone && (
+            <AButton
+              variant="default"
+              size="sm"
+              icon={<MessageCircle size={14} style={{ color: "#25D366" }} />}
+              onClick={() => {
+                const msg = `السلام عليكم، بخصوص طلبك ${order.orderId} — الحالة: ${order.statusLabel || ""}. للاستفسار يرجى الرد على هذه الرسالة.`;
+                window.open(`https://wa.me/${order.phone}?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
+              }}
+            >
+              واتساب
+            </AButton>
+          )}
         </div>
       </div>
 
