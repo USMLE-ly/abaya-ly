@@ -10,6 +10,8 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { useOrders } from "../lib/metrics";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCoupons } from "../lib/api";
 import {
   ACard,
   AButton,
@@ -19,13 +21,21 @@ import {
   ASkeleton,
   AEmpty,
 } from "../components/ui";
-import { fmtDate, fmtDateTime, STATUS_LIST, statusMeta, type Order } from "../lib/types";
+import {
+  fmtDate, fmtDateTime, STATUS_LIST, statusMeta, checkCoupon, COUPON_STATUS_META,
+  type Order, type AdminCoupon, type CouponCheck,
+} from "../lib/types";
 
 type SortKey = "createdAt" | "updatedAt" | "orderId" | "location" | "status";
 const PAGE_SIZE = 12;
 
 export default function Orders() {
   const { data, isLoading, error } = useOrders();
+  const { data: coupons } = useQuery({
+    queryKey: ["admin", "coupons"],
+    queryFn: fetchCoupons,
+    staleTime: 60_000,
+  });
   const [params, setParams] = useSearchParams();
   const [q, setQ] = useState("");
   const [city, setCity] = useState("");
@@ -36,6 +46,12 @@ export default function Orders() {
 
   const status = params.get("status") ?? "";
   const orders = data ?? [];
+
+  const couponMap = useMemo(() => {
+    const map: Record<string, AdminCoupon> = {};
+    for (const c of coupons ?? []) map[c.code.toLowerCase()] = c;
+    return map;
+  }, [coupons]);
 
   const cities = useMemo(
     () => [...new Set(orders.map((o) => o.location).filter(Boolean))].sort(),
@@ -98,12 +114,12 @@ export default function Orders() {
   const exportCsv = () => {
     const rows = (selected.size ? filtered.filter((o) => selected.has(o.orderId)) : filtered);
     const head = [
-      "رقم الطلب","الكود","المنتج","اللون","المقاس","العميل","الهاتف","المدينة","الحالة","تاريخ الإنشاء","آخر تحديث",
+      "رقم الطلب","الكود","المنتج","اللون","المقاس","العميل","الهاتف","المدينة","الكوبون","الحالة","تاريخ الإنشاء","آخر تحديث",
     ];
     const csv = [
       head.join(","),
       ...rows.map((o) =>
-        [o.orderId, o.code, o.name, o.color, o.size, o.phone, o.phone, o.location, o.statusLabel, o.createdAt, o.updatedAt]
+        [o.orderId, o.code, o.name, o.color, o.size, o.phone, o.phone, o.location, o.couponCode || "", o.statusLabel, o.createdAt, o.updatedAt]
           .map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`)
           .join(",")
       ),
@@ -265,6 +281,7 @@ export default function Orders() {
                     <SortTh label="المدينة" k="location" active={sortKey} dir={sortDir} onClick={toggleSort} cls={th} />
                     <th className={th}>الكود</th>
                     <th className={th}>المنتج</th>
+                    <th className={th}>الكوبون</th>
                     <th className={th}>اللون</th>
                     <th className={th}>المقاس</th>
                     <SortTh label="الحالة" k="status" active={sortKey} dir={sortDir} onClick={toggleSort} cls={th} />
@@ -309,6 +326,7 @@ export default function Orders() {
                       <td className={`${td} max-w-[220px] truncate`} style={{ color: "var(--nd-text)", fontWeight: 700 }}>
                         {o.name}
                       </td>
+                      <td className={td}><CouponCell order={o} couponMap={couponMap} /></td>
                       <td className={td} style={{ color: "var(--nd-text-2)" }}>{o.color || "—"}</td>
                       <td className={td} style={{ color: "var(--nd-text-2)" }}>{o.size || "—"}</td>
                       <td className={td}><StatusBadge status={o.status} size="sm" /></td>
@@ -329,7 +347,7 @@ export default function Orders() {
           {/* Mobile / tablet cards (390px + 800px frames) */}
           <div className="lg:hidden flex flex-col gap-3">
             {slice.map((o) => (
-              <MobileOrderCard key={o.orderId} order={o} />
+              <MobileOrderCard key={o.orderId} order={o} couponMap={couponMap} />
             ))}
           </div>
 
@@ -392,7 +410,7 @@ function SortTh({
   );
 }
 
-function MobileOrderCard({ order: o }: { order: Order }) {
+function MobileOrderCard({ order: o, couponMap }: { order: Order; couponMap: Record<string, AdminCoupon> }) {
   return (
     <Link to={`/admin/orders/${o.orderId}`}>
       <ACard className="p-4">
@@ -413,10 +431,34 @@ function MobileOrderCard({ order: o }: { order: Order }) {
           <span>🎨 {o.color || "—"}</span>
           <span>📏 {o.size || "—"}</span>
         </div>
+        <CouponCell order={o} couponMap={couponMap} />
         <p className="text-[11.5px] mt-2.5 pt-2.5" style={{ color: "var(--nd-text-3)", borderTop: "1px solid var(--nd-border)" }}>
           {fmtDateTime(o.createdAt)}
         </p>
       </ACard>
     </Link>
+  );
+}
+
+function CouponCell({
+  order,
+  couponMap,
+}: {
+  order: Order;
+  couponMap: Record<string, AdminCoupon>;
+}) {
+  const check: CouponCheck | null = checkCoupon(order.couponCode, couponMap);
+  if (!check) return <span style={{ color: "var(--nd-text-4)" }}>—</span>;
+  const meta = COUPON_STATUS_META[check.status];
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 rounded-full font-bold whitespace-nowrap px-2.5 py-1 text-[11px]"
+      style={{ background: meta.bg, color: meta.color }}
+      title={`${order.couponCode} — ${meta.label}`}
+    >
+      <span dir="ltr" className="tabular-nums">{order.couponCode}</span>
+      <span className="w-1.5 h-1.5 rounded-full" style={{ background: meta.color }} />
+      {meta.label}
+    </span>
   );
 }

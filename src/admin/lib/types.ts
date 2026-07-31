@@ -24,6 +24,52 @@ export interface Order {
   updatedAt: string;
   paymentMethod?: "cod" | "transfer" | "card";
   whatsappConsent?: boolean;
+  couponCode?: string;
+}
+
+export interface AdminCoupon {
+  code: string;
+  type: "percent" | "fixed";
+  value: number;
+  label?: string;
+  maxUses?: number;
+  usedCount?: number;
+  expiresAt?: string;
+  active?: boolean;
+  createdAt?: string;
+}
+
+export type CouponCheckStatus = "valid" | "expired" | "exhausted" | "disabled" | "missing";
+
+export interface CouponCheck {
+  code: string;
+  status: CouponCheckStatus;
+}
+
+export const COUPON_STATUS_META: Record<CouponCheckStatus, { label: string; color: string; bg: string }> = {
+  valid: { label: "مطبق ✓", color: "#4F8A16", bg: "#EBF3EA" },
+  expired: { label: "منتهي الصلاحية", color: "#B26A00", bg: "#FFF6E5" },
+  exhausted: { label: "مستنفد", color: "#DC2626", bg: "#FEE2E2" },
+  disabled: { label: "معطل", color: "#6B7280", bg: "#F3F4F6" },
+  missing: { label: "غير موجود", color: "#DC2626", bg: "#FEE2E2" },
+};
+
+/** Validates an order's coupon against the current coupon list. */
+export function checkCoupon(
+  code: string | undefined,
+  map: Record<string, AdminCoupon>
+): CouponCheck | null {
+  if (!code) return null;
+  const coupon = map[code.toLowerCase()];
+  if (!coupon) return { code, status: "missing" };
+  if (coupon.active === false) return { code, status: "disabled" };
+  if (coupon.expiresAt && new Date(coupon.expiresAt).getTime() < Date.now()) {
+    return { code, status: "expired" };
+  }
+  if (coupon.maxUses && (coupon.usedCount || 0) >= coupon.maxUses) {
+    return { code, status: "exhausted" };
+  }
+  return { code, status: "valid" };
 }
 
 export interface StatusMeta {

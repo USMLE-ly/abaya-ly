@@ -1,4 +1,4 @@
-import type { Order, OrderStatus } from "./types";
+import type { Order, OrderStatus, AdminCoupon } from "./types";
 
 const PASSWORD_KEY = "nadine_admin_pw";
 
@@ -254,4 +254,10 @@ export async function clearStock(productId: string): Promise<any> {
 /** GET /api/admin/analytics — aggregated storefront event stats. */
 export async function fetchStorefrontAnalytics(): Promise<any> {
   return apiCall("/api/admin/analytics");
+}
+
+/** GET /api/coupons — list all coupons (admin auth via header). */
+export async function fetchCoupons(): Promise<AdminCoupon[]> {
+  const data = await apiCall("/api/coupons");
+  return data.coupons ?? [];
 }

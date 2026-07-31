@@ -1,5 +1,6 @@
+import { lazy, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { PromoPopups } from "@/components/PromoPopups";
 import { initAnalytics, trackPageView, startScrollDepthTracking } from "@/lib/analytics";
@@ -7,6 +8,11 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Home } from "@/pages/Home";
 import { Product } from "@/pages/Product";
+import { NotFound } from "@/pages/NotFound";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { CookieConsent } from "@/components/CookieConsent";
+import { ADMIN_PATH } from "@/admin/lib/config";
+
 const Collections = lazy(() => import("@/pages/Collections").then(m => ({ default: m.Collections })));
 const Cart = lazy(() => import("@/pages/Cart").then(m => ({ default: m.Cart })));
 const FAQ = lazy(() => import("@/pages/FAQ").then(m => ({ default: m.FAQ })));
@@ -19,9 +25,6 @@ const TermsOfService = lazy(() => import("@/pages/TermsOfService"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const DesignSystem = lazy(() => import("@/pages/DesignSystem"));
 const Wishlist = lazy(() => import("@/pages/Wishlist").then(m => ({ default: m.Wishlist })));
-import { NotFound } from "@/pages/NotFound";
-import { lazy } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const AdminLogin = lazy(() => import("@/admin/pages/Login"));
 const AdminLayout = lazy(() => import("@/admin/layout/AdminLayout").then(m => ({ default: m.AdminLayout })));
@@ -33,13 +36,10 @@ const AdminReviews = lazy(() => import("@/admin/pages/Reviews"));
 const AdminAnalytics = lazy(() => import("@/admin/pages/Analytics"));
 const AdminSettings = lazy(() => import("@/admin/pages/Settings"));
 const AdminCalendar = lazy(() => import("@/admin/pages/Calendar"));
-import { WhatsAppButton } from "@/components/WhatsAppButton";
-import { CookieConsent } from "@/components/CookieConsent";
 
 // Admin dashboard is hidden behind a secret path for security.
 // The public /admin route returns 404 to prevent discovery.
 // Change this value and redeploy to move the dashboard.
-import { ADMIN_PATH } from "@/admin/lib/config";
 
 // Decoy admin page that looks like a 404
 function AdminDecoy() {
@@ -48,7 +48,7 @@ function AdminDecoy() {
 
 const queryClient = new QueryClient();
 
-/** Fires GA4 page_view on every SPA route change + scroll-depth tracking. */
+/** Fires internal page_view on every SPA route change + scroll-depth tracking. */
 function AnalyticsTracker() {
   const location = useLocation();
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -17,7 +17,9 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useOrders } from "../lib/metrics";
+import { useQuery } from "@tanstack/react-query";
 import { fetchNotes, addNote, updateStatus, type Note } from "../lib/api";
+import { fetchCoupons } from "../lib/api";
 import {
   ACard,
   AButton,
@@ -32,6 +34,9 @@ import {
   fmtDate,
   fmtDateTime,
   relativeAr,
+  checkCoupon,
+  COUPON_STATUS_META,
+  type AdminCoupon,
   type Order,
   type OrderStatus,
 } from "../lib/types";
@@ -50,7 +55,17 @@ export default function OrderDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: orders, isLoading, error } = useOrders();
+  const { data: coupons } = useQuery({
+    queryKey: ["admin", "coupons"],
+    queryFn: fetchCoupons,
+    staleTime: 60_000,
+  });
   const order = orders?.find((o) => o.orderId === id);
+  const couponMap = useMemo(() => {
+    const map: Record<string, AdminCoupon> = {};
+    for (const c of coupons ?? []) map[c.code.toLowerCase()] = c;
+    return map;
+  }, [coupons]);
 
   const [updating, setUpdating] = useState(false);
   const [notes, setNotes] = useState<Note[]>([]);
@@ -271,6 +286,13 @@ export default function OrderDetail() {
                 { label: "آخر تحديث", value: fmtDateTime(order.updatedAt) },
                 { label: "طريقة الدفع", value: "عند الاستلام 💵" },
                 { label: "إشعار واتساب", value: order.whatsappConsent ? "✅ مفعّل" : "❌ غير مفعّل" },
+                {
+                  label: "كود الخصم",
+                  value: order.couponCode
+                    ? `${order.couponCode} — ${COUPON_STATUS_META[checkCoupon(order.couponCode, couponMap)?.status ?? "missing"].label}`
+                    : "—",
+                  ltr: true,
+                },
               ].map((f) => (
                 <div key={f.label}>
                   <p className="text-[11px] font-bold mb-1" style={{ color: "var(--nd-text-4)" }}>
