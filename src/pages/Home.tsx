@@ -7,6 +7,7 @@ import { GlobeSection } from "@/components/GlobeSection";
 import FlipGallery from "@/components/ui/flip-gallery";
 import IPhoneMockup from "@/components/ui/iphone-mockup";
 import { ContactForm } from "@/components/ContactForm";
+import { NewsletterSection } from "@/components/NewsletterSection";
 import { OutfitGallery } from "@/components/OutfitGallery";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 
@@ -75,6 +76,7 @@ function HomeContent() {
       </section>
 
       <HomeFAQ />
+      <NewsletterSection />
       <ContactForm />
     </>
   );
