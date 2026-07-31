@@ -733,6 +733,8 @@ export const products: Product[] = base.map((b): Product => {
     description: m.description,
     highlights: m.highlights,
     details: m.details,
+    stock: stockLevels[b.id],
+    lowStockThreshold: LOW_STOCK_THRESHOLD,
   };
 });
 
