@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Minus, Plus, Trash2, ShoppingBag, Truck, ArrowLeft } from "lucide-react";
+import { X, Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import {
   getCart, setCart, cartCount, cartSubtotal, FREE_SHIPPING_THRESHOLD,
@@ -99,7 +99,7 @@ export function CartDrawer() {
             className="fixed inset-y-0 left-0 z-[71] w-full max-w-[400px] flex flex-col bg-canvas shadow-2xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-line-subtle">
+            <div className="flex items-center justify-between px-4 py-4 border-b border-line-subtle">
               <div className="flex items-center gap-2">
                 <ShoppingBag size={17} className="text-brand" />
                 <h2 className="text-sm font-bold text-fg">سلة التسوق</h2>
@@ -147,31 +147,31 @@ export function CartDrawer() {
                 </div>
 
                 {/* Items */}
-                <div className="flex-1 overflow-y-auto px-5 py-3">
+                <div className="flex-1 overflow-y-auto px-4 py-3">
                   {items.map((item) => (
-                    <div key={item.id} className="flex gap-3 py-3.5 border-b border-line-subtle last:border-0">
+                    <div key={item.id} className="flex items-center gap-3 py-3 border-b border-line-subtle last:border-0">
                       <Link to={`/product/${item.id}`} onClick={() => setOpen(false)} className="flex-shrink-0">
-                        <OptimizedImage src={item.image} alt={item.name} className="w-16 h-20 rounded-lg" />
+                        <OptimizedImage src={item.image} alt={item.name} className="w-[72px] h-[72px] rounded-lg" />
                       </Link>
                       <div className="flex-1 min-w-0">
                         <Link to={`/product/${item.id}`} onClick={() => setOpen(false)} className="block">
-                          <p className="text-xs font-semibold text-fg truncate">{shortName(item.name)}</p>
+                          <p className="text-[15px] font-semibold text-fg truncate">{shortName(item.name)}</p>
                         </Link>
-                        <p className="text-[10px] text-fg-tertiary mt-0.5">اللون: {item.color} | المقاس: {item.size}</p>
+                        <p className="text-xs text-fg-tertiary mt-0.5">اللون: {item.color} | المقاس: {item.size}</p>
                         <div className="flex items-center justify-between mt-2">
-                          <div className="flex items-center glass rounded-lg overflow-hidden">
-                            <button onClick={() => updateQty(item.id, -1)} className="p-1.5 text-fg-secondary hover:text-fg" aria-label="إنقاص">
-                              <Minus size={11} />
+                          <div className="flex items-center border border-[#787878]/40 rounded-full">
+                            <button onClick={() => updateQty(item.id, -1)} className="w-6 h-6 flex items-center justify-center rounded-full text-fg hover:bg-sunken transition-colors" aria-label="إنقاص">
+                              <Minus size={10} />
                             </button>
-                            <span className="w-7 text-center text-xs font-semibold text-fg">{item.quantity}</span>
-                            <button onClick={() => updateQty(item.id, 1)} className="p-1.5 text-fg-secondary hover:text-fg" aria-label="زيادة">
-                              <Plus size={11} />
+                            <span className="w-9 text-center text-sm font-medium text-fg">{item.quantity}</span>
+                            <button onClick={() => updateQty(item.id, 1)} className="w-6 h-6 flex items-center justify-center rounded-full text-fg hover:bg-sunken transition-colors" aria-label="زيادة">
+                              <Plus size={10} />
                             </button>
                           </div>
-                          <span className="text-xs font-bold text-brand">{item.price * item.quantity} د.ل</span>
+                          <span className="text-base font-bold text-brand">{item.price * item.quantity} د.ل</span>
                         </div>
                       </div>
-                      <button onClick={() => remove(item.id)} className="self-start text-fg-tertiary hover:text-status-danger transition-colors p-1" aria-label="حذف">
+                      <button onClick={() => remove(item.id)} className="self-center text-fg-tertiary hover:text-status-danger transition-colors p-1" aria-label="حذف">
                         <Trash2 size={13} />
                       </button>
                     </div>
@@ -179,11 +179,7 @@ export function CartDrawer() {
                 </div>
 
                 {/* Footer */}
-                <div className="border-t border-line-subtle px-5 py-4">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs text-fg-tertiary flex items-center gap-1"><Truck size={12} /> التوصيل</span>
-                    <span className="text-[11px] font-bold text-status-success">مجاني · 3-5 أيام</span>
-                  </div>
+                <div className="border-t border-line-subtle px-4 py-4">
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-sm font-bold text-fg">الإجمالي</span>
                     <span className="text-lg font-bold text-brand">{subtotal} د.ل</span>

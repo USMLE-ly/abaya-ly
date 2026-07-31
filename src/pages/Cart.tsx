@@ -125,34 +125,34 @@ function CartContent() {
                     <motion.div key={item.id} layout className="grid grid-cols-12 gap-4 py-5 border-b border-line-subtle items-center">
                       <div className="col-span-12 md:col-span-6 flex gap-4">
                         <Link to={`/product/${item.id}`} className="flex-shrink-0">
-                          <OptimizedImage src={item.image} alt={item.name} className="w-20 h-24 rounded-xl flex-shrink-0" />
+                          <OptimizedImage src={item.image} alt={item.name} className="w-[72px] h-[72px] rounded-lg flex-shrink-0" />
                         </Link>
                         <div className="min-w-0">
                           <Link to={`/product/${item.id}`} className="block">
-                            <h3 className="text-sm font-semibold text-fg hover:text-accent-brand transition-colors truncate">
+                            <h3 className="text-[15px] font-semibold text-fg hover:text-accent-brand transition-colors truncate">
                               {shortName(item.name)}
                             </h3>
                           </Link>
-                          <p className="text-[10px] text-fg-tertiary mt-1">اللون: {item.color} | المقاس: {item.size}</p>
-                          {item.fabric && <p className="text-[10px] text-fg-tertiary mt-0.5">{item.fabric}</p>}
-                          <button onClick={() => remove(item.id)} className="text-[10px] text-fg-tertiary hover:text-status-danger mt-2 flex items-center gap-1 transition-colors">
-                            <Trash2 size={10} />حذف
+                          <p className="text-xs text-fg-tertiary mt-1">اللون: {item.color} | المقاس: {item.size}</p>
+                          {item.fabric && <p className="text-xs text-fg-tertiary mt-0.5">{item.fabric}</p>}
+                          <button onClick={() => remove(item.id)} aria-label="حذف المنتج" className="mt-2 text-fg-tertiary hover:text-status-danger transition-colors">
+                            <Trash2 size={14} />
                           </button>
                         </div>
                       </div>
                       <div className="col-span-6 md:col-span-3 flex items-center justify-start md:justify-center">
-                        <div className="flex items-center glass rounded-lg overflow-hidden">
-                          <Button variant="ghost" iconOnly size="sm" onClick={() => updateQty(item.id, -1)} aria-label="إنقاص">
-                            <Minus size={12} />
-                          </Button>
-                          <span className="w-8 text-center text-xs font-semibold text-fg">{item.quantity}</span>
-                          <Button variant="ghost" iconOnly size="sm" onClick={() => updateQty(item.id, 1)} aria-label="زيادة">
-                            <Plus size={12} />
-                          </Button>
+                        <div className="flex items-center border border-[#787878]/40 rounded-full">
+                          <button onClick={() => updateQty(item.id, -1)} className="w-6 h-6 flex items-center justify-center rounded-full text-fg hover:bg-sunken transition-colors" aria-label="إنقاص">
+                            <Minus size={10} />
+                          </button>
+                          <span className="w-9 text-center text-sm font-medium text-fg">{item.quantity}</span>
+                          <button onClick={() => updateQty(item.id, 1)} className="w-6 h-6 flex items-center justify-center rounded-full text-fg hover:bg-sunken transition-colors" aria-label="زيادة">
+                            <Plus size={10} />
+                          </button>
                         </div>
                       </div>
                       <div className="col-span-6 md:col-span-3 text-end">
-                        <span className="text-sm font-bold text-accent-brand">{item.price * item.quantity} د.ل</span>
+                        <span className="text-base font-bold text-accent-brand">{item.price * item.quantity} د.ل</span>
                       </div>
                     </motion.div>
                   ))}

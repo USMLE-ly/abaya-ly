@@ -32,7 +32,7 @@ export function OptimizedImage({
   const actualFallback = fallback || src;
 
   return (
-    <picture className={className} style={style} onClick={onClick}>
+    <picture className={`block ${className}`} style={style} onClick={onClick}>
       <source srcSet={webpSrc} type="image/webp" />
       <img
         src={actualFallback}
