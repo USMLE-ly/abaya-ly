@@ -1,5 +1,8 @@
-import { Star, Quote, BadgeCheck } from "lucide-react";
+import { Star, BadgeCheck } from "lucide-react";
 import { Reveal } from "@/components/PageTransition";
+import { Marquee } from "@/components/Marquee";
+import { Card } from "@/components/velar/Card";
+import { Avatar } from "@/components/velar/Avatar";
 
 interface Testimonial {
   name: string;
@@ -10,22 +13,58 @@ interface Testimonial {
 
 const TESTIMONIALS: Testimonial[] = [
   {
-    name: "أسماء. ب",
-    city: "بنغازي",
-    text: "الفستان وصلني قبل الموعد المتوقع والخياطة أجمل من الصور! تجربة شراء راقية جداً.",
-    rating: 5,
-  },
-  {
-    name: "هاجر. م",
+    name: "نور الهدى",
     city: "طرابلس",
-    text: "طلبت فستان لحفل تخرجي وكانت القطعة مضبوطة على المقاس. شكراً نادين على الذوق الرفيع.",
+    text: "طلبت فستان نبيذي لحفل زفاف أختي — وصلني قبل الموعد والقماش أجمل من الصور بكثير. شكراً نادين!",
     rating: 5,
   },
   {
-    name: "سارة. ع",
+    name: "ريم",
+    city: "بنغازي",
+    text: "الدفع عند الاستلام خلّاني أطلب بثقة، والخياطة مضبوطة على المقاس حرفياً. تجربة تستحق التكرار.",
+    rating: 5,
+  },
+  {
+    name: "لمى",
     city: "مصراتة",
-    text: "خدمة العملاء محترفة والدفع عند الاستلام ريّحني. أكيد راح أطلب مرة ثانية.",
-    rating: 4,
+    text: "التطريز فخم جداً والتفاصيل واضح إنها شغل راقي. صار فستان السهرة المفضل عندي.",
+    rating: 5,
+  },
+  {
+    name: "دانة",
+    city: "الخمس",
+    text: "خدمة العملاء ردّت على كل استفساراتي بالواتساب بسرعة، والتوصيل وصلني خلال يومين فقط.",
+    rating: 5,
+  },
+  {
+    name: "شهد",
+    city: "زليتن",
+    text: "أول مرة أطلب أونلاين من ليبيا وأنا راضية تماماً. الفستان مطابق للوصف واللون أجمل من الصورة.",
+    rating: 5,
+  },
+  {
+    name: "مريم",
+    city: "سبها",
+    text: "القماش ثقيل وفخم والخياطة نضيفة. وصلني بغلاف أنيق، حسّيت إني أشتري من متجر عالمي.",
+    rating: 5,
+  },
+  {
+    name: "أمل",
+    city: "طرابلس",
+    text: "طلبت فستانين مع بعض والخصم طُبّق صح. الإرجاع مريح والجودة فوق الممتاز.",
+    rating: 5,
+  },
+  {
+    name: "سلمى",
+    city: "البيضاء",
+    text: "فستان البولكا الأسود تحفة! التطريز عالي الجودة والقماش مريح، أنصح في نادين كل صديقاتي.",
+    rating: 5,
+  },
+  {
+    name: "فاطمة",
+    city: "درنة",
+    text: "التوصيل لدرنة كان سريع والدفع عند الاستلام. المقاس مطابق لجدول المقاسات تماماً.",
+    rating: 5,
   },
 ];
 
@@ -33,44 +72,63 @@ function Stars({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-0.5" dir="ltr">
       {Array.from({ length: 5 }).map((_, i) => (
-        <Star key={i} size={13} className={i < rating ? "fill-accent-brand text-accent-brand" : "text-line-default"} />
+        <Star key={i} size={12} className={i < rating ? "fill-strawberry-500 text-strawberry-500" : "text-strawberry-200"} />
       ))}
     </div>
   );
 }
 
-/** Shrine-style testimonials — Arabic customer reviews with social proof. */
+function TestimonialCard({ name, city, text, rating }: Testimonial) {
+  return (
+    <Card elevation="flat" padding="lg" className="w-60 md:w-64 bg-white border-strawberry-100 shadow-[0_8px_30px_rgba(196,40,85,0.08)]">
+      <div className="flex items-center gap-2.5">
+        <Avatar
+          size={40}
+          initials={name.charAt(0)}
+          className="bg-gradient-to-br from-strawberry-400 to-strawberry-700 text-white ring-white shadow-md shadow-strawberry-500/20"
+        />
+        <div className="min-w-0">
+          <figcaption className="text-sm font-bold text-fg flex items-center gap-1 truncate">
+            {name}
+            <BadgeCheck size={13} className="text-strawberry-600 flex-shrink-0" />
+          </figcaption>
+          <p className="text-[11px] text-fg-tertiary">{city} — عميلة موثقة</p>
+        </div>
+        <div className="ms-auto"><Stars rating={rating} /></div>
+      </div>
+      <blockquote className="mt-3 text-sm text-fg-secondary leading-relaxed">{text}</blockquote>
+    </Card>
+  );
+}
+
+/** 3D vertical marquee — Shrine-style customer reviews in white / rose / strawberry. */
 export function Testimonials() {
+  const cards = TESTIMONIALS.map((t) => <TestimonialCard key={t.name} {...t} />);
+
   return (
     <Reveal>
-      <section className="py-14 md:py-20">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10">
+      <section className="py-14 md:py-20 overflow-hidden">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10">
           <div className="text-center mb-10">
             <p className="text-[11px] uppercase tracking-[0.22em] font-semibold text-accent-brand mb-2">آراء عميلاتنا</p>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-fg">
               ماذا قالت <span className="text-accent-brand">عميلاتنا</span>
             </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {TESTIMONIALS.map((t) => (
-              <figure key={t.name} className="rounded-2xl border border-line-subtle bg-canvas p-5 flex flex-col gap-3 hover:border-line-default hover:shadow-e1 transition-all duration-300">
-                <Quote size={18} className="text-accent-brand/40" />
-                <blockquote className="text-sm text-fg-secondary leading-relaxed flex-1">{t.text}</blockquote>
-                <figcaption className="flex items-center gap-2.5 border-t border-line-subtle pt-3">
-                  <span className="w-9 h-9 rounded-full bg-brand-subtle text-brand flex items-center justify-center text-sm font-bold">
-                    {t.name.charAt(0)}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-fg flex items-center gap-1">
-                      {t.name}
-                      <BadgeCheck size={12} className="text-status-success" />
-                    </p>
-                    <p className="text-[10px] text-fg-tertiary">{t.city} — عميلة موثقة</p>
-                  </div>
-                  <div className="ms-auto"><Stars rating={t.rating} /></div>
-                </figcaption>
-              </figure>
-            ))}
+
+          <div className="relative flex h-[420px] items-center justify-center gap-4 overflow-hidden rounded-3xl border border-strawberry-100 bg-gradient-to-b from-strawberry-50/70 via-white to-strawberry-50/70 [perspective:900px]">
+            <div
+              className="flex flex-row items-center gap-4"
+              style={{ transform: "translateX(-24px) translateY(0px) translateZ(-60px) rotateX(8deg) rotateY(0deg) rotateZ(2deg)" }}
+            >
+              <Marquee vertical pauseOnHover repeat={3} className="[--duration:45s]">{cards}</Marquee>
+              <Marquee vertical pauseOnHover reverse repeat={3} className="[--duration:45s]">{cards}</Marquee>
+              <Marquee vertical pauseOnHover repeat={3} className="[--duration:45s]">{cards}</Marquee>
+              <Marquee vertical pauseOnHover reverse repeat={3} className="[--duration:45s]">{cards}</Marquee>
+            </div>
+
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
           </div>
         </div>
       </section>
