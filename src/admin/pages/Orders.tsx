@@ -19,7 +19,7 @@ import {
   ASkeleton,
   AEmpty,
 } from "../components/ui";
-import { fmtDate, fmtDateTime, STATUS_LIST, type Order } from "../lib/types";
+import { fmtDate, fmtDateTime, STATUS_LIST, statusMeta, type Order } from "../lib/types";
 
 type SortKey = "createdAt" | "updatedAt" | "orderId" | "location" | "status";
 const PAGE_SIZE = 12;
@@ -41,6 +41,18 @@ export default function Orders() {
     () => [...new Set(orders.map((o) => o.location).filter(Boolean))].sort(),
     [orders]
   );
+
+  // Real statuses present in the data (canonical order first, extras after)
+  const statusCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const o of orders) counts.set(o.status, (counts.get(o.status) || 0) + 1);
+    return counts;
+  }, [orders]);
+
+  const realStatuses = useMemo(() => {
+    const extras = [...statusCounts.keys()].filter((s) => !STATUS_LIST.some((m) => m.id === s));
+    return [...STATUS_LIST.map((m) => m.id), ...extras];
+  }, [statusCounts]);
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -162,21 +174,6 @@ export default function Orders() {
           }}
         />
         <ASelect
-          value={status}
-          onChange={(e) => {
-            const v = e.target.value;
-            setParams(v ? { status: v } : {});
-            setPage(1);
-          }}
-        >
-          <option value="">كل الحالات</option>
-          {STATUS_LIST.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.label}
-            </option>
-          ))}
-        </ASelect>
-        <ASelect
           value={city}
           onChange={(e) => {
             setCity(e.target.value);
@@ -191,6 +188,57 @@ export default function Orders() {
           ))}
         </ASelect>
       </ACard>
+
+      {/* Status chips — reflects the real statuses in the data */}
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => { setParams({}); setPage(1); }}
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12.5px] font-bold transition-all"
+          style={{
+            background: !status ? "var(--nd-primary-500)" : "var(--nd-white)",
+            color: !status ? "#fff" : "var(--nd-text-2)",
+            border: "1px solid var(--nd-border)",
+            boxShadow: !status ? "0 4px 12px rgba(206,44,96,0.25)" : "none",
+          }}
+        >
+          الكل
+          <span
+            className="px-1.5 py-0.5 rounded-full text-[10.5px] tabular-nums"
+            style={{ background: !status ? "rgba(255,255,255,0.22)" : "var(--nd-bg)" }}
+          >
+            {orders.length}
+          </span>
+        </button>
+        {realStatuses.map((s) => {
+          const meta = statusMeta(s);
+          const active = status === s;
+          return (
+            <button
+              key={s}
+              onClick={() => { setParams({ status: s }); setPage(1); }}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12.5px] font-bold transition-all hover:brightness-[0.98] active:scale-[0.98]"
+              style={{
+                background: active ? meta.color : "var(--nd-white)",
+                color: active ? "#fff" : "var(--nd-text-2)",
+                border: `1px solid ${active ? meta.color : "var(--nd-border)"}`,
+                boxShadow: active ? `0 4px 12px ${meta.color}40` : "none",
+              }}
+            >
+              <span
+                className="w-2 h-2 rounded-full"
+                style={{ background: active ? "#fff" : meta.color }}
+              />
+              {meta.label}
+              <span
+                className="px-1.5 py-0.5 rounded-full text-[10.5px] tabular-nums"
+                style={{ background: active ? "rgba(255,255,255,0.22)" : "var(--nd-bg)" }}
+              >
+                {statusCounts.get(s) || 0}
+              </span>
+            </button>
+          );
+        })}
+      </div>
 
       {filtered.length === 0 ? (
         <ACard>

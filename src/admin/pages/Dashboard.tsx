@@ -137,18 +137,22 @@ export default function Dashboard() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          icon={<ShoppingBag size={18} />}
-          value={stats.total}
-          label="إجمالي الطلبات"
-          accent="var(--nd-primary-500)"
-        />
-        <StatCard
-          icon={<Clock size={18} />}
-          value={stats.pending}
-          label="قيد الانتظار"
-          hint={stats.pending > 0 ? `${stats.pending} طلب بحاجة للمراجعة` : undefined}
-        />
+        <Link to={`/${ADMIN_PATH}/orders`} className="block transition-opacity hover:opacity-80">
+          <StatCard
+            icon={<ShoppingBag size={18} />}
+            value={stats.total}
+            label="إجمالي الطلبات"
+            accent="var(--nd-primary-500)"
+          />
+        </Link>
+        <Link to={`/${ADMIN_PATH}/orders?status=pending`} className="block transition-opacity hover:opacity-80">
+          <StatCard
+            icon={<Clock size={18} />}
+            value={stats.pending}
+            label="قيد الانتظار"
+            hint={stats.pending > 0 ? `${stats.pending} طلب بحاجة للمراجعة` : undefined}
+          />
+        </Link>
         <StatCard
           icon={<Users size={18} />}
           value={stats.uniqueCustomers}
@@ -174,24 +178,28 @@ export default function Dashboard() {
             <p className="text-lg font-bold" style={{ color: "var(--nd-text)" }}>{stats.revenue.toLocaleString()} د.ل</p>
           </div>
         </div>
-        <div className="rounded-2xl p-5 flex items-center gap-4" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "rgba(84,166,255,0.1)" }}>
-            <Package size={20} style={{ color: "#54A6FF" }} />
+        <Link to={`/${ADMIN_PATH}/orders?status=processing`} className="block transition-opacity hover:opacity-80">
+          <div className="rounded-2xl p-5 flex items-center gap-4" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "rgba(84,166,255,0.1)" }}>
+              <Package size={20} style={{ color: "#54A6FF" }} />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold" style={{ color: "var(--nd-text-3)" }}>قيد التجهيز</p>
+              <p className="text-lg font-bold" style={{ color: "var(--nd-text)" }}>{stats.processing}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-[11px] font-bold" style={{ color: "var(--nd-text-3)" }}>قيد التجهيز</p>
-            <p className="text-lg font-bold" style={{ color: "var(--nd-text)" }}>{stats.processing}</p>
+        </Link>
+        <Link to={`/${ADMIN_PATH}/orders?status=delivered`} className="block transition-opacity hover:opacity-80">
+          <div className="rounded-2xl p-5 flex items-center gap-4" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "rgba(156,211,35,0.1)" }}>
+              <CheckCircle2 size={20} style={{ color: "#9CD323" }} />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold" style={{ color: "var(--nd-text-3)" }}>تم التوصيل</p>
+              <p className="text-lg font-bold" style={{ color: "var(--nd-text)" }}>{stats.delivered}</p>
+            </div>
           </div>
-        </div>
-        <div className="rounded-2xl p-5 flex items-center gap-4" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "rgba(156,211,35,0.1)" }}>
-            <CheckCircle2 size={20} style={{ color: "#9CD323" }} />
-          </div>
-          <div>
-            <p className="text-[11px] font-bold" style={{ color: "var(--nd-text-3)" }}>تم التوصيل</p>
-            <p className="text-lg font-bold" style={{ color: "var(--nd-text)" }}>{stats.delivered}</p>
-          </div>
-        </div>
+        </Link>
         <div className="rounded-2xl p-5 flex items-center gap-4" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
           <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "rgba(206,44,96,0.06)" }}>
             <ShoppingBag size={20} style={{ color: "var(--nd-primary-300)" }} />
