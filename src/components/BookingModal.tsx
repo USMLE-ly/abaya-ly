@@ -60,6 +60,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const [error, setError] = useState("");
   const [orderId, setOrderId] = useState("");
   const [submittedPhone, setSubmittedPhone] = useState("");
+  const [whatsappConsent, setWhatsappConsent] = useState(false);
 
   if (!open) return null;
 
@@ -110,6 +111,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
           size: selectedSize,
           location: locationValue,
           phone: phone.trim(),
+          whatsappConsent,
         }),
       });
 
@@ -270,6 +272,20 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               </div>
 
               {/* Error */}
+              {/* WhatsApp consent */}
+              <div className="flex items-start gap-2">
+                <input
+                  type="checkbox"
+                  id="whatsapp-consent"
+                  checked={whatsappConsent}
+                  onChange={(e) => setWhatsappConsent(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded border-line-subtle accent-strawberry-600 cursor-pointer"
+                />
+                <label htmlFor="whatsapp-consent" className="text-[11px] text-fg-tertiary leading-relaxed cursor-pointer">
+                  أوافق على تلقي إشعارات الطلب عبر <span className="font-semibold text-accent-brand">واتساب</span>
+                </label>
+              </div>
+
               {error && (
                 <p className="text-xs text-status-danger">{error}</p>
               )}

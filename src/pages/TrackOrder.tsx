@@ -13,6 +13,15 @@ const STATUS_STEPS = [
 
 const STATUS_ORDER = ["pending", "processing", "waiting_shipping", "shipped", "delivered"];
 
+// Delivery estimates based on status
+const ETA_MAP: Record<string, string> = {
+  pending:    "سيتم الاتصال بكِ لتأكيد الطلب خلال 24 ساعة",
+  processing: "سيتم الشحن خلال 2-3 أيام عمل من تاريخ التأكيد",
+  waiting_shipping: "الطلب في انتظار وصول الشحنة إلى مركز الشحن",
+  shipped:    "سيتم التوصيل إلى عنوانكِ خلال 1-3 أيام عمل",
+  delivered:  "تم تسليم الطلب ✓",
+};
+
 
 export function TrackOrder() {
   return <PageTransition><TrackOrderContent /></PageTransition>;
@@ -281,6 +290,22 @@ function TrackOrderContent() {
                     </div>
                   );
                 })}
+              </div>
+
+              {/* Estimated delivery date */}
+              <div className="mt-6 p-4 rounded-xl" style={{ background: "rgba(196,40,85,0.06)", border: "1px solid rgba(196,40,85,0.1)" }}>
+                <div className="flex items-center gap-2 mb-1">
+                  <Clock size={14} className="text-accent-brand" />
+                  <p className="text-[12px] font-bold text-fg">وقت التوصيل المتوقع</p>
+                </div>
+                <p className="text-[13px] text-fg-secondary leading-relaxed mr-6">
+                  {ETA_MAP[order.status] || "سيتم تحديث وقت التوصيل عند تأكيد الطلب"}
+                </p>
+                {order.status !== "delivered" && (
+                  <p className="text-[11px] text-fg-tertiary mr-6 mt-1">
+                    * التوقيت تقديري وقد يختلف حسب المدينة والظروف
+                  </p>
+                )}
               </div>
 
               {/* Contact WhatsApp */}

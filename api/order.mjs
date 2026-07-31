@@ -40,7 +40,7 @@ function rl_check(ip) {
   const rl = rl_check(ip);
   if (!rl.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: rl.retryAfter });
 
-  const { code, name, color, size, location, phone } = req.body || {};
+  const { code, name, color, size, location, phone, whatsappConsent } = req.body || {};
 
   // Validate required fields
   if (!code || !phone) {
@@ -62,6 +62,7 @@ function rl_check(ip) {
     code: sanitize(code),
     name: sanitize(name),
     color: sanitize(color),
+    whatsappConsent: !!whatsappConsent,
     size: sanitize(size),
     location: sanitize(location),
   };
@@ -82,6 +83,7 @@ function rl_check(ip) {
     size: sanitized.size,
     location: sanitized.location,
     phone: phoneClean,
+      whatsappConsent: !!sanitized.whatsappConsent,
     status: "pending",
     statusLabel: "انتظار التأكيد",
     createdAt: now,
@@ -131,6 +133,7 @@ function rl_check(ip) {
 
   // Send Telegram notification
   if (BOT_TOKEN && CHAT_ID && stored) {
+    const consentEmoji = sanitized.whatsappConsent ? "✅" : "❌";
     const message = [
       `🛒 طلب جديد ${orderId}`,
       "━━━━━━━━━━━━━━━",
@@ -140,6 +143,7 @@ function rl_check(ip) {
       `📏 المقاس: ${sanitized.size || "—"}`,
       `📍 الموقع: ${sanitized.location || "—"}`,
       `📞 الهاتف: ${phoneClean}`,
+      `💬 إشعار واتساب: ${consentEmoji}`,
       "━━━━━━━━━━━━━━━",
       `📅 ${new Date().toLocaleDateString("ar-LY", {
         weekday: "long", year: "numeric", month: "long", day: "numeric",

@@ -101,16 +101,21 @@ function rl_check(ip) {
       return res.status(500).json({ error: "Failed to update" });
     }
 
-    // Send Telegram notification
+    // Send Telegram notification with WhatsApp quick-link for customer
     const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
     const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
     if (BOT_TOKEN && CHAT_ID) {
+      const waMessage = encodeURIComponent(
+        `السلام عليكم، تم تحديث حالة طلبك ${orderId} إلى: ${statusLabels[status]}. للاستفسار يرجى الرد على هذه الرسالة.`
+      );
+      const waLink = `https://wa.me/${order.phone}?text=${waMessage}`;
       const message = [
         `🔄 تحديث حالة الطلب ${orderId}`,
         "━━━━━━━━━━━━━━━",
         `👗 الفستان: ${order.name || "—"}`,
         `📞 الهاتف: ${order.phone}`,
         `📌 الحالة الجديدة: ${statusLabels[status]}`,
+        order.whatsappConsent ? `💬 واتساب: 👇` : `💬 واتساب: لم يوافق العميل`,
         "━━━━━━━━━━━━━━━",
         `📅 ${new Date().toLocaleDateString("ar-LY", {
           weekday: "long", year: "numeric", month: "long", day: "numeric",
