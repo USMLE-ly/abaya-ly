@@ -27,12 +27,12 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           ref={ref}
           id={sid}
           disabled={disabled}
-          className="flex-1 bg-transparent outline-none appearance-none pr-6 text-base"
+          className="flex-1 bg-transparent outline-none appearance-none pe-6 text-base"
           {...rest}
         >
           {children}
         </select>
-        <ChevronDown size={16} className="absolute right-3 text-fg-tertiary pointer-events-none" />
+        <ChevronDown size={16} className="absolute end-3 text-fg-tertiary pointer-events-none" />
       </div>
       {error ? <p className="text-xs text-danger">{error}</p> : hint ? <p className="text-xs text-fg-tertiary">{hint}</p> : null}
     </div>

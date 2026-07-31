@@ -286,7 +286,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="p-5 space-y-4 text-right">
+            <form onSubmit={handleSubmit} className="p-5 space-y-4 text-start">
               {/* Product code (read-only) — single-product mode only */}
               {!cart && (
                 <div>

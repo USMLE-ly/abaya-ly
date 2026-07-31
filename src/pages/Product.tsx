@@ -534,7 +534,7 @@ function ProductContent() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </div>
-                    <div className="p-3 text-right">
+                    <div className="p-3 text-start">
                       <p className="text-[10px] uppercase tracking-[0.15em] text-accent-brand/70 font-semibold mb-0.5">{p.collection}</p>
                       <p className="text-xs font-semibold text-fg truncate">{p.name.split(" • ").slice(2).join(" • ") ?? p.name}</p>
                       <div className="flex items-center gap-2 mt-1">

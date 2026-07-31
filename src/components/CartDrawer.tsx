@@ -92,11 +92,11 @@ export function CartDrawer() {
             key="drawer"
             role="dialog"
             aria-label="سلة التسوق"
-            initial={{ x: "100%" }}
+            initial={{ x: "-100%" }}
             animate={{ x: 0 }}
-            exit={{ x: "100%" }}
+            exit={{ x: "-100%" }}
             transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-y-0 right-0 z-[71] w-full max-w-[400px] flex flex-col bg-canvas shadow-2xl"
+            className="fixed inset-y-0 left-0 z-[71] w-full max-w-[400px] flex flex-col bg-canvas shadow-2xl"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-line-subtle">

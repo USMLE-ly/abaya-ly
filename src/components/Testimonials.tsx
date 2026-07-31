@@ -73,7 +73,7 @@ export function Testimonials() {
                     </p>
                     <p className="text-[10px] text-fg-tertiary">{t.city} — عميلة موثقة</p>
                   </div>
-                  <div className="mr-auto"><Stars rating={t.rating} /></div>
+                  <div className="ms-auto"><Stars rating={t.rating} /></div>
                 </figcaption>
               </figure>
             ))}

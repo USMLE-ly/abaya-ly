@@ -48,7 +48,7 @@ export function AddToCartButton({
       {loading ? (
         <Spinner size={18} />
       ) : (
-        <ShoppingBag size={18} className="transition-transform duration-300 group-hover:-translate-x-0.5" aria-hidden="true" />
+        <ShoppingBag size={18} className="transition-transform duration-300 group-hover:-translate-x-0.5 rtl:group-hover:translate-x-0.5" aria-hidden="true" />
       )}
       <span className="flex items-baseline gap-1.5">
         <span className="tabular-nums">{price} د.ل</span>

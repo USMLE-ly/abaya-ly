@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { X, Truck, Sparkles, ShoppingBag } from "lucide-react";
 import { cartCount, subscribeToCart } from "@/lib/cart";
 import { trackCta } from "@/lib/analytics";
-
-const DISMISS_KEY = "nadine-announce-dismissed";
+import {
+  dismissAnnounce,
+  getAnnounceState,
+  setAnnounceHeight,
+  subscribeAnnounceState,
+} from "@/lib/announcement";
 
 const messages = [
   { icon: Truck, text: "شحن مجاني لجميع مدن ليبيا · التوصيل خلال 3-5 أيام", to: "/shipping-policy" },
@@ -12,29 +16,53 @@ const messages = [
 ];
 
 export function AnnouncementBar() {
-  const [dismissed, setDismissed] = useState(true);
+  const [announce, setAnnounce] = useState(getAnnounceState);
   const [index, setIndex] = useState(0);
   const [pending, setPending] = useState(0);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => subscribeAnnounceState(setAnnounce), []);
 
   useEffect(() => {
-    setDismissed(sessionStorage.getItem(DISMISS_KEY) === "1");
     const sync = () => setPending(cartCount());
     sync();
     return subscribeToCart(sync);
   }, []);
+
+  // Report the rendered height so the fixed header stays below this bar
+  // instead of overlapping it (which used to block header icon clicks).
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) {
+      setAnnounceHeight(0);
+      return;
+    }
+    const report = () => setAnnounceHeight(root.offsetHeight);
+    report();
+    if (typeof ResizeObserver !== "undefined") {
+      const ro = new ResizeObserver(report);
+      ro.observe(root);
+      return () => {
+        ro.disconnect();
+        setAnnounceHeight(0);
+      };
+    }
+    return () => setAnnounceHeight(0);
+  }, [announce.visible]);
 
   useEffect(() => {
     const t = setInterval(() => setIndex((i) => (i + 1) % messages.length), 6000);
     return () => clearInterval(t);
   }, []);
 
-  if (dismissed) return null;
+  if (!announce.visible) return null;
 
   const hasCart = pending > 0;
   const Icon = hasCart ? ShoppingBag : messages[index].icon;
 
   return (
     <div
+      ref={rootRef}
       className="relative z-[60] text-center text-[11px] sm:text-xs font-medium"
       style={{ background: "#c42855", color: "#fff" }}
       role="region"
@@ -53,10 +81,7 @@ export function AnnouncementBar() {
         )}
       </div>
       <button
-        onClick={() => {
-          sessionStorage.setItem(DISMISS_KEY, "1");
-          setDismissed(true);
-        }}
+        onClick={dismissAnnounce}
         aria-label="إغلاق الإعلان"
         className="absolute left-2 top-1/2 -translate-y-1/2 p-2 opacity-80 hover:opacity-100"
       >

@@ -35,7 +35,7 @@ export function ComparisonTable() {
             <table className="w-full text-xs sm:text-sm min-w-0" style={{ direction: "rtl" }}>
               <thead>
                 <tr className="glass-strong">
-                  <th className="text-right p-3 sm:p-4 md:p-5 font-semibold text-fg w-1/2">الميزة</th>
+                  <th className="text-start p-3 sm:p-4 md:p-5 font-semibold text-fg w-1/2">الميزة</th>
                   <th className="p-3 sm:p-4 md:p-5 text-center font-semibold text-accent-brand bg-brand-subtle w-1/4">نادين</th>
                   <th className="p-3 sm:p-4 md:p-5 text-center font-semibold text-fg-tertiary w-1/4">الآخرون</th>
                 </tr>

@@ -33,7 +33,7 @@ export function Avatar({ size = 40, src, alt = "", initials, status, className, 
         <User size={size * 0.55} />
       )}
       {status && (
-        <span className={cn("absolute bottom-0 right-0 rounded-full ring-2 ring-raised", dot, STATUS_COLORS[status])} />
+        <span className={cn("absolute bottom-0 end-0 rounded-full ring-2 ring-raised", dot, STATUS_COLORS[status])} />
       )}
     </div>
   );

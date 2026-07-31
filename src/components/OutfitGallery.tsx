@@ -123,7 +123,7 @@ export function OutfitGallery() {
                 </div>
 
                 {/* Info — VELAR typography */}
-                <div className="p-3 sm:p-4 md:p-5 text-right">
+                <div className="p-3 sm:p-4 md:p-5 text-start">
                   <p className="text-[10px] uppercase tracking-[0.15em] text-accent-brand/70 font-semibold mb-1">
                     {outfit.collection} <span className="text-fg/40">•</span> {outfit.model}
                   </p>

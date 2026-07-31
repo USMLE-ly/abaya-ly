@@ -52,7 +52,7 @@ export function Tag({ className, tone, appearance, leadingIcon, onRemove, childr
         <button
           type="button"
           onClick={onRemove}
-          className="hover:opacity-70 -mr-0.5"
+          className="hover:opacity-70 -ms-0.5"
           aria-label="Remove"
         >
           <X size={12} />

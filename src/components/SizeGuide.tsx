@@ -112,7 +112,7 @@ export function SizeGuide({ open, onClose, onSelectSize }: SizeGuideProps) {
 
                   <table className="w-full text-xs min-w-[500px]" style={{ direction: "rtl" }}>
                     <thead>
-                      <tr className="text-right">
+                      <tr className="text-start">
                         {["المقاس", "الصدر", "الخصر", "الأرداف", "طول الفستان"].map((h) => (
                           <th key={h} className="p-3 font-bold text-fg-secondary border-b-2" style={{ borderColor: "#c42855" }}>
                             {h}

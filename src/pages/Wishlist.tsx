@@ -94,7 +94,7 @@ function WishlistContent() {
                         )}
                       </div>
 
-                      <div className="p-3 sm:p-4 md:p-5 text-right">
+                      <div className="p-3 sm:p-4 md:p-5 text-start">
                         <p className="text-[9px] uppercase tracking-[0.2em] text-accent-brand font-semibold mb-1">
                           {product.collection} <span className="text-fg/40">•</span> {product.model}
                         </p>

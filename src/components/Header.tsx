@@ -4,6 +4,7 @@ import { products } from "@/data/products";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Search, ShoppingBag, Heart } from "lucide-react";
 import { useWishlist } from "@/lib/wishlist";
+import { getAnnounceState, subscribeAnnounceState } from "@/lib/announcement";
 import { openCartDrawer } from "@/components/CartDrawer";
 import { Button, ThemeToggle } from "@/components/velar";
 
@@ -104,8 +105,23 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [announce, setAnnounce] = useState(getAnnounceState);
+  const [scrollY, setScrollY] = useState(0);
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => subscribeAnnounceState(setAnnounce), []);
+
+  useEffect(() => {
+    const onScroll = () => setScrollY(window.scrollY);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // While the announcement bar is on screen the header sits directly
+  // below it; once the bar scrolls away the header rests at the top.
+  const headerTop = announce.visible ? Math.max(0, announce.height - scrollY) : 0;
 
   const searchResults = searchQuery.trim()
     ? products.filter(p =>
@@ -136,7 +152,8 @@ export function Header() {
   }, [open]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50" style={{
+    <header className="fixed left-0 right-0 z-50" style={{
+    top: `${headerTop}px`,
     background: "rgba(255,255,255,0.88)",
     backdropFilter: "blur(20px)",
     WebkitBackdropFilter: "blur(20px)",
@@ -255,7 +272,7 @@ export function Header() {
                       <button
                         key={p.id}
                         onClick={() => { navigate(`/product/${p.id}`); setSearchOpen(false); setSearchQuery(""); }}
-                        className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-sunken transition-colors text-right"
+                        className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-sunken transition-colors text-start"
                       >
                         <div className="w-10 h-13 rounded-lg overflow-hidden flex-shrink-0 bg-sunken">
                           <img src={p.images[0]} alt="" className="w-full h-full object-cover" />

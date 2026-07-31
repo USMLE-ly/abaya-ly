@@ -26,7 +26,7 @@ export function ClickableDiscount({ code, label = "كوبون خصم خاص بك
     <button
       type="button"
       onClick={handleClick}
-      className={`group flex w-full items-center justify-between gap-3 rounded-xl border px-4 py-3 text-right transition-all duration-300 ${
+      className={`group flex w-full items-center justify-between gap-3 rounded-xl border px-4 py-3 text-start transition-all duration-300 ${
         copied
           ? "border-success bg-success/5"
           : "border-dashed border-brand/40 bg-brand-subtle/40 hover:border-brand hover:bg-brand-subtle"

@@ -89,7 +89,7 @@ function CaptureForm({ source, onDone }: { source: string; onDone: () => void })
   }
 
   return (
-    <form onSubmit={submit} className="mt-5 space-y-2 text-right">
+    <form onSubmit={submit} className="mt-5 space-y-2 text-start">
       <label htmlFor={`popup-email-${source}`} className="sr-only">البريد الإلكتروني</label>
       <input
         id={`popup-email-${source}`}
