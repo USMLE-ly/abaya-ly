@@ -12,6 +12,11 @@ export function ContactForm() {
     e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
+    const phoneDigits = String(data.get("phone") || "").trim().replace(/\s/g, "");
+    if (!/^(091|092|093|094)\d{7}$/.test(phoneDigits)) {
+      setError("يرجى إدخال رقم هاتف صحيح (10 أرقام تبدأ بـ 091 أو 092 أو 093 أو 094)");
+      return;
+    }
     setSending(true);
     setError("");
     try {
@@ -20,8 +25,7 @@ export function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: String(data.get("name") || "").trim(),
-          email: String(data.get("email") || "").trim(),
-          phone: String(data.get("phone") || "").trim(),
+          phone: phoneDigits,
           message: String(data.get("message") || "").trim(),
         }),
       });
@@ -58,9 +62,8 @@ export function ContactForm() {
           <form onSubmit={handleSubmit} className="space-y-4 glass-card p-6 md:p-8" style={{ direction: "rtl" }}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input label="الاسم" required type="text" name="name" placeholder="اسمكِ الكريم" />
-              <Input label="البريد الإلكتروني" required type="email" name="email" placeholder="example@email.com" dir="ltr" />
+              <Input label="رقم الهاتف" required type="tel" name="phone" placeholder="09XXXXXXXX" dir="ltr" />
             </div>
-            <Input label="رقم الهاتف" type="tel" name="phone" placeholder="09XXXXXXXX" />
             <Textarea label="الرسالة" required name="message" rows={4} className="resize-none" placeholder="كيف يمكننا مساعدتكِ؟" />
             {error && <p className="text-xs text-status-danger">{error}</p>}
             <Button type="submit" variant="primary" block leadingIcon={sending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />} disabled={sending}>

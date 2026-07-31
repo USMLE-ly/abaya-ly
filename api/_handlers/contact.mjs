@@ -10,15 +10,15 @@ export default async function handler(req, res) {
   const r = rl(clientIp(req));
   if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
 
-  const { name, email, phone, message } = req.body || {};
+  const { name, phone, message } = req.body || {};
   const cleanName = String(name || "").trim();
-  const cleanEmail = String(email || "").trim().toLowerCase();
+  const cleanPhone = String(phone || "").trim().replace(/[^0-9]/g, "");
   const cleanMessage = String(message || "").trim();
-  if (!cleanName || !cleanEmail || !cleanMessage) {
-    return res.status(400).json({ error: "يرجى ملء الاسم والبريد الإلكتروني والرسالة" });
+  if (!cleanName || !cleanPhone || !cleanMessage) {
+    return res.status(400).json({ error: "يرجى ملء الاسم ورقم الهاتف والرسالة" });
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
-    return res.status(400).json({ error: "يرجى إدخال بريد إلكتروني صحيح" });
+  if (!/^(091|092|093|094)\d{7}$/.test(cleanPhone)) {
+    return res.status(400).json({ error: "يرجى إدخال رقم هاتف صحيح (10 أرقام تبدأ بـ 091 أو 092 أو 093 أو 094)" });
   }
   if (cleanName.length > 100 || cleanMessage.length > 2000) {
     return res.status(400).json({ error: "الرسالة أو الاسم طويلان جداً" });
@@ -35,8 +35,7 @@ export default async function handler(req, res) {
       const existing = items["contact:messages"] || [];
       existing.push({
         name: sanitize(cleanName),
-        email: cleanEmail,
-        phone: sanitize(phone || ""),
+        phone: sanitize(cleanPhone),
         message: sanitize(cleanMessage),
         createdAt: new Date().toISOString(),
       });
@@ -54,8 +53,7 @@ export default async function handler(req, res) {
         `📩 رسالة جديدة من الموقع`,
         "━━━━━━━━━━━━━━━",
         `👤 الاسم: ${sanitize(cleanName)}`,
-        `✉️ البريد: ${cleanEmail}`,
-        `📞 الهاتف: ${sanitize(phone || "—")}`,
+        `📞 الهاتف: ${sanitize(cleanPhone)}`,
         `💬 الرسالة: ${sanitize(cleanMessage)}`,
         "━━━━━━━━━━━━━━━",
         `📅 ${new Date().toLocaleDateString("ar-LY", {

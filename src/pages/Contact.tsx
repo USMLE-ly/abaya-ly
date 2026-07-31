@@ -1,11 +1,11 @@
 import { ContactForm } from "@/components/ContactForm";
-import { MapPin, Phone, Mail } from "lucide-react";
+import { MapPin, Phone } from "lucide-react";
 
 import { PageTransition } from "@/components/PageTransition";
 import { usePageMeta } from "@/lib/usePageMeta";
 
 export function Contact() {
-  usePageMeta("تواصلي معنا", "تواصلي مع فريق نادين عبر الواتساب أو البريد الإلكتروني — نحن هنا لمساعدتكِ.");
+  usePageMeta("تواصلي معنا", "تواصلي مع فريق نادين عبر الهاتف أو الواتساب — نحن هنا لمساعدتكِ.");
   return <PageTransition><ContactContent /></PageTransition>;
 }
 
@@ -25,7 +25,6 @@ function ContactContent() {
               {[
                 { icon: <MapPin size={18} className="text-accent-brand" />, title: "العنوان", text: "طرابلس، ليبيا" },
                 { icon: <Phone size={18} className="text-accent-brand" />, title: "الهاتف", text: "+218 91 XXX XXXX" },
-                { icon: <Mail size={18} className="text-accent-brand" />, title: "البريد الإلكتروني", text: "info@almalika.ly" },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-4 glass-card p-5">
                   <div className="w-10 h-10 rounded-full bg-brand-subtle border border-line flex items-center justify-center flex-shrink-0">{item.icon}</div>
