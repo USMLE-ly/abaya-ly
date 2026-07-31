@@ -2,7 +2,6 @@ import { Star, BadgeCheck } from "lucide-react";
 import { Reveal } from "@/components/PageTransition";
 import { Marquee } from "@/components/Marquee";
 import { Card } from "@/components/velar/Card";
-import { Avatar } from "@/components/velar/Avatar";
 
 interface Testimonial {
   name: string;
@@ -81,12 +80,7 @@ function Stars({ rating }: { rating: number }) {
 function TestimonialCard({ name, city, text, rating }: Testimonial) {
   return (
     <Card elevation="flat" padding="lg" className="w-60 md:w-64 bg-white border-strawberry-100 shadow-[0_8px_30px_rgba(196,40,85,0.08)]">
-      <div className="flex items-center gap-2.5">
-        <Avatar
-          size={40}
-          initials={name.charAt(0)}
-          className="bg-gradient-to-br from-strawberry-400 to-strawberry-700 text-white ring-white shadow-md shadow-strawberry-500/20"
-        />
+      <div className="flex items-center justify-between gap-2">
         <div className="min-w-0">
           <figcaption className="text-sm font-bold text-fg flex items-center gap-1 truncate">
             {name}
@@ -94,7 +88,7 @@ function TestimonialCard({ name, city, text, rating }: Testimonial) {
           </figcaption>
           <p className="text-[11px] text-fg-tertiary">{city} — عميلة موثقة</p>
         </div>
-        <div className="ms-auto"><Stars rating={rating} /></div>
+        <div className="flex-shrink-0"><Stars rating={rating} /></div>
       </div>
       <blockquote className="mt-3 text-sm text-fg-secondary leading-relaxed">{text}</blockquote>
     </Card>
@@ -116,7 +110,7 @@ export function Testimonials() {
             </h2>
           </div>
 
-          <div className="relative flex h-[420px] items-center justify-center gap-4 overflow-hidden rounded-3xl border border-strawberry-100 bg-gradient-to-b from-strawberry-50/70 via-white to-strawberry-50/70 [perspective:900px]">
+          <div className="relative flex h-[420px] items-center justify-center gap-4 overflow-hidden rounded-3xl border border-strawberry-100 bg-gradient-to-b from-strawberry-50/60 via-canvas to-strawberry-50/60 [perspective:900px]">
             <div
               className="flex flex-row items-center gap-4"
               style={{ transform: "translateX(-24px) translateY(0px) translateZ(-60px) rotateX(8deg) rotateY(0deg) rotateZ(2deg)" }}
@@ -127,8 +121,8 @@ export function Testimonials() {
               <Marquee vertical pauseOnHover reverse repeat={3} className="[--duration:45s]">{cards}</Marquee>
             </div>
 
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white to-transparent" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-canvas to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-canvas to-transparent" />
           </div>
         </div>
       </section>
