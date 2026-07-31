@@ -1,4 +1,8 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { AnnouncementBar } from "@/components/AnnouncementBar";
+import { PromoPopups } from "@/components/PromoPopups";
+import { initAnalytics, trackPageView, startScrollDepthTracking } from "@/lib/analytics";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Home } from "@/pages/Home";
@@ -44,11 +48,32 @@ function AdminDecoy() {
 
 const queryClient = new QueryClient();
 
+/** Fires GA4 page_view on every SPA route change + scroll-depth tracking. */
+function AnalyticsTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    initAnalytics();
+    return startScrollDepthTracking();
+  }, []);
+
+  useEffect(() => {
+    trackPageView(location.pathname + location.search);
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+  }, [location.pathname, location.search]);
+
+  return null;
+}
+
 export default function App() {
+  const isAdmin = typeof window !== "undefined" && window.location.pathname.includes(ADMIN_PATH);
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+      <AnalyticsTracker />
       <div style={{ width: "100%", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        {!isAdmin && <AnnouncementBar />}
         <Header />
         <main style={{ flex: "1 1 auto", width: "100%" }}>
           <Routes>
@@ -93,6 +118,7 @@ export default function App() {
       </div>
             <WhatsAppButton />
             <CookieConsent />
+            {!isAdmin && <PromoPopups />}
       </BrowserRouter>
     </QueryClientProvider>
   );

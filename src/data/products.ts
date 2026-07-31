@@ -27,9 +27,21 @@ export interface Product {
   highlights: string[];         // visible-only characteristics
   rating: number;
   reviewCount: number;
+  /** Real units on hand. Undefined = unknown → no availability/scarcity UI is shown. */
+  stock?: number;
+  /** Below this number the product page shows a low-stock notice. */
+  lowStockThreshold?: number;
 }
 
 const EDITION = "إصدار 2026";
+
+// ── Real inventory ────────────────────────────────────────────────
+// Managed from the admin dashboard (Products → المخزون). Only IDs listed
+// here render availability / low-stock messaging on the storefront;
+// anything absent stays silent rather than inventing scarcity.
+export const stockLevels: Record<string, number> = {};
+
+export const LOW_STOCK_THRESHOLD = 3;
 
 // ── Collections (color-anchored, brand-language driven) ────────────
 export const brandCollections = [
@@ -721,6 +733,8 @@ export const products: Product[] = base.map((b): Product => {
     description: m.description,
     highlights: m.highlights,
     details: m.details,
+    stock: stockLevels[b.id],
+    lowStockThreshold: LOW_STOCK_THRESHOLD,
   };
 });
 

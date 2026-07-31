@@ -1,6 +1,8 @@
 import { Accordion } from "@/components/velar";
 import LuminaHero from "@/components/LuminaHero";
 import { ProductCarousel } from "@/components/ProductCarousel";
+import { TrustStrip } from "@/components/TrustStrip";
+import { BestSellers } from "@/components/BestSellers";
 import { ComparisonTable } from "@/components/ComparisonTable";
 import { IconBar } from "@/components/IconBar";
 import { GlobeSection } from "@/components/GlobeSection";
@@ -55,6 +57,8 @@ function HomeContent() {
   return (
     <>
       <LuminaHero />
+      <TrustStrip />
+      <BestSellers />
       <ProductCarousel />
       <FeaturedCollection />
       <OutfitGallery />
