@@ -1,4 +1,8 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { AnnouncementBar } from "@/components/AnnouncementBar";
+import { PromoPopups } from "@/components/PromoPopups";
+import { initAnalytics, trackPageView, startScrollDepthTracking } from "@/lib/analytics";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Home } from "@/pages/Home";
