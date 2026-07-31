@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     const items = allData.items || {};
     let catalog = items[CATALOG_KEY] || [];
 
-    // GET — list all products
+    // GET — list all products from Edge Config
     if (req.method === "GET") {
       return res.status(200).json({ products: catalog });
     }

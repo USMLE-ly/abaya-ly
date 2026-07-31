@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "validate": "npx tsx automation/validate-products.ts || echo '⚠ Validation warnings found (non-blocking)'",
-    "prebuild": "node automation/generate-sitemap.mjs && node automation/optimize-images.mjs && npx tsx automation/validate-products.ts"
+    "prebuild": "npx tsx automation/export-products.ts && node automation/generate-sitemap.mjs && node automation/optimize-images.mjs && npx tsx automation/validate-products.ts"
   },
   "dependencies": {
     "@playwright/test": "^1.62.0",

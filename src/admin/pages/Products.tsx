@@ -38,8 +38,28 @@ export default function Products() {
   const load = async () => {
     setLoading(true);
     try {
-      const list = await fetchAdminProducts();
-      setProducts(list);
+      // Fetch Edge Config products (custom/managed)
+      const custom = await fetchAdminProducts().catch(() => []);
+      // Load static products from data file
+      const mod = await import("@/data/products").catch(() => null);
+      const statics: AdminProduct[] = (mod?.products || []).map((p: any) => ({
+        id: p.id, name: p.name, price: p.price, originalPrice: p.originalPrice,
+        collection: p.collection || "", model: p.model || "",
+        fabric: p.fabric || "", category: p.category || "",
+        images: p.images || [], colors: p.colors || [], sizes: p.sizes || [],
+        badge: p.badge || "", description: p.description || "",
+        details: p.details || [], highlights: p.highlights || [], tags: p.tags || [],
+        rating: p.rating || 0, reviewCount: p.reviewCount || 0, inStock: true,
+      }));
+
+      // Merge: Edge Config products override static ones by ID
+      const merged = [...statics];
+      for (const p of custom) {
+        const idx = merged.findIndex((m) => m.id === p.id);
+        if (idx >= 0) merged[idx] = p;
+        else merged.push(p);
+      }
+      setProducts(merged);
     } catch (e) {
       setError("فشل تحميل المنتجات");
     } finally {
