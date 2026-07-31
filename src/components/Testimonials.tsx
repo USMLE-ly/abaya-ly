@@ -27,12 +27,6 @@ const TESTIMONIALS: Testimonial[] = [
     text: "خدمة العملاء محترفة والدفع عند الاستلام ريّحني. أكيد راح أطلب مرة ثانية.",
     rating: 4,
   },
-  {
-    name: "مودة. ف",
-    city: "البيضاء",
-    text: "التفصيل حسب المقاس كان ممتاز والقماش فخم جداً. أنصح فيكم كل صديقاتي.",
-    rating: 5,
-  },
 ];
 
 function Stars({ rating }: { rating: number }) {

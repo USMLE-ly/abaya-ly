@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   const r = rl(clientIp(req));
   if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
 
-  const { code, name, color, size, location, phone, whatsappConsent, couponCode, items, customMeasurements, preOrder } = req.body || {};
+  const { code, name, color, size, location, phone, whatsappConsent, couponCode, items, preOrder } = req.body || {};
 
   if (!code || !phone) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -36,19 +36,6 @@ export default async function handler(req, res) {
     location: sanitize(location),
   };
 
-  const rawMeasurements = (customMeasurements && typeof customMeasurements === "object")
-    ? customMeasurements
-    : {};
-  const measurements = {
-    height: sanitize(rawMeasurements.height).slice(0, 10),
-    chest: sanitize(rawMeasurements.chest).slice(0, 10),
-    waist: sanitize(rawMeasurements.waist).slice(0, 10),
-    hips: sanitize(rawMeasurements.hips).slice(0, 10),
-  };
-  const hasMeasurements = Object.values(measurements).some((v) => v && v !== "&lt;" && v !== "&gt;");
-  const measurementsLine = hasMeasurements
-    ? `📐 تفصيل حسب المقاس — الطول: ${measurements.height || "—"} | الصدر: ${measurements.chest || "—"} | الخصر: ${measurements.waist || "—"} | الأرداف: ${measurements.hips || "—"}`
-    : null;
   const isPreOrder = !!preOrder;
 
   // Optional multi-item payload (per-item color/size chosen at booking time).
@@ -79,7 +66,6 @@ export default async function handler(req, res) {
     color: sanitized.color,
     size: sanitized.size,
     items: orderItems,
-    measurements: hasMeasurements ? measurements : null,
     preOrder: isPreOrder,
     location: sanitized.location,
     phone: phoneClean,
@@ -114,7 +100,6 @@ export default async function handler(req, res) {
       "━━━━━━━━━━━━━━━",
       `🆔 الكود: ${sanitized.code}`,
       ...productLines,
-      measurementsLine,
       `📍 الموقع: ${sanitized.location || "—"}`,
       `📞 الهاتف: ${phoneClean}`,
       `💬 إشعار واتساب: ${consentEmoji}`,

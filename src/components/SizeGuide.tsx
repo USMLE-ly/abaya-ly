@@ -107,7 +107,7 @@ export function SizeGuide({ open, onClose, onSelectSize }: SizeGuideProps) {
               <>
                 <div className="p-5 overflow-x-auto">
                   <p className="text-[11px] text-fg-tertiary mb-4 leading-relaxed">
-                    القياسات بالسنتيمتر. للمقاسات الخاصة أو التفصيل حسب الطلب، تواصلي معنا عبر واتساب.
+                    القياسات بالسنتيمتر. إذا احتجتِ مساعدة في اختيار مقاسكِ، تواصلي معنا عبر واتساب.
                   </p>
 
                   <table className="w-full text-xs min-w-[500px]" style={{ direction: "rtl" }}>
@@ -137,7 +137,6 @@ export function SizeGuide({ open, onClose, onSelectSize }: SizeGuideProps) {
                     <p className="font-bold text-fg mb-1">💡 نصيحة:</p>
                     <p className="text-fg-tertiary">
                       إذا كنتِ بين مقاسين، ننصح باختيار المقاس الأكبر. جميع فساتيننا قابلة للتعديل البسيط عند الحاجة.
-                      يمكنكِ أيضاً طلب تفصيل حسب مقاسكِ مجاناً — تواصلي معنا عبر واتساب بعد إتمام الطلب.
                     </p>
                   </div>
                 </div>
