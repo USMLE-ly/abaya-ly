@@ -29,6 +29,7 @@ const AdminAnalytics = lazy(() => import("@/admin/pages/Analytics"));
 const AdminSettings = lazy(() => import("@/admin/pages/Settings"));
 const AdminCalendar = lazy(() => import("@/admin/pages/Calendar"));
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { CookieConsent } from "@/components/CookieConsent";
 
 // Admin dashboard is hidden behind a secret path for security.
 // The public /admin route returns 404 to prevent discovery.
@@ -89,6 +90,7 @@ export default function App() {
         <Footer />
       </div>
             <WhatsAppButton />
+            <CookieConsent />
       </BrowserRouter>
     </QueryClientProvider>
   );
