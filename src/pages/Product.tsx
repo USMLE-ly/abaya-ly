@@ -13,6 +13,9 @@ import { OptimizedImage } from "@/components/OptimizedImage";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 import { findProduct, products, Product as ProductType } from "@/data/products";
 import { Button, Badge, Card } from "@/components/velar";
+import { StockIndicator } from "@/components/StockIndicator";
+import { FrequentlyBoughtTogether, CompleteTheLook } from "@/components/CompleteTheLook";
+import { trackViewItem } from "@/lib/analytics";
 
 const SITE_URL = "https://nadine.luxor.ly";
 
@@ -189,9 +192,12 @@ function ProductContent() {
     );
   }
 
-  // Track view for "recently viewed"
+  // Track view for "recently viewed" + GA4 funnel
   useEffect(() => {
-    if (product) trackProductView(product.id);
+    if (product) {
+      trackProductView(product.id);
+      trackViewItem(product);
+    }
   }, [product?.id]);
 
   const savings = product.originalPrice ? product.originalPrice - product.price : 0;
@@ -396,6 +402,11 @@ function ProductContent() {
               </ul>
             </div>
 
+            {/* Real availability — silent when stock is unknown */}
+            <div className="mb-3">
+              <StockIndicator stock={product.stock} lowStockThreshold={product.lowStockThreshold} />
+            </div>
+
             {/* Booking */}
             <Button variant="primary" block size="lg" onClick={() => setShowBooking(true)} className="mb-3">
               <ShoppingBag size={18} />
@@ -487,6 +498,10 @@ function ProductContent() {
           </div>
         </section>
       )}
+
+      {/* Bundles & styling */}
+      <FrequentlyBoughtTogether product={product} partner={related[0]} />
+      <CompleteTheLook items={related.slice(1, 5)} />
 
       {/* Recently viewed */}
       <RecentlyViewed />
