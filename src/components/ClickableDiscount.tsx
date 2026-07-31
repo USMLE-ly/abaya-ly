@@ -25,6 +25,7 @@ export function ClickableDiscount({ code, label = "كوبون خصم خاص بك
   return (
     <button
       type="button"
+      data-debug="clickable-discount-real"
       onClick={handleClick}
       className={`group flex w-full items-center justify-between gap-3 rounded-xl border px-4 py-3 text-start transition-all duration-300 ${
         copied

@@ -49,6 +49,7 @@ export function PromoCountdown({ label = "عرض اليوم — خصم 10% عل�
     <section className="py-10 md:py-14">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10">
         <div
+          data-debug="promo-countdown-real"
           className="relative overflow-hidden rounded-3xl border border-strawberry-100 bg-gradient-to-b from-strawberry-50/70 via-canvas to-strawberry-50/70 px-6 py-8 md:px-10 md:py-10"
         >
           {/* decorative glows */}
