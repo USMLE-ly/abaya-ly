@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import { Badge, Tag, Alert, Card, Button, Input, Textarea, Select, Checkbox, Radio, Switch, Avatar, Divider, Progress, Accordion, Tabs, Tooltip, Chip, Spinner } from "@/components/velar";
 import { Sparkles } from "lucide-react";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 const RAMPS = ["strawberry","bubblegum","cotton","lavender","lemon","mint","peach","sky"] as const;
 const STEPS = [50,100,200,300,400,500,600,700,800,900,950];
 
 export default function DesignSystem() {
+  usePageMeta("نظام التصميم");
   return (
     <div className="min-h-screen bg-canvas text-fg pt-24 pb-16">
       <div className="max-w-6xl mx-auto px-6 space-y-16">

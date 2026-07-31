@@ -8,8 +8,10 @@ import { useWishlist } from "@/lib/wishlist";
 import { Heart, ShoppingBag, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/velar";
 import { Star } from "lucide-react";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 export function Wishlist() {
+  usePageMeta("المفضلة", "فساتينكِ المفضلة محفوظة هنا — عودي إليها في أي وقت لإتمام طلبك.");
   return <PageTransition><WishlistContent /></PageTransition>;
 }
 

@@ -2,8 +2,10 @@ import { ContactForm } from "@/components/ContactForm";
 import { MapPin, Phone, Mail } from "lucide-react";
 
 import { PageTransition } from "@/components/PageTransition";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 export function Contact() {
+  usePageMeta("تواصلي معنا", "تواصلي مع فريق نادين عبر الواتساب أو البريد الإلكتروني — نحن هنا لمساعدتكِ.");
   return <PageTransition><ContactContent /></PageTransition>;
 }
 

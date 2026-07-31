@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
+import { usePageMeta } from "@/lib/usePageMeta";
 import { ChevronLeft, RotateCcw, Clock, CheckCircle, XCircle } from "lucide-react";
 
 const conditions = [
@@ -11,6 +12,7 @@ const conditions = [
 ];
 
 export default function RefundPolicy() {
+  usePageMeta("سياسة الاسترجاع", "سياسة إرجاع واستبدال فساتين نادين خلال 7 أيام من الاستلام.");
   return (
     <div className="min-h-screen pt-24 pb-16">
       <div className="max-w-[800px] mx-auto px-4 sm:px-6">

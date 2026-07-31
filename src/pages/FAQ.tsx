@@ -1,4 +1,5 @@
 import { Accordion } from "@/components/velar";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 const faqs = [
   { q: "كيف يمكنني طلب فستان؟", a: "يمكنكِ تصفح المجموعات واختيار الفستان التي تفضلينها، ثم إضافتها إلى سلة التسوق وإتمام الطلب. يمكنكِ أيضًا التواصل معنا عبر الواتساب." },
@@ -12,6 +13,7 @@ const faqs = [
 import { PageTransition } from "@/components/PageTransition";
 
 export function FAQ() {
+  usePageMeta("الأسئلة الشائعة", "إجابات على أكثر الأسئلة شيوعاً حول الطلب، الشحن، المقاسات، والدفع عند الاستلام.");
   return <PageTransition><FAQContent /></PageTransition>;
 }
 

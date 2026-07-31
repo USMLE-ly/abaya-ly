@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import { PageTransition } from "@/components/PageTransition";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 export function About() {
+  usePageMeta("من نحن", "تعرّفي على قصة نادين — بيت الفساتين الفاخرة في ليبيا.");
   return <PageTransition><AboutContent /></PageTransition>;
 }
 

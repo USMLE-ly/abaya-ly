@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Button, Card } from "@/components/velar";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 interface CartItem { id: string; name: string; fabric: string; price: number; image: string; color: string; size: string; quantity: number; }
 
@@ -16,6 +17,7 @@ const loadCart = (): CartItem[] => {
 };
 
 export function Cart() {
+  usePageMeta("سلة التسوق", "راجعي سلة تسوقكِ وأكملي طلبك من نادين — الدفع عند الاستلام.");
   return <PageTransition><CartContent /></PageTransition>;
 }
 

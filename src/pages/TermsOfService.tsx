@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
+import { usePageMeta } from "@/lib/usePageMeta";
 import { ChevronLeft } from "lucide-react";
 
 const sections = [
@@ -52,6 +53,7 @@ const sections = [
 ];
 
 export default function TermsOfService() {
+  usePageMeta("الشروط والأحكام", "الشروط والأحكام الخاصة بالطلب والدفع عند الاستلام في متجر نادين.");
   return (
     <div className="min-h-screen pt-24 pb-16">
       <div className="max-w-[800px] mx-auto px-4 sm:px-6">

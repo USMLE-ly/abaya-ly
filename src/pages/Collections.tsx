@@ -8,8 +8,10 @@ import { Button } from "@/components/velar";
 import { Badge } from "@/components/velar";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { WishlistButton } from "@/components/WishlistButton";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 export function Collections() {
+  usePageMeta("المجموعات", "تصفّحي جميع مجموعات فساتين نادين — سهرة، خطوبة، أعراس ومناسبات بلمسة فاخرة.");
   return <PageTransition><CollectionsContent /></PageTransition>;
 }
 

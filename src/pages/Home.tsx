@@ -10,6 +10,7 @@ import { ContactForm } from "@/components/ContactForm";
 import { NewsletterSection } from "@/components/NewsletterSection";
 import { OutfitGallery } from "@/components/OutfitGallery";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 const faqs = [
   { q: "كيف يمكنني طلب فستان؟", a: "يمكنكِ تصفح المجموعات واختيار الفستان التي تفضلينها، ثم إضافتها إلى سلة التسوق وإتمام الطلب. يمكنكِ أيضًا التواصل معنا عبر الواتساب." },
@@ -45,6 +46,7 @@ function HomeFAQ() {
 }
 
 export function Home() {
+  usePageMeta("نادين | بيت الفساتين الفاخرة في ليبيا", "اكتشفي تشكيلة نادين من فساتين السهرة والمناسبات في ليبيا — تفصيل راقٍ، شحن مجاني لجميع المدن، والدفع عند الاستلام.");
   return <PageTransition><HomeContent /></PageTransition>;
 }
 

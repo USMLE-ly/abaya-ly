@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 export function NotFound() {
+  usePageMeta("الصفحة غير موجودة", "عذراً، الصفحة التي تبحثين عنها غير موجودة أو تم نقلها.");
   return <PageTransition><NotFoundContent /></PageTransition>;
 }
 

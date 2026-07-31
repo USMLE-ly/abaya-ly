@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { PageTransition } from "@/components/PageTransition";
+import { usePageMeta } from "@/lib/usePageMeta";
 import { motion } from "framer-motion";
 import { Package, CheckCircle, Truck, MapPin, Search, Loader2, Clock, MessageCircle } from "lucide-react";
 
@@ -24,6 +25,7 @@ const ETA_MAP: Record<string, string> = {
 
 
 export function TrackOrder() {
+  usePageMeta("تتبع الطلب", "أدخلي رقم الطلب ورقم الهاتف لتتبعي حالة طلبك من نادين لحظة بلحظة.");
   return <PageTransition><TrackOrderContent /></PageTransition>;
 }
 
