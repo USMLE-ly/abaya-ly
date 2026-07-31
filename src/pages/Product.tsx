@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Sparkles, Tag, Ruler } from "lucide-react";
+import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Sparkles, Tag, Ruler, Clock } from "lucide-react";
 import { BookingModal } from "@/components/BookingModal";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { ProductShippingEstimate } from "@/components/ProductShippingEstimate";
@@ -225,6 +225,8 @@ function ProductContent() {
   }, [product?.id]);
 
   const savings = product.originalPrice ? product.originalPrice - product.price : 0;
+  const liveStock = stockMap[product.id] ?? product.stock;
+  const isSoldOut = liveStock === 0;
   const primaryColor = product.colors[0] ?? { name: "غير محدد", hex: "transparent" };
   const descriptor = product.name.split(" • ").slice(2).join(" • ") ?? product.name;
   const related = getRelatedProducts(product);
@@ -442,13 +444,23 @@ function ProductContent() {
               <ClickableDiscount code="NADINE10" label="كوبون خصم 10% على طلبكِ" onReveal={(c) => setRevealedCoupon(c)} />
             </div>
 
-            {/* Booking — Shrine-style add to cart */}
-            <AddToCartButton
-              price={product.price}
-              disabled={(stockMap[product.id] ?? product.stock) === 0}
-              onClick={handleAddToCart}
-              className="mb-3"
-            />
+            {/* Booking — Shrine-style add to cart / pre-order when sold out */}
+            {isSoldOut ? (
+              <button
+                type="button"
+                onClick={() => setShowBooking(true)}
+                className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-brand bg-brand-subtle px-5 py-3.5 text-base font-bold text-brand transition-all duration-300 hover:bg-brand hover:text-white active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+              >
+                <Clock size={18} />
+                احجزيه مسبقاً — {product.price} د.ل
+              </button>
+            ) : (
+              <AddToCartButton
+                price={product.price}
+                onClick={handleAddToCart}
+                className="mb-3"
+              />
+            )}
             {/* Payment Method */}
             <div className="flex items-center justify-center mb-1.5">
               <p className="text-[10px] font-bold text-center" style={{ color: "#e63d6a" }}>الدفع عند الاستلام 💵</p>
@@ -462,6 +474,7 @@ function ProductContent() {
         open={showBooking}
         onClose={() => { setShowBooking(false); setRevealedCoupon(""); }}
         presetCoupon={revealedCoupon}
+        preOrder={isSoldOut}
         productCode={product.code}
         productName={product.name.split(" • ").slice(2).join(" • ") ?? product.name}
         colors={product.colors}
@@ -561,7 +574,14 @@ function ProductContent() {
       />
 
       {/* Size guide */}
-      <SizeGuide open={showSizeGuide} onClose={() => setShowSizeGuide(false)} />
+      <SizeGuide
+        open={showSizeGuide}
+        onClose={() => setShowSizeGuide(false)}
+        onSelectSize={(size) => {
+          const idx = product.sizes.indexOf(size);
+          if (idx >= 0) handleSizeSelect(idx);
+        }}
+      />
 
       {/* Mobile sticky booking bar */}
       <StickyBookingBar

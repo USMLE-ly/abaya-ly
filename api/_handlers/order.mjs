@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   const r = rl(clientIp(req));
   if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
 
-  const { code, name, color, size, location, phone, whatsappConsent, couponCode, items } = req.body || {};
+  const { code, name, color, size, location, phone, whatsappConsent, couponCode, items, customMeasurements, preOrder } = req.body || {};
 
   if (!code || !phone) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -35,6 +35,21 @@ export default async function handler(req, res) {
     size: sanitize(size),
     location: sanitize(location),
   };
+
+  const rawMeasurements = (customMeasurements && typeof customMeasurements === "object")
+    ? customMeasurements
+    : {};
+  const measurements = {
+    height: sanitize(rawMeasurements.height).slice(0, 10),
+    chest: sanitize(rawMeasurements.chest).slice(0, 10),
+    waist: sanitize(rawMeasurements.waist).slice(0, 10),
+    hips: sanitize(rawMeasurements.hips).slice(0, 10),
+  };
+  const hasMeasurements = Object.values(measurements).some((v) => v && v !== "&lt;" && v !== "&gt;");
+  const measurementsLine = hasMeasurements
+    ? `📐 تفصيل حسب المقاس — الطول: ${measurements.height || "—"} | الصدر: ${measurements.chest || "—"} | الخصر: ${measurements.waist || "—"} | الأرداف: ${measurements.hips || "—"}`
+    : null;
+  const isPreOrder = !!preOrder;
 
   // Optional multi-item payload (per-item color/size chosen at booking time).
   const orderItems = Array.isArray(items)
@@ -64,6 +79,8 @@ export default async function handler(req, res) {
     color: sanitized.color,
     size: sanitized.size,
     items: orderItems,
+    measurements: hasMeasurements ? measurements : null,
+    preOrder: isPreOrder,
     location: sanitized.location,
     phone: phoneClean,
     whatsappConsent: sanitized.whatsappConsent,
@@ -93,10 +110,11 @@ export default async function handler(req, res) {
       ? orderItems.map((it, idx) => `${idx + 1}. ${it.name || "—"} ×${it.quantity} — ${it.color || "—"} / ${it.size || "—"} — ${it.price * it.quantity} د.ل`)
       : [`👗 الفستان: ${sanitized.name || "—"}`, `🎨 اللون: ${sanitized.color || "—"}`, `📏 المقاس: ${sanitized.size || "—"}`];
     const message = [
-      `🛒 طلب جديد ${orderId}`,
+      isPreOrder ? `⏳ حجز مسبق (نفدت الكمية) ${orderId}` : `🛒 طلب جديد ${orderId}`,
       "━━━━━━━━━━━━━━━",
       `🆔 الكود: ${sanitized.code}`,
       ...productLines,
+      measurementsLine,
       `📍 الموقع: ${sanitized.location || "—"}`,
       `📞 الهاتف: ${phoneClean}`,
       `💬 إشعار واتساب: ${consentEmoji}`,

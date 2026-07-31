@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { X, Check, Loader2, ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 export interface BookingCartItem {
@@ -32,6 +33,7 @@ interface BookingModalProps {
   presetCoupon?: string;
   cart?: BookingCartContext | null;
   onSuccess?: () => void;
+  preOrder?: boolean;
 }
 
 const LIBYAN_CITIES = [
@@ -72,7 +74,7 @@ const LIBYAN_CITIES = [
   "أخرى",
 ];
 
-export function BookingModal({ open, onClose, productCode, productName, colors, sizes, presetCoupon = "", cart = null, onSuccess }: BookingModalProps) {
+export function BookingModal({ open, onClose, productCode, productName, colors, sizes, presetCoupon = "", cart = null, onSuccess, preOrder = false }: BookingModalProps) {
   const [selectedColor, setSelectedColor] = useState(colors[0]?.name || "");
   const [selectedSize, setSelectedSize] = useState(sizes[0] || "");
   const [selectedCity, setSelectedCity] = useState("");
@@ -88,6 +90,8 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const [couponApplied, setCouponApplied] = useState<{ code: string; label: string; discount: number } | null>(null);
   const [couponChecking, setCouponChecking] = useState(false);
   const [couponError, setCouponError] = useState("");
+  const [wantCustomFit, setWantCustomFit] = useState(false);
+  const [measurements, setMeasurements] = useState({ height: "", chest: "", waist: "", hips: "" });
   const [selections, setSelections] = useState<Record<number, { color: string; size: string }>>({});
 
   // Reset per-item picks to the cart's current values whenever the modal opens.
@@ -176,6 +180,15 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
           phone: phone.trim(),
           whatsappConsent,
           couponCode: couponApplied?.code || "",
+          preOrder,
+          customMeasurements: wantCustomFit
+            ? {
+                height: measurements.height.trim(),
+                chest: measurements.chest.trim(),
+                waist: measurements.waist.trim(),
+                hips: measurements.hips.trim(),
+              }
+            : null,
         }),
       });
 
@@ -223,6 +236,13 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                   {cart.itemCount > 1 ? `سلتكِ تحتوي على ${cart.itemCount} قطع — سيتم تأكيد الطلب كاملاً` : "تأكيد طلب السلة"}
                 </span>
                 <span className="text-xs font-bold text-brand tabular-nums">{cart.total} د.ل</span>
+              </div>
+            )}
+
+            {preOrder && (
+              <div className="mx-5 mt-4 rounded-xl px-4 py-3 flex items-center gap-2 text-[11px] font-semibold"
+                style={{ background: "rgba(245,165,36,0.1)", border: "1px solid rgba(245,165,36,0.35)", color: "#b45309" }}>
+                ⏳ هذا الفستان نفد حالياً — حجزكِ المسبق سيُؤكَّد فور توفر القطعة
               </div>
             )}
 
@@ -334,6 +354,47 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                   </div>
                 </div>
               )}
+
+              {/* Custom tailoring (تفصيل حسب المقاس) */}
+              <div className="rounded-xl border border-line-subtle bg-white/40 p-3">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={wantCustomFit}
+                    onChange={(e) => setWantCustomFit(e.target.checked)}
+                    className="w-4 h-4 rounded accent-strawberry-600 cursor-pointer"
+                  />
+                  <span className="text-xs font-semibold text-fg">تفصيل حسب المقاس <span className="text-[10px] font-bold text-brand">(مجاناً)</span></span>
+                </label>
+                {wantCustomFit && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="grid grid-cols-2 gap-3 mt-3 overflow-hidden"
+                  >
+                    {([
+                      ["height", "الطول (سم)"],
+                      ["chest", "الصدر (سم)"],
+                      ["waist", "الخصر (سم)"],
+                      ["hips", "الأرداف (سم)"],
+                    ] as const).map(([key, label]) => (
+                      <div key={key}>
+                        <label className="text-[10px] font-semibold text-fg-tertiary block mb-1">{label}</label>
+                        <input
+                          type="number"
+                          value={measurements[key]}
+                          onChange={(e) => setMeasurements((prev) => ({ ...prev, [key]: e.target.value }))}
+                          placeholder="مثال: 90"
+                          className="w-full px-3 py-2 text-sm text-fg bg-white/60 rounded-xl border border-line-subtle outline-none focus:border-accent-brand transition-colors placeholder:text-fg-tertiary"
+                        />
+                      </div>
+                    ))}
+                    <p className="col-span-2 text-[10px] text-fg-tertiary leading-relaxed">
+                      سنفصّل الفستان على مقاسكِ بدقة — سنأخذ القياسات النهائية معكِ عند الاتصال بالتأكيد.
+                    </p>
+                  </motion.div>
+                )}
+              </div>
 
               {/* Location — dropdown with cities + other option */}
               <div>
