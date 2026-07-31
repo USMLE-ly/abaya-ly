@@ -94,7 +94,7 @@ export function FeaturedCollection() {
 
           {/* Editorial copy + CTA */}
           <Reveal className="flex flex-col justify-center">
-            <div className="md:pr-2">
+            <div className="md:ps-2">
               <p className="text-xs text-fg-tertiary leading-7 md:text-sm md:leading-8">
                 من أعماق {collection.name}، نُقدّم تشكيلة استثنائية تجمع بين الجرأة المسائية والرقي الهادئ.
                 لوحة ألوان {collection.palette} تُترجم الحضور الأنثوي إلى خطوط واضحة وقصّات تعانق القوام،

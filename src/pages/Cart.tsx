@@ -119,7 +119,7 @@ function CartContent() {
                   <div className="hidden md:grid grid-cols-12 gap-4 pb-3 border-b border-line-subtle text-xs font-semibold text-fg-tertiary">
                     <div className="col-span-6">المنتج</div>
                     <div className="col-span-3 text-center">الكمية</div>
-                    <div className="col-span-3 text-right">الإجمالي</div>
+                    <div className="col-span-3 text-end">الإجمالي</div>
                   </div>
                   {items.map((item) => (
                     <motion.div key={item.id} layout className="grid grid-cols-12 gap-4 py-5 border-b border-line-subtle items-center">
@@ -151,7 +151,7 @@ function CartContent() {
                           </Button>
                         </div>
                       </div>
-                      <div className="col-span-6 md:col-span-3 text-right">
+                      <div className="col-span-6 md:col-span-3 text-end">
                         <span className="text-sm font-bold text-accent-brand">{item.price * item.quantity} د.ل</span>
                       </div>
                     </motion.div>

@@ -86,11 +86,11 @@ export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
         <div className="flex items-center gap-3 mb-6">
           <MessageSquare size={18} className="text-accent-brand" />
           <h2 className="text-lg md:text-xl font-bold text-fg">تقييمات العملاء</h2>
-          <div className="flex items-center gap-1 mr-2">
+          <div className="flex items-center gap-1 ms-2">
             {Array.from({ length: 5 }).map((_, i) => (
               <Star key={i} size={14} className={i < Math.round(avgRating) ? "fill-warning text-warning" : "text-fg-quaternary"} />
             ))}
-            <span className="text-xs text-fg-tertiary mr-1">({totalCount})</span>
+            <span className="text-xs text-fg-tertiary ms-1">({totalCount})</span>
           </div>
         </div>
 

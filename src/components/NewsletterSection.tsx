@@ -87,7 +87,7 @@ export function NewsletterSection() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="بريدك الإلكتروني..."
-                className="w-full h-12 px-4 pr-10 text-sm rounded-xl outline-none transition-all glass-input"
+                className="w-full h-12 px-4 pl-10 text-sm rounded-xl outline-none transition-all glass-input"
                 style={{ background: "rgba(255,255,255,0.7)", border: "1px solid rgba(196,40,85,0.12)" }}
                 dir="ltr"
               />
