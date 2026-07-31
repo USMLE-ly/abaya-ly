@@ -8,6 +8,7 @@ import {
   type CartItem,
 } from "@/lib/cart";
 import { BookingModal, type BookingCartContext } from "@/components/BookingModal";
+import { products } from "@/data/products";
 
 export const CART_DRAWER_EVENT = "nadine-cart-drawer";
 
@@ -55,7 +56,21 @@ export function CartDrawer() {
         itemCount: count,
         total: subtotal,
         codes: items.map((i) => i.id).join(" + "),
-        names: items.map((i) => `${shortName(i.name)} ×${i.quantity} (${i.color} / ${i.size})`).join("، "),
+        names: items.map((i) => `${shortName(i.name)} ×${i.quantity}`).join("، "),
+        items: items.map((it) => {
+          const p = products.find((pp) => pp.id === it.id);
+          return {
+            id: it.id,
+            name: shortName(it.name),
+            image: it.image,
+            color: it.color,
+            size: it.size,
+            quantity: it.quantity,
+            price: it.price,
+            colors: p?.colors.map((c) => c.name) ?? [it.color],
+            sizes: p?.sizes ?? [it.size],
+          };
+        }),
       }
     : null;
   const firstItem = items[0];
@@ -194,8 +209,8 @@ export function CartDrawer() {
             <BookingModal
               open={bookingOpen}
               onClose={() => setBookingOpen(false)}
-              productCode={firstItem.id}
-              productName={shortName(firstItem.name)}
+              productCode={cartCtx.codes}
+              productName={cartCtx.names}
               colors={[{ name: firstItem.color || "غير محدد", hex: "transparent" }]}
               sizes={[firstItem.size || "M"]}
               cart={cartCtx}

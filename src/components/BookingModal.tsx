@@ -2,11 +2,24 @@ import { useEffect, useState } from "react";
 import { X, Check, Loader2, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 
+export interface BookingCartItem {
+  id: string;
+  name: string;
+  image: string;
+  color: string;
+  size: string;
+  quantity: number;
+  price: number;
+  colors: string[];
+  sizes: string[];
+}
+
 export interface BookingCartContext {
   itemCount: number;
   total: number;
   codes: string;
   names: string;
+  items: BookingCartItem[];
 }
 
 interface BookingModalProps {
@@ -75,6 +88,21 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const [couponApplied, setCouponApplied] = useState<{ code: string; label: string; discount: number } | null>(null);
   const [couponChecking, setCouponChecking] = useState(false);
   const [couponError, setCouponError] = useState("");
+  const [selections, setSelections] = useState<Record<number, { color: string; size: string }>>({});
+
+  // Reset per-item picks to the cart's current values whenever the modal opens.
+  useEffect(() => {
+    if (open && cart?.items?.length) {
+      const next: Record<number, { color: string; size: string }> = {};
+      cart.items.forEach((it, i) => {
+        next[i] = {
+          color: it.colors.includes(it.color) ? it.color : (it.colors[0] ?? ""),
+          size: it.sizes.includes(it.size) ? it.size : (it.sizes[0] ?? ""),
+        };
+      });
+      setSelections(next);
+    }
+  }, [open, cart]);
 
   // Auto-apply a code revealed by the clickable discount block.
   useEffect(() => {
@@ -131,8 +159,19 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
         body: JSON.stringify({
           code: cart ? cart.codes : productCode,
           name: cart ? cart.names : productName,
-          color: cart ? cart.itemCount + " قطع — " + selectedColor : selectedColor,
-          size: cart ? selectedSize : selectedSize,
+          color: cart ? `${cart.itemCount} قطع` : selectedColor,
+          size: cart ? "" : selectedSize,
+          items: cart?.items.map((it, i) => {
+            const sel = selections[i] ?? { color: it.color, size: it.size };
+            return {
+              id: it.id,
+              name: it.name,
+              color: sel.color,
+              size: sel.size,
+              quantity: it.quantity,
+              price: it.price,
+            };
+          }),
           location: locationValue,
           phone: phone.trim(),
           whatsappConsent,
@@ -187,25 +226,69 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               </div>
             )}
 
+            {/* Per-item color/size selection (cart booking) */}
+            {cart && (
+              <div className="mx-5 mt-4 space-y-3 max-h-[40vh] overflow-y-auto">
+                {cart.items.map((it, i) => {
+                  const sel = selections[i] ?? { color: it.color, size: it.size };
+                  return (
+                    <div key={i} className="flex items-center gap-3 rounded-xl border border-line-subtle bg-white/50 p-3">
+                      <img src={it.image} alt={it.name} className="w-12 h-14 rounded-lg object-cover flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-fg truncate">{it.name}</p>
+                        <p className="text-[10px] text-fg-tertiary mt-0.5">الكمية: {it.quantity} — {it.price * it.quantity} د.ل</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <select
+                            value={sel.color}
+                            onChange={(e) => setSelections((prev) => ({ ...prev, [i]: { ...prev[i], color: e.target.value } }))}
+                            className="flex-1 min-w-0 px-2.5 py-1.5 text-[11px] font-medium text-fg rounded-lg outline-none bg-white/70 border border-line-subtle"
+                            aria-label={`اللون لـ ${it.name}`}
+                          >
+                            {it.colors.length > 0
+                              ? it.colors.map((c) => <option key={c} value={c}>{c}</option>)
+                              : <option value={sel.color}>{sel.color}</option>}
+                          </select>
+                          <select
+                            value={sel.size}
+                            onChange={(e) => setSelections((prev) => ({ ...prev, [i]: { ...prev[i], size: e.target.value } }))}
+                            className="flex-1 min-w-0 px-2.5 py-1.5 text-[11px] font-medium text-fg rounded-lg outline-none bg-white/70 border border-line-subtle"
+                            aria-label={`المقاس لـ ${it.name}`}
+                          >
+                            {it.sizes.length > 0
+                              ? it.sizes.map((sz) => <option key={sz} value={sz}>{sz}</option>)
+                              : <option value={sel.size}>{sel.size}</option>}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="p-5 space-y-4 text-right">
-              {/* Product code (read-only) */}
-              <div>
-                <label className="text-[11px] font-semibold text-fg-tertiary block mb-1">كود المنتج</label>
-                <div className="w-full px-4 py-2.5 text-sm text-fg bg-white/50 rounded-xl border border-line-subtle opacity-70">
-                  {productCode}
+              {/* Product code (read-only) — single-product mode only */}
+              {!cart && (
+                <div>
+                  <label className="text-[11px] font-semibold text-fg-tertiary block mb-1">كود المنتج</label>
+                  <div className="w-full px-4 py-2.5 text-sm text-fg bg-white/50 rounded-xl border border-line-subtle opacity-70">
+                    {productCode}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Product name (read-only) */}
-              <div>
-                <label className="text-[11px] font-semibold text-fg-tertiary block mb-1">الفستان</label>
-                <div className="w-full px-4 py-2.5 text-sm text-fg bg-white/50 rounded-xl border border-line-subtle opacity-70">
-                  {productName}
+              {/* Product name (read-only) — single-product mode only */}
+              {!cart && (
+                <div>
+                  <label className="text-[11px] font-semibold text-fg-tertiary block mb-1">الفستان</label>
+                  <div className="w-full px-4 py-2.5 text-sm text-fg bg-white/50 rounded-xl border border-line-subtle opacity-70">
+                    {productName}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Color selector */}
-              {colors.length > 0 && (
+              {/* Color selector — single-product mode only */}
+              {!cart && colors.length > 0 && (
                 <div>
                   <label className="text-[11px] font-semibold text-fg-tertiary block mb-2">اللون</label>
                   <div className="flex flex-wrap gap-2">
@@ -228,8 +311,8 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                 </div>
               )}
 
-              {/* Size selector */}
-              {sizes.length > 0 && (
+              {/* Size selector — single-product mode only */}
+              {!cart && sizes.length > 0 && (
                 <div>
                   <label className="text-[11px] font-semibold text-fg-tertiary block mb-2">المقاس</label>
                   <div className="flex flex-wrap gap-2">

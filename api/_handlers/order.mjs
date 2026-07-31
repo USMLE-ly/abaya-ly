@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   const r = rl(clientIp(req));
   if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
 
-  const { code, name, color, size, location, phone, whatsappConsent, couponCode } = req.body || {};
+  const { code, name, color, size, location, phone, whatsappConsent, couponCode, items } = req.body || {};
 
   if (!code || !phone) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -36,6 +36,20 @@ export default async function handler(req, res) {
     location: sanitize(location),
   };
 
+  // Optional multi-item payload (per-item color/size chosen at booking time).
+  const orderItems = Array.isArray(items)
+    ? items
+        .filter((i) => i && typeof i === "object" && i.id)
+        .map((i) => ({
+          id: sanitize(i.id),
+          name: sanitize(i.name || ""),
+          color: sanitize(i.color || ""),
+          size: sanitize(i.size || ""),
+          quantity: Math.max(1, Number(i.quantity) || 1),
+          price: Math.max(0, Number(i.price) || 0),
+        }))
+    : [];
+
   const EC_URL = process.env.EDGE_CONFIG;
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
@@ -49,6 +63,7 @@ export default async function handler(req, res) {
     name: sanitized.name,
     color: sanitized.color,
     size: sanitized.size,
+    items: orderItems,
     location: sanitized.location,
     phone: phoneClean,
     whatsappConsent: sanitized.whatsappConsent,
@@ -74,13 +89,14 @@ export default async function handler(req, res) {
 
   if (BOT_TOKEN && CHAT_ID && stored) {
     const consentEmoji = sanitized.whatsappConsent ? "✅" : "❌";
+    const productLines = orderItems.length > 0
+      ? orderItems.map((it, idx) => `${idx + 1}. ${it.name || "—"} ×${it.quantity} — ${it.color || "—"} / ${it.size || "—"} — ${it.price * it.quantity} د.ل`)
+      : [`👗 الفستان: ${sanitized.name || "—"}`, `🎨 اللون: ${sanitized.color || "—"}`, `📏 المقاس: ${sanitized.size || "—"}`];
     const message = [
       `🛒 طلب جديد ${orderId}`,
       "━━━━━━━━━━━━━━━",
       `🆔 الكود: ${sanitized.code}`,
-      `👗 الفستان: ${sanitized.name || "—"}`,
-      `🎨 اللون: ${sanitized.color || "—"}`,
-      `📏 المقاس: ${sanitized.size || "—"}`,
+      ...productLines,
       `📍 الموقع: ${sanitized.location || "—"}`,
       `📞 الهاتف: ${phoneClean}`,
       `💬 إشعار واتساب: ${consentEmoji}`,
@@ -91,7 +107,7 @@ export default async function handler(req, res) {
         weekday: "long", year: "numeric", month: "long", day: "numeric",
         hour: "2-digit", minute: "2-digit"
       })}`,
-    ].join("\n");
+    ].filter(Boolean).join("\n");
     try {
       await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
