@@ -6,6 +6,8 @@ import { ImageLightbox } from "@/components/ImageLightbox";
 import { SizeGuide } from "@/components/SizeGuide";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { SocialShare } from "@/components/SocialShare";
+import { RecentlyViewed } from "@/components/RecentlyViewed";
+import { trackProductView } from "@/lib/recentlyViewed";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 import { findProduct, products, Product as ProductType } from "@/data/products";
@@ -185,6 +187,11 @@ function ProductContent() {
       </div>
     );
   }
+
+  // Track view for "recently viewed"
+  useEffect(() => {
+    if (product) trackProductView(product.id);
+  }, [product?.id]);
 
   const savings = product.originalPrice ? product.originalPrice - product.price : 0;
   const primaryColor = product.colors[0] ?? { name: "غير محدد", hex: "transparent" };
@@ -487,6 +494,9 @@ function ProductContent() {
           </div>
         </section>
       )}
+
+      {/* Recently viewed */}
+      <RecentlyViewed />
 
       {/* Customer reviews */}
       <ReviewsSection
