@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { Zap } from "lucide-react";
 
 const TARGET_KEY = "nadine-promo-end";
 
@@ -60,7 +59,6 @@ export function PromoCountdown({ label = "عرض اليوم — خصم 10% عل�
           <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-start">
               <p className="flex items-center justify-center md:justify-start gap-1.5 text-[11px] uppercase tracking-[0.22em] font-semibold text-white/80 mb-2">
-                <Zap size={13} />
                 عرض محدود
               </p>
               <h2 className="font-display text-xl md:text-2xl font-bold mb-1">{label}</h2>
