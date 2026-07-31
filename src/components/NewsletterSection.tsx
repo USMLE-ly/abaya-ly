@@ -16,12 +16,17 @@ export function NewsletterSection() {
     }
     setError("");
     setLoading(true);
-    // Simulate (store in localStorage for now — API-ready)
+    // Real capture: stored in Edge Config + Telegram notification.
     try {
-      const existing = JSON.parse(localStorage.getItem("nadine-subscribers") || "[]");
-      if (!existing.includes(email.trim())) {
-        existing.push(email.trim());
-        localStorage.setItem("nadine-subscribers", JSON.stringify(existing));
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "حدث خطأ، يرجى المحاولة لاحقاً");
+        return;
       }
       setSubmitted(true);
       setTimeout(() => { setSubmitted(false); setEmail(""); }, 4000);

@@ -10,6 +10,7 @@ import { Home } from "@/pages/Home";
 import { Product } from "@/pages/Product";
 import { NotFound } from "@/pages/NotFound";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { CookieConsent } from "@/components/CookieConsent";
 import { ADMIN_PATH } from "@/admin/lib/config";
 
@@ -117,6 +118,7 @@ export default function App() {
         <Footer />
       </div>
             <WhatsAppButton />
+            <ScrollToTop />
             <CookieConsent />
             {!isAdmin && <PromoPopups />}
       </BrowserRouter>

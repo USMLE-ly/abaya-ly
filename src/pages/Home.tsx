@@ -14,6 +14,10 @@ import { OutfitGallery } from "@/components/OutfitGallery";
 import { FeaturedCollection } from "@/components/FeaturedCollection";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 import { usePageMeta } from "@/lib/usePageMeta";
+import { InstaStories } from "@/components/InstaStories";
+import { TickerMarquee } from "@/components/TickerMarquee";
+import { FashionVideo } from "@/components/FashionVideo";
+import { Testimonials } from "@/components/Testimonials";
 
 const faqs = [
   { q: "كيف يمكنني طلب فستان؟", a: "يمكنكِ تصفح المجموعات واختيار الفستان التي تفضلينها، ثم إضافتها إلى سلة التسوق وإتمام الطلب. يمكنكِ أيضًا التواصل معنا عبر الواتساب." },
@@ -57,6 +61,7 @@ function HomeContent() {
   return (
     <>
       <LuminaHero />
+      <TickerMarquee />
       <TrustStrip />
       <BestSellers />
       <ProductCarousel />
@@ -64,6 +69,7 @@ function HomeContent() {
       <OutfitGallery />
       <ComparisonTable />
       <Reveal><IconBar /></Reveal>
+      <InstaStories />
       <GlobeSection />
 
       {/* FlipGallery inside iPhone mockup — centered on all devices */}
@@ -83,6 +89,8 @@ function HomeContent() {
         </div>
       </section>
 
+      <FashionVideo />
+      <Testimonials />
       <HomeFAQ />
       <NewsletterSection />
       <ContactForm />

@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Sparkles, Tag, ShoppingBag, Ruler } from "lucide-react";
+import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Sparkles, Tag, Ruler } from "lucide-react";
 import { BookingModal } from "@/components/BookingModal";
+import { AddToCartButton } from "@/components/AddToCartButton";
+import { ProductShippingEstimate } from "@/components/ProductShippingEstimate";
+import { ClickableDiscount } from "@/components/ClickableDiscount";
+import { UrgencyText } from "@/components/UrgencyText";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import { SizeGuide } from "@/components/SizeGuide";
 import { ReviewsSection } from "@/components/ReviewsSection";
@@ -316,6 +320,11 @@ function ProductContent() {
               )}
             </div>
 
+            {/* Shrine-style estimated shipping */}
+            <div className="mb-6">
+              <ProductShippingEstimate />
+            </div>
+
             {/* Colors */}
             <div className="mb-6">
               <p className="text-xs font-medium text-fg-secondary mb-3">اللون: <span className="text-fg">{primaryColor.name}</span></p>
@@ -409,11 +418,19 @@ function ProductContent() {
               <StockIndicator stock={stockMap[product.id] ?? product.stock} lowStockThreshold={product.lowStockThreshold} />
             </div>
 
-            {/* Booking */}
-            <Button variant="primary" block size="lg" onClick={() => setShowBooking(true)} className="mb-3">
-              <ShoppingBag size={18} />
-              احجزي هذا الفستان — {product.price} د.ل
-            </Button>
+            {/* Urgency + clickable discount */}
+            <div className="mb-4 space-y-3">
+              <UrgencyText />
+              <ClickableDiscount code="NADINE10" label="كوبون خصم 10% على طلبكِ" />
+            </div>
+
+            {/* Booking — Shrine-style add to cart */}
+            <AddToCartButton
+              price={product.price}
+              disabled={(stockMap[product.id] ?? product.stock) === 0}
+              onClick={() => setShowBooking(true)}
+              className="mb-3"
+            />
             {/* Payment Method */}
             <div className="flex items-center justify-center mb-1.5">
               <p className="text-[10px] font-bold text-center" style={{ color: "#e63d6a" }}>الدفع عند الاستلام 💵</p>

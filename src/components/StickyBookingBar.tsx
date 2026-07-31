@@ -57,7 +57,7 @@ export function StickyBookingBar({ price, originalPrice, onBook }: Props) {
               style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
             >
               <ShoppingBag size={16} />
-              احجزي هذا الفستان
+              اضيفي الى السلة
             </button>
           </div>
         </motion.div>
