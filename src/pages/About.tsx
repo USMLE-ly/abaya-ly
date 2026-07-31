@@ -42,7 +42,7 @@ function AboutContent() {
             <h2 className="font-display text-2xl md:text-3xl font-bold text-fg mb-3">رؤيتنا <span className="text-accent-brand">وقيمنا</span></h2>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[{ title: "الجودة", text: "أقمشة مختارة بعناية من إيطاليا وفرنسا وتركيا" }, { title: "الأصالة", text: "تطريز يدوي ليبي يحكي تراثنا العريق" }, { title: "التفرد", text: "كل فستان قطعة فريدة لا تتكرر" }, { title: "خدمة العملاء", text: "نضعكِ في مركز الاهتمام دائماً" }].map((value, i) => (
+            {[{ title: "الجودة", text: "أقمشة مختارة بعناية من إيطاليا وفرنسا وتركيا" }, { title: "الأصالة", text: "تطريز عالي الجودة يحكي تراثنا العريق" }, { title: "التفرد", text: "كل فستان قطعة فريدة لا تتكرر" }, { title: "خدمة العملاء", text: "نضعكِ في مركز الاهتمام دائماً" }].map((value, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="glass-card p-6">
                 <h3 className="text-sm font-semibold text-fg mb-2">{value.title}</h3>
                 <p className="text-xs text-fg/40 leading-relaxed">{value.text}</p>

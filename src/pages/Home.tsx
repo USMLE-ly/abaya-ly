@@ -9,14 +9,12 @@ import { GlobeSection } from "@/components/GlobeSection";
 import FlipGallery from "@/components/ui/flip-gallery";
 import IPhoneMockup from "@/components/ui/iphone-mockup";
 import { ContactForm } from "@/components/ContactForm";
-import { NewsletterSection } from "@/components/NewsletterSection";
 import { OutfitGallery } from "@/components/OutfitGallery";
 import { FeaturedCollection } from "@/components/FeaturedCollection";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { InstaStories } from "@/components/InstaStories";
 import { TickerMarquee } from "@/components/TickerMarquee";
-import { FashionVideo } from "@/components/FashionVideo";
 import { Testimonials } from "@/components/Testimonials";
 import { PromoCountdown } from "@/components/PromoCountdown";
 
@@ -90,10 +88,8 @@ function HomeContent() {
         </div>
       </section>
 
-      <FashionVideo />
       <Testimonials />
       <HomeFAQ />
-      <NewsletterSection />
       <ContactForm />
     </>
   );

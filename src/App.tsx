@@ -2,7 +2,6 @@ import { lazy, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AnnouncementBar } from "@/components/AnnouncementBar";
-import { PromoPopups } from "@/components/PromoPopups";
 import { initAnalytics, trackPageView, startScrollDepthTracking } from "@/lib/analytics";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -122,7 +121,6 @@ export default function App() {
             <ScrollToTop />
             <CartDrawer />
             <CookieConsent />
-            {!isAdmin && <PromoPopups />}
       </BrowserRouter>
     </QueryClientProvider>
   );

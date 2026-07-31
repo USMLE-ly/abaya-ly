@@ -3,7 +3,7 @@ import { Check, X } from "lucide-react";
 
 const rows = [
   { benefit: "أقمشة عالمية فاخرة", us: true, others: false },
-  { benefit: "تطريز يدوي ليبي", us: true, others: false },
+  { benefit: "تطريز عالي الجودة", us: true, others: false },
   { benefit: "شحن مجاني داخل ليبيا", us: true, others: false },
   { benefit: "ضمان الجودة", us: true, others: false },
   { benefit: "إرجاع خلال 7 أيام", us: true, others: false },
