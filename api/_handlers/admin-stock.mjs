@@ -1,61 +1,33 @@
-// Admin stock management — GET (map), PUT (upsert), DELETE (clear override)
-// Stored in Edge Config under key "stockLevels" (productId → units on hand)
+import { cors, readItems, writeItem, isAdmin } from "./shared.mjs";
+
+const STOCK_KEY = "stockLevels";
 
 export default async function handler(req, res) {
-  // CORS
-  const origin = req.headers.origin || "";
-  const allowedOrigins = [
-    "https://nadine.luxor.ly",
-    "https://abaya-ly.vercel.app",
-    "http://localhost:5173",
-  ];
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
-  res.setHeader("Access-Control-Allow-Methods", "GET, PUT, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-admin-password");
-
+  cors(req, res, { methods: "GET, PUT, DELETE, OPTIONS", headers: "Content-Type, x-admin-password" });
   if (req.method === "OPTIONS") return res.status(200).end();
 
-  // Auth
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-  if (!ADMIN_PASSWORD) return res.status(500).json({ error: "Server config error" });
-  if (req.headers["x-admin-password"] !== ADMIN_PASSWORD) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+  if (!isAdmin(req)) return res.status(401).json({ error: "Unauthorized" });
 
   const EC_URL = process.env.EDGE_CONFIG;
   if (!EC_URL) return res.status(200).json({ stock: {} });
 
-  const STOCK_KEY = "stockLevels";
-
   try {
-    const readResp = await fetch(EC_URL);
-    const allData = readResp.ok ? await readResp.json() : { items: {} };
-    const items = allData.items || {};
+    const items = await readItems(EC_URL);
     const stock = items[STOCK_KEY] || {};
 
-    // GET — full stock map
     if (req.method === "GET") {
       return res.status(200).json({ stock });
     }
 
     const write = async (next) => {
-      const writeResp = await fetch(`${EC_URL}/items`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: [{ operation: "upsert", key: STOCK_KEY, value: next }],
-        }),
-      });
-      if (!writeResp.ok) {
-        const text = await writeResp.text();
-        console.error("Edge Config write error:", text);
+      try {
+        await writeItem(EC_URL, STOCK_KEY, next);
+      } catch (err) {
+        console.error("Edge Config write error:", err.message);
         throw new Error("Failed to save stock");
       }
     };
 
-    // PUT — upsert one product's stock
     if (req.method === "PUT") {
       const { productId, stock: value } = req.body || {};
       if (!productId || typeof productId !== "string") {
@@ -76,7 +48,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true, stock: next });
     }
 
-    // DELETE — clear override (back to default/unknown)
     if (req.method === "DELETE") {
       const { productId } = req.body || {};
       if (!productId) return res.status(400).json({ error: "productId required" });

@@ -1,19 +1,7 @@
-// Coupons API — GET (list/validate), POST (create), DELETE
-// Stored in Edge Config under key "coupons"
+import { cors, readItems, writeItem, isAdmin } from "./shared.mjs";
 
 export default async function handler(req, res) {
-  const origin = req.headers.origin || "";
-  const allowedOrigins = [
-    "https://nadine.luxor.ly",
-    "https://abaya-ly.vercel.app",
-    "http://localhost:5173",
-  ];
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-admin-password");
-
+  cors(req, res, { methods: "GET, POST, DELETE, OPTIONS", headers: "Content-Type, x-admin-password" });
   if (req.method === "OPTIONS") return res.status(200).end();
 
   const EC_URL = process.env.EDGE_CONFIG;
@@ -21,18 +9,14 @@ export default async function handler(req, res) {
   const COUPONS_KEY = "coupons";
 
   try {
-    const readResp = await fetch(EC_URL);
-    const allData = readResp.ok ? await readResp.json() : { items: {} };
-    const items = allData.items || {};
+    const items = await readItems(EC_URL);
     let coupons = items[COUPONS_KEY] || [];
 
-    // GET — public validate ?code=XXXX | admin list (with auth)
     if (req.method === "GET") {
       const code = req.query?.code;
-      const isAdmin = req.headers["x-admin-password"] === process.env.ADMIN_PASSWORD;
+      const admin = isAdmin(req);
 
-      // Public: validate a code
-      if (code && !isAdmin) {
+      if (code && !admin) {
         const coupon = coupons.find(
           (c) => c.code.toLowerCase() === String(code).trim().toLowerCase() && c.active !== false
         );
@@ -48,28 +32,20 @@ export default async function handler(req, res) {
 
         return res.status(200).json({
           success: true,
-          coupon: {
-            code: coupon.code,
-            type: coupon.type, // "percent" | "fixed"
-            value: coupon.value,
-            label: coupon.label || "",
-          },
+          coupon: { code: coupon.code, type: coupon.type, value: coupon.value, label: coupon.label || "" },
         });
       }
 
-      // Admin: list all
-      if (isAdmin) return res.status(200).json({ coupons });
+      if (admin) return res.status(200).json({ coupons });
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    // Admin auth for mutations
     const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
     if (!ADMIN_PASSWORD) return res.status(500).json({ error: "Server config error" });
     if (req.headers["x-admin-password"] !== ADMIN_PASSWORD) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    // POST — create coupon
     if (req.method === "POST") {
       const { code, type, value, label, expiresAt, maxUses } = req.body || {};
       if (!code || !["percent", "fixed"].includes(type) || !Number(value) || Number(value) <= 0) {
@@ -93,11 +69,10 @@ export default async function handler(req, res) {
       }
 
       coupons.push(coupon);
-      await write(EC_URL, COUPONS_KEY, coupons);
+      await writeItem(EC_URL, COUPONS_KEY, coupons);
       return res.status(201).json({ success: true, coupon });
     }
 
-    // DELETE — remove coupon (admin)
     if (req.method === "DELETE") {
       const { code } = req.body || {};
       if (!code) return res.status(400).json({ error: "code required" });
@@ -106,7 +81,7 @@ export default async function handler(req, res) {
       if (idx === -1) return res.status(404).json({ error: "Coupon not found" });
 
       coupons.splice(idx, 1);
-      await write(EC_URL, COUPONS_KEY, coupons);
+      await writeItem(EC_URL, COUPONS_KEY, coupons);
       return res.status(200).json({ success: true });
     }
 
@@ -115,13 +90,4 @@ export default async function handler(req, res) {
     console.error("Coupons API error:", err);
     return res.status(500).json({ error: "Server error" });
   }
-}
-
-async function write(ecUrl, key, data) {
-  const resp = await fetch(`${ecUrl}/items`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ items: [{ operation: "upsert", key, value: data }] }),
-  });
-  if (!resp.ok) throw new Error("Edge Config write failed");
 }

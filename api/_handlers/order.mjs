@@ -1,0 +1,121 @@
+import { cors, createRateLimiter, clientIp, readItems, writeItem, sanitize } from "./shared.mjs";
+
+const rl = createRateLimiter();
+
+export default async function handler(req, res) {
+  cors(req, res, { methods: "POST, OPTIONS", headers: "Content-Type" });
+  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+
+  const r = rl(clientIp(req));
+  if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
+
+  const { code, name, color, size, location, phone, whatsappConsent, couponCode } = req.body || {};
+
+  if (!code || !phone) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  // Validate Libyan phone number (091, 092, 093, 094 + 7 digits = 10 total)
+  const phoneClean = phone.trim().replace(/[^0-9]/g, "");
+  const libyanPattern = /^(091|092|093|094)\d{7}$/;
+  if (!libyanPattern.test(phoneClean)) {
+    return res.status(400).json({
+      error: "رقم الهاتف يجب أن يبدأ بـ 091 أو 092 أو 093 أو 094 ويتكون من 10 أرقام",
+    });
+  }
+
+  const sanitized = {
+    code: sanitize(code),
+    name: sanitize(name),
+    color: sanitize(color),
+    paymentMethod: "cod",
+    couponCode: sanitize(couponCode).toUpperCase(),
+    whatsappConsent: !!whatsappConsent,
+    size: sanitize(size),
+    location: sanitize(location),
+  };
+
+  const EC_URL = process.env.EDGE_CONFIG;
+  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+
+  const orderId = "NAD-" + Date.now().toString(36).slice(-4).toUpperCase() + Math.random().toString(36).slice(2, 4).toUpperCase();
+  const now = new Date().toISOString();
+
+  const order = {
+    orderId,
+    code: sanitized.code,
+    name: sanitized.name,
+    color: sanitized.color,
+    size: sanitized.size,
+    location: sanitized.location,
+    phone: phoneClean,
+    whatsappConsent: sanitized.whatsappConsent,
+    status: "pending",
+    statusLabel: "انتظار التأكيد",
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  let stored = false;
+  if (EC_URL) {
+    try {
+      await writeItem(EC_URL, `order:${orderId}`, order);
+
+      const existing = await readItems(EC_URL);
+      const ids = existing[`phone:${phoneClean}`];
+      await writeItem(EC_URL, `phone:${phoneClean}`, Array.isArray(ids) ? [...ids, orderId] : [orderId]);
+      stored = true;
+    } catch (e) {
+      console.error("Edge Config write error:", e);
+    }
+  }
+
+  if (BOT_TOKEN && CHAT_ID && stored) {
+    const consentEmoji = sanitized.whatsappConsent ? "✅" : "❌";
+    const message = [
+      `🛒 طلب جديد ${orderId}`,
+      "━━━━━━━━━━━━━━━",
+      `🆔 الكود: ${sanitized.code}`,
+      `👗 الفستان: ${sanitized.name || "—"}`,
+      `🎨 اللون: ${sanitized.color || "—"}`,
+      `📏 المقاس: ${sanitized.size || "—"}`,
+      `📍 الموقع: ${sanitized.location || "—"}`,
+      `📞 الهاتف: ${phoneClean}`,
+      `💬 إشعار واتساب: ${consentEmoji}`,
+      `💳 طريقة الدفع: عند الاستلام 💵`,
+      sanitized.couponCode ? `🏷️ كود الخصم: ${sanitized.couponCode}` : null,
+      "━━━━━━━━━━━━━━━",
+      `📅 ${new Date().toLocaleDateString("ar-LY", {
+        weekday: "long", year: "numeric", month: "long", day: "numeric",
+        hour: "2-digit", minute: "2-digit"
+      })}`,
+    ].join("\n");
+    try {
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: message }),
+      });
+    } catch (e) { /* ignore */ }
+  }
+
+  if (sanitized.couponCode && stored) {
+    try {
+      const items = await readItems(EC_URL);
+      const coupons = items.coupons || [];
+      const idx = coupons.findIndex((c) => c.code === sanitized.couponCode);
+      if (idx >= 0) {
+        coupons[idx] = { ...coupons[idx], usedCount: (coupons[idx].usedCount || 0) + 1 };
+        await writeItem(EC_URL, "coupons", coupons);
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  return res.status(200).json({
+    success: true,
+    orderId,
+    message: "سيتم الاتصال بسادتكم خلال 24 ساعه لتاكيد الطلب",
+  });
+}

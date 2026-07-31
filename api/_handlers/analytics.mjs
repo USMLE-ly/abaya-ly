@@ -1,5 +1,4 @@
-// Internal analytics ingest — POST batches of storefront events.
-// Whitelisted names only; aggregated in Edge Config under "analytics".
+import { cors, readItems, writeItem } from "./shared.mjs";
 
 const ALLOWED = new Set([
   "page_view", "view_item", "add_to_cart", "remove_from_cart", "add_to_wishlist",
@@ -12,18 +11,7 @@ const MAX_VISITORS = 5000;
 const VISITOR_TTL_MS = 30 * 864e5;
 
 export default async function handler(req, res) {
-  const origin = req.headers.origin || "";
-  const allowedOrigins = [
-    "https://nadine.luxor.ly",
-    "https://abaya-ly.vercel.app",
-    "http://localhost:5173",
-  ];
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
+  cors(req, res, { methods: "POST, OPTIONS", headers: "Content-Type" });
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
@@ -43,9 +31,7 @@ export default async function handler(req, res) {
   const day = now.toISOString().slice(0, 10);
 
   try {
-    const readResp = await fetch(EC_URL);
-    const allData = readResp.ok ? await readResp.json() : { items: {} };
-    const items = allData.items || {};
+    const items = await readItems(EC_URL);
     const data = items["analytics"] || { counts: {}, byPage: {}, byProduct: {}, byDay: {}, raw: [], visitors: {} };
 
     for (const e of clean) {
@@ -69,7 +55,6 @@ export default async function handler(req, res) {
       if (e.sid) data.visitors[String(e.sid)] = now.getTime();
     }
 
-    // Prune stale sessions, cap total
     const cutoff = now.getTime() - VISITOR_TTL_MS;
     const v = data.visitors || {};
     for (const [sid, ts] of Object.entries(v)) {
@@ -92,19 +77,7 @@ export default async function handler(req, res) {
       })),
     ].slice(-MAX_RAW);
 
-    const writeResp = await fetch(`${EC_URL}/items`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        items: [{ operation: "upsert", key: "analytics", value: data }],
-      }),
-    });
-    if (!writeResp.ok) {
-      const text = await writeResp.text();
-      console.error("Analytics write error:", text);
-      return res.status(500).json({ error: "Failed to save analytics" });
-    }
-
+    await writeItem(EC_URL, "analytics", data);
     return res.status(200).json({ ok: true, accepted: clean.length });
   } catch (err) {
     console.error("Analytics API error:", err);
