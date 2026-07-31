@@ -57,6 +57,45 @@ function WishlistMenuLink({ onNavigate }: { onNavigate: () => void }) {
   );
 }
 
+function CartCountWrapper() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const read = () => {
+      try {
+        const saved = localStorage.getItem("nadine-cart");
+        const items = saved ? JSON.parse(saved) : [];
+        setCount(Array.isArray(items) ? items.reduce((s: number, i: any) => s + (Number(i.quantity) || 1), 0) : 0);
+      } catch {
+        setCount(0);
+      }
+    };
+    read();
+    window.addEventListener("nadine-cart", read);
+    window.addEventListener("storage", read);
+    return () => {
+      window.removeEventListener("nadine-cart", read);
+      window.removeEventListener("storage", read);
+    };
+  }, []);
+
+  return (
+    <Link to="/cart" className="relative">
+      <Button variant="ghost" iconOnly size="sm" aria-label="سلة التسوق">
+        <ShoppingBag size={18} />
+      </Button>
+      {count > 0 && (
+        <span
+          className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white"
+          style={{ background: "#c42855" }}
+        >
+          {count > 9 ? "9+" : count}
+        </span>
+      )}
+    </Link>
+  );
+}
+
 export function Header() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -160,11 +199,7 @@ export function Header() {
             <Search size={18} />
           </Button>
           <WishlistCountWrapper />
-          <Link to="/cart">
-            <Button variant="ghost" iconOnly size="sm" aria-label="سلة التسوق">
-              <ShoppingBag size={18} />
-            </Button>
-          </Link>
+          <CartCountWrapper />
         </div>
       </div>
       {/* Search overlay */}
