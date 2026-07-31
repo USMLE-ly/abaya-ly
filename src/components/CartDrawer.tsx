@@ -7,6 +7,7 @@ import {
   getCart, setCart, cartCount, cartSubtotal, FREE_SHIPPING_THRESHOLD,
   type CartItem,
 } from "@/lib/cart";
+import { BookingModal, type BookingCartContext } from "@/components/BookingModal";
 
 export const CART_DRAWER_EVENT = "nadine-cart-drawer";
 
@@ -20,6 +21,7 @@ const shortName = (name: string) => name.split(" • ").slice(2).join(" • ") |
 export function CartDrawer() {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<CartItem[]>([]);
+  const [bookingOpen, setBookingOpen] = useState(false);
   const navigate = useNavigate();
 
   const refresh = () => setItems(getCart());
@@ -47,6 +49,16 @@ export function CartDrawer() {
   const subtotal = cartSubtotal(items);
   const progress = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
   const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+
+  const cartCtx: BookingCartContext | null = items.length > 0
+    ? {
+        itemCount: count,
+        total: subtotal,
+        codes: items.map((i) => i.id).join(" + "),
+        names: items.map((i) => `${shortName(i.name)} ×${i.quantity} (${i.color} / ${i.size})`).join("، "),
+      }
+    : null;
+  const firstItem = items[0];
 
   return (
     <AnimatePresence>
@@ -162,20 +174,34 @@ export function CartDrawer() {
                     <span className="text-lg font-bold text-brand">{subtotal} د.ل</span>
                   </div>
                   <button
-                    onClick={() => { setOpen(false); navigate("/cart"); }}
+                    onClick={() => { setOpen(false); setBookingOpen(true); }}
                     className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white transition-all active:scale-[0.98] shadow-lg shadow-brand/25"
                     style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
                   >
                     <ArrowLeft size={16} />
-                    إتمام الطلب
+                    إتمام الطلب — دفع عند الاستلام
                   </button>
-                  <button onClick={() => setOpen(false)} className="w-full text-center mt-3 text-xs text-accent-brand hover:underline">
-                    متابعة التسوق
+                  <button onClick={() => { setOpen(false); navigate("/cart"); }} className="w-full text-center mt-3 text-xs text-fg-tertiary hover:text-accent-brand hover:underline">
+                    مراجعة السلة كاملة
                   </button>
+
                 </div>
               </>
             )}
           </motion.aside>
+
+          {firstItem && cartCtx && (
+            <BookingModal
+              open={bookingOpen}
+              onClose={() => setBookingOpen(false)}
+              productCode={firstItem.id}
+              productName={shortName(firstItem.name)}
+              colors={[{ name: firstItem.color || "غير محدد", hex: "transparent" }]}
+              sizes={[firstItem.size || "M"]}
+              cart={cartCtx}
+              onSuccess={() => setCart([])}
+            />
+          )}
         </>
       )}
     </AnimatePresence>

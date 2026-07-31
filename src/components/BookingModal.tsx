@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 import { X, Check, Loader2, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 
+export interface BookingCartContext {
+  itemCount: number;
+  total: number;
+  codes: string;
+  names: string;
+}
+
 interface BookingModalProps {
   open: boolean;
   onClose: () => void;
@@ -10,6 +17,8 @@ interface BookingModalProps {
   colors: { name: string; hex: string }[];
   sizes: string[];
   presetCoupon?: string;
+  cart?: BookingCartContext | null;
+  onSuccess?: () => void;
 }
 
 const LIBYAN_CITIES = [
@@ -50,7 +59,7 @@ const LIBYAN_CITIES = [
   "أخرى",
 ];
 
-export function BookingModal({ open, onClose, productCode, productName, colors, sizes, presetCoupon = "" }: BookingModalProps) {
+export function BookingModal({ open, onClose, productCode, productName, colors, sizes, presetCoupon = "", cart = null, onSuccess }: BookingModalProps) {
   const [selectedColor, setSelectedColor] = useState(colors[0]?.name || "");
   const [selectedSize, setSelectedSize] = useState(sizes[0] || "");
   const [selectedCity, setSelectedCity] = useState("");
@@ -120,10 +129,10 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          code: productCode,
-          name: productName,
-          color: selectedColor,
-          size: selectedSize,
+          code: cart ? cart.codes : productCode,
+          name: cart ? cart.names : productName,
+          color: cart ? cart.itemCount + " قطع — " + selectedColor : selectedColor,
+          size: cart ? selectedSize : selectedSize,
           location: locationValue,
           phone: phone.trim(),
           whatsappConsent,
@@ -138,6 +147,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
       if (data.orderId) setOrderId(data.orderId);
       setSubmittedPhone(phone.trim());
       setDone(true);
+      onSuccess?.();
     } catch {
       setError("حدث خطأ، يرجى المحاولة مرة أخرى أو الاتصال بنا عبر واتساب");
     } finally {
@@ -167,6 +177,16 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
             </div>
 
             {/* Form */}
+            {cart && (
+              <div className="mx-5 mt-4 rounded-xl px-4 py-3 flex items-center justify-between"
+                style={{ background: "rgba(196,40,85,0.07)", border: "1px solid rgba(196,40,85,0.12)" }}>
+                <span className="text-[11px] font-bold text-fg">
+                  {cart.itemCount > 1 ? `سلتكِ تحتوي على ${cart.itemCount} قطع — سيتم تأكيد الطلب كاملاً` : "تأكيد طلب السلة"}
+                </span>
+                <span className="text-xs font-bold text-brand tabular-nums">{cart.total} د.ل</span>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="p-5 space-y-4 text-right">
               {/* Product code (read-only) */}
               <div>
