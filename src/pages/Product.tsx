@@ -7,6 +7,7 @@ import { SizeGuide } from "@/components/SizeGuide";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { SocialShare } from "@/components/SocialShare";
 import { RecentlyViewed } from "@/components/RecentlyViewed";
+import { StickyBookingBar } from "@/components/StickyBookingBar";
 import { trackProductView } from "@/lib/recentlyViewed";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
@@ -516,6 +517,13 @@ function ProductContent() {
 
       {/* Size guide */}
       <SizeGuide open={showSizeGuide} onClose={() => setShowSizeGuide(false)} />
+
+      {/* Mobile sticky booking bar */}
+      <StickyBookingBar
+        price={product.price}
+        originalPrice={product.originalPrice}
+        onBook={() => setShowBooking(true)}
+      />
     </div>
   );
 }
