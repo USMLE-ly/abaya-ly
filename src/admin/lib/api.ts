@@ -116,3 +116,73 @@ export interface Note {
   createdAt: string;
 }
 
+
+/** ── Product CRUD ──────────────────────────────────────────────── */
+
+export interface AdminProduct {
+  id: string;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  collection: string;
+  model: string;
+  fabric: string;
+  category: string;
+  images: string[];
+  colors: { name: string; hex: string }[];
+  sizes: string[];
+  badge?: string;
+  description: string;
+  details: string[];
+  highlights: string[];
+  tags: string[];
+  rating: number;
+  reviewCount: number;
+  inStock: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+async function apiCall(path: string, options: RequestInit = {}) {
+  const pw = getPassword();
+  const res = await fetch(path, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      "x-admin-password": pw ?? "",
+      ...(options.headers || {}),
+    },
+  });
+  if (res.status === 401) { clearPassword(); throw new Error("Unauthorized"); }
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(text || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function fetchAdminProducts(): Promise<AdminProduct[]> {
+  const data = await apiCall("/api/admin/products");
+  return data.products ?? [];
+}
+
+export async function createProduct(product: Partial<AdminProduct>): Promise<any> {
+  return apiCall("/api/admin/products", {
+    method: "POST",
+    body: JSON.stringify(product),
+  });
+}
+
+export async function updateProduct(id: string, updates: Partial<AdminProduct>): Promise<any> {
+  return apiCall("/api/admin/products", {
+    method: "PUT",
+    body: JSON.stringify({ id, ...updates }),
+  });
+}
+
+export async function deleteProduct(id: string): Promise<any> {
+  return apiCall("/api/admin/products", {
+    method: "DELETE",
+    body: JSON.stringify({ id }),
+  });
+}
