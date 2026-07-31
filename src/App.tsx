@@ -118,6 +118,7 @@ export default function App() {
       </div>
             <WhatsAppButton />
             <CookieConsent />
+            {!isAdmin && <PromoPopups />}
       </BrowserRouter>
     </QueryClientProvider>
   );
