@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Ticket, Check, Copy } from "lucide-react";
+import { useRef, useState } from "react";
+import { Check, Copy } from "lucide-react";
+import { ticketPath, useIsRTL, useTicketScale, type TicketGeom } from "./ticket";
 
 interface Props {
   code: string;
@@ -7,9 +8,18 @@ interface Props {
   onReveal?: (code: string) => void;
 }
 
-/** Ticket-style clickable discount: tap to reveal + copy the code. */
+/** Small admit-one coupon ticket: tap to reveal + copy the code. */
+const GEO: TicketGeom = { w: 420, h: 150, corner: 14, notch: 12, dividerX: 318.5 };
+
 export function ClickableDiscount({ code, label = "كوبون خصم خاص بكِ", onReveal }: Props) {
   const [copied, setCopied] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const rtl = useIsRTL();
+  const scale = useTicketScale(wrapRef, GEO.w);
+  const clip = ticketPath(GEO, rtl);
+  const dividerLeft = rtl ? GEO.w - GEO.dividerX - 0.8 : GEO.dividerX - 0.8;
+  const stubLeft = rtl ? 0 : GEO.dividerX;
+  const stubWidth = GEO.w - GEO.dividerX;
 
   const handleClick = async () => {
     try {
@@ -23,43 +33,108 @@ export function ClickableDiscount({ code, label = "كوبون خصم خاص بك
   };
 
   return (
-    <button
-      type="button"
-      data-debug="clickable-discount-real"
-      onClick={handleClick}
-      className={`group relative flex w-full items-stretch overflow-visible rounded-2xl border-2 bg-white text-start shadow-sm transition-all duration-300 ${
-        copied
-          ? "border-success"
-          : "border-strawberry-300/70 hover:border-brand hover:shadow-[0_14px_34px_-20px_rgba(196,40,85,0.45)]"
-      }`}
-    >
-      {/* info */}
-      <span className="flex min-w-0 flex-1 items-center gap-3 px-4 py-3">
-        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${copied ? "bg-success/10" : "bg-brand-subtle"}`}>
-          {copied ? <Check size={16} className="text-success" /> : <Ticket size={16} className="text-brand" />}
-        </span>
-        <span className="min-w-0">
-          <span className="block truncate text-xs font-bold text-fg">{copied ? "تم نسخ الكود!" : label}</span>
-          <span className={`block text-[10px] ${copied ? "text-success" : "text-fg-tertiary"}`}>
-            {copied ? "انسخيه واستخدميه في الحجز" : "اضغطي للكشف عن الكود ونسخه"}
-          </span>
-        </span>
-      </span>
+    <div ref={wrapRef} className="relative mx-auto w-full" style={{ maxWidth: GEO.w, aspectRatio: `${GEO.w} / ${GEO.h}` }}>
+      <div
+        className="absolute"
+        style={{
+          left: "50%",
+          top: 0,
+          marginLeft: -GEO.w / 2,
+          width: GEO.w,
+          height: GEO.h,
+          transform: `scale(${scale})`,
+          transformOrigin: "top center",
+        }}
+      >
+        <div className="relative h-full w-full" style={{ filter: "drop-shadow(0 16px 28px rgba(196,40,85,0.18))" }}>
+          <button
+            type="button"
+            data-debug="clickable-discount-real"
+            onClick={handleClick}
+            aria-label={label}
+            className={`group relative block w-full cursor-pointer text-start transition-transform duration-200 active:scale-[0.99] ${
+              copied ? "cursor-default" : ""
+            }`}
+            style={{ width: GEO.w, height: GEO.h, clipPath: `path("${clip}")` }}
+          >
+            {/* ticket body */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0"
+              style={{ background: "linear-gradient(135deg, #ffffff 0%, #fff5f7 45%, #ffe4eb 100%)" }}
+            />
 
-      {/* perforation */}
-      <span className="relative flex items-center px-1" aria-hidden="true">
-        <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 size-5 rounded-full bg-canvas" />
-        <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 size-5 rounded-full bg-canvas" />
-        <span className="h-9 w-px border-l-2 border-dashed border-strawberry-300/70" />
-      </span>
+            {/* perforation — dashed tear line exactly on the divider */}
+            <div
+              aria-hidden="true"
+              className="absolute top-0 bottom-0"
+              style={{
+                left: dividerLeft,
+                width: 1.4,
+                backgroundImage:
+                  "repeating-linear-gradient(rgba(196,40,85,0.35) 0px, rgba(196,40,85,0.35) 7.5px, transparent 7.5px, transparent 15px)",
+              }}
+            />
 
-      {/* code stub */}
-      <span className="flex items-center gap-2 px-4">
-        <span className={`text-sm font-extrabold tabular-nums tracking-[0.18em] ${copied ? "text-success" : "text-brand"}`} dir="ltr">
-          {code}
-        </span>
-        <Copy size={13} className={copied ? "text-success" : "text-brand/60"} />
-      </span>
-    </button>
+            {/* stub watermark */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute grid place-items-center font-bold tabular-nums"
+              style={{
+                left: stubLeft,
+                top: 0,
+                width: stubWidth,
+                height: GEO.h,
+                color: "rgba(196,40,85,0.10)",
+              }}
+            >
+              <span style={{ writingMode: "vertical-rl", fontSize: 46, lineHeight: 1, letterSpacing: "-0.04em" }}>
+                10%
+              </span>
+            </div>
+
+            {/* stub — vertical code + copy action */}
+            <span
+              className={`absolute flex flex-col items-center justify-center gap-2 ${copied ? "text-success" : "text-brand"}`}
+              style={{ left: stubLeft, top: 0, width: stubWidth, height: GEO.h }}
+            >
+              <span dir="ltr" style={{ writingMode: "vertical-rl", fontSize: 15, fontWeight: 700, letterSpacing: "0.1em" }}>
+                {code}
+              </span>
+              {copied ? (
+                <Check size={13} strokeWidth={2.5} aria-hidden="true" />
+              ) : (
+                <Copy size={12} strokeWidth={2.25} aria-hidden="true" />
+              )}
+            </span>
+
+            {/* main body — label + helper */}
+            <span
+              className="absolute inset-y-0 flex flex-col justify-center gap-0.5"
+              style={{ insetInlineStart: 40, insetInlineEnd: stubWidth + 34, textAlign: "start" }}
+            >
+              <span className={`block truncate text-[13px] font-bold ${copied ? "text-success" : "text-fg"}`}>
+                {copied ? "تم نسخ الكود!" : label}
+              </span>
+              <span className={`block text-[11px] ${copied ? "text-success" : "text-fg-tertiary"}`}>
+                {copied ? "انسخيه واستخدميه في الحجز" : "اضغطي للكشف عن الكود ونسخه"}
+              </span>
+            </span>
+
+            {/* edge highlight — follows the same outline */}
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
+              style={{
+                clipPath: `path("${clip}")`,
+                boxShadow: copied
+                  ? "inset 0 0 0 1.5px rgba(22,163,74,0.4)"
+                  : "inset 0 0 0 1.5px rgba(196,40,85,0.2)",
+              }}
+            />
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
