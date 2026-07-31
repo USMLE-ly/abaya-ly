@@ -40,7 +40,7 @@ export default function RefundPolicy() {
             </div>
             <h2 className="font-display text-lg font-bold text-fg">مدة الاسترداد</h2>
           </div>
-          <p className="text-xs text-fg/50 leading-relaxed">يتم رد المبلغ خلال ٣-٥ أيام عمل من تاريخ استلام المنتج المُرجَع. يتم الرد بنفس طريقة الدفع الأصلية (نقدي أو تحويل بنكي).</p>
+          <p className="text-xs text-fg/50 leading-relaxed">يتم رد المبلغ نقداً خلال ٣-٥ أيام عمل من تاريخ استلام المنتج المُرجَع.</p>
         </div>
 
         <div className="glass-card p-6 rounded-2xl mb-8">
