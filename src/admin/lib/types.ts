@@ -22,6 +22,8 @@ export interface Order {
   statusLabel: string;
   createdAt: string;
   updatedAt: string;
+  paymentMethod?: "cod" | "transfer" | "card";
+  whatsappConsent?: boolean;
 }
 
 export interface StatusMeta {

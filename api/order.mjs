@@ -40,7 +40,7 @@ function rl_check(ip) {
   const rl = rl_check(ip);
   if (!rl.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: rl.retryAfter });
 
-  const { code, name, color, size, location, phone, whatsappConsent } = req.body || {};
+  const { code, name, color, size, location, phone, whatsappConsent, paymentMethod } = req.body || {};
 
   // Validate required fields
   if (!code || !phone) {
@@ -62,6 +62,7 @@ function rl_check(ip) {
     code: sanitize(code),
     name: sanitize(name),
     color: sanitize(color),
+    paymentMethod: ["cod", "transfer", "card"].includes(paymentMethod) ? paymentMethod : "cod",
     whatsappConsent: !!whatsappConsent,
     size: sanitize(size),
     location: sanitize(location),
@@ -144,6 +145,7 @@ function rl_check(ip) {
       `📍 الموقع: ${sanitized.location || "—"}`,
       `📞 الهاتف: ${phoneClean}`,
       `💬 إشعار واتساب: ${consentEmoji}`,
+      `💳 طريقة الدفع: ${{ cod: "عند الاستلام 💵", transfer: "حوالة بنكية 🏦", card: "بطاقة 💳" }[sanitized.paymentMethod] || "عند الاستلام"}`,
       "━━━━━━━━━━━━━━━",
       `📅 ${new Date().toLocaleDateString("ar-LY", {
         weekday: "long", year: "numeric", month: "long", day: "numeric",

@@ -269,6 +269,12 @@ export default function OrderDetail() {
                 { label: "رقم الهاتف", value: order.phone, ltr: true },
                 { label: "تاريخ الإنشاء", value: fmtDateTime(order.createdAt) },
                 { label: "آخر تحديث", value: fmtDateTime(order.updatedAt) },
+                {
+                  label: "طريقة الدفع",
+                  value: order.paymentMethod === "transfer" ? "حوالة بنكية 🏦" :
+                          order.paymentMethod === "card" ? "بطاقة 💳" : "عند الاستلام 💵",
+                },
+                { label: "إشعار واتساب", value: order.whatsappConsent ? "✅ مفعّل" : "❌ غير مفعّل" },
               ].map((f) => (
                 <div key={f.label}>
                   <p className="text-[11px] font-bold mb-1" style={{ color: "var(--nd-text-4)" }}>

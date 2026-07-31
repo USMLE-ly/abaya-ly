@@ -292,6 +292,17 @@ function TrackOrderContent() {
                 })}
               </div>
 
+              {/* Payment method */}
+              <div className="mt-4 p-4 rounded-xl" style={{ background: "rgba(196,40,85,0.04)", border: "1px solid rgba(196,40,85,0.08)" }}>
+                <div className="flex items-center justify-between">
+                  <p className="text-[12px] font-bold text-fg">طريقة الدفع</p>
+                  <span className="text-[12px] font-semibold text-fg-secondary">
+                    {order.paymentMethod === "transfer" ? "حوالة بنكية 🏦" :
+                     order.paymentMethod === "card" ? "بطاقة 💳" : "عند الاستلام 💵"}
+                  </span>
+                </div>
+              </div>
+
               {/* Estimated delivery date */}
               <div className="mt-6 p-4 rounded-xl" style={{ background: "rgba(196,40,85,0.06)", border: "1px solid rgba(196,40,85,0.1)" }}>
                 <div className="flex items-center gap-2 mb-1">
