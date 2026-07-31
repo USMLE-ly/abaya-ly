@@ -99,9 +99,9 @@ function CaptureForm({ source, onDone }: { source: string; onDone: () => void })
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="بريدكِ الإلكتروني"
-        className="w-full rounded-xl border border-line-default bg-sunken px-4 py-3 text-sm text-fg placeholder:text-fg-tertiary outline-none focus-visible:ring-2 focus-visible:ring-accent-brand"
+        className="w-full rounded-xl border border-line bg-sunken px-4 py-3 text-sm text-fg placeholder:text-fg-tertiary outline-none focus-visible:ring-2 focus-visible:ring-accent-brand"
       />
-      {error && <p className="text-xs text-status-danger">{error}</p>}
+      {error && <p className="text-xs text-danger">{error}</p>}
       <Button type="submit" variant="primary" block>اشتركي الآن</Button>
       <p className="text-[10px] text-fg-tertiary text-center pt-1">لا رسائل مزعجة — يمكنكِ إلغاء الاشتراك في أي وقت.</p>
     </form>
@@ -190,7 +190,7 @@ export function PromoPopups() {
               <p className="text-sm text-fg-secondary mt-2 leading-relaxed">
                 استخدمي هذا الكود عند إتمام طلبكِ الأول واحصلي على خصم فوري.
               </p>
-              <p className="mt-4 text-lg font-bold tracking-[0.25em] text-accent-brand border border-dashed border-line-default rounded-xl py-3">
+              <p className="mt-4 text-lg font-bold tracking-[0.25em] text-accent-brand border border-dashed border-line rounded-xl py-3">
                 {coupon.code}
               </p>
               <p className="text-[11px] text-fg-tertiary mt-2">

@@ -15,7 +15,7 @@ export function StockIndicator({
 
   if (stock <= 0) {
     return (
-      <p className="flex items-center gap-1.5 text-xs font-semibold text-status-danger" role="status">
+      <p className="flex items-center gap-1.5 text-xs font-semibold text-danger" role="status">
         <PackageX size={13} aria-hidden="true" />
         نفدت الكمية حالياً — تواصلي معنا للحجز المسبق
       </p>
@@ -24,7 +24,7 @@ export function StockIndicator({
 
   if (stock <= lowStockThreshold) {
     return (
-      <p className="flex items-center gap-1.5 text-xs font-semibold text-status-warning" role="status">
+      <p className="flex items-center gap-1.5 text-xs font-semibold text-warning" role="status">
         <AlertTriangle size={13} aria-hidden="true" />
         {stock === 1 ? "آخر قطعة متوفرة" : `بقيت ${stock} قطع فقط`}
       </p>
