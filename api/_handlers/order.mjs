@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   const r = rl(clientIp(req));
   if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
 
-  const { code, name, color, size, location, phone, whatsappConsent, couponCode, items, preOrder } = req.body || {};
+  const { code, name, customerName, color, size, location, phone, whatsappConsent, couponCode, items, preOrder } = req.body || {};
 
   if (!code || !phone) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -28,6 +28,7 @@ export default async function handler(req, res) {
   const sanitized = {
     code: sanitize(code),
     name: sanitize(name),
+    customerName: sanitize(customerName) || "—",
     color: sanitize(color),
     paymentMethod: "cod",
     couponCode: sanitize(couponCode).toUpperCase(),
@@ -63,6 +64,7 @@ export default async function handler(req, res) {
     orderId,
     code: sanitized.code,
     name: sanitized.name,
+    customerName: sanitized.customerName,
     color: sanitized.color,
     size: sanitized.size,
     items: orderItems,
@@ -99,6 +101,7 @@ export default async function handler(req, res) {
       isPreOrder ? `⏳ حجز مسبق (نفدت الكمية) ${orderId}` : `🛒 طلب جديد ${orderId}`,
       "━━━━━━━━━━━━━━━",
       `🆔 الكود: ${sanitized.code}`,
+      `👤 الاسم: ${sanitized.customerName}`,
       ...productLines,
       `📍 الموقع: ${sanitized.location || "—"}`,
       `📞 الهاتف: ${phoneClean}`,

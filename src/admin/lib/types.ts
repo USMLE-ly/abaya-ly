@@ -14,6 +14,9 @@ export interface Order {
   orderId: string;
   code: string;
   name: string;
+  /** Customer's own name, collected at checkout (optional on legacy orders). */
+  customerName?: string;
+
   color: string;
   size: string;
   location: string;

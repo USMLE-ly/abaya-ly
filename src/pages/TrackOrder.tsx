@@ -3,7 +3,9 @@ import { useSearchParams } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { motion } from "framer-motion";
-import { Package, CheckCircle, Truck, MapPin, Search, Loader2, Clock, MessageCircle } from "lucide-react";
+import { Package, CheckCircle, Truck, MapPin, Search, Loader2, Clock, MessageCircle, ScrollText } from "lucide-react";
+import { OrderCertificateModal, type CertificateData } from "@/components/certificate/OrderCertificate";
+import { products } from "@/data/products";
 
 const STATUS_STEPS = [
   { key: "pending",   icon: Clock,       label: "انتظار التأكيد" },
@@ -38,6 +40,7 @@ function TrackOrderContent() {
   const [searched, setSearched] = useState(false);
   const [error, setError] = useState("");
   const [order, setOrder] = useState<any>(null);
+  const [certOpen, setCertOpen] = useState(false);
 
   // Auto-search when arriving with ?orderNumber=&phone= (from booking success).
   useEffect(() => {
@@ -207,6 +210,10 @@ function TrackOrderContent() {
               {/* Order details */}
               <div className="bg-white/40 rounded-xl p-4 mb-6 text-sm space-y-2">
                 <div className="flex justify-between">
+                  <span className="text-fg-tertiary">الاسم</span>
+                  <span className="text-fg font-medium">{order.customerName || "—"}</span>
+                </div>
+                <div className="flex justify-between">
                   <span className="text-fg-tertiary">الفستان</span>
                   <span className="text-fg font-medium">{order.name}</span>
                 </div>
@@ -230,7 +237,21 @@ function TrackOrderContent() {
                     })}
                   </span>
                 </div>
+
+                <button
+                  onClick={() => setCertOpen(true)}
+                  className="w-full mt-2 inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-fg-tertiary hover:text-accent-brand hover:underline"
+                >
+                  <ScrollText size={13} />
+                  شهادة الطلب
+                </button>
               </div>
+
+              <OrderCertificateModal
+                open={certOpen}
+                onClose={() => setCertOpen(false)}
+                data={certificateFromOrder(order)}
+              />
 
               {/* Status timeline */}
               <div className="space-y-4">
@@ -363,4 +384,30 @@ function TrackOrderContent() {
       </section>
     </div>
   );
+}
+
+/** Build the certificate payload from a tracked order record. */
+function certificateFromOrder(order: any): CertificateData {
+  const raw = Array.isArray(order.items) && order.items.length
+    ? order.items
+    : [{ id: "", name: order.name, color: order.color, size: order.size }];
+
+  return {
+    orderId: order.orderId,
+    customerName: order.customerName || "",
+    date: new Date(order.createdAt).toLocaleDateString("ar-LY", {
+      year: "numeric", month: "long", day: "numeric",
+    }),
+    items: raw.map((it: any) => {
+      const p = products.find((x) => x.id === it.id) ?? products.find((x) => x.name === it.name);
+      return {
+        name: p?.seoName || p?.model || it.name || order.name,
+        code: p?.code || order.code,
+        collection: p?.collection,
+        edition: p?.edition,
+        color: it.color,
+        size: it.size,
+      };
+    }),
+  };
 }

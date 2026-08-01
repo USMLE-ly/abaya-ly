@@ -1,68 +1,55 @@
-# Premium CRO Upgrade — نادين
+## Goal
 
-One big pass across the whole storefront. Brand identity (strawberry/VELAR palette, Tajawal, Arabic RTL) stays exactly as is; everything added reuses existing design tokens and `src/components/velar` primitives.
+1. Fix the misaligned buttons in the "تم استلام طلبك بنجاح" success modal.
+2. Collect the customer's name at checkout (required).
+3. After a confirmed order, generate a personalized luxury certificate carrying two seals: a fixed store authenticity seal and a per-outfit seal.
 
-## What's already in place (reused, not rebuilt)
-- Wishlist, RecentlyViewed, ReviewsSection, SizeGuide, ImageLightbox, SocialShare, StickyBookingBar, NewsletterSection, CookieConsent, WhatsAppButton.
-- `api/reviews.mjs` (real reviews, admin-moderated) and `api/coupons.mjs` (real coupon validation) exist server-side.
-- Policy pages: shipping, refund, terms, privacy, FAQ, track-order.
+## 1. Success popup button fix
 
-Note on stock: `src/data/products.ts` currently has **no** stock field. Real inventory needs a `stock: number` per product plus an admin editor — included below. Scarcity/urgency UI renders only when a real number is present.
+In `src/components/BookingModal.tsx` (success state, lines ~510-551) the track button is an `inline-flex … px-5 py-2.5 text-xs mt-4` link while "متابعة التسوق" is a `px-6 py-2.5 text-sm mt-6` button — different widths, text sizes and gaps.
 
-## 1. Data layer
-- Add `stock`, `lowStockThreshold`, `video?`, `completeTheLook?: string[]`, `bundleWith?: string[]` to the `Product` interface and fill values.
-- Admin → Products: editable stock column so the number stays truthful.
-- `src/lib/analytics.ts` — GA4 via the Google Analytics connector (measurement ID from the connector env var), SPA page_view on route change, plus typed event helpers.
-- `src/lib/cart.ts` — extract cart read/write out of the components into one module (currently duplicated in Header/Cart), so add-to-cart, buy-now, and coupon logic share one source.
+Replace both with one flex container:
+- `flex flex-col sm:flex-row gap-3 mt-6` (RTL-safe, gap only, no per-button margins)
+- Each button: `flex-1 h-12 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold` — identical height, padding, and type scale.
+- Primary = track order (gradient fill), secondary = continue shopping (outlined, `border border-brand text-brand`) so weights read as a pair.
+- Stack full-width on mobile, side-by-side from `sm:` up.
+- A third, quieter link "شهادة الطلب" opens the certificate.
 
-## 2. Homepage
-- Announcement bar (dismissible, promo-driven) above the sticky header.
-- Hero: keep LuminaHero visuals, add a real value proposition headline + subheadline + one primary CTA above the fold, with a secondary "تسوّقي المجموعة".
-- Best sellers / trending rail (sorted by real review count + rating), seasonal / featured collections block.
-- Ratings + testimonials pulled from the reviews API, not placeholders.
-- Trust strip: cash-on-delivery, free shipping across Libya, 7-day returns, custom tailoring, WhatsApp support.
-- Free-shipping-threshold and first-order-discount messaging tied to actual coupon records.
+## 2. Customer name (required)
 
-## 3. Product page
-- Gallery: high-res with hover/pinch zoom, lifestyle + fabric close-ups, optional video slot, thumbnail rail.
-- Sticky add-to-cart bar (mobile + desktop) with price, size, and both **أضيفي للسلة** and **اشتري الآن**.
-- Price block: current, struck original, saving badge, anchoring copy.
-- Stock indicator + low-stock warning driven by the real `stock` value only.
-- Benefits-first description, then material / sizing / care / specs accordion; size guide, shipping, returns, warranty, and product FAQ as inline accordions.
-- Reviews with photos and verified-purchase badges from the reviews API.
-- Related products, "يُشترى معاً" bundle (with real bundle discount), and "أكملي الإطلالة".
-- Product JSON-LD (Product, AggregateRating, Offer, Breadcrumb).
+- `BookingModal`: add a required "الاسم الكريم" text input above the phone field, min 2 / max 60 chars, trimmed, Arabic-friendly. Block submit with an inline error when empty.
+- Send it as a new `customerName` field in the POST body.
+- `api/_handlers/order.mjs`: sanitize `customerName`, require it, store it on the order object, and add a `👤 الاسم` line to the Telegram message. `code`, `phone` validation and the response shape stay exactly as they are — no change to the existing checkout contract, so old clients keep working.
+- Admin order detail + track-order display the name where the order fields are listed.
 
-## 4. Cart & checkout
-- Coupon field wired to `api/coupons.mjs` (first-order + bundle codes).
-- Free-shipping progress bar to threshold.
-- Cross-sell rail, saved-for-later from wishlist, single-step streamlined checkout form with inline validation (zod), COD + WhatsApp order paths clearly labelled.
-- Abandonment nudge: cart contents persisted and surfaced by the announcement bar on return.
+## 3. Certificate components
 
-## 5. Trust & credibility
-- Payment/security icons (existing SVGs in `public/images/payments`), SSL and COD messaging, money-back and easy-return statements sourced from the real policy pages.
-- Brand story and craftsmanship section, contact info and support hours visible in footer and product page.
+Create the provided component library under the shadcn UI path already used by this project (`src/components/ui/`):
 
-## 6. Popups (as requested)
-- Email capture: delayed + scroll-triggered, one-time, dismissible, `localStorage` suppressed.
-- Exit-intent discount: desktop mouse-leave / mobile back-intent, shows a real first-order coupon code, capped at one impression per visitor.
+- `src/components/ui/award.tsx` — the full `Awards` component exactly as supplied (variants: stamp, award, certificate, badge, sticker, id-card), with `cn` from `@/lib/utils` (already exists). Only the color classes are re-pointed to brand tokens (strawberry `#c42855` / gold accent) instead of raw yellow/gray gradients.
+- `src/components/ui/certificate.tsx` — thin wrapper rendering `variant="certificate"`.
 
-## 7. Loyalty & referral
-- Lightweight, honest version: referral link generator + rewards explainer page. No fake point balances — states clearly how rewards are claimed via WhatsApp until a backend ledger exists.
+Then the brand layer:
 
-## 8. Design system polish
-- Consistent button variants, spacing scale, hover/reveal motion via existing framer-motion helpers, contrast-checked tokens, one icon set (lucide).
+- `src/components/certificate/StoreSeal.tsx` — `Awards` **stamp** variant, fixed content: "NADINE LUXURY" curved top, "دار الأزياء المعتمدة" curved bottom, brand star. Identical on every order.
+- `src/components/certificate/OutfitSeal.tsx` — `Awards` **badge** variant, generated per ordered item from `src/data/products.ts`: model/name, SKU code, collection, color/edition, and the order reference.
+- `src/components/certificate/OrderCertificate.tsx` — the main certificate that composes them: Tajawal RTL, dotted gold border, crown/award mark, "شهادة أصالة", customer name, order number, purchased outfit(s), date in Arabic, store seal bottom-right, outfit seal bottom-left. Multi-item orders render one outfit seal per item (wrapped row, capped at 4 then "+N").
 
-## 9. Performance, SEO, a11y
-- Lazy-load all below-fold imagery, `fetchpriority=high` + preload on the LCP hero image, width/height on images to kill CLS.
-- Route-level code splitting already partly there — extend to Product and Home sub-sections.
-- Per-page meta via existing `usePageMeta`, Organization + WebSite + Product + FAQ JSON-LD, sitemap refresh.
-- WCAG pass: single `<main>`, heading order, `aria-label` on icon buttons, 44px tap targets, focus-visible rings.
+## 4. Data flow & delivery
 
-## 10. Analytics events (GA4)
-`page_view`, `view_item`, `add_to_cart`, `remove_from_cart`, `begin_checkout`, `purchase`, `add_to_wishlist`, `newsletter_signup`, `cta_click`, `scroll_depth`, `popup_shown/converted`, `coupon_applied` — each with product/value params so funnels and future A/B splits work.
+- On success, `BookingModal` already holds everything needed (`orderId`, name, phone, and `cart.items` / single product props). It stores a `CertificateData` object in state and passes it to the certificate.
+- Delivery: "شهادة الطلب" opens a full-screen modal with the rendered certificate and a **تحميل الشهادة** button using `html-to-image` (`toPng`, pixelRatio 2) → downloads `nadine-certificate-<orderId>.png`. This is a client-only render; nothing is persisted server-side.
+- The same certificate is reachable later from `/track-order` once an order is found, so the customer isn't forced to save it immediately.
+
+## Not breaking checkout
+
+- No change to the order POST endpoint's URL, status codes, or `{ success, orderId, message }` response.
+- `customerName` is additive; the handler treats a missing value as `"—"` for any legacy caller.
+- Certificate rendering happens strictly after `res.ok` — it cannot block or fail the order, and it's wrapped in an error boundary so a render fault still leaves the success modal intact.
+- Cart clearing (`onSuccess`) still fires exactly as today, before the certificate is opened; the certificate reads from a snapshot taken at submit time, not from the live cart.
 
 ## Technical notes
-- Google Analytics is connected through the connectors flow; the measurement ID arrives as `VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY`. I'll request that connection during implementation.
-- No backend framework change; existing Vercel `api/*.mjs` handlers stay the source of truth for orders, reviews, and coupons.
-- Every urgency/scarcity element is gated behind real data — if `stock` is unset, the component renders nothing rather than inventing a number.
+
+- Project is Vite + React + TS + Tailwind with `@/` alias and `cn` in `src/lib/utils.ts`, so the shadcn-style `src/components/ui/` path works as-is; `lucide-react` is already installed.
+- One new dependency: `html-to-image`.
+- Tokens used: existing `--color-strawberry-*`, `bg-card`, `text-muted-foreground` equivalents in `src/index.css`; no new hardcoded hex outside the certificate's gold foil accent, which will be added as a token.

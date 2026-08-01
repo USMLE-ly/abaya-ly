@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { X, Check, Loader2, ChevronDown, PackageSearch } from "lucide-react";
+import { X, Check, Loader2, ChevronDown, PackageSearch, ScrollText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { products } from "@/data/products";
+import { OrderCertificateModal, type CertificateData } from "@/components/certificate/OrderCertificate";
+
 
 export interface BookingCartItem {
   id: string;
@@ -92,8 +94,12 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const [selectedCity, setSelectedCity] = useState("");
   const [customLocation, setCustomLocation] = useState("");
   const [phone, setPhone] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [certificate, setCertificate] = useState<CertificateData | null>(null);
+  const [certOpen, setCertOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+
   const [error, setError] = useState("");
   const [orderId, setOrderId] = useState("");
   const [submittedPhone, setSubmittedPhone] = useState("");
@@ -147,6 +153,12 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const nameClean = customerName.trim();
+    if (nameClean.length < 2 || nameClean.length > 60) {
+      setError("يرجى كتابة الاسم الكريم (من حرفين إلى 60 حرفاً)");
+      return;
+    }
+
     const phoneError = validatePhone(phone);
     if (phoneError) {
       setError(phoneError);
@@ -166,6 +178,20 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
     setError("");
     setSubmitting(true);
 
+    const orderedItems = cart
+      ? cart.items.map((it, i) => {
+          const sel = selections[i] ?? { color: it.color, size: it.size };
+          return {
+            id: it.id,
+            name: it.name,
+            color: sel.color,
+            size: sel.size,
+            quantity: it.quantity,
+            price: it.price,
+          };
+        })
+      : [];
+
     try {
       const res = await fetch("/api/order", {
         method: "POST",
@@ -173,19 +199,10 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
         body: JSON.stringify({
           code: cart ? cart.codes : productCode,
           name: cart ? cart.names : productName,
+          customerName: nameClean,
           color: cart ? `${cart.itemCount} قطع` : selectedColor,
           size: cart ? "" : selectedSize,
-          items: cart?.items.map((it, i) => {
-            const sel = selections[i] ?? { color: it.color, size: it.size };
-            return {
-              id: it.id,
-              name: it.name,
-              color: sel.color,
-              size: sel.size,
-              quantity: it.quantity,
-              price: it.price,
-            };
-          }),
+          items: cart ? orderedItems : undefined,
           location: locationValue,
           phone: phone.trim(),
           whatsappConsent,
@@ -201,7 +218,34 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
       if (data.orderId) setOrderId(data.orderId);
       setSubmittedPhone(phone.trim());
       setDone(true);
+
+      // Snapshot for the personalized certificate (taken before the cart clears).
+      try {
+        const source = cart
+          ? orderedItems.map((it) => ({ id: it.id, name: it.name, color: it.color, size: it.size }))
+          : [{ id: "", name: productName, color: selectedColor, size: selectedSize }];
+        setCertificate({
+          orderId: data.orderId || "",
+          customerName: nameClean,
+          date: new Date().toLocaleDateString("ar-LY", { year: "numeric", month: "long", day: "numeric" }),
+          items: source.map((it) => {
+            const p = products.find((x) => x.id === it.id) ?? products.find((x) => x.name === it.name);
+            return {
+              name: p?.seoName || p?.model || it.name,
+              code: p?.code || productCode,
+              collection: p?.collection,
+              edition: p?.edition,
+              color: it.color,
+              size: it.size,
+            };
+          }),
+        });
+      } catch {
+        /* the certificate is optional — never block the confirmed order */
+      }
+
       onSuccess?.();
+
     } catch {
       setError("حدث خطأ، يرجى المحاولة مرة أخرى أو الاتصال بنا عبر واتساب");
     } finally {
@@ -396,7 +440,26 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                 )}
               </div>
 
+              {/* Customer name */}
+              <div>
+                <label className="text-[11px] font-semibold text-fg-tertiary block mb-1">
+                  الاسم الكريم <span className="text-status-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="مثال: نور الهدى"
+                  required
+                  minLength={2}
+                  maxLength={60}
+                  className="w-full px-4 py-2.5 text-sm text-fg bg-white/60 rounded-xl border border-line-subtle outline-none focus:border-accent-brand transition-colors placeholder:text-fg-tertiary"
+                />
+                <p className="text-[10px] text-fg-tertiary mt-1">سيظهر اسمكِ على شهادة الطلب</p>
+              </div>
+
               {/* Phone */}
+
               <div>
                 <label className="text-[11px] font-semibold text-fg-tertiary block mb-1">
                   رقم الهاتف <span className="text-status-danger">*</span>
@@ -529,28 +592,43 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               سيتم الاتصال بسادتكم خلال 24 ساعة لتأكيد الطلب
             </p>
 
-            {orderId && submittedPhone && (
-              <Link
-                to={`/track-order?orderNumber=${encodeURIComponent(orderId)}&phone=${encodeURIComponent(submittedPhone)}`}
+            {/* Equal-weight action pair */}
+            <div className="flex flex-col sm:flex-row gap-3 mt-6">
+              {orderId && submittedPhone && (
+                <Link
+                  to={`/track-order?orderNumber=${encodeURIComponent(orderId)}&phone=${encodeURIComponent(submittedPhone)}`}
+                  onClick={onClose}
+                  className="flex-1 h-12 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold text-white transition-all active:scale-[0.98]"
+                  style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
+                >
+                  <PackageSearch size={16} />
+                  تتبعي طلبكِ الآن
+                </Link>
+              )}
+              <button
                 onClick={onClose}
-                className="inline-flex items-center gap-1.5 mt-4 px-5 py-2.5 rounded-xl text-xs font-bold text-white transition-all hover:scale-105"
-                style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
+                className="flex-1 h-12 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all active:scale-[0.98] border"
+                style={{ borderColor: "#c42855", color: "#c42855", background: "transparent" }}
               >
-                <PackageSearch size={14} />
-                تتبعي طلبكِ الآن
-              </Link>
-            )}
+                متابعة التسوق
+              </button>
+            </div>
 
-            <button
-              onClick={onClose}
-              className="mt-6 px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-300 hover:scale-105"
-              style={{ background: "#c42855" }}
-            >
-              متابعة التسوق
-            </button>
+            {certificate && (
+              <button
+                onClick={() => setCertOpen(true)}
+                className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-fg-tertiary hover:text-accent-brand hover:underline"
+              >
+                <ScrollText size={13} />
+                شهادة الطلب
+              </button>
+            )}
           </div>
         )}
       </div>
+
+      <OrderCertificateModal open={certOpen} onClose={() => setCertOpen(false)} data={certificate} />
     </div>
   );
 }
+

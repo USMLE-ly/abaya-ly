@@ -291,7 +291,9 @@ export default function OrderDetail() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
                 { label: "كود المنتج", value: order.code },
+                { label: "اسم العميلة", value: order.customerName || "—" },
                 { label: "المنتج", value: order.name },
+
                 { label: "اللون", value: order.color },
                 { label: "المقاس", value: order.size },
                 { label: "المدينة", value: order.location },
