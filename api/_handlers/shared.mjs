@@ -82,7 +82,8 @@ export async function writeItem(EC_URL, key, value) {
   });
   if (!writeResp.ok) {
     const text = await writeResp.text();
-    throw new Error(`Edge Config write failed: ${text}`);
+    const safeUrl = String(writeResp.url || "").replace(/(token=)[^&]+/i, "$1***");
+    throw new Error(`Edge Config write failed [${writeResp.status}] ${safeUrl}: ${text.slice(0, 300)}`);
   }
 }
 

@@ -168,6 +168,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   } catch (err) {
     console.error("Reviews API error:", err);
+    if (req.query?.debug === "1") return res.status(500).json({ error: err?.message || String(err) });
     return res.status(500).json({ error: "Server error" });
   }
 }
