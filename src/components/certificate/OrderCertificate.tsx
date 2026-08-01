@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { Component, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { X, Download, Crown } from "lucide-react";
 import { toPng } from "html-to-image";
@@ -69,10 +69,32 @@ export function OrderCertificate({ data }: { data: CertificateData }) {
         <div className="text-[10px] text-fg-tertiary leading-relaxed max-w-[45%]">
           هذه الشهادة صادرة إلكترونياً ولا تحتاج إلى توقيع.
         </div>
-        <StoreSeal date={data.date} className="!h-36 !w-36 !mx-0" />
+        <StoreSeal date={data.date} className="h-36 w-36 mx-0" />
       </div>
     </div>
   );
+}
+
+/** Keeps the success modal intact if the certificate surface fails to render. */
+class CertificateBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    if (this.state.failed) {
+      return (
+        <div
+          dir="rtl"
+          className="w-full bg-white p-6 rounded-2xl text-center text-sm text-fg-tertiary"
+          style={{ fontFamily: "Tajawal, sans-serif" }}
+        >
+          تعذّر عرض الشهادة الآن — ستتمكنين من تنزيلها لاحقاً من صفحة تتبع الطلب.
+        </div>
+      );
+    }
+    return this.props.children;
+  }
 }
 
 /** Full-screen viewer with PNG download. */
@@ -121,7 +143,9 @@ export function OrderCertificateModal({
         </div>
 
         <div ref={ref}>
-          <OrderCertificate data={data} />
+          <CertificateBoundary>
+            <OrderCertificate data={data} />
+          </CertificateBoundary>
         </div>
 
         <button

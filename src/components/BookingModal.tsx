@@ -332,7 +332,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="p-5 space-y-4 text-start">
+            <form onSubmit={handleSubmit} noValidate className="p-5 space-y-4 text-start">
               {/* Product code (read-only) — single-product mode only */}
               {!cart && (
                 <div>
@@ -598,7 +598,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                 <Link
                   to={`/track-order?orderNumber=${encodeURIComponent(orderId)}&phone=${encodeURIComponent(submittedPhone)}`}
                   onClick={onClose}
-                  className="flex-1 h-12 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold text-white transition-all active:scale-[0.98]"
+                  className="sm:flex-1 h-12 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold text-white transition-all active:scale-[0.98]"
                   style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
                 >
                   <PackageSearch size={16} />
@@ -607,7 +607,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               )}
               <button
                 onClick={onClose}
-                className="flex-1 h-12 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all active:scale-[0.98] border"
+                className="sm:flex-1 h-12 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all active:scale-[0.98] border"
                 style={{ borderColor: "#c42855", color: "#c42855", background: "transparent" }}
               >
                 متابعة التسوق
