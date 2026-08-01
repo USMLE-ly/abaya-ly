@@ -8,9 +8,11 @@ const rlRead = createRateLimiter({ windowMs: 60_000, max: 120 });
 const rlWrite = createRateLimiter({ windowMs: 15 * 60_000, max: 5 });
 
 function sanitizeImage(url) {
-  const clean = sanitize(String(url || "")).trim().slice(0, 500);
-  if (!/^https?:\/\//i.test(clean)) return "";
-  return clean;
+  const clean = sanitize(String(url || "")).trim().slice(0, 600_000);
+  if (/^https?:\/\//i.test(clean)) return clean;
+  // Client-side compressed photos (canvas → JPEG/PNG data URL), capped at ~500KB text
+  if (/^data:image\/(jpeg|png);base64,[A-Za-z0-9+/=]+$/i.test(clean) && clean.length <= 500_000) return clean;
+  return "";
 }
 
 export default async function handler(req, res) {
@@ -39,6 +41,7 @@ export default async function handler(req, res) {
             name: r.name,
             comment: r.comment,
             image: r.image || "",
+            verified: r.verified === true,
             createdAt: r.createdAt,
           });
         }
@@ -73,6 +76,7 @@ export default async function handler(req, res) {
         name: sanitize(name || "عميلة نادين"),
         comment: sanitize(comment.trim()),
         image: sanitizeImage(image),
+        verified: false,
         createdAt: new Date().toISOString(),
       };
 
@@ -84,7 +88,7 @@ export default async function handler(req, res) {
     if (!isAdmin(req)) return res.status(401).json({ error: "Unauthorized" });
 
     if (req.method === "PUT") {
-      const { reviewId, rating, name, comment, image } = req.body || {};
+      const { reviewId, rating, name, comment, image, verified } = req.body || {};
       const idx = reviews.findIndex((r) => r.id === reviewId);
       if (idx < 0) return res.status(404).json({ error: "Review not found" });
       if (rating !== undefined && !VALID_RATINGS.includes(Number(rating))) {
@@ -97,6 +101,7 @@ export default async function handler(req, res) {
       if (name !== undefined) reviews[idx].name = sanitize(name);
       if (comment !== undefined) reviews[idx].comment = sanitize(comment.trim());
       if (image !== undefined) reviews[idx].image = sanitizeImage(image);
+      if (verified !== undefined) reviews[idx].verified = verified === true;
       reviews[idx].updatedAt = new Date().toISOString();
       await writeItem(EC_URL, REVIEW_KEY, reviews);
       return res.status(200).json({ success: true, review: reviews[idx] });

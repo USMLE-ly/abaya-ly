@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  Search, Star, Eye, Edit3, Trash2, X, Save, Loader2, AlertTriangle, MessageSquare,
+  Search, Star, Eye, Edit3, Trash2, X, Save, Loader2, AlertTriangle, MessageSquare, BadgeCheck,
 } from "lucide-react";
 import { ACard, ACardHeader, AButton, AInput, ASelect, ASkeleton, AEmpty } from "../components/ui";
 import {
@@ -69,6 +69,7 @@ export default function Reviews() {
   const [editName, setEditName] = useState("");
   const [editComment, setEditComment] = useState("");
   const [editImage, setEditImage] = useState("");
+  const [editVerified, setEditVerified] = useState(false);
   const [msg, setMsg] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
   const flash = (type: "ok" | "err", text: string) => {
@@ -102,6 +103,7 @@ export default function Reviews() {
     setEditName(r.name);
     setEditComment(r.comment);
     setEditImage(r.image || "");
+    setEditVerified(r.verified === true);
   };
 
   const saveMut = useMutation({
@@ -111,6 +113,7 @@ export default function Reviews() {
         name: editName,
         comment: editComment,
         image: editImage.trim(),
+        verified: editVerified,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "reviews"] });
@@ -243,7 +246,19 @@ export default function Reviews() {
                       </p>
                     </td>
                     <td className={td}><Stars rating={r.rating} /></td>
-                    <td className={td} style={{ color: "var(--nd-text-2)" }}>{r.name}</td>
+                    <td className={td}>
+                      <div className="flex items-center gap-1.5">
+                        <span style={{ color: "var(--nd-text-2)" }}>{r.name}</span>
+                        {r.verified === true && (
+                          <span
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+                            style={{ color: "#4d8a16", background: "rgba(137,210,51,0.12)" }}
+                          >
+                            <BadgeCheck size={11} /> شراء موثّق
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className={td}>
                       <p className="max-w-[260px] truncate" style={{ color: "var(--nd-text-2)" }} title={r.comment}>
                         {r.comment}
@@ -400,6 +415,25 @@ export default function Reviews() {
                 />
               )}
             </div>
+            <button
+              type="button"
+              onClick={() => setEditVerified((v) => !v)}
+              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-[13px] font-bold transition-colors"
+              style={{
+                background: editVerified ? "rgba(137,210,51,0.10)" : "var(--nd-bg)",
+                border: "1px solid " + (editVerified ? "rgba(137,210,51,0.4)" : "var(--nd-border)"),
+                color: editVerified ? "#4d8a16" : "var(--nd-text-3)",
+              }}
+            >
+              <span
+                className="w-4 h-4 rounded flex items-center justify-center text-white text-[10px]"
+                style={{ background: editVerified ? "#7ab648" : "var(--nd-border)" }}
+              >
+                {editVerified ? "✓" : ""}
+              </span>
+              <BadgeCheck size={15} />
+              شراء موثّق — عرض شارة التأكيد في المتجر
+            </button>
             <div className="flex justify-end gap-2 pt-2">
               <AButton variant="default" onClick={() => setEditing(null)}>إلغاء</AButton>
               <AButton

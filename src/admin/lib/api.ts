@@ -202,6 +202,7 @@ export interface AdminReview {
   name: string;
   comment: string;
   image?: string;
+  verified?: boolean;
   createdAt: string;
 }
 
@@ -215,7 +216,7 @@ export async function fetchAllReviews(): Promise<AdminReview[]> {
 export async function updateReview(
   productId: string,
   reviewId: string,
-  patch: { rating?: number; name?: string; comment?: string; image?: string }
+  patch: { rating?: number; name?: string; comment?: string; image?: string; verified?: boolean }
 ): Promise<any> {
   return apiCall("/api/reviews", {
     method: "PUT",

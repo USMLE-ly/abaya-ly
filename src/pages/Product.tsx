@@ -11,6 +11,8 @@ import { SizeGuide } from "@/components/SizeGuide";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { SocialShare } from "@/components/SocialShare";
 import { RecentlyViewed } from "@/components/RecentlyViewed";
+import { WishlistButton } from "@/components/WishlistButton";
+import { ProductInfoSections } from "@/components/ProductInfoSections";
 import { StickyBookingBar } from "@/components/StickyBookingBar";
 import { trackProductView } from "@/lib/recentlyViewed";
 import { OptimizedImage } from "@/components/OptimizedImage";
@@ -100,12 +102,34 @@ function getRelatedProducts(current: ProductType, max = 4): ProductType[] {
 function JsonLdScript({ product }: { product: ProductType }) {
   const stockMap = useStock();
   const liveStock = stockMap[product.id] ?? product.stock ?? 0;
+  const [liveReviews, setLiveReviews] = useState<Array<{
+    id: string;
+    rating: number;
+    name: string;
+    comment: string;
+    createdAt: string;
+  }>>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch(`/api/reviews?productId=${encodeURIComponent(product.id)}`)
+      .then((r) => r.json())
+      .then((data) => { if (mounted) setLiveReviews(data.reviews || []); })
+      .catch(() => {});
+    return () => { mounted = false; };
+  }, [product.id]);
 
   useEffect(() => {
     const productUrl = `${SITE_URL}/product/${product.id}`;
     const imageUrl = product.images[0]?.startsWith("http")
       ? product.images[0]
       : `${SITE_URL}${product.images[0]}`;
+
+    const priceValidUntil = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const totalCount = product.reviewCount + liveReviews.length;
+    const totalRating = liveReviews.length > 0
+      ? ((product.rating * product.reviewCount) + liveReviews.reduce((sum, r) => sum + r.rating, 0)) / totalCount
+      : product.rating;
 
     const jsonLd = {
       "@context": "https://schema.org",
@@ -114,29 +138,56 @@ function JsonLdScript({ product }: { product: ProductType }) {
       description: product.subtitle,
       image: imageUrl,
       url: productUrl,
+      sku: product.code,
+      mpn: product.code,
       brand: { "@type": "Brand", name: "Nadine" },
       category: product.category,
       color: product.colors[0]?.name,
       material: product.fabric,
+      itemCondition: "https://schema.org/NewCondition",
       offers: {
         "@type": "Offer",
         price: product.price,
         priceCurrency: "LYD",
         availability: liveStock > 0 ? "https://schema.org/InStock" : "https://schema.org/PreOrder",
         url: productUrl,
+        priceValidUntil,
         seller: { "@type": "Brand", name: "Nadine" },
       },
-      aggregateRating: product.reviewCount > 0 ? {
+      aggregateRating: totalCount > 0 ? {
         "@type": "AggregateRating",
-        ratingValue: product.rating,
-        reviewCount: product.reviewCount,
+        ratingValue: Number(totalRating.toFixed(2)),
+        reviewCount: totalCount,
       } : undefined,
+      ...(liveReviews.length > 0 ? {
+        review: liveReviews.slice(0, 5).map((r) => ({
+          "@type": "Review",
+          author: { "@type": "Person", name: r.name },
+          datePublished: r.createdAt,
+          reviewBody: r.comment,
+          reviewRating: { "@type": "Rating", ratingValue: r.rating, bestRating: 5 },
+        })),
+      } : {}),
     };
+
+    const breadcrumbLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "الرئيسية", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "المجموعات", item: `${SITE_URL}/collections` },
+        { "@type": "ListItem", position: 3, name: product.seoName, item: productUrl },
+      ],
+    };
+
     // Set OG meta tags
     document.title = product.seoName + " — نادين";
     let ogDesc = document.querySelector('meta[name="description"]');
     if (!ogDesc) { ogDesc = document.createElement("meta"); ogDesc.setAttribute("name", "description"); document.head.appendChild(ogDesc); }
     ogDesc.setAttribute("content", product.subtitle);
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) { canonical = document.createElement("link"); canonical.setAttribute("rel", "canonical"); document.head.appendChild(canonical); }
+    canonical.setAttribute("href", productUrl);
     const ogTags = [
       { property: "og:title", content: product.seoName },
       { property: "og:description", content: product.subtitle },
@@ -159,15 +210,18 @@ function JsonLdScript({ product }: { product: ProductType }) {
       el.setAttribute("content", tag.content);
     }
 
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.textContent = JSON.stringify(jsonLd);
-    document.head.appendChild(script);
+    const scripts = [jsonLd, breadcrumbLd].map((data) => {
+      const el = document.createElement("script");
+      el.type = "application/ld+json";
+      el.textContent = JSON.stringify(data);
+      document.head.appendChild(el);
+      return el;
+    });
 
     return () => {
-      document.head.removeChild(script);
+      for (const el of scripts) document.head.removeChild(el);
     };
-  }, [product, liveStock]);
+  }, [product, liveStock, liveReviews]);
 
   return null;
 }
@@ -303,6 +357,11 @@ function ProductContent() {
                 </div>
               </div>
             )}
+
+            {/* Wishlist overlay */}
+            <div className="absolute top-4 left-4 z-10">
+              <WishlistButton productId={product.id} size={18} />
+            </div>
           </div>
 
           {/* RIGHT: DETAILS */}
@@ -554,6 +613,9 @@ function ProductContent() {
       {/* Bundles & styling */}
       <FrequentlyBoughtTogether product={product} partner={related[0]} />
       <CompleteTheLook items={related.slice(1, 5)} />
+
+      {/* Shipping / returns / warranty */}
+      <ProductInfoSections />
 
       {/* Recently viewed */}
       <RecentlyViewed />

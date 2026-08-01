@@ -18,6 +18,24 @@ const SIZE_DATA = [
   { size: "3XL", bust: "104-108", waist: "84-88", hip: "110-114", dress: "157" },
 ];
 
+const CONVERSION_DATA = [
+  { size: "XS", eu: "34", uk: "6", us: "2" },
+  { size: "S", eu: "36", uk: "8", us: "4" },
+  { size: "M", eu: "38", uk: "10", us: "6" },
+  { size: "L", eu: "40", uk: "12", us: "8" },
+  { size: "XL", eu: "42", uk: "14", us: "10" },
+  { size: "2XL", eu: "44-46", uk: "16-18", us: "12-14" },
+  { size: "3XL", eu: "48-52", uk: "20-22", us: "16-18" },
+];
+
+const FIT_NOTES = [
+  { title: "قصّة ضيقة (Slim)", note: "تلتصق بالجسم بشكل أنيق — اختاري مقاسكِ المعتاد أو الأكبر إذا كنتِ تفضلين الراحة." },
+  { title: "قصّة عادية (Regular)", note: "تنسدل بشكل مريح مع الحفاظ على خطوط الجسم — الخيار الأمثل لمعظم القياسات." },
+  { title: "قصّة واسعة (Loose)", note: "فضفاضة ومريحة — اختاري مقاسكِ المعتاد أو الأصغر إذا أردتِ مظهراً أكثر تحديداً." },
+  { title: "طول الفستان", note: "الأطوال بالسنتيمتر تشمل كامل الفستان من أعلى الكتف. ارتداء الكعب العالي يزيد الطول الظاهر." },
+  { title: "بين مقاسين؟", note: "ننصح باختيار المقاس الأكبر ثم تعديله عند الخياط إذا لزم — جميع فساتيننا قابلة للتعديل البسيط." },
+];
+
 const CATALOG_SIZES = ["S", "M", "L", "XL"];
 type Fit = "slim" | "regular" | "loose";
 
@@ -37,7 +55,7 @@ function suggestSize(heightCm: number, weightKg: number, fit: Fit): string {
 }
 
 export function SizeGuide({ open, onClose, onSelectSize }: SizeGuideProps) {
-  const [tab, setTab] = useState<"table" | "wizard">("table");
+  const [tab, setTab] = useState<"table" | "conversion" | "wizard">("table");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
   const [fit, setFit] = useState<Fit>("regular");
@@ -72,7 +90,7 @@ export function SizeGuide({ open, onClose, onSelectSize }: SizeGuideProps) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full max-w-2xl rounded-2xl overflow-hidden"
+            className="w-full max-w-2xl rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
             style={{ background: "rgba(255,255,255,0.97)", border: "1px solid rgba(196,40,85,0.12)" }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -89,7 +107,7 @@ export function SizeGuide({ open, onClose, onSelectSize }: SizeGuideProps) {
 
             {/* Tabs */}
             <div className="flex border-b border-line-subtle">
-              {([["table", "جدول القياسات"], ["wizard", "ساعديني أختار مقاسي"] ] as const).map(([key, label]) => (
+              {([["table", "جدول القياسات"], ["conversion", "جدول التحويل"], ["wizard", "ساعديني أختار مقاسي"] ] as const).map(([key, label]) => (
                 <button
                   key={key}
                   onClick={() => setTab(key)}
@@ -105,7 +123,7 @@ export function SizeGuide({ open, onClose, onSelectSize }: SizeGuideProps) {
 
             {tab === "table" ? (
               <>
-                <div className="p-5 overflow-x-auto">
+                <div className="p-5 overflow-x-auto overflow-y-auto flex-1 min-h-0">
                   <p className="text-[11px] text-fg-tertiary mb-4 leading-relaxed">
                     القياسات بالسنتيمتر. إذا احتجتِ مساعدة في اختيار مقاسكِ، تواصلي معنا عبر واتساب.
                   </p>
@@ -139,10 +157,61 @@ export function SizeGuide({ open, onClose, onSelectSize }: SizeGuideProps) {
                       إذا كنتِ بين مقاسين، ننصح باختيار المقاس الأكبر. جميع فساتيننا قابلة للتعديل البسيط عند الحاجة.
                     </p>
                   </div>
+
+                  <div className="mt-5">
+                    <p className="text-xs font-bold text-fg mb-3">ملاحظات القصّة والملاءمة</p>
+                    <div className="space-y-2">
+                      {FIT_NOTES.map((f) => (
+                        <div
+                          key={f.title}
+                          className="p-3 rounded-xl text-[11px] leading-relaxed"
+                          style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(196,40,85,0.08)" }}
+                        >
+                          <p className="font-bold text-fg mb-0.5">{f.title}</p>
+                          <p className="text-fg-tertiary">{f.note}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </>
+            ) : tab === "conversion" ? (
+              <div className="p-5 overflow-y-auto flex-1 min-h-0">
+                <p className="text-[11px] text-fg-tertiary mb-4 leading-relaxed">
+                  جدول التحويل بين المقاسات الأوروبية (EU) والبريطانية (UK) والأمريكية (US) — القيم تقريبية وقد تختلف قليلاً حسب الماركة.
+                </p>
+
+                <table className="w-full text-xs min-w-[420px]" style={{ direction: "rtl" }}>
+                  <thead>
+                    <tr className="text-start">
+                      {["المقاس", "أوروبي EU", "بريطاني UK", "أمريكي US"].map((h) => (
+                        <th key={h} className="p-3 font-bold text-fg-secondary border-b-2" style={{ borderColor: "#c42855" }}>
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {CONVERSION_DATA.map((row, i) => (
+                      <tr key={row.size} style={{ background: i % 2 === 0 ? undefined : "rgba(196,40,85,0.03)" }}>
+                        <td className="p-3 font-bold text-accent-brand border-b border-line-subtle">{row.size}</td>
+                        <td className="p-3 text-fg-secondary border-b border-line-subtle tabular-nums">{row.eu}</td>
+                        <td className="p-3 text-fg-secondary border-b border-line-subtle tabular-nums">{row.uk}</td>
+                        <td className="p-3 text-fg-secondary border-b border-line-subtle tabular-nums">{row.us}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                <div className="mt-4 p-3 rounded-xl text-[11px] leading-relaxed" style={{ background: "rgba(196,40,85,0.06)", border: "1px solid rgba(196,40,85,0.1)" }}>
+                  <p className="font-bold text-fg mb-1">ملاحظة:</p>
+                  <p className="text-fg-tertiary">
+                    مقاسات نادين مبنية على القياسات الأوروبية. إذا كنتِ معتادة على المقاسات الأمريكية، اختاري مقاساً أصغر برقم واحد.
+                  </p>
+                </div>
+              </div>
             ) : (
-              <div className="p-5">
+              <div className="p-5 overflow-y-auto flex-1 min-h-0">
                 <p className="text-[11px] text-fg-tertiary mb-4 leading-relaxed">
                   أدخلي طولكِ ووزنكِ وسنقترح عليكِ المقاس الأنسب — ثم تأكديه من جدول القياسات أو اختاريه مباشرة.
                 </p>
