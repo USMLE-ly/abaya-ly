@@ -1,4 +1,5 @@
 import { cors, createRateLimiter, clientIp, readItems, writeItem, isAdmin, sanitize } from "./shared.mjs";
+import uploadReviewPhoto, { isBlobUrl, deleteReviewPhoto } from "./review-upload.mjs";
 
 const VALID_RATINGS = [1, 2, 3, 4, 5];
 
@@ -18,6 +19,11 @@ function sanitizeImage(url) {
 export default async function handler(req, res) {
   cors(req, res, { methods: "GET, POST, PUT, DELETE, OPTIONS", headers: "Content-Type, x-admin-password" });
   if (req.method === "OPTIONS") return res.status(200).end();
+
+  // POST /api/reviews/upload → move the compressed photo to Vercel Blob storage.
+  if (req.method === "POST" && /\/upload$/.test((req.url || "").split("?")[0].replace(/\/+$/, ""))) {
+    return uploadReviewPhoto(req, res);
+  }
 
   const r = req.method === "GET" ? rlRead(clientIp(req)) : rlWrite(clientIp(req));
   if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
@@ -100,7 +106,13 @@ export default async function handler(req, res) {
       if (rating !== undefined) reviews[idx].rating = Number(rating);
       if (name !== undefined) reviews[idx].name = sanitize(name);
       if (comment !== undefined) reviews[idx].comment = sanitize(comment.trim());
-      if (image !== undefined) reviews[idx].image = sanitizeImage(image);
+      if (image !== undefined) {
+        const nextImage = sanitizeImage(image);
+        if (reviews[idx].image && reviews[idx].image !== nextImage && isBlobUrl(reviews[idx].image)) {
+          await deleteReviewPhoto(reviews[idx].image);
+        }
+        reviews[idx].image = nextImage;
+      }
       if (verified !== undefined) reviews[idx].verified = verified === true;
       reviews[idx].updatedAt = new Date().toISOString();
       await writeItem(EC_URL, REVIEW_KEY, reviews);
@@ -113,6 +125,9 @@ export default async function handler(req, res) {
       if (idx < 0) return res.status(404).json({ error: "Review not found" });
       const [removed] = reviews.splice(idx, 1);
       await writeItem(EC_URL, REVIEW_KEY, reviews);
+      if (removed?.image && isBlobUrl(removed.image)) {
+        await deleteReviewPhoto(removed.image);
+      }
       return res.status(200).json({ success: true, removed });
     }
 

@@ -26,7 +26,10 @@ const fmtDate = (iso: string) => {
   }
 };
 
-// Client-side image compression: downscale + JPEG encode → data URL (~≤800px, cap ~400KB)
+// Client-side image compression: downscale + JPEG encode → data URL (~≤800px, cap ~400KB).
+// Data-URL photos are uploaded to /api/reviews/upload (Vercel Blob) on submit; the
+// review itself only stores the returned https:// URL (fallback: data URL when no
+// Blob store is configured yet).
 function compressImage(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file);
@@ -87,6 +90,17 @@ export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
     setError("");
     setSubmitting(true);
     try {
+      let finalImage = photo || imageUrl.trim();
+      if (photo.startsWith("data:image/")) {
+        const upRes = await fetch("/api/reviews/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId, image: photo }),
+        });
+        const upData = await upRes.json().catch(() => null);
+        if (!upRes.ok || !upData?.url) throw new Error(upData?.error || "تعذّر رفع الصورة، يرجى المحاولة لاحقاً");
+        finalImage = upData.url;
+      }
       const res = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -95,7 +109,7 @@ export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
           rating,
           name: name.trim() || "عميلة نادين",
           comment: comment.trim(),
-          image: photo || imageUrl.trim(),
+          image: finalImage,
         }),
       });
       const data = await res.json();
