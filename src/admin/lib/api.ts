@@ -203,6 +203,7 @@ export interface AdminReview {
   comment: string;
   image?: string;
   verified?: boolean;
+  status?: "pending" | "approved" | "rejected";
   createdAt: string;
 }
 
@@ -216,7 +217,7 @@ export async function fetchAllReviews(): Promise<AdminReview[]> {
 export async function updateReview(
   productId: string,
   reviewId: string,
-  patch: { rating?: number; name?: string; comment?: string; image?: string; verified?: boolean }
+  patch: { rating?: number; name?: string; comment?: string; image?: string; verified?: boolean; status?: "pending" | "approved" | "rejected" }
 ): Promise<any> {
   return apiCall("/api/reviews", {
     method: "PUT",

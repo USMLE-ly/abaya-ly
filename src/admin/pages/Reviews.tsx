@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  Search, Star, Eye, Edit3, Trash2, X, Save, Loader2, AlertTriangle, MessageSquare, BadgeCheck,
+  Search, Star, Eye, Edit3, Trash2, X, Save, Loader2, AlertTriangle, MessageSquare, BadgeCheck, CheckCircle2, Clock,
 } from "lucide-react";
 import { ACard, ACardHeader, AButton, AInput, ASelect, ASkeleton, AEmpty } from "../components/ui";
 import {
@@ -12,6 +12,29 @@ import {
 const PAGE_SIZE = 10;
 
 const shortName = (name: string) => name.split(" • ").slice(2).join(" • ") || name;
+
+type ReviewStatus = "pending" | "approved" | "rejected";
+
+const statusOf = (r: AdminReview): ReviewStatus =>
+  r.status === "pending" || r.status === "rejected" ? r.status : "approved";
+
+const STATUS_META: Record<ReviewStatus, { label: string; color: string; bg: string; icon?: React.ReactNode }> = {
+  pending: { label: "قيد المراجعة", color: "#b45309", bg: "rgba(245,158,11,0.12)", icon: <Clock size={11} /> },
+  approved: { label: "منشور", color: "#4d8a16", bg: "rgba(137,210,51,0.12)", icon: <CheckCircle2 size={11} /> },
+  rejected: { label: "مرفوض", color: "#dc2626", bg: "rgba(239,68,68,0.10)" },
+};
+
+function StatusBadge({ status }: { status: ReviewStatus }) {
+  const meta = STATUS_META[status];
+  return (
+    <span
+      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap"
+      style={{ color: meta.color, background: meta.bg }}
+    >
+      {meta.icon} {meta.label}
+    </span>
+  );
+}
 
 function Stars({ rating, size = 13 }: { rating: number; size?: number }) {
   return (
@@ -61,6 +84,7 @@ export default function Reviews() {
 
   const [q, setQ] = useState("");
   const [rating, setRating] = useState("");
+  const [status, setStatus] = useState("");
   const [page, setPage] = useState(1);
   const [viewing, setViewing] = useState<AdminReview | null>(null);
   const [editing, setEditing] = useState<AdminReview | null>(null);
@@ -70,6 +94,7 @@ export default function Reviews() {
   const [editComment, setEditComment] = useState("");
   const [editImage, setEditImage] = useState("");
   const [editVerified, setEditVerified] = useState(false);
+  const [editStatus, setEditStatus] = useState<ReviewStatus>("approved");
   const [msg, setMsg] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
   const flash = (type: "ok" | "err", text: string) => {
@@ -83,19 +108,28 @@ export default function Reviews() {
     const term = q.trim().toLowerCase();
     return list.filter((r) => {
       if (rating && r.rating !== Number(rating)) return false;
+      if (status && statusOf(r) !== status) return false;
       if (!term) return true;
       const product = (productNames[r.productId] ?? r.productId).toLowerCase();
       return [r.name, r.comment, r.productId, product].join(" ").toLowerCase().includes(term);
     });
-  }, [list, q, rating, productNames]);
+  }, [list, q, rating, status, productNames]);
+
+  // Moderation queue first: pending → rejected → approved, then newest.
+  const sorted = useMemo(() => {
+    const rank = (r: AdminReview) => (statusOf(r) === "pending" ? 0 : statusOf(r) === "rejected" ? 2 : 1);
+    return filtered.slice().sort(
+      (a, b) => rank(a) - rank(b) || new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }, [filtered]);
 
   const avg = list.length
     ? (list.reduce((s, r) => s + r.rating, 0) / list.length).toFixed(1)
     : "0";
 
-  const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const pages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
   const current = Math.min(page, pages);
-  const slice = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
+  const slice = sorted.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
 
   const openEdit = (r: AdminReview) => {
     setEditing(r);
@@ -104,6 +138,7 @@ export default function Reviews() {
     setEditComment(r.comment);
     setEditImage(r.image || "");
     setEditVerified(r.verified === true);
+    setEditStatus(statusOf(r));
   };
 
   const saveMut = useMutation({
@@ -114,6 +149,7 @@ export default function Reviews() {
         comment: editComment,
         image: editImage.trim(),
         verified: editVerified,
+        status: editStatus,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "reviews"] });
@@ -131,6 +167,16 @@ export default function Reviews() {
       flash("ok", "تم حذف التقييم");
     },
     onError: (e) => flash("err", `فشل حذف التقييم: ${(e as Error).message}`),
+  });
+
+  const statusMut = useMutation({
+    mutationFn: ({ r, next }: { r: AdminReview; next: ReviewStatus }) =>
+      updateReview(r.productId, r.id, { status: next }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "reviews"] });
+      flash("ok", "تم تحديث حالة التقييم");
+    },
+    onError: (e) => flash("err", `فشل تحديث الحالة: ${(e as Error).message}`),
   });
 
   if (isLoading) {
@@ -207,6 +253,16 @@ export default function Reviews() {
           <option value="2">نجمتان</option>
           <option value="1">نجمة واحدة</option>
         </ASelect>
+        <ASelect
+          className="w-full sm:w-44"
+          value={status}
+          onChange={(e) => { setStatus(e.target.value); setPage(1); }}
+        >
+          <option value="">كل الحالات</option>
+          <option value="pending">قيد المراجعة</option>
+          <option value="approved">منشورة</option>
+          <option value="rejected">مرفوضة</option>
+        </ASelect>
       </ACard>
 
       {/* Table */}
@@ -225,6 +281,7 @@ export default function Reviews() {
                   <th className={th}>المنتج</th>
                   <th className={th}>التقييم</th>
                   <th className={th}>العميلة</th>
+                  <th className={th}>الحالة</th>
                   <th className={th}>التعليق</th>
                   <th className={th}>التاريخ</th>
                   <th className={th + " text-end"}>إجراءات</th>
@@ -260,6 +317,9 @@ export default function Reviews() {
                       </div>
                     </td>
                     <td className={td}>
+                      <StatusBadge status={statusOf(r)} />
+                    </td>
+                    <td className={td}>
                       <p className="max-w-[260px] truncate" style={{ color: "var(--nd-text-2)" }} title={r.comment}>
                         {r.comment}
                       </p>
@@ -269,6 +329,30 @@ export default function Reviews() {
                     </td>
                     <td className={td + " text-end"}>
                       <div className="inline-flex items-center gap-1.5">
+                        {statusOf(r) === "pending" && (
+                          <>
+                            <AButton
+                              variant="plain"
+                              size="xs"
+                              icon={<CheckCircle2 size={14} />}
+                              disabled={statusMut.isPending}
+                              onClick={() => statusMut.mutate({ r, next: "approved" })}
+                              title="موافقة"
+                            >
+                              موافقة
+                            </AButton>
+                            <AButton
+                              variant="plain"
+                              size="xs"
+                              icon={<X size={14} />}
+                              disabled={statusMut.isPending}
+                              onClick={() => statusMut.mutate({ r, next: "rejected" })}
+                              title="رفض"
+                            >
+                              رفض
+                            </AButton>
+                          </>
+                        )}
                         <AButton variant="plain" size="xs" icon={<Eye size={14} />} onClick={() => setViewing(r)}>
                           عرض
                         </AButton>
@@ -434,6 +518,18 @@ export default function Reviews() {
               <BadgeCheck size={15} />
               شراء موثّق — عرض شارة التأكيد في المتجر
             </button>
+            <div>
+              <p className="text-[11px] font-bold mb-1" style={{ color: "var(--nd-text-4)" }}>حالة التقييم</p>
+              <ASelect
+                className="w-full"
+                value={editStatus}
+                onChange={(e) => setEditStatus(e.target.value as ReviewStatus)}
+              >
+                <option value="pending">قيد المراجعة</option>
+                <option value="approved">منشور</option>
+                <option value="rejected">مرفوض</option>
+              </ASelect>
+            </div>
             <div className="flex justify-end gap-2 pt-2">
               <AButton variant="default" onClick={() => setEditing(null)}>إلغاء</AButton>
               <AButton

@@ -66,6 +66,7 @@ export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
   const [photoError, setPhotoError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [rating, setRating] = useState(5);
+  const [honeypot, setHoneypot] = useState("");
   const [hoverRating, setHoverRating] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -110,11 +111,11 @@ export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
           name: name.trim() || "عميلة نادين",
           comment: comment.trim(),
           image: finalImage,
+          honeypot,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "فشل الإرسال");
-      setReviews((prev) => [data.review, ...prev]);
       setComment("");
       setName("");
       setImageUrl("");
@@ -223,12 +224,24 @@ export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
               <div className="text-center py-8">
                 <CheckCircle2 size={36} className="mx-auto text-status-success mb-3" />
                 <p className="text-sm font-bold text-fg mb-1">شكراً لتقييمك! 🎉</p>
-                <p className="text-xs text-fg-tertiary">تم نشر تقييمك بنجاح</p>
+                <p className="text-xs text-fg-tertiary">سيظهر تقييمك بعد مراجعته من فريق نادين</p>
               </div>
             ) : (
               <>
-                <h3 className="text-sm font-bold text-fg mb-4">أضيفي تقييمك</h3>
+                <h3 className="text-sm font-bold text-fg mb-1">أضيفي تقييمك</h3>
+                <p className="text-[10px] text-fg-tertiary mb-4">تتم مراجعة التقييمات قبل نشرها على الموقع</p>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Honeypot: hidden from humans, bots fill it and get silently discarded */}
+                  <input
+                    type="text"
+                    name="website"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="hidden"
+                  />
                   {/* Star rating */}
                   <div>
                     <p className="text-[11px] font-semibold text-fg-tertiary mb-2">تقييمك</p>

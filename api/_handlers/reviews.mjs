@@ -2,6 +2,26 @@ import { cors, createRateLimiter, clientIp, readItems, writeItem, isAdmin, sanit
 import uploadReviewPhoto, { isBlobUrl, deleteReviewPhoto } from "./review-upload.mjs";
 
 const VALID_RATINGS = [1, 2, 3, 4, 5];
+const VALID_STATUS = ["pending", "approved", "rejected"];
+const MAX_COMMENT = 1000;
+
+// Legacy reviews (no status field) are treated as approved.
+const statusOf = (r) => (VALID_STATUS.includes(r?.status) ? r.status : "approved");
+
+// Content-level spam guards for public submissions (admin edits stay lenient).
+function isSpamComment(text) {
+  const t = String(text || "").trim();
+  if (t.length < 3) return true;
+  if (/(https?:\/\/|www\.)/i.test(t)) return true; // link spam
+  if (/(.)\1{19,}/.test(t)) return true; // 20+ repeated characters
+  const collapsed = t.replace(/(.)\1+/g, "$1");
+  if (collapsed.length > 0 && t.length / collapsed.length > 4) return true; // heavy repetition
+  return false;
+}
+
+function sanitizeComment(text) {
+  return sanitize(String(text || "")).trim().slice(0, MAX_COMMENT);
+}
 
 // Reads: generous so product pages never throttle while browsing.
 // Writes: strict so a single visitor can't flood the reviews.
@@ -48,6 +68,7 @@ export default async function handler(req, res) {
             comment: r.comment,
             image: r.image || "",
             verified: r.verified === true,
+            status: statusOf(r),
             createdAt: r.createdAt,
           });
         }
@@ -64,25 +85,34 @@ export default async function handler(req, res) {
     const reviews = items[REVIEW_KEY] || [];
 
     if (req.method === "GET") {
-      return res.status(200).json({ reviews, productId });
+      const visible = reviews.filter((r) => statusOf(r) === "approved");
+      return res.status(200).json({ reviews: visible, productId });
     }
 
     if (req.method === "POST") {
-      const { rating, name, comment, image } = req.body || {};
+      const { rating, name, comment, image, honeypot } = req.body || {};
+      // Honeypot filled → bot. Answer success without storing anything.
+      if (honeypot) {
+        return res.status(201).json({
+          success: true,
+          review: { id: "spam", status: "rejected", rating: Number(rating) || 5, name: "حساب آلي", comment: "تم تجاهله", createdAt: new Date().toISOString() },
+        });
+      }
       if (!rating || !VALID_RATINGS.includes(Number(rating))) {
         return res.status(400).json({ error: "Rating must be 1-5" });
       }
-      if (!comment || comment.trim().length < 3) {
-        return res.status(400).json({ error: "Comment too short" });
+      if (isSpamComment(comment)) {
+        return res.status(400).json({ error: "Comment looks like spam" });
       }
 
       const review = {
         id: `rv-${Date.now()}`,
         rating: Number(rating),
-        name: sanitize(name || "عميلة نادين"),
-        comment: sanitize(comment.trim()),
+        name: sanitize(name || "عميلة نادين").slice(0, 60),
+        comment: sanitizeComment(comment),
         image: sanitizeImage(image),
         verified: false,
+        status: "pending",
         createdAt: new Date().toISOString(),
       };
 
@@ -94,7 +124,7 @@ export default async function handler(req, res) {
     if (!isAdmin(req)) return res.status(401).json({ error: "Unauthorized" });
 
     if (req.method === "PUT") {
-      const { reviewId, rating, name, comment, image, verified } = req.body || {};
+      const { reviewId, rating, name, comment, image, verified, status } = req.body || {};
       const idx = reviews.findIndex((r) => r.id === reviewId);
       if (idx < 0) return res.status(404).json({ error: "Review not found" });
       if (rating !== undefined && !VALID_RATINGS.includes(Number(rating))) {
@@ -103,9 +133,13 @@ export default async function handler(req, res) {
       if (comment !== undefined && comment.trim().length < 3) {
         return res.status(400).json({ error: "Comment too short" });
       }
+      if (status !== undefined && !VALID_STATUS.includes(status)) {
+        return res.status(400).json({ error: "Invalid status" });
+      }
       if (rating !== undefined) reviews[idx].rating = Number(rating);
-      if (name !== undefined) reviews[idx].name = sanitize(name);
-      if (comment !== undefined) reviews[idx].comment = sanitize(comment.trim());
+      if (name !== undefined) reviews[idx].name = sanitize(name).slice(0, 60);
+      if (comment !== undefined) reviews[idx].comment = sanitizeComment(comment);
+      if (status !== undefined) reviews[idx].status = status;
       if (image !== undefined) {
         const nextImage = sanitizeImage(image);
         if (reviews[idx].image && reviews[idx].image !== nextImage && isBlobUrl(reviews[idx].image)) {
