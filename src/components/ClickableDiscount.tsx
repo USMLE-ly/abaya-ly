@@ -86,6 +86,7 @@ export function ClickableDiscount({ code, label = "كوبون خصم خاص بك
                 width: stubWidth,
                 height: GEO.h,
                 color: "rgba(196,40,85,0.10)",
+                overflow: "hidden",
               }}
             >
               <span style={{ writingMode: "vertical-rl", fontSize: 46, lineHeight: 1, letterSpacing: "-0.04em" }}>
