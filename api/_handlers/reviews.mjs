@@ -1,5 +1,4 @@
 import { cors, createRateLimiter, clientIp, readItems, writeItem, isAdmin, sanitize, ecGetItem, ecKeyStartsWith, ecStoreId } from "./shared.mjs";
-import uploadReviewPhoto, { isBlobUrl, deleteReviewPhoto } from "./review-upload.mjs";
 
 const VALID_RATINGS = [1, 2, 3, 4, 5];
 const VALID_STATUS = ["pending", "approved", "rejected"];
@@ -29,11 +28,17 @@ const rlRead = createRateLimiter({ windowMs: 60_000, max: 120 });
 const rlWrite = createRateLimiter({ windowMs: 15 * 60_000, max: 5 });
 
 function sanitizeImage(url) {
-  const clean = sanitize(String(url || "")).trim().slice(0, 600_000);
+  // URL-only by design: images are never stored in Vercel Blob or as data URLs.
+  const clean = sanitize(String(url || "")).trim().slice(0, 2_000);
   if (/^https?:\/\//i.test(clean)) return clean;
-  // Client-side compressed photos (canvas → JPEG/PNG data URL), capped at ~500KB text
-  if (/^data:image\/(jpeg|png);base64,[A-Za-z0-9+/=]+$/i.test(clean) && clean.length <= 500_000) return clean;
   return "";
+}
+
+// Strip any legacy image bytes (data URLs) from stored reviews before returning
+// them, so the API never serves image payloads from Edge Config.
+function cleanImageField(value) {
+  const clean = sanitize(String(value || "")).trim();
+  return /^https?:\/\//i.test(clean) ? clean.slice(0, 2_000) : "";
 }
 
 async function probeStoreAccess() {
@@ -53,11 +58,6 @@ async function probeStoreAccess() {
 export default async function handler(req, res) {
   cors(req, res, { methods: "GET, POST, PUT, DELETE, OPTIONS", headers: "Content-Type, x-admin-password" });
   if (req.method === "OPTIONS") return res.status(200).end();
-
-  // POST /api/reviews/upload → move the compressed photo to Vercel Blob storage.
-  if (req.method === "POST" && /\/upload$/.test((req.url || "").split("?")[0].replace(/\/+$/, ""))) {
-    return uploadReviewPhoto(req, res);
-  }
 
   const r = req.method === "GET" ? rlRead(clientIp(req)) : rlWrite(clientIp(req));
   if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
@@ -80,7 +80,7 @@ export default async function handler(req, res) {
             rating: r.rating,
             name: r.name,
             comment: r.comment,
-            image: r.image || "",
+            image: cleanImageField(r.image),
             verified: r.verified === true,
             status: statusOf(r),
             createdAt: r.createdAt,
@@ -100,7 +100,7 @@ export default async function handler(req, res) {
 
     if (req.method === "GET") {
       const visible = reviews.filter((r) => statusOf(r) === "approved");
-      return res.status(200).json({ reviews: visible, productId });
+      return res.status(200).json({ reviews: visible.map((r) => ({ ...r, image: cleanImageField(r.image) })), productId });
     }
 
     if (req.method === "POST") {
@@ -154,13 +154,7 @@ export default async function handler(req, res) {
       if (name !== undefined) reviews[idx].name = sanitize(name).slice(0, 60);
       if (comment !== undefined) reviews[idx].comment = sanitizeComment(comment);
       if (status !== undefined) reviews[idx].status = status;
-      if (image !== undefined) {
-        const nextImage = sanitizeImage(image);
-        if (reviews[idx].image && reviews[idx].image !== nextImage && isBlobUrl(reviews[idx].image)) {
-          await deleteReviewPhoto(reviews[idx].image);
-        }
-        reviews[idx].image = nextImage;
-      }
+      if (image !== undefined) reviews[idx].image = sanitizeImage(image);
       if (verified !== undefined) reviews[idx].verified = verified === true;
       reviews[idx].updatedAt = new Date().toISOString();
       await writeItem(EC_URL, REVIEW_KEY, reviews);
@@ -173,9 +167,6 @@ export default async function handler(req, res) {
       if (idx < 0) return res.status(404).json({ error: "Review not found" });
       const [removed] = reviews.splice(idx, 1);
       await writeItem(EC_URL, REVIEW_KEY, reviews);
-      if (removed?.image && isBlobUrl(removed.image)) {
-        await deleteReviewPhoto(removed.image);
-      }
       return res.status(200).json({ success: true, removed });
     }
 

@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Star, MessageSquare, Loader2, CheckCircle2, User, ImagePlus, X, BadgeCheck, Upload } from "lucide-react";
+import { Star, MessageSquare, Loader2, CheckCircle2, User, ImagePlus, BadgeCheck } from "lucide-react";
 
 interface Review {
   id: string;
@@ -26,45 +26,12 @@ const fmtDate = (iso: string) => {
   }
 };
 
-// Client-side image compression: downscale + JPEG encode → data URL (~≤800px, cap ~400KB).
-// Data-URL photos are uploaded to /api/reviews/upload (Vercel Blob) on submit; the
-// review itself only stores the returned https:// URL (fallback: data URL when no
-// Blob store is configured yet).
-function compressImage(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      const maxDim = 800;
-      let { width, height } = img;
-      if (width > maxDim || height > maxDim) {
-        const ratio = Math.min(maxDim / width, maxDim / height);
-        width = Math.round(width * ratio);
-        height = Math.round(height * ratio);
-      }
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) { URL.revokeObjectURL(url); reject(new Error("تعذّرت معالجة الصورة")); return; }
-      ctx.drawImage(img, 0, 0, width, height);
-      URL.revokeObjectURL(url);
-      resolve(canvas.toDataURL("image/jpeg", 0.72));
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("تعذّرت قراءة الصورة")); };
-    img.src = url;
-  });
-}
-
 export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [comment, setComment] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [photo, setPhoto] = useState("");
-  const [photoError, setPhotoError] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [rating, setRating] = useState(5);
   const [honeypot, setHoneypot] = useState("");
   const [hoverRating, setHoverRating] = useState(0);
@@ -91,17 +58,7 @@ export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
     setError("");
     setSubmitting(true);
     try {
-      let finalImage = photo || imageUrl.trim();
-      if (photo.startsWith("data:image/")) {
-        const upRes = await fetch("/api/reviews/upload", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ productId, image: photo }),
-        });
-        const upData = await upRes.json().catch(() => null);
-        if (!upRes.ok || !upData?.url) throw new Error(upData?.error || "تعذّر رفع الصورة، يرجى المحاولة لاحقاً");
-        finalImage = upData.url;
-      }
+      const finalImage = imageUrl.trim();
       const res = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -119,7 +76,6 @@ export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
       setComment("");
       setName("");
       setImageUrl("");
-      setPhoto("");
       setRating(5);
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), 4000);
@@ -291,73 +247,16 @@ export function ReviewsSection({ productId, baseRating, baseCount }: Props) {
                     />
                   </div>
 
-                  {/* Photo: upload from device (compressed) or URL */}
+                  {/* Photo: URL only — images are never uploaded to the server */}
                   <div>
                     <p className="text-[11px] font-semibold text-fg-tertiary mb-2">صورة الفستان عندك (اختياري)</p>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp"
-                      className="hidden"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        e.target.value = "";
-                        if (!file) return;
-                        if (!file.type.startsWith("image/")) {
-                          setPhotoError("يرجى اختيار ملف صورة (JPG أو PNG)");
-                          return;
-                        }
-                        if (file.size > 10 * 1024 * 1024) {
-                          setPhotoError("الصورة كبيرة جداً — الحد الأقصى 10MB");
-                          return;
-                        }
-                        setPhotoError("");
-                        try {
-                          setPhoto(await compressImage(file));
-                          setImageUrl("");
-                        } catch (err: any) {
-                          setPhotoError(err.message || "تعذّر رفع الصورة");
-                        }
-                      }}
-                    />
-                    {!photo && !imageUrl.trim() ? (
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all hover:scale-[1.01]"
-                        style={{ background: "rgba(196,40,85,0.06)", border: "1px dashed rgba(196,40,85,0.3)", color: "#c42855" }}
-                      >
-                        <Upload size={14} />
-                        ارفعي صورة من جهازك
-                      </button>
-                    ) : (
-                      <div className="relative w-fit">
-                        <img
-                          src={photo || imageUrl.trim()}
-                          alt="معاينة الصورة"
-                          className="w-24 h-24 object-cover rounded-xl"
-                          style={{ border: "1px solid rgba(196,40,85,0.12)" }}
-                          onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.25"; }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => { setPhoto(""); setImageUrl(""); }}
-                          className="absolute -top-2 -end-2 w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-md hover:scale-110 transition-transform"
-                          style={{ border: "1px solid rgba(196,40,85,0.2)" }}
-                          aria-label="إزالة الصورة"
-                        >
-                          <X size={12} className="text-status-danger" />
-                        </button>
-                      </div>
-                    )}
-                    {photoError && <p className="text-[10px] text-status-danger mt-1.5">{photoError}</p>}
-                    <div className="relative mt-3">
+                    <div className="relative">
                       <ImagePlus size={14} className="absolute start-3 top-1/2 -translate-y-1/2 text-fg-quaternary" />
                       <input
                         type="url"
                         value={imageUrl}
-                        onChange={(e) => { setImageUrl(e.target.value); if (e.target.value) setPhoto(""); }}
-                        placeholder="أو ألصقي رابط صورة https://…"
+                        onChange={(e) => setImageUrl(e.target.value)}
+                        placeholder="ألصقي رابط صورة https://…"
                         dir="ltr"
                         className="w-full ps-9 pe-4 py-2.5 text-sm rounded-xl outline-none transition-colors glass-input"
                         style={{ background: "rgba(255,255,255,0.7)", border: "1px solid rgba(196,40,85,0.12)" }}
