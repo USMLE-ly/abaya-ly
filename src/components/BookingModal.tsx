@@ -94,8 +94,12 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const [selectedCity, setSelectedCity] = useState("");
   const [customLocation, setCustomLocation] = useState("");
   const [phone, setPhone] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [certificate, setCertificate] = useState<CertificateData | null>(null);
+  const [certOpen, setCertOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+
   const [error, setError] = useState("");
   const [orderId, setOrderId] = useState("");
   const [submittedPhone, setSubmittedPhone] = useState("");
