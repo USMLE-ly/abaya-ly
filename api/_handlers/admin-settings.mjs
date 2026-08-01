@@ -1,4 +1,4 @@
-import { createRateLimiter, clientIp, readItems, writeItem, isAdmin } from "./shared.mjs";
+import { createRateLimiter, clientIp, readItems, writeItem, isAdmin, ecGetItem } from "./shared.mjs";
 
 const rl = createRateLimiter();
 
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
   try {
     if (req.method === "GET") {
       const items = await readItems(EC_URL);
-      const settings = items["app:settings"] || DEFAULT_SETTINGS;
+      const settings = ecGetItem(items, "app:settings") || DEFAULT_SETTINGS;
       return res.status(200).json({ settings });
     }
 

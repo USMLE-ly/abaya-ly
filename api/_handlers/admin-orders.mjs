@@ -1,4 +1,4 @@
-import { createRateLimiter, clientIp, readItems, isAdmin } from "./shared.mjs";
+import { createRateLimiter, clientIp, readItems, isAdmin, ecKeyStartsWith } from "./shared.mjs";
 
 const rl = createRateLimiter();
 
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   try {
     const items = await readItems(EC_URL);
     const orders = Object.entries(items)
-      .filter(([key]) => key.startsWith("order:"))
+      .filter(([key]) => ecKeyStartsWith(key, "order:"))
       .map(([, value]) => value)
       .filter((o) => o && typeof o === "object" && o.orderId)
       .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));

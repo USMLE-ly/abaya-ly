@@ -1,4 +1,4 @@
-import { cors, createRateLimiter, clientIp, readItems, writeItem } from "./shared.mjs";
+import { cors, createRateLimiter, clientIp, readItems, writeItem, ecGetItem } from "./shared.mjs";
 
 const rl = createRateLimiter();
 
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
   if (EC_URL) {
     try {
       const items = await readItems(EC_URL);
-      const existing = items["newsletter:subscribers"] || [];
+      const existing = ecGetItem(items, "newsletter:subscribers") || [];
       if (!existing.includes(clean)) {
         existing.push(clean);
         await writeItem(EC_URL, "newsletter:subscribers", existing);

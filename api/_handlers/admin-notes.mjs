@@ -1,4 +1,4 @@
-import { createRateLimiter, clientIp, readItems, writeItem, isAdmin, sanitize } from "./shared.mjs";
+import { createRateLimiter, clientIp, readItems, writeItem, isAdmin, sanitize, ecGetItem } from "./shared.mjs";
 
 const rl = createRateLimiter();
 
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       const { orderId } = req.query;
       if (!orderId) return res.status(400).json({ error: "orderId required" });
       const items = await readItems(EC_URL);
-      const notes = items[`notes:${orderId.trim()}`] || [];
+      const notes = ecGetItem(items, `notes:${orderId.trim()}`) || [];
       return res.status(200).json({ notes });
     }
 
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
 
       const items = await readItems(EC_URL);
       const notesKey = `notes:${orderId.trim()}`;
-      const existing = items[notesKey] || [];
+      const existing = ecGetItem(items, notesKey) || [];
       await writeItem(EC_URL, notesKey, [...existing, note]);
       return res.status(200).json({ note });
     }

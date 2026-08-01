@@ -1,4 +1,4 @@
-import { createRateLimiter, clientIp, readItems } from "./shared.mjs";
+import { createRateLimiter, clientIp, readItems, ecGetItem } from "./shared.mjs";
 
 const rl = createRateLimiter();
 
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 
   try {
     const items = await readItems(EC_URL);
-    const order = items[`order:${safeOrder}`];
+    const order = ecGetItem(items, `order:${safeOrder}`);
     if (!order) return res.status(200).json({ found: false });
     if (order.phone !== safePhone) return res.status(200).json({ found: false });
     return res.status(200).json({ found: true, order });

@@ -1,4 +1,4 @@
-import { cors, createRateLimiter, clientIp, readItems, writeItem, isAdmin, sanitize } from "./shared.mjs";
+import { cors, createRateLimiter, clientIp, readItems, writeItem, isAdmin, sanitize, ecGetItem, ecKeyStartsWith } from "./shared.mjs";
 import uploadReviewPhoto, { isBlobUrl, deleteReviewPhoto } from "./review-upload.mjs";
 
 const VALID_RATINGS = [1, 2, 3, 4, 5];
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
       const items = await readItems(EC_URL);
       const reviews = [];
       for (const [key, list] of Object.entries(items)) {
-        if (!key.startsWith("reviews:")) continue;
+        if (!ecKeyStartsWith(key, "reviews:")) continue;
         const productId = key.slice("reviews:".length);
         for (const r of list || []) {
           reviews.push({
@@ -82,7 +82,7 @@ export default async function handler(req, res) {
 
     const REVIEW_KEY = `reviews:${productId}`;
     const items = await readItems(EC_URL);
-    const reviews = items[REVIEW_KEY] || [];
+    const reviews = ecGetItem(items, REVIEW_KEY) || [];
 
     if (req.method === "GET") {
       const visible = reviews.filter((r) => statusOf(r) === "approved");

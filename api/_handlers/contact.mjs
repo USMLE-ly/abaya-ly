@@ -1,4 +1,4 @@
-import { cors, createRateLimiter, clientIp, readItems, writeItem, sanitize } from "./shared.mjs";
+import { cors, createRateLimiter, clientIp, readItems, writeItem, sanitize, ecGetItem } from "./shared.mjs";
 
 const rl = createRateLimiter();
 
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
   if (EC_URL) {
     try {
       const items = await readItems(EC_URL);
-      const existing = items["contact:messages"] || [];
+      const existing = ecGetItem(items, "contact:messages") || [];
       existing.push({
         name: sanitize(cleanName),
         phone: sanitize(cleanPhone),

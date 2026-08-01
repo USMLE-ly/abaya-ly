@@ -63,6 +63,28 @@ function ecStoreId(EC_URL) {
 }
 
 /**
+ * The Vercel REST API only allows keys matching [A-Za-z0-9_-] (≤256 chars).
+ * The app uses colon-prefixed keys ("reviews:...", "order:..."), so every key
+ * is sanitized at the write boundary. Reads use ecGetItem / ecKeyStartsWith,
+ * which understand both the legacy colon form and the sanitized "_" form.
+ */
+export function ecSanitizeKey(key) {
+  return String(key).replace(/[^A-Za-z0-9_-]/g, "_").slice(0, 256);
+}
+
+/** Read an item, accepting either the legacy colon key or its sanitized form. */
+export function ecGetItem(items, key) {
+  if (items && items[key] !== undefined) return items[key];
+  const safe = ecSanitizeKey(key);
+  return items && items[safe] !== undefined ? items[safe] : undefined;
+}
+
+/** Prefix match accepting both the legacy colon form and the sanitized form. */
+export function ecKeyStartsWith(key, prefix) {
+  return key.startsWith(prefix) || key.startsWith(ecSanitizeKey(prefix));
+}
+
+/**
  * Upsert one key in Edge Config / Global Config.
  *
  * Reads use the connection string (GET `EDGE_CONFIG`) — fast and CDN-backed.
@@ -86,7 +108,7 @@ export async function writeItem(EC_URL, key, value) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiToken}`,
     },
-    body: JSON.stringify({ items: [{ operation: "upsert", key, value }] }),
+    body: JSON.stringify({ items: [{ operation: "upsert", key: ecSanitizeKey(key), value }] }),
   });
   if (!writeResp.ok) {
     const text = await writeResp.text();
