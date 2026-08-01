@@ -153,6 +153,12 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const nameClean = customerName.trim();
+    if (nameClean.length < 2 || nameClean.length > 60) {
+      setError("يرجى كتابة الاسم الكريم (من حرفين إلى 60 حرفاً)");
+      return;
+    }
+
     const phoneError = validatePhone(phone);
     if (phoneError) {
       setError(phoneError);
@@ -172,6 +178,20 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
     setError("");
     setSubmitting(true);
 
+    const orderedItems = cart
+      ? cart.items.map((it, i) => {
+          const sel = selections[i] ?? { color: it.color, size: it.size };
+          return {
+            id: it.id,
+            name: it.name,
+            color: sel.color,
+            size: sel.size,
+            quantity: it.quantity,
+            price: it.price,
+          };
+        })
+      : [];
+
     try {
       const res = await fetch("/api/order", {
         method: "POST",
@@ -179,19 +199,10 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
         body: JSON.stringify({
           code: cart ? cart.codes : productCode,
           name: cart ? cart.names : productName,
+          customerName: nameClean,
           color: cart ? `${cart.itemCount} قطع` : selectedColor,
           size: cart ? "" : selectedSize,
-          items: cart?.items.map((it, i) => {
-            const sel = selections[i] ?? { color: it.color, size: it.size };
-            return {
-              id: it.id,
-              name: it.name,
-              color: sel.color,
-              size: sel.size,
-              quantity: it.quantity,
-              price: it.price,
-            };
-          }),
+          items: cart ? orderedItems : undefined,
           location: locationValue,
           phone: phone.trim(),
           whatsappConsent,
@@ -207,7 +218,34 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
       if (data.orderId) setOrderId(data.orderId);
       setSubmittedPhone(phone.trim());
       setDone(true);
+
+      // Snapshot for the personalized certificate (taken before the cart clears).
+      try {
+        const source = cart
+          ? orderedItems.map((it) => ({ id: it.id, name: it.name, color: it.color, size: it.size }))
+          : [{ id: "", name: productName, color: selectedColor, size: selectedSize }];
+        setCertificate({
+          orderId: data.orderId || "",
+          customerName: nameClean,
+          date: new Date().toLocaleDateString("ar-LY", { year: "numeric", month: "long", day: "numeric" }),
+          items: source.map((it) => {
+            const p = products.find((x) => x.id === it.id) ?? products.find((x) => x.name === it.name);
+            return {
+              name: p?.seoName || p?.model || it.name,
+              code: p?.code || productCode,
+              collection: p?.collection,
+              edition: p?.edition,
+              color: it.color,
+              size: it.size,
+            };
+          }),
+        });
+      } catch {
+        /* the certificate is optional — never block the confirmed order */
+      }
+
       onSuccess?.();
+
     } catch {
       setError("حدث خطأ، يرجى المحاولة مرة أخرى أو الاتصال بنا عبر واتساب");
     } finally {
