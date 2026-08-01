@@ -55,9 +55,27 @@ export async function readItems(EC_URL) {
   return allData.items || {};
 }
 
+/**
+ * Append a path segment to the Edge Config connection string without corrupting
+ * the query string. Connection strings look like
+ *   https://edge-config.vercel.com/ecfg_xxx?token=yyy
+ * so a naive `EC_URL + "/items"` puts "/items" inside the token value and the
+ * store API rejects every write (401). Appending to the URL pathname preserves
+ * the token and makes PATCH /items reach the store.
+ */
+function ecUrlFor(EC_URL, suffix) {
+  try {
+    const u = new URL(EC_URL);
+    u.pathname = u.pathname.replace(/\/+$/, "") + suffix;
+    return u.toString();
+  } catch {
+    return `${EC_URL}${suffix}`;
+  }
+}
+
 /** Upsert one key in Edge Config. */
 export async function writeItem(EC_URL, key, value) {
-  const writeResp = await fetch(`${EC_URL}/items`, {
+  const writeResp = await fetch(ecUrlFor(EC_URL, "/items"), {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ items: [{ operation: "upsert", key, value }] }),
