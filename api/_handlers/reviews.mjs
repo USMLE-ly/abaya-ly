@@ -1,4 +1,4 @@
-import { cors, createRateLimiter, clientIp, readItems, writeItem, isAdmin, sanitize, ecGetItem, ecKeyStartsWith } from "./shared.mjs";
+import { cors, createRateLimiter, clientIp, readItems, writeItem, isAdmin, sanitize, ecGetItem, ecKeyStartsWith, ecStoreId } from "./shared.mjs";
 import uploadReviewPhoto, { isBlobUrl, deleteReviewPhoto } from "./review-upload.mjs";
 
 const VALID_RATINGS = [1, 2, 3, 4, 5];
@@ -34,6 +34,20 @@ function sanitizeImage(url) {
   // Client-side compressed photos (canvas → JPEG/PNG data URL), capped at ~500KB text
   if (/^data:image\/(jpeg|png);base64,[A-Za-z0-9+/=]+$/i.test(clean) && clean.length <= 500_000) return clean;
   return "";
+}
+
+async function probeStoreAccess() {
+  try {
+    const storeId = ecStoreId(process.env.EDGE_CONFIG || "");
+    const apiToken = process.env.VERCEL_API_TOKEN || "";
+    if (!storeId || !apiToken) return { note: "missing store/token" };
+    const r = await fetch(`https://api.vercel.com/v1/global-config/${storeId}/items`, {
+      headers: { Authorization: `Bearer ${apiToken}` },
+    });
+    return { status: r.status, body: (await r.text()).slice(0, 200) };
+  } catch (e) {
+    return { probeError: e.message };
+  }
 }
 
 export default async function handler(req, res) {
@@ -168,7 +182,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   } catch (err) {
     console.error("Reviews API error:", err);
-    if (req.query?.debug === "1") return res.status(500).json({ error: err?.message || String(err) });
+    if (req.query?.debug === "1") {
+      const probe = await probeStoreAccess();
+      return res.status(500).json({ error: err?.message || String(err), probe });
+    }
     return res.status(500).json({ error: "Server error" });
   }
 }

@@ -57,7 +57,7 @@ export async function readItems(EC_URL) {
 
 const GLOBAL_CONFIG_API = "https://api.vercel.com/v1/global-config";
 
-function ecStoreId(EC_URL) {
+export function ecStoreId(EC_URL) {
   const m = String(EC_URL || "").match(/\/((?:ecfg|gcfg)_[A-Za-z0-9]+)/i);
   return m ? m[1] : "";
 }
