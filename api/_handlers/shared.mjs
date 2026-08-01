@@ -117,6 +117,7 @@ export async function writeItem(EC_URL, key, value) {
     // The store lives under the project team (nadine.luxor.ly → "luxor1"). A bare
     // store lookup can 404 when the token needs team context; retry with the slug.
     if (writeResp.status === 404 && /not found/i.test(text)) {
+      console.error("Edge Config write 404 (no slug):", text);
       const teamSlug = process.env.VERCEL_TEAM_SLUG || "luxor1";
       const retry = await fetch(`${itemsUrl}?slug=${encodeURIComponent(teamSlug)}`, {
         method: "PATCH",
@@ -128,9 +129,9 @@ export async function writeItem(EC_URL, key, value) {
       });
       if (retry.ok) return;
       const retryText = await retry.text();
-      throw new Error(`Edge Config write failed [${retry.status}]: ${retryText.slice(0, 300)}`);
+      throw new Error(`Edge Config write failed [${retry.status}] ${retry.url.replace(/[?&]slug=.*/i, "")}: ${retryText.slice(0, 300)}`);
     }
-    throw new Error(`Edge Config write failed [${writeResp.status}]: ${text.slice(0, 300)}`);
+    throw new Error(`Edge Config write failed [${writeResp.status}] ${writeResp.url}: ${text.slice(0, 300)}`);
   }
 }
 
