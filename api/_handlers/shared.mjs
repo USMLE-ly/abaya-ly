@@ -55,35 +55,42 @@ export async function readItems(EC_URL) {
   return allData.items || {};
 }
 
-/**
- * Append a path segment to the Edge Config connection string without corrupting
- * the query string. Connection strings look like
- *   https://edge-config.vercel.com/ecfg_xxx?token=yyy
- * so a naive `EC_URL + "/items"` puts "/items" inside the token value and the
- * store API rejects every write (401). Appending to the URL pathname preserves
- * the token and makes PATCH /items reach the store.
- */
-function ecUrlFor(EC_URL, suffix) {
-  try {
-    const u = new URL(EC_URL);
-    u.pathname = u.pathname.replace(/\/+$/, "") + suffix;
-    return u.toString();
-  } catch {
-    return `${EC_URL}${suffix}`;
-  }
+const GLOBAL_CONFIG_API = "https://api.vercel.com/v1/global-config";
+
+function ecStoreId(EC_URL) {
+  const m = String(EC_URL || "").match(/\/((?:ecfg|gcfg)_[A-Za-z0-9]+)/i);
+  return m ? m[1] : "";
 }
 
-/** Upsert one key in Edge Config. */
+/**
+ * Upsert one key in Edge Config / Global Config.
+ *
+ * Reads use the connection string (GET `EDGE_CONFIG`) — fast and CDN-backed.
+ * Writes must go through the Vercel REST API with an account access token:
+ *   PATCH https://api.vercel.com/v1/global-config/{storeId}/items
+ * The connection-string gateway is read-only — appending /items to it returns
+ * 404. Requires VERCEL_API_TOKEN (Vercel Account Settings → Tokens), set as a
+ * Production env var on the project.
+ */
 export async function writeItem(EC_URL, key, value) {
-  const writeResp = await fetch(ecUrlFor(EC_URL, "/items"), {
+  const storeId = ecStoreId(EC_URL);
+  const apiToken = process.env.VERCEL_API_TOKEN || "";
+  if (!storeId || !apiToken) {
+    throw new Error(
+      "Edge Config write unavailable: set VERCEL_API_TOKEN (and keep the EDGE_CONFIG connection string)"
+    );
+  }
+  const writeResp = await fetch(`${GLOBAL_CONFIG_API}/${storeId}/items`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiToken}`,
+    },
     body: JSON.stringify({ items: [{ operation: "upsert", key, value }] }),
   });
   if (!writeResp.ok) {
     const text = await writeResp.text();
-    const safeUrl = String(writeResp.url || "").replace(/(token=)[^&]+/i, "$1***");
-    throw new Error(`Edge Config write failed [${writeResp.status}] ${safeUrl}: ${text.slice(0, 300)}`);
+    throw new Error(`Edge Config write failed [${writeResp.status}]: ${text.slice(0, 300)}`);
   }
 }
 
