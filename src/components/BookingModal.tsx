@@ -440,7 +440,26 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                 )}
               </div>
 
+              {/* Customer name */}
+              <div>
+                <label className="text-[11px] font-semibold text-fg-tertiary block mb-1">
+                  الاسم الكريم <span className="text-status-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="مثال: نور الهدى"
+                  required
+                  minLength={2}
+                  maxLength={60}
+                  className="w-full px-4 py-2.5 text-sm text-fg bg-white/60 rounded-xl border border-line-subtle outline-none focus:border-accent-brand transition-colors placeholder:text-fg-tertiary"
+                />
+                <p className="text-[10px] text-fg-tertiary mt-1">سيظهر اسمكِ على شهادة الطلب</p>
+              </div>
+
               {/* Phone */}
+
               <div>
                 <label className="text-[11px] font-semibold text-fg-tertiary block mb-1">
                   رقم الهاتف <span className="text-status-danger">*</span>
