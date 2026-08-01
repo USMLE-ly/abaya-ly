@@ -529,28 +529,43 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               سيتم الاتصال بسادتكم خلال 24 ساعة لتأكيد الطلب
             </p>
 
-            {orderId && submittedPhone && (
-              <Link
-                to={`/track-order?orderNumber=${encodeURIComponent(orderId)}&phone=${encodeURIComponent(submittedPhone)}`}
+            {/* Equal-weight action pair */}
+            <div className="flex flex-col sm:flex-row gap-3 mt-6">
+              {orderId && submittedPhone && (
+                <Link
+                  to={`/track-order?orderNumber=${encodeURIComponent(orderId)}&phone=${encodeURIComponent(submittedPhone)}`}
+                  onClick={onClose}
+                  className="flex-1 h-12 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold text-white transition-all active:scale-[0.98]"
+                  style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
+                >
+                  <PackageSearch size={16} />
+                  تتبعي طلبكِ الآن
+                </Link>
+              )}
+              <button
                 onClick={onClose}
-                className="inline-flex items-center gap-1.5 mt-4 px-5 py-2.5 rounded-xl text-xs font-bold text-white transition-all hover:scale-105"
-                style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
+                className="flex-1 h-12 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all active:scale-[0.98] border"
+                style={{ borderColor: "#c42855", color: "#c42855", background: "transparent" }}
               >
-                <PackageSearch size={14} />
-                تتبعي طلبكِ الآن
-              </Link>
-            )}
+                متابعة التسوق
+              </button>
+            </div>
 
-            <button
-              onClick={onClose}
-              className="mt-6 px-6 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-300 hover:scale-105"
-              style={{ background: "#c42855" }}
-            >
-              متابعة التسوق
-            </button>
+            {certificate && (
+              <button
+                onClick={() => setCertOpen(true)}
+                className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-fg-tertiary hover:text-accent-brand hover:underline"
+              >
+                <ScrollText size={13} />
+                شهادة الطلب
+              </button>
+            )}
           </div>
         )}
       </div>
+
+      <OrderCertificateModal open={certOpen} onClose={() => setCertOpen(false)} data={certificate} />
     </div>
   );
 }
+
