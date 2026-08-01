@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { X, Check, Loader2, ChevronDown, PackageSearch } from "lucide-react";
+import { X, Check, Loader2, ChevronDown, PackageSearch, ScrollText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { products } from "@/data/products";
+import { OrderCertificateModal, type CertificateData } from "@/components/certificate/OrderCertificate";
+
 
 export interface BookingCartItem {
   id: string;
