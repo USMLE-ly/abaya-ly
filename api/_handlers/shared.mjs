@@ -102,16 +102,34 @@ export async function writeItem(EC_URL, key, value) {
       "Edge Config write unavailable: set VERCEL_API_TOKEN (and keep the EDGE_CONFIG connection string)"
     );
   }
-  const writeResp = await fetch(`${GLOBAL_CONFIG_API}/${storeId}/items`, {
+  const itemsUrl = `${GLOBAL_CONFIG_API}/${storeId}/items`;
+  const payload = JSON.stringify({ items: [{ operation: "upsert", key: ecSanitizeKey(key), value }] });
+  const writeResp = await fetch(itemsUrl, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiToken}`,
     },
-    body: JSON.stringify({ items: [{ operation: "upsert", key: ecSanitizeKey(key), value }] }),
+    body: payload,
   });
   if (!writeResp.ok) {
     const text = await writeResp.text();
+    // The store lives under the project team (nadine.luxor.ly → "luxor1"). A bare
+    // store lookup can 404 when the token needs team context; retry with the slug.
+    if (writeResp.status === 404 && /not found/i.test(text)) {
+      const teamSlug = process.env.VERCEL_TEAM_SLUG || "luxor1";
+      const retry = await fetch(`${itemsUrl}?slug=${encodeURIComponent(teamSlug)}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiToken}`,
+        },
+        body: payload,
+      });
+      if (retry.ok) return;
+      const retryText = await retry.text();
+      throw new Error(`Edge Config write failed [${retry.status}]: ${retryText.slice(0, 300)}`);
+    }
     throw new Error(`Edge Config write failed [${writeResp.status}]: ${text.slice(0, 300)}`);
   }
 }
