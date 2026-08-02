@@ -69,6 +69,43 @@ export default function Dashboard() {
     }, 0);
     const pricedOrders = filtered.filter((o) => Array.isArray(o.items) && o.items.length > 0).length;
 
+    // Daily revenue series for the last 30 days (real order data)
+    const dayMs = 86400000;
+    const todayStart = new Date(now);
+    todayStart.setHours(0, 0, 0, 0);
+    const days: Array<{ date: string; value: number }> = [];
+    for (let i = 29; i >= 0; i -= 1) {
+      const d = new Date(todayStart.getTime() - i * dayMs);
+      days.push({ date: `${d.getDate()}/${d.getMonth() + 1}`, value: 0 });
+    }
+    const dayIndex = new Map(days.map((d, i) => [d.date, i]));
+    let todayRevenue = 0;
+    let yesterdayRevenue = 0;
+    orders.forEach((o) => {
+      const t = new Date(o.createdAt).getTime();
+      if (t < todayStart.getTime() - 29 * dayMs) return;
+      const d = new Date(t);
+      d.setHours(0, 0, 0, 0);
+      const key = `${d.getDate()}/${d.getMonth() + 1}`;
+      const i = dayIndex.get(key);
+      if (i === undefined) return;
+      const sum = Array.isArray(o.items) && o.items.length > 0
+        ? o.items.reduce((acc, it) => acc + (Number(it.price) || 0) * (Number(it.quantity) || 1), 0)
+        : 0;
+      days[i].value += sum;
+      if (d.getTime() === todayStart.getTime()) todayRevenue += sum;
+      if (d.getTime() === todayStart.getTime() - dayMs) yesterdayRevenue += sum;
+    });
+    const revenueChange = yesterdayRevenue > 0
+      ? Math.round(((todayRevenue - yesterdayRevenue) / yesterdayRevenue) * 100)
+      : todayRevenue > 0 ? 100 : 0;
+    const revenueOverview = {
+      balance: days.reduce((acc, d) => acc + d.value, 0),
+      today: todayRevenue,
+      changePct: revenueChange,
+      series: days,
+    };
+
     return {
       total: filtered.length,
       pending: pending.length,
@@ -82,6 +119,7 @@ export default function Dashboard() {
       todayChange,
       recentOrders,
       topCities,
+      revenueOverview,
     };
   }, [orders]);
 
@@ -142,6 +180,7 @@ export default function Dashboard() {
       { label: "قيد الانتظار", value: stats.total ? Math.round((stats.pending / stats.total) * 100) : 0, color: "#F5A524" },
     ],
     topItems: stats.topCities,
+    revenue: stats.revenueOverview,
   };
 
   return (

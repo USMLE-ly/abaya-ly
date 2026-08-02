@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { RevenueOverviewCard, type RevenuePoint } from "@/components/ui/revenue-overview-card";
 import {
   Bell,
   ChevronDown,
@@ -66,6 +67,13 @@ export interface DashboardTopItem {
   value: string;
 }
 
+export interface DashboardRevenue {
+  balance: number;
+  today: number;
+  changePct: number;
+  series: RevenuePoint[];
+}
+
 export interface DashboardData {
   title?: string;
   subtitle?: string;
@@ -76,6 +84,7 @@ export interface DashboardData {
   activities: DashboardActivity[];
   quickBars: DashboardBar[];
   topItems: DashboardTopItem[];
+  revenue?: DashboardRevenue;
 }
 
 export interface DashboardShellProps {
@@ -408,6 +417,18 @@ const ExampleContent = ({
           </div>
         ))}
       </div>
+
+      {data.revenue && data.revenue.series.length > 0 && (
+        <div className="mb-8">
+          <RevenueOverviewCard
+            title="إيرادات القطع — آخر 30 يوم"
+            balance={data.revenue.balance}
+            today={data.revenue.today}
+            changePct={data.revenue.changePct}
+            series={data.revenue.series}
+          />
+        </div>
+      )}
 
       {/* Content Grid */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
