@@ -211,12 +211,12 @@ export function Awards({
     return (
       <div
         className={cn(
-          "relative z-0 overflow-hidden rounded-xl border border-[#c9a25e]/50 p-1.5",
+          "relative z-0 overflow-hidden rounded-xl border-2 border-dotted border-[#c9a25e]/70 p-2",
           className
         )}
         style={{ background: "#fdfaf3" }}
       >
-        <div className="relative overflow-hidden rounded-lg border-2 border-dotted border-[#c42855]/40 px-6 py-9 text-center sm:px-10">
+        <div className="relative overflow-hidden rounded-lg border border-[#c42855]/25 px-6 py-9 text-center sm:px-10">
           <div
             className="pointer-events-none absolute inset-0"
             style={{
