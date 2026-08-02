@@ -38,7 +38,13 @@ export default async function handler(req, res) {
 
   try {
     if (first === "admin") {
-      return admin404(req, res); // /admin + /admin/* stay hidden behind a 404 stub
+      // /admin and /admin/* now redirect to the real dashboard path so the
+      // panel is reachable (the login page still protects it).
+      const rest = parts.slice(2).join("/");
+      const q = (req.url || "").split("?")[1] ? `?${(req.url || "").split("?")[1]}` : "";
+      const adminPath = process.env.VITE_ADMIN_PATH || "dashboard-nadine-admin";
+      res.writeHead(307, { Location: `/${adminPath}${rest ? `/${rest}` : ""}${q}` });
+      return res.end();
     }
     if (first !== "api") {
       return res.status(404).json({ error: "Not found" });

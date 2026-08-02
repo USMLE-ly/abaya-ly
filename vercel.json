@@ -47,5 +47,17 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/admin",
+      "destination": "/dashboard-nadine-admin",
+      "permanent": false
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/dashboard-nadine-admin/:path*",
+      "permanent": false
+    }
   ]
 }

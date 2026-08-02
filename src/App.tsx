@@ -1,5 +1,5 @@
 import { lazy, useEffect } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { initAnalytics, trackPageView, startScrollDepthTracking } from "@/lib/analytics";
@@ -38,13 +38,14 @@ const AdminAnalytics = lazy(() => import("@/admin/pages/Analytics"));
 const AdminSettings = lazy(() => import("@/admin/pages/Settings"));
 const AdminCalendar = lazy(() => import("@/admin/pages/Calendar"));
 
-// Admin dashboard is hidden behind a secret path for security.
-// The public /admin route returns 404 to prevent discovery.
-// Change this value and redeploy to move the dashboard.
+// Admin dashboard lives at a non-obvious path; the login page protects it.
+// /admin and /admin/* redirect here (server-side too) so the panel is reachable.
 
-// Decoy admin page that looks like a 404
-function AdminDecoy() {
-  return <NotFound />;
+// Redirect any /admin alias to the real dashboard path.
+function AdminAliasRedirect() {
+  const loc = useLocation();
+  const rest = loc.pathname.replace(/^\/admin/, "");
+  return <Navigate to={`/${ADMIN_PATH}${rest}${loc.search}`} replace />;
 }
 
 const queryClient = new QueryClient();
@@ -94,9 +95,9 @@ export default function App() {
             <Route path="/design-system" element={<DesignSystem />} />
             <Route path="/wishlist" element={<Wishlist />} />
 
-            {/* Decoy: /admin returns 404 to hide dashboard location */}
-            <Route path="/admin" element={<AdminDecoy />} />
-            <Route path="/admin/*" element={<AdminDecoy />} />
+            {/* /admin aliases redirect to the real dashboard path */}
+            <Route path="/admin" element={<AdminAliasRedirect />} />
+            <Route path="/admin/*" element={<AdminAliasRedirect />} />
 
             {/* Secret admin dashboard route (path set via VITE_ADMIN_PATH env var) */}
             <Route path={`/${ADMIN_PATH}/login`} element={<AdminLogin />} />
