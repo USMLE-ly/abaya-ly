@@ -88,16 +88,25 @@ export function Awards({
 
           <path
             d={createSerratedPath()}
-            strokeWidth="0.6"
-            className="fill-transparent stroke-[#c42855]"
+            strokeWidth="0.9"
+            className="fill-[#fdfaf3] stroke-[#c9a25e]"
           />
 
           <circle
             cx="96"
             cy="96"
-            r="78"
-            className="fill-transparent stroke-[#c42855]"
-            strokeWidth="0.6"
+            r="80"
+            className="fill-transparent stroke-[#e6d5a6]"
+            strokeWidth="0.8"
+            strokeDasharray="4 3"
+          />
+
+          <circle
+            cx="96"
+            cy="96"
+            r="72"
+            className="fill-transparent stroke-[#c9a25e]"
+            strokeWidth="0.8"
           />
 
           <text className="text-[15px] font-bold">
@@ -105,7 +114,7 @@ export function Awards({
               href="#top-curve"
               startOffset="50%"
               textAnchor="middle"
-              className="fill-[#c42855]"
+              className="fill-[#9c7138]"
             >
               {title}
             </textPath>
@@ -116,7 +125,7 @@ export function Awards({
               href="#bottom-curve"
               startOffset="50%"
               textAnchor="middle"
-              className="fill-[#c42855]"
+              className="fill-[#b48a45]"
             >
               {subtitle}
             </textPath>
@@ -272,7 +281,7 @@ export function Awards({
 
   return (
     <div className={cn("", className)}>
-      <div className="flex justify-start gap-3 rounded-md border-2 border-[#c42855]/25 p-3">
+      <div className="flex justify-start gap-3 rounded-md border-2 border-[#c9a25e]/40 p-3">
         <BadgeMark />
         <div className="min-w-0 flex-1 text-right">
           <p className="truncate text-sm font-bold text-fg">{title}</p>

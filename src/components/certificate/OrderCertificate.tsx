@@ -1,9 +1,13 @@
 import { Component, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { X, Download, Crown } from "lucide-react";
+import { X, Download } from "lucide-react";
 import { toPng } from "html-to-image";
-import { StoreSeal } from "./StoreSeal";
-import { OutfitSeal, type OutfitSealItem } from "./OutfitSeal";
+import { CertificateHeader } from "./CertificateHeader";
+import { CertificateMessage } from "./CertificateMessage";
+import { CustomerInformation } from "./CustomerInformation";
+import { ProductInformation } from "./ProductInformation";
+import { CertificateFooter } from "./CertificateFooter";
+import type { OutfitSealItem } from "./OutfitSeal";
 
 export interface CertificateData {
   orderId: string;
@@ -12,64 +16,53 @@ export interface CertificateData {
   items: OutfitSealItem[];
 }
 
-const MAX_SEALS = 4;
+const IVORY = "#fdfaf3";
+const GOLD = "#c9a25e";
 
-/** The printable certificate surface (Tajawal / RTL). */
+/** The printable luxury certificate surface (Tajawal / RTL, ivory + gold). */
 export function OrderCertificate({ data }: { data: CertificateData }) {
-  const shown = data.items.slice(0, MAX_SEALS);
-  const extra = data.items.length - shown.length;
-
   return (
     <div
       dir="rtl"
-      className="w-full bg-white p-6 sm:p-8 rounded-2xl border-2 border-dotted"
-      style={{ borderColor: "rgba(196,40,85,0.35)", fontFamily: "Tajawal, sans-serif" }}
+      className="w-full"
+      style={{ background: IVORY, fontFamily: "Tajawal, sans-serif" }}
     >
-      <div className="text-center">
+      {/* Outer gold hairline frame */}
+      <div className="p-1.5" style={{ border: "1.5px solid " + GOLD }}>
+        {/* Inner dotted gold frame */}
         <div
-          className="mx-auto w-12 h-12 rounded-full grid place-items-center"
-          style={{ background: "rgba(196,40,85,0.08)" }}
+          className="rounded-sm px-5 py-8 sm:px-10 sm:py-9"
+          style={{
+            border: "1.5px dashed rgba(201,162,94,0.8)",
+            background: "rgba(255,255,255,0.35)",
+          }}
         >
-          <Crown size={22} style={{ color: "#c42855" }} />
-        </div>
-        <h2 className="mt-3 text-2xl font-black text-fg">شهادة أصالة</h2>
-        <p className="text-[11px] tracking-[0.25em] text-fg-tertiary">NADINE LUXURY</p>
-        <div className="mx-auto my-4 h-px w-40" style={{ background: "rgba(196,40,85,0.35)" }} />
-      </div>
+          <CertificateHeader />
 
-      <p className="text-center text-xs text-fg-tertiary">تشهد دار نادين بأن</p>
-      <p className="text-center text-xl font-bold mt-1" style={{ color: "#c42855" }}>
-        {data.customerName || "—"}
-      </p>
-      <p className="text-center text-xs text-fg-secondary mt-2 leading-relaxed">
-        قد اقتنت قطعة أصلية من تشكيلاتنا، مصنوعة بعناية ومسجّلة برقم الطلب أدناه.
-      </p>
+          <div className="mt-6">
+            <CertificateMessage customerName={data.customerName} />
+          </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        <div className="rounded-xl border border-line-subtle p-3 text-center">
-          <p className="text-[10px] text-fg-tertiary">رقم الطلب</p>
-          <p className="text-sm font-bold text-fg tabular-nums">{data.orderId}</p>
-        </div>
-        <div className="rounded-xl border border-line-subtle p-3 text-center">
-          <p className="text-[10px] text-fg-tertiary">التاريخ</p>
-          <p className="text-sm font-bold text-fg">{data.date}</p>
-        </div>
-      </div>
+          <div className="mt-6">
+            <CustomerInformation
+              name={data.customerName}
+              orderId={data.orderId}
+              date={data.date}
+            />
+          </div>
 
-      <div className="mt-5 space-y-3">
-        {shown.map((it, i) => (
-          <OutfitSeal key={i} item={it} orderId={data.orderId} />
-        ))}
-        {extra > 0 && (
-          <p className="text-center text-[11px] text-fg-tertiary">+{extra} قطعة أخرى ضمن الطلب</p>
-        )}
-      </div>
+          <div className="mt-6">
+            <ProductInformation items={data.items} />
+          </div>
 
-      <div className="mt-6 flex items-end justify-between gap-4">
-        <div className="text-[10px] text-fg-tertiary leading-relaxed max-w-[45%]">
-          هذه الشهادة صادرة إلكترونياً ولا تحتاج إلى توقيع.
+          <div className="mt-7">
+            <CertificateFooter
+              items={data.items}
+              orderId={data.orderId}
+              date={data.date}
+            />
+          </div>
         </div>
-        <StoreSeal date={data.date} className="h-36 w-36 mx-0" />
       </div>
     </div>
   );
@@ -86,7 +79,7 @@ class CertificateBoundary extends Component<{ children: ReactNode }, { failed: b
       return (
         <div
           dir="rtl"
-          className="w-full bg-white p-6 rounded-2xl text-center text-sm text-fg-tertiary"
+          className="w-full rounded-2xl bg-white p-6 text-center text-sm text-fg-tertiary"
           style={{ fontFamily: "Tajawal, sans-serif" }}
         >
           تعذّر عرض الشهادة الآن — ستتمكنين من تنزيلها لاحقاً من صفحة تتبع الطلب.
@@ -97,7 +90,7 @@ class CertificateBoundary extends Component<{ children: ReactNode }, { failed: b
   }
 }
 
-/** Full-screen viewer with PNG download. */
+/** Full-screen viewer with high-resolution PNG download. */
 export function OrderCertificateModal({
   open,
   onClose,
@@ -116,7 +109,10 @@ export function OrderCertificateModal({
     if (!ref.current) return;
     setBusy(true);
     try {
-      const url = await toPng(ref.current, { pixelRatio: 2, backgroundColor: "#ffffff" });
+      const url = await toPng(ref.current, {
+        pixelRatio: 3,
+        backgroundColor: IVORY,
+      });
       const a = document.createElement("a");
       a.href = url;
       a.download = `nadine-certificate-${data.orderId}.png`;
@@ -130,12 +126,12 @@ export function OrderCertificateModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[300] overflow-y-auto p-4 flex items-start justify-center"
+      className="fixed inset-0 z-[300] flex items-start justify-center overflow-y-auto p-4"
       style={{ background: "rgba(17,15,13,0.75)", backdropFilter: "blur(8px)" }}
       onClick={onClose}
     >
-      <div className="w-full max-w-lg my-6" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-3">
+      <div className="my-6 w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+        <div className="mb-3 flex items-center justify-between">
           <h3 className="text-sm font-bold text-white">شهادة الطلب</h3>
           <button onClick={onClose} aria-label="إغلاق" className="text-white/70 hover:text-white">
             <X size={18} />
@@ -151,7 +147,7 @@ export function OrderCertificateModal({
         <button
           onClick={download}
           disabled={busy}
-          className="mt-4 w-full h-12 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold text-white disabled:opacity-60"
+          className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-sm font-bold text-white disabled:opacity-60"
           style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
         >
           <Download size={16} />

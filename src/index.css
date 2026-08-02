@@ -15,6 +15,17 @@
   --color-strawberry-900: #6e1531;
   --color-strawberry-950: #4d1639;
 
+  /* ── Gold foil (certificates, seals) ── */
+  --color-gold-50:   #fbf7ec;
+  --color-gold-100:  #f4ead0;
+  --color-gold-200:  #e6d5a6;
+  --color-gold-300:  #d9c188;
+  --color-gold-400:  #c9a25e;
+  --color-gold-500:  #b48a45;
+  --color-gold-600:  #9c7138;
+  --color-gold-700:  #7d5a2c;
+  --color-ivory:     #fdfaf3;
+
   --color-bubblegum-50:  #fdf4fb;
   --color-bubblegum-100: #fbe7f7;
   --color-bubblegum-200: #f6cded;
