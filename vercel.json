@@ -5,14 +5,6 @@
       "destination": "/api/[...route]"
     },
     {
-      "source": "/admin",
-      "destination": "/api/[...route]"
-    },
-    {
-      "source": "/admin/:path*",
-      "destination": "/api/[...route]"
-    },
-    {
       "source": "/((?!assets/).*)",
       "destination": "/index.html"
     }
@@ -52,12 +44,12 @@
     {
       "source": "/admin",
       "destination": "/dashboard-nadine-admin",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/admin/:path*",
       "destination": "/dashboard-nadine-admin/:path*",
-      "permanent": false
+      "permanent": true
     }
   ]
 }

@@ -43,7 +43,7 @@ export default async function handler(req, res) {
       const rest = parts.slice(2).join("/");
       const q = (req.url || "").split("?")[1] ? `?${(req.url || "").split("?")[1]}` : "";
       const adminPath = process.env.VITE_ADMIN_PATH || "dashboard-nadine-admin";
-      res.writeHead(307, { Location: `/${adminPath}${rest ? `/${rest}` : ""}${q}` });
+      res.writeHead(301, { Location: `/${adminPath}${rest ? `/${rest}` : ""}${q}` });
       return res.end();
     }
     if (first !== "api") {
