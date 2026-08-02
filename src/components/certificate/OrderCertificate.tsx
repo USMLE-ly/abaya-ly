@@ -6,7 +6,7 @@ import { CertificateHeader } from "./CertificateHeader";
 import { CertificateMessage } from "./CertificateMessage";
 import { CustomerInformation } from "./CustomerInformation";
 import { ProductInformation } from "./ProductInformation";
-import { CertificateFooter } from "./CertificateFooter";
+import { RecognitionZone } from "./RecognitionZone";
 import type { OutfitSealItem } from "./OutfitSeal";
 
 export interface CertificateData {
@@ -39,11 +39,11 @@ export function OrderCertificate({ data }: { data: CertificateData }) {
         >
           <CertificateHeader />
 
-          <div className="mt-6">
+          <div className="mx-auto mt-8 max-w-md">
             <CertificateMessage customerName={data.customerName} />
           </div>
 
-          <div className="mt-6">
+          <div className="mx-auto mt-7 max-w-md">
             <CustomerInformation
               name={data.customerName}
               orderId={data.orderId}
@@ -51,17 +51,11 @@ export function OrderCertificate({ data }: { data: CertificateData }) {
             />
           </div>
 
-          <div className="mt-6">
+          <div className="mx-auto mt-7 max-w-md">
             <ProductInformation items={data.items} />
           </div>
 
-          <div className="mt-7">
-            <CertificateFooter
-              items={data.items}
-              orderId={data.orderId}
-              date={data.date}
-            />
-          </div>
+          <RecognitionZone items={data.items} orderId={data.orderId} date={data.date} />
         </div>
       </div>
     </div>
@@ -130,7 +124,7 @@ export function OrderCertificateModal({
       style={{ background: "rgba(17,15,13,0.75)", backdropFilter: "blur(8px)" }}
       onClick={onClose}
     >
-      <div className="my-6 w-full max-w-lg" onClick={(e) => e.stopPropagation()}>
+      <div className="my-6 w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-sm font-bold text-white">شهادة الطلب</h3>
           <button onClick={onClose} aria-label="إغلاق" className="text-white/70 hover:text-white">

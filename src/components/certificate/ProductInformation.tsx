@@ -18,15 +18,15 @@ export function ProductInformation({ items }: { items: OutfitSealItem[] }) {
             key={i}
             className="rounded-xl px-4 py-3"
             style={{
-              border: "1px solid rgba(201,162,94,0.5)",
-              background: "rgba(255,255,255,0.6)",
+              border: "1px solid rgba(201,162,94,0.35)",
+              background: "rgba(255,255,255,0.5)",
             }}
           >
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-bold text-fg">{item.name || "—"}</p>
               <span
-                className="rounded-full px-2.5 py-0.5 text-[10px] font-bold text-white"
-                style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
+                className="rounded-full border px-2.5 py-0.5 text-[9px] font-bold"
+                style={{ borderColor: "rgba(201,162,94,0.65)", color: "#9c7138" }}
               >
                 قطعة {i + 1}
               </span>
