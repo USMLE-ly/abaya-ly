@@ -60,8 +60,8 @@ export function seededRandom(seed: number): () => number {
   };
 }
 
-/** Absolute URL to a dress's product page — what the scannable QR encodes.
- *  Scanning the code on a phone opens this page; tapping it acts as a link. */
+/** Absolute URL to a dress's product page — what the scannable barcode encodes.
+ *  Scanner apps read the URL from the code; tapping it acts as a link. */
 export function productPageUrl(id?: string): string {
   const clean = String(id ?? "").trim();
   if (!clean) return "";

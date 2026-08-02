@@ -1,5 +1,5 @@
-import { memo } from "react";
-import { QRCodeSVG } from "qrcode.react";
+import { memo, useEffect, useRef } from "react";
+import JsBarcode from "jsbarcode";
 import { cn } from "@/lib/utils";
 import { hashString, seededRandom } from "@/lib/barcode";
 import { GOLD_DEEP, MUTED } from "@/components/certificate/tokens";
@@ -19,13 +19,15 @@ export interface BarcodeProps {
   label?: string;
   /** Show the barcode value below the bars. Defaults to true. */
   showValue?: boolean;
-  /** Real scannable QR target — when set, the code is a genuine QR that opens this
-   *  URL when scanned with a phone camera, and acts as a hyperlink when tapped. */
+  /** Real linear barcode target — when set, the code is a genuine Code 128 barcode
+   *  encoding this URL (readable by barcode scanner apps), and acts as a hyperlink
+   *  when tapped. */
   href?: string;
 }
 
 /** Deterministic, scannable-looking barcode — identical bars for identical values.
- *  When `href` is provided it becomes a real QR code (scan/tap opens the dress page). */
+ *  When `href` is provided it becomes a real Code 128 linear barcode encoding that
+ *  URL (tap opens the dress page; scanner apps read the URL). */
 export const Barcode = memo(function Barcode({
   value,
   className,
@@ -54,12 +56,12 @@ export const Barcode = memo(function Barcode({
           rel="noopener noreferrer"
           aria-label={`افتح صفحة القطعة: ${target}`}
           title="امسحي الرمز لفتح صفحة القطعة"
-          className="inline-flex flex-col items-center rounded-xl border bg-white p-2 transition-all hover:bg-black/[0.02] active:scale-[0.98]"
+          className="inline-flex flex-col items-center rounded-xl border bg-white px-4 py-3 transition-all hover:bg-black/[0.02] active:scale-[0.98]"
           style={{ borderColor: tone === "gold" ? "rgba(201,162,94,0.45)" : "rgba(34,32,28,0.14)" }}
         >
-          <QRCodeSVG value={target} size={110} level="M" bgColor="#ffffff" fgColor={color} />
+          <LinearBarcode value={target} color={color} />
           <span
-            className="mt-1 text-[8.5px] font-semibold"
+            className="mt-1.5 text-[8.5px] font-semibold"
             style={{ color: tone === "gold" ? GOLD_DEEP : "#8c8276" }}
           >
             امسحي الرمز لفتح صفحة القطعة
@@ -131,6 +133,37 @@ export const Barcode = memo(function Barcode({
     </div>
   );
 });
+
+function LinearBarcode({ value, color }: { value: string; color: string }) {
+  const ref = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    try {
+      JsBarcode(el, value, {
+        format: "CODE128",
+        width: 1.6,
+        height: 46,
+        margin: 0,
+        displayValue: false,
+        lineColor: color,
+        background: "#ffffff",
+      });
+    } catch {
+      // Code 128 cannot encode this value — keep the element empty rather than crash.
+    }
+  }, [value, color]);
+
+  return (
+    <svg
+      ref={ref}
+      className="h-14 w-full min-w-[180px] max-w-[300px]"
+      preserveAspectRatio="xMidYMid meet"
+      aria-hidden="true"
+    />
+  );
+}
 
 function useBars(value: string): number[] {
   const rng = seededRandom(hashString(value));
