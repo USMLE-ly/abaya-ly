@@ -617,6 +617,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               whatsappHref={orderId
                 ? `https://wa.me/218944003708?text=${encodeURIComponent(`السلام عليكم، أريد الاستفسار عن طلبي رقم ${orderId}`)}`
                 : undefined}
+              cutouts
             />
           </div>
         )}

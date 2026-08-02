@@ -1,10 +1,10 @@
-import { memo } from "react";
-import { motion } from "motion/react";
+import { memo, useEffect, useMemo, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { Link } from "react-router-dom";
-import { Check, ChevronLeft, MessageCircle, ScrollText, Sparkles } from "lucide-react";
+import { CheckCircle2, ChevronLeft, HandCoins, MessageCircle, ScrollText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Barcode } from "@/components/ui/barcode";
-import { GOLD_DEEP, GOLD_LINE, GOLD_MID, MUTED, STRAWBERRY } from "@/components/certificate/tokens";
+import { GOLD_DEEP, GOLD_LINE, MUTED, STRAWBERRY } from "@/components/certificate/tokens";
 
 export interface OrderSuccessCardProps {
   orderId: string;
@@ -26,17 +26,51 @@ export interface OrderSuccessCardProps {
   className?: string;
 }
 
-const DashedDivider = memo(function DashedDivider() {
+const CONFETTI_COLORS = ["#c42855", "#e63d6a", "#f9577f", "#c9a25e", "#b48a45", "#e6d5a6"];
+
+/** Dashed ticket separator. */
+const DashedLine = memo(function DashedLine() {
+  return <div className="w-full border-t-2 border-dashed border-border/60" aria-hidden="true" />;
+});
+
+/** Full-viewport celebration confetti — brand palette, deterministic per mount. */
+const ConfettiExplosion = memo(function ConfettiExplosion() {
+  const pieces = useMemo(
+    () =>
+      Array.from({ length: 64 }, (_, i) => ({
+        left: Math.random() * 100,
+        top: -20 + Math.random() * 10,
+        color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+        rotate: Math.random() * 360,
+        duration: 2.5 + Math.random() * 2.5,
+        delay: Math.random() * 2,
+      })),
+    []
+  );
+
   return (
-    <div
-      className="my-6 border-t border-dashed"
-      style={{ borderColor: "rgba(201,162,94,0.5)" }}
-      aria-hidden="true"
-    />
+    <>
+      <style>{`@keyframes confetti-fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }`}</style>
+      <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
+        {pieces.map((p, i) => (
+          <div
+            key={i}
+            className="absolute h-4 w-2"
+            style={{
+              left: `${p.left}%`,
+              top: `${p.top}%`,
+              backgroundColor: p.color,
+              transform: `rotate(${p.rotate}deg)`,
+              animation: `confetti-fall ${p.duration}s ${p.delay}s linear forwards`,
+            }}
+          />
+        ))}
+      </div>
+    </>
   );
 });
 
-/** Premium order confirmation card — ticket architecture, luxury presentation. */
+/** Premium order confirmation ticket — matches the AnimatedTicket reference in Arabic RTL. */
 export const OrderSuccessCard = memo(function OrderSuccessCard({
   orderId,
   customerName,
@@ -54,157 +88,177 @@ export const OrderSuccessCard = memo(function OrderSuccessCard({
   cutouts = false,
   className,
 }: OrderSuccessCardProps) {
-  const pieceLabel = pieceCount > 1 ? `${pieceCount} قطع موثّقة` : "قطعة موثّقة";
+  const reduced = useReducedMotion();
+  const [showConfetti, setShowConfetti] = useState(false);
 
-  const rows = [
-    { label: "رقم الطلب", value: orderId, mono: true },
-    { label: "القطع الموثّقة", value: pieceLabel },
-    { label: "الاسم الكريم", value: customerName || "—" },
-    { label: "تاريخ الطلب", value: date },
-    { label: "طريقة الدفع", value: paymentLabel },
-    { label: "حالة الطلب", value: statusLabel, status: true },
-  ];
+  useEffect(() => {
+    const mountTimer = setTimeout(() => setShowConfetti(true), 100);
+    const unmountTimer = setTimeout(() => setShowConfetti(false), 6500);
+    return () => {
+      clearTimeout(mountTimer);
+      clearTimeout(unmountTimer);
+    };
+  }, []);
+
+  const pieceLabel = pieceCount > 1 ? `${pieceCount} قطع موثّقة` : "قطعة موثّقة";
+  const orderTail = orderId.replace(/^NAD[-_]?/i, "").slice(-4);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 14, scale: 0.97 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className={cn("relative w-full rounded-[28px] bg-white", className)}
-      style={{
-        boxShadow:
-          "0 24px 60px -24px rgba(34,32,28,0.28), 0 8px 24px -16px rgba(196,40,85,0.18)",
-        border: `1px solid ${GOLD_LINE}`,
-      }}
-      role="status"
-      aria-live="polite"
-    >
-      {/* Ticket cut-out effect */}
-      {cutouts && (
-        <>
-          <div className="absolute -right-4 top-[30%] h-8 w-8 rounded-full bg-transparent" style={{ boxShadow: `inset 8px 0 0 0 #f7f3ea` }} aria-hidden="true" />
-          <div className="absolute -left-4 top-[30%] h-8 w-8 rounded-full bg-transparent" style={{ boxShadow: `inset -8px 0 0 0 #f7f3ea` }} aria-hidden="true" />
-        </>
-      )}
+    <>
+      {showConfetti && !reduced && <ConfettiExplosion />}
 
-      <div className="p-6 sm:p-8">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className={cn(
+          "relative z-10 w-full max-w-sm rounded-2xl bg-card font-sans text-card-foreground shadow-lg",
+          className
+        )}
+        style={{
+          boxShadow: "0 18px 50px -22px rgba(34,32,28,0.32), 0 8px 24px -18px rgba(196,40,85,0.25)",
+          border: "1px solid rgba(201,162,94,0.35)",
+        }}
+        role="status"
+        aria-live="polite"
+      >
+        {/* Ticket cut-out effect */}
+        {cutouts && (
+          <>
+            <div className="absolute -left-4 top-1/2 h-8 w-8 -translate-y-1/2 rounded-full bg-background" aria-hidden="true" />
+            <div className="absolute -right-4 top-1/2 h-8 w-8 -translate-y-1/2 rounded-full bg-background" aria-hidden="true" />
+          </>
+        )}
+
         {/* Success mark + heading */}
-        <div className="flex flex-col items-center text-center">
+        <div className="flex flex-col items-center p-8 text-center">
           <motion.div
-            initial={{ scale: 0, rotate: -20 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ delay: 0.15, type: "spring", stiffness: 220, damping: 16 }}
-            className="flex h-16 w-16 items-center justify-center rounded-full"
-            style={{ background: "rgba(196,40,85,0.08)", border: `1px solid rgba(196,40,85,0.25)` }}
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.3, type: "spring", stiffness: 210, damping: 16 }}
+            className="rounded-full bg-primary/10 p-3"
           >
-            <Check size={30} strokeWidth={2.6} style={{ color: STRAWBERRY }} />
+            <CheckCircle2
+              className="h-10 w-10"
+              style={{ color: STRAWBERRY }}
+              strokeWidth={2}
+              aria-hidden="true"
+            />
           </motion.div>
-
-          <div className="mt-4 flex items-center gap-1.5">
-            <Sparkles size={13} style={{ color: GOLD_MID }} />
-            <p className="text-[10px] font-bold tracking-[0.32em]" style={{ color: GOLD_DEEP }}>
-              NADINE LUXURY
-            </p>
-          </div>
-
-          <h2 className="mt-2 text-xl font-bold" style={{ color: "#22201c" }}>
+          <h1 className="mt-4 text-2xl font-bold" style={{ color: "#22201c" }}>
             شكراً لاختيارك نادين
-          </h2>
-          <p className="mt-1 text-sm font-medium" style={{ color: MUTED }}>
+          </h1>
+          <p className="mt-1 text-sm font-medium text-muted-foreground">
             تم استلام طلبك بنجاح — قطعتكِ قيد التوثيق
           </p>
         </div>
 
-        <DashedDivider />
+        <div className="space-y-6 px-8 pb-8">
+          <DashedLine />
 
-        {/* Order registry */}
-        <dl className="grid grid-cols-2 gap-x-4 gap-y-4">
-          {rows.map((row) => (
-            <div
-              key={row.label}
-              className="border-b pb-2"
-              style={{ borderColor: "rgba(201,162,94,0.18)" }}
-            >
-              <dt className="text-[10px] font-semibold" style={{ color: MUTED }}>
-                {row.label}
-              </dt>
-              <dd
-                className={cn(
-                  "mt-0.5 text-[13px] font-bold",
-                  row.mono && "font-mono tabular-nums tracking-wider"
-                )}
-                dir={row.mono ? "ltr" : undefined}
-                style={{
-                  color: row.status ? STRAWBERRY : "#22201c",
-                  textAlign: row.mono ? "right" : undefined,
-                }}
-              >
-                {row.value}
-              </dd>
+          {/* Order registry — ticket ID + certified pieces */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-right">
+              <p className="text-xs text-muted-foreground">رقم الطلب</p>
+              <p className="mt-0.5 font-mono text-sm font-semibold tabular-nums tracking-wider" dir="ltr" style={{ textAlign: "right", color: "#22201c" }}>
+                {orderId}
+              </p>
             </div>
-          ))}
-        </dl>
-
-        <DashedDivider />
-
-        {/* Authentication barcode */}
-        <Barcode
-          value={barcodeValue}
-          label="رمز التوثيق"
-          className="mx-auto"
-        />
-
-        {/* WhatsApp query */}
-        {whatsappHref && (
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 inline-flex w-full items-center justify-center gap-1.5 text-[11px] font-semibold"
-            style={{ color: MUTED }}
-          >
-            <MessageCircle size={13} />
-            استفسري عن طلبك عبر واتساب
-          </a>
-        )}
-
-        {/* Actions */}
-        <div className="mt-6 flex flex-col gap-3">
-          <Link
-            to={trackHref}
-            onClick={onTrack}
-            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.015] active:scale-[0.98]"
-            style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)", boxShadow: "0 10px 24px -12px rgba(196,40,85,0.55)" }}
-          >
-            تتبعي طلبكِ الآن
-            <ChevronLeft size={16} />
-          </Link>
-
-          <div className="flex gap-3">
-            {certificateAvailable && onCertificate && (
-              <button
-                onClick={onCertificate}
-                className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border text-sm font-bold transition-all active:scale-[0.98]"
-                style={{ borderColor: GOLD_LINE, color: GOLD_DEEP, background: "rgba(244,234,208,0.3)" }}
-              >
-                <ScrollText size={16} />
-                عرض شهادة الأصالة
-              </button>
-            )}
-            <button
-              onClick={onContinue}
-              className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all hover:bg-black/[0.03] active:scale-[0.98]"
-              style={{ border: "1px solid rgba(34,32,28,0.12)", color: "#22201c" }}
-            >
-              متابعة التسوق
-            </button>
+            <div className="text-left">
+              <p className="text-xs text-muted-foreground">القطع الموثّقة</p>
+              <p className="mt-0.5 text-lg font-semibold" style={{ color: STRAWBERRY }}>
+                {pieceLabel}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <p className="mt-4 text-center text-[10px]" style={{ color: MUTED }}>
-          سيتم الاتصال بكِ خلال 24 ساعة لتأكيد الطلب
-        </p>
-      </div>
-    </motion.div>
+          <div>
+            <p className="text-xs text-muted-foreground">تاريخ الطلب</p>
+            <p className="mt-0.5 font-medium" style={{ color: "#22201c" }}>
+              {date}
+            </p>
+          </div>
+
+          {/* Recipient + payment strip */}
+          <div className="flex items-center justify-between gap-3 rounded-xl bg-muted/60 p-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary/10">
+                <HandCoins size={18} style={{ color: STRAWBERRY }} />
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold" style={{ color: "#22201c" }}>
+                  {customerName || "—"}
+                </p>
+                <p className="text-xs text-muted-foreground">{paymentLabel}</p>
+              </div>
+            </div>
+            <span
+              className="flex-shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold"
+              style={{ background: "rgba(196,40,85,0.08)", border: "1px solid rgba(196,40,85,0.3)", color: STRAWBERRY }}
+            >
+              {statusLabel}
+            </span>
+          </div>
+
+          <DashedLine />
+
+          {/* Authentication barcode */}
+          <Barcode value={barcodeValue} label="رمز التوثيق" className="mx-auto" />
+
+          {whatsappHref && (
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex w-full items-center justify-center gap-1.5 text-[11px] font-semibold"
+              style={{ color: MUTED }}
+            >
+              <MessageCircle size={13} />
+              استفسري عن طلبك عبر واتساب
+            </a>
+          )}
+
+          {/* Actions */}
+          <div className="space-y-3">
+            <Link
+              to={trackHref}
+              onClick={onTrack}
+              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.015] active:scale-[0.98]"
+              style={{
+                background: "linear-gradient(135deg, #e63d6a, #c42855)",
+                boxShadow: "0 10px 24px -12px rgba(196,40,85,0.55)",
+              }}
+            >
+              تتبعي طلبكِ الآن
+              <ChevronLeft size={16} />
+            </Link>
+
+            <div className="flex gap-3">
+              {certificateAvailable && onCertificate && (
+                <button
+                  onClick={onCertificate}
+                  className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border text-sm font-bold transition-all active:scale-[0.98]"
+                  style={{ borderColor: GOLD_LINE, color: GOLD_DEEP, background: "rgba(244,234,208,0.3)" }}
+                >
+                  <ScrollText size={16} />
+                  عرض شهادة الأصالة
+                </button>
+              )}
+              <button
+                onClick={onContinue}
+                className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all hover:bg-black/[0.03] active:scale-[0.98]"
+                style={{ border: "1px solid rgba(34,32,28,0.12)", color: "#22201c" }}
+              >
+                متابعة التسوق
+              </button>
+            </div>
+          </div>
+
+          <p className="text-center text-[10px]" style={{ color: MUTED }}>
+            سيتم الاتصال بكِ خلال 24 ساعة لتأكيد الطلب
+          </p>
+        </div>
+      </motion.div>
+    </>
   );
 });
