@@ -1,7 +1,6 @@
 import type { OutfitSealItem } from "./OutfitSeal";
 
 import { GOLD_MID, GOLD_DEEP, STRAWBERRY } from "./tokens";
-import { AuthenticitySeal } from "./AuthenticitySeal";
 
 /** Reference laurel branch vectors (designali-in/award — "award" variant), full paths. */
 const LAUREL_BRANCH_RIGHT =
@@ -40,11 +39,9 @@ function LaurelWreath() {
 export function RecognitionZone({
   items,
   orderId,
-  serial,
 }: {
   items: OutfitSealItem[];
   orderId: string;
-  serial: string;
 }) {
   const primary = items[0];
   const collection = primary?.collection?.trim() || "مجموعة نادين";
@@ -146,10 +143,6 @@ export function RecognitionZone({
         </div>
       </div>
 
-      {/* Integrated Official Authenticity Seal — final focal point of the certificate */}
-      <div className="mt-4 flex justify-center pb-8">
-        <AuthenticitySeal serial={serial} size={176} />
-      </div>
     </section>
   );
 }
