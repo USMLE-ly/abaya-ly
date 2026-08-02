@@ -76,6 +76,14 @@ export default async function handler(req, res) {
             out[k] = null;
           } else if (k.startsWith("phone_") && Array.isArray(val)) {
             out[k] = val; // order-id list for a specific phone the caller supplied
+          } else if (k === "analytics" && val && typeof val === "object") {
+            // Timeline + counts only (no visitor/raw data).
+            out[k] = {
+              byDayKeys: Object.keys(val.byDay || {}).sort(),
+              byPageCount: Object.keys(val.byPage || {}).length,
+              byProductCount: Object.keys(val.byProduct || {}).length,
+              rawCount: Array.isArray(val.raw) ? val.raw.length : 0,
+            };
           } else {
             out[k] = "exists";
           }
