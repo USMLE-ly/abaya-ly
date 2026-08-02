@@ -38,7 +38,7 @@ export function CookieConsent() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 50 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed bottom-0 left-0 right-0 z-[90]"
+          className="fixed bottom-0 left-0 right-0 z-[55]"
           style={{
             background: "rgba(255,255,255,0.95)",
             backdropFilter: "blur(20px)",

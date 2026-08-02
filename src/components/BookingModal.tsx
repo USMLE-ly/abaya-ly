@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X, Check, Loader2, ChevronDown, PackageSearch, ScrollText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { products } from "@/data/products";
@@ -103,6 +103,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const [error, setError] = useState("");
   const [orderId, setOrderId] = useState("");
   const [submittedPhone, setSubmittedPhone] = useState("");
+  const errorRef = useRef<HTMLParagraphElement | null>(null);
   const [whatsappConsent, setWhatsappConsent] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [couponApplied, setCouponApplied] = useState<{ code: string; label: string; discount: number } | null>(null);
@@ -132,6 +133,11 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
       setCouponError("");
     }
   }, [open, presetCoupon]);
+
+  // Bring validation/network errors into view so they are never missed.
+  useEffect(() => {
+    if (error) errorRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+  }, [error]);
 
 
   if (!open) return null;
@@ -192,10 +198,13 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
         })
       : [];
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20000);
     try {
       const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           code: cart ? cart.codes : productCode,
           name: cart ? cart.names : productName,
@@ -211,9 +220,9 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
         }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) throw new Error("فشل الإرسال");
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error || "فشل الإرسال");
+      if (!data) throw new Error("استجابة فارغة");
 
       if (data.orderId) setOrderId(data.orderId);
       setSubmittedPhone(phone.trim());
@@ -246,9 +255,16 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
 
       onSuccess?.();
 
-    } catch {
-      setError("حدث خطأ، يرجى المحاولة مرة أخرى أو الاتصال بنا عبر واتساب");
+    } catch (err: any) {
+      if (err?.name === "AbortError") {
+        setError("استغرق إرسال الطلب وقتاً طويلاً — يرجى المحاولة مرة أخرى");
+      } else if (err?.message && err.message !== "فشل الإرسال") {
+        setError(err.message === "Too many requests" ? "تم إرسال عدد كبير من الطلبات — يرجى المحاولة بعد قليل" : err.message);
+      } else {
+        setError("حدث خطأ، يرجى المحاولة مرة أخرى أو الاتصال بنا عبر واتساب");
+      }
     } finally {
+      clearTimeout(timeout);
       setSubmitting(false);
     }
   };
@@ -260,20 +276,22 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-2xl overflow-hidden"
+        className="w-full max-w-md max-h-[90vh] rounded-2xl overflow-hidden flex flex-col"
         style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(24px)", border: "1px solid rgba(196,40,85,0.12)" }}
         onClick={(e) => e.stopPropagation()}
       >
         {!done ? (
           <>
             {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b border-line-subtle">
+            <div className="flex items-center justify-between p-5 border-b border-line-subtle shrink-0">
               <h3 className="text-base font-bold text-fg">حجز الفستان</h3>
               <button onClick={onClose} className="text-fg-tertiary hover:text-fg transition-colors">
                 <X size={18} />
               </button>
             </div>
 
+            {/* Scrollable body — keeps the submit button reachable on small screens */}
+            <div className="min-h-0 overflow-y-auto overscroll-contain">
             {/* Form */}
             {cart && (
               <div className="mx-5 mt-4 rounded-xl px-4 py-3 flex items-center justify-between"
@@ -545,7 +563,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               </div>
 
               {error && (
-                <p className="text-xs text-status-danger">{error}</p>
+                <p ref={errorRef} className="text-xs text-status-danger">{error}</p>
               )}
 
               {/* Submit */}
@@ -569,10 +587,11 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                 الدفع عند الاستلام • سيتم تأكيد الطلب عبر الاتصال الهاتفي
               </p>
             </form>
+            </div>
           </>
         ) : (
           /* Success state — order number is now clickable */
-          <div className="p-8 text-center">
+          <div className="p-8 text-center overflow-y-auto">
             <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(196,40,85,0.1)" }}>
               <Check size={28} className="text-accent-brand" />
             </div>
@@ -631,4 +650,3 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
     </div>
   );
 }
-
