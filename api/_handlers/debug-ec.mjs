@@ -54,6 +54,19 @@ export default async function handler(req, res) {
       summary.prefixCounts = prefixCounts;
       summary.rest = await restMeta(EC_URL);
       if (!summaryOnly) summary.keys = keys;
+      if (req.query?.recent === "1") {
+        summary.recentOrders = Object.entries(items)
+          .filter(([k]) => k.startsWith("order_") || k.startsWith("order:"))
+          .map(([, o]) => o && typeof o === "object" ? {
+            orderId: o.orderId,
+            createdAt: o.createdAt,
+            status: o.status,
+            hasPhone: Boolean(o.phone),
+            items: Array.isArray(o.items) ? o.items.length : 0,
+          } : null)
+          .filter(Boolean)
+          .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+      }
     }
   } catch (err) {
     summary.read = `error: ${err.message}`;
