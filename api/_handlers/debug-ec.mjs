@@ -74,8 +74,8 @@ export default async function handler(req, res) {
           const val = items[k];
           if (val === undefined) {
             out[k] = null;
-          } else if (k.startsWith("phone_") && Array.isArray(val)) {
-            out[k] = val; // order-id list for a specific phone the caller supplied
+          } else if (k.startsWith("phone_") && Array.isArray(val) && isAdmin(req)) {
+            out[k] = val; // order-id list for a specific phone (admin only)
           } else if (k === "analytics" && val && typeof val === "object") {
             // Timeline + counts only (no visitor/raw data).
             const byDay = val.byDay || {};
