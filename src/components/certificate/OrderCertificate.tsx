@@ -6,6 +6,7 @@ import { Awards } from "@/components/ui/award";
 import { CustomerInformation } from "./CustomerInformation";
 import { ProductInformation } from "./ProductInformation";
 import { RecognitionZone } from "./RecognitionZone";
+import { AuthenticationZone } from "./AuthenticationZone";
 import { CertificateMessage } from "./CertificateMessage";
 import { CertificateFooter } from "./CertificateFooter";
 import { MonogramWatermark } from "./MonogramWatermark";
@@ -46,6 +47,12 @@ export function OrderCertificate({ data }: { data: CertificateData }) {
             serial={serial}
           />
           <ProductInformation items={data.items} />
+          <AuthenticationZone
+            items={data.items}
+            orderId={data.orderId}
+            serial={serial}
+            date={data.date}
+          />
           <RecognitionZone items={data.items} orderId={data.orderId} serial={serial} />
           <CertificateFooter serial={serial} />
         </div>

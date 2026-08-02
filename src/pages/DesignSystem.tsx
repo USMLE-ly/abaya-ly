@@ -3,6 +3,11 @@ import { PageTransition } from "@/components/PageTransition";
 import { Badge, Tag, Alert, Card, Button, Input, Textarea, Select, Checkbox, Radio, Switch, Avatar, Divider, Progress, Accordion, Tabs, Tooltip, Chip, Spinner } from "@/components/velar";
 import { usePageMeta } from "@/lib/usePageMeta";
 import ProgressBarDemo from "@/components/ui/progress-bar-demo";
+import { OrderSuccessCard } from "@/components/ui/order-success-card";
+import { AuthenticatedProductCard } from "@/components/ui/authenticated-product-card";
+import { LuxuryTimeline } from "@/components/ui/luxury-timeline";
+import { pieceBarcode } from "@/lib/barcode";
+import { Clock, Package, PackageCheck, Truck, MapPin } from "lucide-react";
 
 const RAMPS = ["strawberry","bubblegum","cotton","lavender","lemon","mint","peach","sky"] as const;
 const STEPS = [50,100,200,300,400,500,600,700,800,900,950];
@@ -172,6 +177,60 @@ export default function DesignSystem() {
               </Card>
             ))}
           </div>
+
+        <section>
+          <h2 className="font-display text-2xl font-semibold mb-4">Luxury Order Experience</h2>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="rounded-3xl bg-[#f7f3ea] p-6">
+              <p className="text-xs font-bold text-brand mb-4">OrderSuccessCard</p>
+              <OrderSuccessCard
+                orderId="NAD-W75CFP"
+                customerName="نور الهدى"
+                date={new Date().toLocaleDateString("ar-LY", { year: "numeric", month: "long", day: "numeric" })}
+                pieceCount={2}
+                barcodeValue={pieceBarcode({ orderId: "NAD-W75CFP", sku: "LM26-01", pieceIndex: 1 })}
+                trackHref="/track-order"
+                onContinue={() => {}}
+                onCertificate={() => {}}
+                certificateAvailable
+                cutouts
+              />
+            </div>
+            <div className="space-y-6">
+              <div>
+                <p className="text-xs font-bold text-brand mb-3">AuthenticatedProductCard</p>
+                <AuthenticatedProductCard
+                  piece={{
+                    name: "فستان السهرة الذهبية",
+                    code: "LM26-01",
+                    collection: "Noir Atelier",
+                    color: "ذهبي",
+                    size: "M",
+                    edition: "إصدار 2026",
+                    image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=400&q=60",
+                  }}
+                  pieceNumber={1}
+                  barcodeValue={pieceBarcode({ orderId: "NAD-W75CFP", sku: "LM26-01", pieceIndex: 1 })}
+                />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-brand mb-3">LuxuryTimeline</p>
+                <div className="rounded-3xl border border-[#c9a25e66] bg-white p-5">
+                  <LuxuryTimeline
+                    stages={[
+                      { key: "pending", icon: Clock, label: "تأكيد الطلب", caption: "تم تأكيد الطلب" },
+                      { key: "processing", icon: Package, label: "جاري التجهيز" },
+                      { key: "waiting_shipping", icon: PackageCheck, label: "في انتظار الشحن" },
+                      { key: "shipped", icon: Truck, label: "جاري الشحن" },
+                      { key: "delivered", icon: MapPin, label: "تم التوصيل" },
+                    ]}
+                    currentIndex={1}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
         </section>
       </div>
     </div>

@@ -1,10 +1,16 @@
-import { useEffect, useRef, useState } from "react";
-import { X, Check, Loader2, ChevronDown, PackageSearch, ScrollText } from "lucide-react";
-import { Link } from "react-router-dom";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { X, Loader2, ChevronDown } from "lucide-react";
 import { products } from "@/data/products";
-import { OrderCertificateModal, type CertificateData } from "@/components/certificate/OrderCertificate";
+import type { CertificateData } from "@/components/certificate/OrderCertificate";
+import { OrderSuccessCard } from "@/components/ui/order-success-card";
+import { pieceBarcode } from "@/lib/barcode";
 
-
+/** The certificate surface (html-to-image) is heavy — load it only when opened. */
+const OrderCertificateModal = lazy(() =>
+  import("@/components/certificate/OrderCertificate").then((m) => ({
+    default: m.OrderCertificateModal,
+  }))
+);
 export interface BookingCartItem {
   id: string;
   name: string;
@@ -590,63 +596,35 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
             </div>
           </>
         ) : (
-          /* Success state — order number is now clickable */
-          <div className="p-8 text-center overflow-y-auto">
-            <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(196,40,85,0.1)" }}>
-              <Check size={28} className="text-accent-brand" />
-            </div>
-            <h3 className="text-base font-bold text-fg mb-2">✅ تم استلام طلبك بنجاح!</h3>
-            {orderId && (
-              <a
-                href={`https://wa.me/218944003708?text=السلام%20عليكم،%20أريد%20الاستفسار%20عن%20طلبي%20رقم%20${orderId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block text-sm font-semibold mb-2 transition-all hover:scale-105"
-                style={{ color: "#c42855" }}
-              >
-                رقم الطلب: {orderId} ← استفسري عبر واتساب
-              </a>
-            )}
-            <p className="text-sm text-fg-tertiary leading-relaxed mt-2">
-              سيتم الاتصال بسادتكم خلال 24 ساعة لتأكيد الطلب
-            </p>
-
-            {/* Equal-weight action pair */}
-            <div className="flex flex-col sm:flex-row gap-3 mt-6">
-              {orderId && submittedPhone && (
-                <Link
-                  to={`/track-order?orderNumber=${encodeURIComponent(orderId)}&phone=${encodeURIComponent(submittedPhone)}`}
-                  onClick={onClose}
-                  className="sm:flex-1 h-12 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold text-white transition-all active:scale-[0.98]"
-                  style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
-                >
-                  <PackageSearch size={16} />
-                  تتبعي طلبكِ الآن
-                </Link>
-              )}
-              <button
-                onClick={onClose}
-                className="sm:flex-1 h-12 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all active:scale-[0.98] border"
-                style={{ borderColor: "#c42855", color: "#c42855", background: "transparent" }}
-              >
-                متابعة التسوق
-              </button>
-            </div>
-
-            {certificate && (
-              <button
-                onClick={() => setCertOpen(true)}
-                className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-fg-tertiary hover:text-accent-brand hover:underline"
-              >
-                <ScrollText size={13} />
-                شهادة الطلب
-              </button>
-            )}
+          /* Success state — luxury order confirmation card */
+          <div className="p-4 sm:p-6 overflow-y-auto">
+            <OrderSuccessCard
+              orderId={orderId}
+              customerName={certificate?.customerName || customerName.trim() || "—"}
+              date={new Date().toLocaleDateString("ar-LY", { year: "numeric", month: "long", day: "numeric" })}
+              pieceCount={cart ? cart.itemCount : 1}
+              barcodeValue={pieceBarcode({
+                orderId,
+                sku: certificate?.items[0]?.code || productCode,
+                pieceIndex: 1,
+                date: new Date().toISOString(),
+              })}
+              trackHref={`/track-order?orderNumber=${encodeURIComponent(orderId)}&phone=${encodeURIComponent(submittedPhone || "")}`}
+              onTrack={onClose}
+              onContinue={onClose}
+              onCertificate={certificate ? () => setCertOpen(true) : undefined}
+              certificateAvailable={Boolean(certificate)}
+              whatsappHref={orderId
+                ? `https://wa.me/218944003708?text=${encodeURIComponent(`السلام عليكم، أريد الاستفسار عن طلبي رقم ${orderId}`)}`
+                : undefined}
+            />
           </div>
         )}
       </div>
 
-      <OrderCertificateModal open={certOpen} onClose={() => setCertOpen(false)} data={certificate} />
+      <Suspense fallback={null}>
+        <OrderCertificateModal open={certOpen} onClose={() => setCertOpen(false)} data={certificate} />
+      </Suspense>
     </div>
   );
 }

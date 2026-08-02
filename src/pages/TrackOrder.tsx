@@ -1,31 +1,51 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import { usePageMeta } from "@/lib/usePageMeta";
 import { motion } from "framer-motion";
-import { Package, CheckCircle, Truck, MapPin, Search, Loader2, Clock, MessageCircle, ScrollText } from "lucide-react";
-import { OrderCertificateModal, type CertificateData } from "@/components/certificate/OrderCertificate";
+import {
+  Package,
+  PackageCheck,
+  Truck,
+  MapPin,
+  Search,
+  Loader2,
+  Clock,
+  MessageCircle,
+  Wallet,
+  CalendarDays,
+} from "lucide-react";
+import type { CertificateData } from "@/components/certificate/OrderCertificate";
+import { LuxuryTimeline, type TimelineStage } from "@/components/ui/luxury-timeline";
+import { LuxuryStatusBadge } from "@/components/ui/luxury-status-badge";
+import { AuthenticatedProductCard } from "@/components/ui/authenticated-product-card";
+import { pieceBarcode } from "@/lib/barcode";
 import { products } from "@/data/products";
 
-const STATUS_STEPS = [
-  { key: "pending",   icon: Clock,       label: "انتظار التأكيد" },
-  { key: "processing",icon: Package,      label: "جاري التجهيز" },
-  { key: "waiting_shipping", icon: Package, label: "في انتظار الشحن" },
-  { key: "shipped",   icon: Truck,        label: "جاري الشحن" },
-  { key: "delivered", icon: MapPin,       label: "تم التوصيل" },
+/** The certificate surface (html-to-image) is heavy — load it only when opened. */
+const OrderCertificateModal = lazy(() =>
+  import("@/components/certificate/OrderCertificate").then((m) => ({
+    default: m.OrderCertificateModal,
+  }))
+);
+
+const STATUS_STEPS: TimelineStage[] = [
+  { key: "pending", icon: Clock, label: "تأكيد الطلب", caption: "سيتم الاتصال بكِ لتأكيد الطلب خلال 24 ساعة" },
+  { key: "processing", icon: Package, label: "جاري التجهيز", caption: "يتم تجهيز وتغليف قطعتكِ بعناية فائقة" },
+  { key: "waiting_shipping", icon: PackageCheck, label: "في انتظار الشحن", caption: "الطلب في انتظار وصول الشحنة إلى مركز الشحن" },
+  { key: "shipped", icon: Truck, label: "جاري الشحن", caption: "سيتم التوصيل إلى عنوانكِ خلال 1-3 أيام عمل" },
+  { key: "delivered", icon: MapPin, label: "تم التوصيل", caption: "تم تسليم طلبكِ بنجاح ✓" },
 ];
 
 const STATUS_ORDER = ["pending", "processing", "waiting_shipping", "shipped", "delivered"];
 
-// Delivery estimates based on status
 const ETA_MAP: Record<string, string> = {
-  pending:    "سيتم الاتصال بكِ لتأكيد الطلب خلال 24 ساعة",
+  pending: "سيتم الاتصال بكِ لتأكيد الطلب خلال 24 ساعة",
   processing: "سيتم الشحن خلال 2-3 أيام عمل من تاريخ التأكيد",
   waiting_shipping: "الطلب في انتظار وصول الشحنة إلى مركز الشحن",
-  shipped:    "سيتم التوصيل إلى عنوانكِ خلال 1-3 أيام عمل",
-  delivered:  "تم تسليم الطلب ✓",
+  shipped: "سيتم التوصيل إلى عنوانكِ خلال 1-3 أيام عمل",
+  delivered: "تم تسليم الطلب ✓",
 };
-
 
 export function TrackOrder() {
   usePageMeta("تتبع الطلب", "أدخلي رقم الطلب ورقم الهاتف لتتبعي حالة طلبك من نادين لحظة بلحظة.");
@@ -103,20 +123,56 @@ function TrackOrderContent() {
     return idx >= 0 ? idx : 0;
   };
 
+  const pieces = order
+    ? (Array.isArray(order.items) && order.items.length
+        ? order.items
+        : [{ id: "", name: order.name, color: order.color, size: order.size }]
+      ).map((it: any, i: number) => {
+        const p =
+          products.find((x) => x.id === it.id) ??
+          products.find((x) => x.name === it.name);
+        return {
+          name: p?.seoName || p?.model || it.name || order.name,
+          code: p?.code || order.code,
+          collection: p?.collection,
+          edition: p?.edition,
+          color: it.color,
+          size: it.size,
+          quantity: it.quantity,
+          image: p?.images?.[0],
+        };
+      })
+    : [];
+
+  const orderDateLabel = order
+    ? new Date(order.createdAt).toLocaleDateString("ar-LY", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "";
+
   return (
-    <div className="min-h-screen">
-      <section className="pt-24 pb-10 md:pt-28 md:pb-14">
-        <div className="max-w-[900px] mx-auto px-4 sm:px-6 text-center">
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">تتبع <span className="text-accent-brand">طلبكِ</span></h1>
+    <div className="min-h-screen bg-canvas">
+      <section className="pt-24 pb-8 md:pt-28 md:pb-10">
+        <div className="max-w-[860px] mx-auto px-4 sm:px-6 text-center">
+          <p className="text-[10px] font-bold tracking-[0.34em] text-brand/70">NADINE LUXURY</p>
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-fg mt-2 mb-3">
+            تتبع <span className="text-accent-brand">طلبكِ</span>
+          </h1>
           <p className="text-sm text-fg-tertiary">أدخلي رقم الطلب ورقم الهاتف لمتابعة حالة طلبكِ</p>
         </div>
       </section>
 
-      <section className="pb-16">
-        <div className="max-w-[500px] mx-auto px-4 sm:px-6">
+      <section className="pb-20">
+        <div className="max-w-[860px] mx-auto px-4 sm:px-6">
           {/* Search form */}
-          <form onSubmit={handleSubmit} className="glass-card p-6 md:p-8 mb-6">
-            <div className="space-y-4">
+          <form
+            onSubmit={handleSubmit}
+            className="mb-8 rounded-3xl border bg-white p-6 md:p-8"
+            style={{ borderColor: "rgba(201,162,94,0.4)", boxShadow: "0 20px 50px -30px rgba(34,32,28,0.25)" }}
+          >
+            <div className="grid gap-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
               <div>
                 <label className="text-[11px] font-semibold text-fg-tertiary block mb-1">
                   رقم الطلب <span className="text-status-danger">*</span>
@@ -127,7 +183,7 @@ function TrackOrderContent() {
                   onChange={(e) => setOrderNumber(e.target.value)}
                   placeholder="NAD-XXXX"
                   required
-                  className="w-full px-4 py-2.5 text-sm text-fg bg-white/60 rounded-xl border border-line-subtle outline-none focus:border-accent-brand transition-colors placeholder:text-fg-tertiary text-center"
+                  className="w-full px-4 py-3 text-sm text-fg bg-white/60 rounded-xl border border-line-subtle outline-none focus:border-accent-brand transition-colors placeholder:text-fg-tertiary text-center"
                   dir="ltr"
                 />
               </div>
@@ -142,17 +198,15 @@ function TrackOrderContent() {
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="0912345678"
                   required
-                  className="w-full px-4 py-2.5 text-sm text-fg bg-white/60 rounded-xl border border-line-subtle outline-none focus:border-accent-brand transition-colors placeholder:text-fg-tertiary text-center"
+                  className="w-full px-4 py-3 text-sm text-fg bg-white/60 rounded-xl border border-line-subtle outline-none focus:border-accent-brand transition-colors placeholder:text-fg-tertiary text-center"
                 />
               </div>
-
-              {error && <p className="text-xs text-status-danger text-center">{error}</p>}
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all duration-300 hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-xl px-6 text-sm font-bold text-white transition-all duration-300 hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed"
+                style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)", boxShadow: "0 12px 26px -14px rgba(196,40,85,0.6)" }}
               >
                 {loading ? (
                   <><Loader2 size={16} className="animate-spin" /> جاري البحث...</>
@@ -161,223 +215,188 @@ function TrackOrderContent() {
                 )}
               </button>
             </div>
+            {error && <p className="mt-3 text-xs text-status-danger text-center">{error}</p>}
           </form>
 
           {/* Loading */}
           {loading && (
-            <div className="text-center py-10">
+            <div className="text-center py-14">
               <Loader2 size={32} className="mx-auto animate-spin" style={{ color: "#c42855" }} />
             </div>
           )}
 
           {/* Not found */}
           {!loading && searched && !order && (
-            <div className="glass-card p-8 text-center">
-              <Package size={40} className="mx-auto text-fg-disabled mb-3" />
-              <p className="text-sm text-fg-tertiary">لم يتم العثور على طلب بهذه البيانات</p>
-              <p className="text-[10px] text-fg-tertiary mt-2">تأكدي من رقم الطلب ورقم الهاتف المستخدم في الحجز</p>
+            <div className="rounded-3xl border bg-white p-10 text-center" style={{ borderColor: "rgba(201,162,94,0.4)" }}>
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full" style={{ background: "rgba(201,162,94,0.12)" }}>
+                <Package size={30} className="text-brand/60" />
+              </div>
+              <p className="mt-4 text-sm font-bold text-fg">لم يتم العثور على طلب بهذه البيانات</p>
+              <p className="text-[11px] text-fg-tertiary mt-1.5">تأكدي من رقم الطلب ورقم الهاتف المستخدم في الحجز</p>
             </div>
           )}
 
-          {/* Order found — show timeline */}
+          {/* Order found — luxury dashboard */}
           {!loading && order && (
             <motion.div
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              className="glass-card p-6 md:p-8"
+              transition={{ duration: 0.45, ease: "easeOut" }}
+              className="space-y-6"
             >
-              {/* Order header */}
-              <div className="text-center mb-6">
-                <Package size={36} className="mx-auto mb-2" style={{ color: "#c42855" }} />
-                <h2 className="text-lg font-semibold text-fg">{order.orderId}</h2>
-                <span
-                  className="inline-block px-3 py-1 rounded-full text-xs font-semibold mt-2"
-                  style={{
-                    background: order.status === "pending" ? "rgba(234,179,8,0.15)" :
-                                order.status === "processing" ? "rgba(59,130,246,0.15)" :
-                                order.status === "shipped" ? "rgba(168,85,247,0.15)" :
-                                "rgba(34,197,94,0.15)",
-                    color: order.status === "pending" ? "#a16207" :
-                           order.status === "processing" ? "#2563eb" :
-                           order.status === "shipped" ? "#7c3aed" :
-                           "#16a34a",
-                  }}
-                >
-                  {order.statusLabel}
-                </span>
-              </div>
-
-              {/* Order details */}
-              <div className="bg-white/40 rounded-xl p-4 mb-6 text-sm space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-fg-tertiary">الاسم</span>
-                  <span className="text-fg font-medium">{order.customerName || "—"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-fg-tertiary">الفستان</span>
-                  <span className="text-fg font-medium">{order.name}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-fg-tertiary">الكود</span>
-                  <span className="text-fg font-medium">{order.code}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-fg-tertiary">اللون / المقاس</span>
-                  <span className="text-fg font-medium">{order.color} • {order.size}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-fg-tertiary">الموقع</span>
-                  <span className="text-fg font-medium">{order.location}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-fg-tertiary">تاريخ الطلب</span>
-                  <span className="text-fg font-medium">
-                    {new Date(order.createdAt).toLocaleDateString("ar-LY", {
-                      year: "numeric", month: "long", day: "numeric"
-                    })}
-                  </span>
-                </div>
-
-                <button
-                  onClick={() => setCertOpen(true)}
-                  className="w-full mt-2 inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-fg-tertiary hover:text-accent-brand hover:underline"
-                >
-                  <ScrollText size={13} />
-                  شهادة الطلب
-                </button>
-              </div>
-
-              <OrderCertificateModal
-                open={certOpen}
-                onClose={() => setCertOpen(false)}
-                data={certificateFromOrder(order)}
-              />
-
-              {/* Status timeline */}
-              <div className="space-y-4">
-                {STATUS_STEPS.map((step, i) => {
-                  const statusIdx = getStatusIndex(order.status);
-                  const done = statusIdx >= i;
-                  const isCurrent = statusIdx === i;
-
-                  return (
-                    <div key={step.key} className="flex items-center gap-3 relative">
-                      <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
-                          done
-                            ? "border-2"
-                            : "glass"
-                        }`}
-                        style={{
-                          background: done
-                            ? i === 0 ? "rgba(234,179,8,0.12)" :
-                              i === 1 ? "rgba(59,130,246,0.12)" :
-                              i === 2 ? "rgba(168,85,247,0.12)" :
-                              "rgba(34,197,94,0.12)"
-                            : undefined,
-                          borderColor: done
-                            ? i === 0 ? "rgba(234,179,8,0.3)" :
-                              i === 1 ? "rgba(59,130,246,0.3)" :
-                              i === 2 ? "rgba(168,85,247,0.3)" :
-                              "rgba(34,197,94,0.3)"
-                            : "transparent",
-                          ...(isCurrent ? {
-                            boxShadow: `0 0 0 4px ${
-                              i === 0 ? "rgba(234,179,8,0.15)" :
-                              i === 1 ? "rgba(59,130,246,0.15)" :
-                              i === 2 ? "rgba(168,85,247,0.15)" :
-                              "rgba(34,197,94,0.15)"
-                            }`,
-                          } : {}),
-                        }}
-                      >
-                        <step.icon
-                          size={17}
-                          className={done ? (
-                            i === 0 ? "text-amber-600" :
-                            i === 1 ? "text-blue-600" :
-                            i === 2 ? "text-purple-600" :
-                            "text-green-600"
-                          ) : "text-fg-disabled"}
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <p
-                          className={`text-sm font-semibold ${
-                            done ? "text-fg" : "text-fg-disabled"
-                          } ${isCurrent ? "" : ""}`}
-                          style={isCurrent ? {
-                            color: i === 0 ? "#a16207" :
-                                   i === 1 ? "#2563eb" :
-                                   i === 2 ? "#7c3aed" :
-                                   "#16a34a"
-                          } : {}}
-                        >
-                          {step.label}
-                          {isCurrent && " (الحالية)"}
-                        </p>
-                      </div>
-
-                      {/* Connector line */}
-                      {i < STATUS_STEPS.length - 1 && (
-                        <div
-                          className="absolute w-0.5 h-6"
-                          style={{
-                            left: "19px",
-                            top: "40px",
-                            background: done && i < statusIdx
-                              ? "rgba(34,197,94,0.3)"
-                              : "rgba(0,0,0,0.06)",
-                          }}
-                        />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Payment method */}
-              <div className="mt-4 p-4 rounded-xl" style={{ background: "rgba(196,40,85,0.04)", border: "1px solid rgba(196,40,85,0.08)" }}>
-                <div className="flex items-center justify-between">
-                  <p className="text-[12px] font-bold text-fg">طريقة الدفع</p>
-                  <span className="text-[12px] font-semibold text-fg-secondary">
-                    عند الاستلام 💵
-                  </span>
-                </div>
-              </div>
-
-              {/* Estimated delivery date */}
-              <div className="mt-6 p-4 rounded-xl" style={{ background: "rgba(196,40,85,0.06)", border: "1px solid rgba(196,40,85,0.1)" }}>
-                <div className="flex items-center gap-2 mb-1">
-                  <Clock size={14} className="text-accent-brand" />
-                  <p className="text-[12px] font-bold text-fg">وقت التوصيل المتوقع</p>
-                </div>
-                <p className="text-[13px] text-fg-secondary leading-relaxed mr-6">
-                  {ETA_MAP[order.status] || "سيتم تحديث وقت التوصيل عند تأكيد الطلب"}
-                </p>
-                {order.status !== "delivered" && (
-                  <p className="text-[11px] text-fg-tertiary mr-6 mt-1">
-                    * التوقيت تقديري وقد يختلف حسب المدينة والظروف
+              {/* Order header card */}
+              <div
+                className="overflow-hidden rounded-[28px] bg-white"
+                style={{
+                  border: "1px solid rgba(201,162,94,0.45)",
+                  boxShadow: "0 24px 60px -32px rgba(34,32,28,0.3)",
+                }}
+              >
+                <div className="h-1.5 w-full" style={{ background: "linear-gradient(90deg, #c9a25e, #e6d5a6, #c9a25e)" }} />
+                <div className="p-6 sm:p-8 text-center">
+                  <p className="text-[10px] font-bold tracking-[0.32em]" style={{ color: "#b48a45" }}>
+                    NADINE LUXURY · HOUSE CERTIFIED
                   </p>
-                )}
+                  <h2
+                    className="mt-3 text-2xl sm:text-3xl font-bold tabular-nums tracking-wider"
+                    style={{ color: "#22201c", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}
+                    dir="ltr"
+                  >
+                    {order.orderId}
+                  </h2>
+                  <div className="mt-3 flex justify-center">
+                    <LuxuryStatusBadge status={order.status} label={order.statusLabel || order.status} />
+                  </div>
+
+                  <div className="mx-auto mt-6 grid max-w-md grid-cols-2 gap-x-8 gap-y-4">
+                    <div>
+                      <p className="text-[10px] font-semibold" style={{ color: "#8c8276" }}>الاسم الكريم</p>
+                      <p className="mt-0.5 text-sm font-bold" style={{ color: "#22201c" }}>{order.customerName || "—"}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-semibold" style={{ color: "#8c8276" }}>تاريخ الطلب</p>
+                      <p className="mt-0.5 text-sm font-bold" style={{ color: "#22201c" }}>{orderDateLabel}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {/* Contact WhatsApp */}
-              <div className="mt-6 pt-4 border-t border-line-subtle text-center">
-                <p className="text-[11px] text-fg-tertiary mb-3">للاستفسار عن طلبك، تواصلي معنا عبر واتساب</p>
-                <a
-                  href={`https://wa.me/218944003708?text=${encodeURIComponent(
-                    `السلام عليكم، أريد الاستفسار عن طلبي رقم ${order.orderId}`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold text-white transition-all hover:scale-105"
-                  style={{ background: "linear-gradient(135deg, #25D366, #128C7E)" }}
-                >
-                  <MessageCircle size={16} />
-                  استفسري عبر واتساب
-                </a>
+              {/* Timeline */}
+              <div
+                className="rounded-[28px] bg-white p-6 sm:p-8"
+                style={{ border: "1px solid rgba(201,162,94,0.35)", boxShadow: "0 18px 44px -30px rgba(34,32,28,0.25)" }}
+              >
+                <h3 className="mb-6 text-center text-[11px] font-bold tracking-[0.28em]" style={{ color: "#b48a45" }}>
+                  مسار الطلب
+                </h3>
+                <LuxuryTimeline stages={STATUS_STEPS} currentIndex={getStatusIndex(order.status)} />
               </div>
+
+              {/* Product passports */}
+              {pieces.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-center text-[11px] font-bold tracking-[0.28em]" style={{ color: "#b48a45" }}>
+                    القطع الموثّقة
+                  </h3>
+                  {pieces.map((piece: any, i: number) => (
+                    <AuthenticatedProductCard
+                      key={`${piece.code}-${i}`}
+                      piece={piece}
+                      pieceNumber={i + 1}
+                      barcodeValue={pieceBarcode({
+                        orderId: order.orderId,
+                        sku: piece.code,
+                        pieceIndex: i + 1,
+                        date: order.createdAt,
+                      })}
+                      onCertificate={() => setCertOpen(true)}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Payment + ETA */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div
+                  className="rounded-3xl bg-white p-6"
+                  style={{ border: "1px solid rgba(201,162,94,0.35)" }}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full" style={{ background: "rgba(196,40,85,0.08)" }}>
+                      <Wallet size={17} style={{ color: "#c42855" }} />
+                    </div>
+                    <p className="text-sm font-bold" style={{ color: "#22201c" }}>طريقة الدفع</p>
+                  </div>
+                  <p className="mt-3 text-[13px] font-semibold" style={{ color: "#5c5348" }}>
+                    الدفع عند الاستلام 💵
+                  </p>
+                </div>
+
+                <div
+                  className="rounded-3xl bg-white p-6"
+                  style={{ border: "1px solid rgba(201,162,94,0.35)" }}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full" style={{ background: "rgba(196,40,85,0.08)" }}>
+                      <Clock size={17} style={{ color: "#c42855" }} />
+                    </div>
+                    <p className="text-sm font-bold" style={{ color: "#22201c" }}>وقت التوصيل المتوقع</p>
+                  </div>
+                  <p className="mt-3 text-[13px] leading-relaxed" style={{ color: "#5c5348" }}>
+                    {ETA_MAP[order.status] || "سيتم تحديث وقت التوصيل عند تأكيد الطلب"}
+                  </p>
+                  {order.status !== "delivered" && (
+                    <p className="mt-1.5 text-[11px]" style={{ color: "#8c8276" }}>
+                      * التوقيت تقديري وقد يختلف حسب المدينة والظروف
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Certificate + WhatsApp */}
+              <div
+                className="flex flex-col items-center gap-4 rounded-3xl bg-white p-6 sm:flex-row sm:justify-between"
+                style={{ border: "1px solid rgba(201,162,94,0.35)" }}
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full" style={{ background: "rgba(201,162,94,0.14)" }}>
+                    <CalendarDays size={17} style={{ color: "#b48a45" }} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold" style={{ color: "#22201c" }}>وثائق طلبكِ</p>
+                    <p className="text-[11px]" style={{ color: "#8c8276" }}>شهادة الأصالة الرسمية متاحة للتحميل</p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap justify-center gap-3">
+                  <a
+                    href={`https://wa.me/218944003708?text=${encodeURIComponent(
+                      `السلام عليكم، أريد الاستفسار عن طلبي رقم ${order.orderId}`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-11 items-center gap-2 rounded-xl px-5 text-xs font-bold text-white transition-all hover:scale-[1.02]"
+                    style={{ background: "linear-gradient(135deg, #25D366, #128C7E)" }}
+                  >
+                    <MessageCircle size={15} />
+                    استفسري عبر واتساب
+                  </a>
+                  <button
+                    onClick={() => setCertOpen(true)}
+                    className="inline-flex h-11 items-center gap-2 rounded-xl border px-5 text-xs font-bold transition-all hover:bg-black/[0.02] active:scale-[0.98]"
+                    style={{ borderColor: "#c9a25e", color: "#9c7138" }}
+                  >
+                    عرض شهادة الأصالة
+                  </button>
+                </div>
+              </div>
+
+              <Suspense fallback={null}>
+                <OrderCertificateModal
+                  open={certOpen}
+                  onClose={() => setCertOpen(false)}
+                  data={certificateFromOrder(order)}
+                />
+              </Suspense>
             </motion.div>
           )}
         </div>
