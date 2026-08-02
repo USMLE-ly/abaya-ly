@@ -70,7 +70,7 @@ export default async function handler(req, res) {
         const out = {};
         for (const raw of keys) {
           const k = String(raw).trim();
-          if (!/^(order_|phone_)/.test(k)) continue;
+          if (!/^(order_|phone_|analytics$)/.test(k)) continue;
           const val = items[k];
           if (val === undefined) {
             out[k] = null;
