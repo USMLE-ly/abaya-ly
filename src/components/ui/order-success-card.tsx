@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Link } from "react-router-dom";
 import { CheckCircle2, ChevronLeft, HandCoins, MessageCircle, ScrollText } from "lucide-react";
@@ -23,6 +23,8 @@ export interface OrderSuccessCardProps {
   whatsappHref?: string;
   /** Render ticket cut-out circles (for plain backgrounds). */
   cutouts?: boolean;
+  /** Extra order-dashboard sections (timeline, pieces, payment, docs) rendered inside the ticket. */
+  children?: ReactNode;
   className?: string;
 }
 
@@ -86,6 +88,7 @@ export const OrderSuccessCard = memo(function OrderSuccessCard({
   certificateAvailable,
   whatsappHref,
   cutouts = false,
+  children,
   className,
 }: OrderSuccessCardProps) {
   const reduced = useReducedMotion();
@@ -153,7 +156,7 @@ export const OrderSuccessCard = memo(function OrderSuccessCard({
           </p>
         </div>
 
-        <div className="space-y-6 px-8 pb-8">
+        <div className="space-y-6 px-6 pb-8 sm:px-8">
           <DashedLine />
 
           {/* Order registry — ticket ID + certified pieces */}
@@ -205,7 +208,7 @@ export const OrderSuccessCard = memo(function OrderSuccessCard({
           {/* Authentication barcode */}
           <Barcode value={barcodeValue} label="رمز التوثيق" className="mx-auto" />
 
-          {whatsappHref && (
+          {whatsappHref && !children && (
             <a
               href={whatsappHref}
               target="_blank"
@@ -216,6 +219,13 @@ export const OrderSuccessCard = memo(function OrderSuccessCard({
               <MessageCircle size={13} />
               استفسري عن طلبك عبر واتساب
             </a>
+          )}
+
+          {children && (
+            <>
+              <DashedLine />
+              <div className="space-y-4">{children}</div>
+            </>
           )}
 
           {/* Actions */}

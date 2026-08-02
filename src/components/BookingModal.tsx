@@ -3,6 +3,8 @@ import { X, Loader2, ChevronDown } from "lucide-react";
 import { products } from "@/data/products";
 import type { CertificateData } from "@/components/certificate/OrderCertificate";
 import { OrderSuccessCard } from "@/components/ui/order-success-card";
+import { OrderDetails } from "@/components/ui/order-details";
+import type { AuthenticatedPiece } from "@/components/ui/authenticated-product-card";
 import { pieceBarcode } from "@/lib/barcode";
 
 /** The certificate surface (html-to-image) is heavy — load it only when opened. */
@@ -274,6 +276,31 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
       setSubmitting(false);
     }
   };
+
+  // Snapshot of the authenticated pieces shown inside the success modal (taken at submit time).
+  const successPieces: AuthenticatedPiece[] = (
+    certificate?.items && certificate.items.length > 0
+      ? certificate.items
+      : cart
+        ? cart.items.map((it) => ({
+            name: it.name,
+            code: products.find((p) => p.id === it.id)?.code || productCode,
+            color: it.color,
+            size: it.size,
+          }))
+        : [{ name: productName, code: productCode, color: selectedColor, size: selectedSize }]
+  ).map((it: AuthenticatedPiece) => {
+    const p = products.find((x) => x.code === it.code) ?? products.find((x) => x.name === it.name);
+    return {
+      name: p?.seoName || p?.model || it.name,
+      code: p?.code || it.code,
+      collection: it.collection ?? p?.collection,
+      edition: it.edition ?? p?.edition,
+      color: it.color,
+      size: it.size,
+      image: p?.images?.[0],
+    };
+  });
 
   return (
     <div
@@ -597,7 +624,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
           </>
         ) : (
           /* Success state — luxury order confirmation card */
-          <div className="p-4 sm:p-6 overflow-y-auto">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6">
             <OrderSuccessCard
               orderId={orderId}
               customerName={certificate?.customerName || customerName.trim() || "—"}
@@ -618,7 +645,19 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                 ? `https://wa.me/218944003708?text=${encodeURIComponent(`السلام عليكم، أريد الاستفسار عن طلبي رقم ${orderId}`)}`
                 : undefined}
               cutouts
-            />
+              className="w-full max-w-md mx-auto"
+            >
+              {certificate && (
+                <OrderDetails
+                  compact
+                  orderId={orderId}
+                  status="pending"
+                  createdAt={new Date().toISOString()}
+                  pieces={successPieces}
+                  onCertificate={() => setCertOpen(true)}
+                />
+              )}
+            </OrderSuccessCard>
           </div>
         )}
       </div>
