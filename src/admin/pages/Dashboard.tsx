@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import {
-  ShoppingBag, Clock, DollarSign, Users, TrendingUp, Bell, Monitor, ArrowLeft,
+  ShoppingBag, Clock, DollarSign, Users, TrendingUp, Bell, User, ArrowLeft,
 } from "lucide-react";
 import {
   ComposedChart, Line, ReferenceLine, PieChart, Pie, Cell,
@@ -13,6 +13,7 @@ import { AButton, StatusBadge, ASkeleton } from "../components/ui";
 import { ADMIN_PATH } from "../lib/config";
 
 const STATUS_COLORS = ["#F5A524", "#4892FE", "#8F8F8F", "#4F56D3", "#89D233"];
+const PINK = "#CE2C60";
 
 type TrendTooltipProps = {
   active?: boolean;
@@ -99,7 +100,6 @@ export default function Dashboard() {
     // Revenue estimate (based on price — fallback)
     const avgPrice = 750; // Average dress price in LYD
     const revenue = filtered.length * avgPrice;
-    const weeklyRevenue = filtered.length * avgPrice;
 
     return {
       total: filtered.length,
@@ -108,7 +108,6 @@ export default function Dashboard() {
       delivered: delivered.length,
       recent: recent.length,
       revenue,
-      weeklyRevenue,
       uniqueCustomers: uniquePhones.size,
       deliveryRate,
       high,
@@ -125,11 +124,14 @@ export default function Dashboard() {
   if (isLoading) {
     return (
       <div className="flex flex-col gap-6">
+        <ASkeleton className="h-16 !rounded-2xl" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {Array.from({ length: 4 }).map((_, i) => <ASkeleton key={i} className="h-36 !rounded-2xl" />)}
+          {Array.from({ length: 4 }).map((_, i) => <ASkeleton key={i} className="h-40 !rounded-2xl" />)}
         </div>
-        <ASkeleton className="h-80 !rounded-2xl" />
-        <ASkeleton className="h-96 !rounded-2xl" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <ASkeleton className="lg:col-span-2 h-96 !rounded-2xl" />
+          <ASkeleton className="h-96 !rounded-2xl" />
+        </div>
       </div>
     );
   }
@@ -151,8 +153,13 @@ export default function Dashboard() {
     { label: "قيد الانتظار", value: stats.total ? Math.round((stats.pending / stats.total) * 100) : 0, color: "#F5A524" },
   ];
 
+  const cardStyle: CSSProperties = {
+    background: "var(--nd-white)",
+    border: "1px solid var(--nd-border)",
+  };
+
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
@@ -164,28 +171,13 @@ export default function Dashboard() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex gap-1.5 p-1 rounded-xl" style={{ background: "var(--nd-bg)", border: "1px solid var(--nd-border)" }}>
-            {rangeBtns.map((r) => (
-              <button
-                key={r.value}
-                onClick={() => setRange(r.value)}
-                className="px-3.5 py-1.5 rounded-lg text-[12px] font-bold transition-all"
-                style={{
-                  background: range === r.value ? "var(--nd-primary-500)" : "transparent",
-                  color: range === r.value ? "#fff" : "var(--nd-text-3)",
-                }}
-              >
-                {r.label}
-              </button>
-            ))}
-          </div>
           <Link
             to={`/${ADMIN_PATH}/orders?status=pending`}
-            className="relative p-2.5 rounded-xl transition-colors hover:bg-white"
+            className="relative p-2.5 rounded-lg transition-colors hover:bg-white"
             style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)", color: "var(--nd-text-3)" }}
             title="طلبات بحاجة للمراجعة"
           >
-            <Bell size={18} />
+            <Bell className="h-5 w-5" />
             {stats.pending > 0 && (
               <span
                 className="absolute -top-1 -left-1 h-3 w-3 rounded-full border-2"
@@ -193,79 +185,184 @@ export default function Dashboard() {
               />
             )}
           </Link>
-          <a
-            href="/"
-            target="_blank"
-            rel="noreferrer"
-            className="hidden sm:flex items-center gap-2 px-4 h-11 rounded-xl text-[13px] font-bold transition-opacity hover:opacity-90"
-            style={{ background: "var(--nd-primary-500)", color: "#fff" }}
+          <Link
+            to={`/${ADMIN_PATH}/settings`}
+            className="p-2.5 rounded-lg transition-colors hover:bg-white"
+            style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)", color: "var(--nd-text-3)" }}
+            title="الإعدادات"
           >
-            <Monitor size={16} />
-            عرض الموقع
-          </a>
+            <User className="h-5 w-5" />
+          </Link>
         </div>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Link to={`/${ADMIN_PATH}/orders`} className="block transition-shadow hover:shadow-md">
-          <div className="p-6 rounded-2xl shadow-sm transition-shadow" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
+          <div className="p-6 rounded-xl shadow-sm transition-shadow" style={cardStyle}>
             <div className="flex items-center justify-between mb-4">
-              <div className="p-2.5 rounded-xl" style={{ background: "rgba(206,44,96,0.1)" }}>
-                <ShoppingBag size={20} style={{ color: "var(--nd-primary-500)" }} />
+              <div className="p-2 rounded-lg" style={{ background: "rgba(206,44,96,0.1)" }}>
+                <ShoppingBag className="h-5 w-5" style={{ color: PINK }} />
               </div>
-              <TrendingUp size={16} style={{ color: deltaColor }} />
+              <TrendingUp className="h-4 w-4" style={{ color: deltaColor }} />
             </div>
-            <p className="text-[13px] font-medium mb-1" style={{ color: "var(--nd-text-3)" }}>إجمالي الطلبات</p>
-            <p className="text-[26px] font-extrabold leading-tight tabular-nums" style={{ color: "var(--nd-text)" }}>{stats.total}</p>
-            <p className="text-[12px] mt-1" style={{ color: deltaColor }}>{deltaLabel}</p>
+            <p className="text-sm font-medium mb-1" style={{ color: "var(--nd-text-3)" }}>إجمالي الطلبات</p>
+            <p className="text-2xl font-bold tabular-nums" style={{ color: "var(--nd-text)" }}>{stats.total}</p>
+            <p className="text-sm mt-1" style={{ color: deltaColor }}>{deltaLabel}</p>
           </div>
         </Link>
 
-        <div className="p-6 rounded-2xl shadow-sm transition-shadow" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
+        <div className="p-6 rounded-xl shadow-sm transition-shadow" style={cardStyle}>
           <div className="flex items-center justify-between mb-4">
-            <div className="p-2.5 rounded-xl" style={{ background: "rgba(84,166,255,0.12)" }}>
-              <DollarSign size={20} style={{ color: "#54A6FF" }} />
+            <div className="p-2 rounded-lg" style={{ background: "rgba(84,166,255,0.12)" }}>
+              <DollarSign className="h-5 w-5" style={{ color: "#54A6FF" }} />
             </div>
-            <TrendingUp size={16} style={{ color: "#16A34A" }} />
+            <TrendingUp className="h-4 w-4" style={{ color: "#16A34A" }} />
           </div>
-          <p className="text-[13px] font-medium mb-1" style={{ color: "var(--nd-text-3)" }}>الإيرادات التقديرية</p>
-          <p className="text-[26px] font-extrabold leading-tight tabular-nums" style={{ color: "var(--nd-text)" }}>{stats.revenue.toLocaleString()} د.ل</p>
-          <p className="text-[12px] mt-1" style={{ color: "var(--nd-text-3)" }}>تقديري بناءً على متوسط السعر</p>
+          <p className="text-sm font-medium mb-1" style={{ color: "var(--nd-text-3)" }}>الإيرادات التقديرية</p>
+          <p className="text-2xl font-bold tabular-nums" style={{ color: "var(--nd-text)" }}>{stats.revenue.toLocaleString()} د.ل</p>
+          <p className="text-sm mt-1" style={{ color: "var(--nd-text-3)" }}>تقديري بناءً على متوسط السعر</p>
         </div>
 
-        <div className="p-6 rounded-2xl shadow-sm transition-shadow" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
+        <div className="p-6 rounded-xl shadow-sm transition-shadow" style={cardStyle}>
           <div className="flex items-center justify-between mb-4">
-            <div className="p-2.5 rounded-xl" style={{ background: "rgba(22,163,74,0.1)" }}>
-              <Users size={20} style={{ color: "#16A34A" }} />
+            <div className="p-2 rounded-lg" style={{ background: "rgba(22,163,74,0.1)" }}>
+              <Users className="h-5 w-5" style={{ color: "#16A34A" }} />
             </div>
-            <TrendingUp size={16} style={{ color: "#16A34A" }} />
+            <TrendingUp className="h-4 w-4" style={{ color: "#16A34A" }} />
           </div>
-          <p className="text-[13px] font-medium mb-1" style={{ color: "var(--nd-text-3)" }}>عملاء فريدون</p>
-          <p className="text-[26px] font-extrabold leading-tight tabular-nums" style={{ color: "var(--nd-text)" }}>{stats.uniqueCustomers}</p>
-          <p className="text-[12px] mt-1" style={{ color: "var(--nd-text-3)" }}>بناءً على رقم الهاتف</p>
+          <p className="text-sm font-medium mb-1" style={{ color: "var(--nd-text-3)" }}>عملاء فريدون</p>
+          <p className="text-2xl font-bold tabular-nums" style={{ color: "var(--nd-text)" }}>{stats.uniqueCustomers}</p>
+          <p className="text-sm mt-1" style={{ color: "var(--nd-text-3)" }}>بناءً على رقم الهاتف</p>
         </div>
 
         <Link to={`/${ADMIN_PATH}/orders?status=pending`} className="block transition-shadow hover:shadow-md">
-          <div className="p-6 rounded-2xl shadow-sm transition-shadow" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
+          <div className="p-6 rounded-xl shadow-sm transition-shadow" style={cardStyle}>
             <div className="flex items-center justify-between mb-4">
-              <div className="p-2.5 rounded-xl" style={{ background: "rgba(245,165,36,0.12)" }}>
-                <Clock size={20} style={{ color: "#F5A524" }} />
+              <div className="p-2 rounded-lg" style={{ background: "rgba(245,165,36,0.12)" }}>
+                <Clock className="h-5 w-5" style={{ color: "#F5A524" }} />
               </div>
-              <TrendingUp size={16} style={{ color: stats.processing > 0 ? "#16A34A" : "#9CA3AF" }} />
+              <TrendingUp className="h-4 w-4" style={{ color: stats.processing > 0 ? "#16A34A" : "#9CA3AF" }} />
             </div>
-            <p className="text-[13px] font-medium mb-1" style={{ color: "var(--nd-text-3)" }}>قيد الانتظار</p>
-            <p className="text-[26px] font-extrabold leading-tight tabular-nums" style={{ color: "var(--nd-text)" }}>{stats.pending}</p>
-            <p className="text-[12px] mt-1" style={{ color: "var(--nd-text-3)" }}>{stats.processing > 0 ? `${stats.processing} قيد التجهيز` : "لا توجد طلبات بانتظار المراجعة"}</p>
+            <p className="text-sm font-medium mb-1" style={{ color: "var(--nd-text-3)" }}>قيد الانتظار</p>
+            <p className="text-2xl font-bold tabular-nums" style={{ color: "var(--nd-text)" }}>{stats.pending}</p>
+            <p className="text-sm mt-1" style={{ color: "var(--nd-text-3)" }}>{stats.processing > 0 ? `${stats.processing} قيد التجهيز` : "لا توجد طلبات بانتظار المراجعة"}</p>
           </div>
         </Link>
+      </div>
+
+      {/* Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Recent Orders Activity */}
+        <div className="lg:col-span-2 rounded-xl border border-gray-200 bg-white p-6 shadow-sm" style={cardStyle}>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold" style={{ color: "var(--nd-text)" }}>آخر الطلبات</h3>
+            <Link to={`/${ADMIN_PATH}/orders`}>
+              <AButton variant="default" size="xs" icon={<ArrowLeft size={14} />}>عرض الكل</AButton>
+            </Link>
+          </div>
+          {stats.recentOrders.length === 0 ? (
+            <div className="p-8 text-center text-sm" style={{ color: "var(--nd-text-3)" }}>لا توجد طلبات بعد</div>
+          ) : (
+            <div className="space-y-2">
+              {stats.recentOrders.map((o) => {
+                const color = STATUSES[o.status]?.color ?? "#8F8F8F";
+                return (
+                  <Link
+                    key={o.orderId}
+                    to={`/admin/orders/${o.orderId}`}
+                    className="flex items-center gap-4 p-3 rounded-lg transition-colors hover:bg-gray-50"
+                  >
+                    <div className="p-2 rounded-lg shrink-0" style={{ background: `color-mix(in srgb, ${color} 12%, white)` }}>
+                      <ShoppingBag className="h-4 w-4" style={{ color }} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate" style={{ color: "var(--nd-text)" }}>
+                        {o.orderId} — {o.name || "عميل"}
+                      </p>
+                      <p className="text-xs truncate" style={{ color: "var(--nd-text-3)" }}>
+                        {o.location || "—"} • <span dir="ltr">{o.phone}</span>
+                      </p>
+                    </div>
+                    <StatusBadge status={o.status} size="sm" />
+                    <div className="text-xs shrink-0" style={{ color: "var(--nd-text-3)" }}>
+                      {relativeAr(o.createdAt)}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Quick Stats */}
+        <div className="flex flex-col gap-6">
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm" style={cardStyle}>
+            <h3 className="text-lg font-semibold mb-4" style={{ color: "var(--nd-text)" }}>مؤشرات سريعة</h3>
+            <div className="space-y-4">
+              {quickBars.map((bar) => (
+                <div key={bar.label}>
+                  <div className="flex justify-between items-center mb-1.5">
+                    <span className="text-sm" style={{ color: "var(--nd-text-2)" }}>{bar.label}</span>
+                    <span className="text-sm font-bold" style={{ color: "var(--nd-text)" }}>{bar.value}%</span>
+                  </div>
+                  <div className="w-full rounded-full h-2" style={{ background: "var(--nd-bg)" }}>
+                    <div
+                      className="h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${bar.value}%`, background: bar.color }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {stats.topCities.length > 0 && (
+            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm" style={cardStyle}>
+              <h3 className="text-lg font-semibold mb-4" style={{ color: "var(--nd-text)" }}>أفضل المدن</h3>
+              <div className="space-y-3">
+                {stats.topCities.map(([city, count], i) => (
+                  <div key={city} className="flex items-center justify-between py-1.5">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="grid size-7 place-content-center rounded-lg text-white text-xs font-bold shrink-0"
+                        style={{ background: STATUS_COLORS[i] }}
+                      >
+                        {i + 1}
+                      </div>
+                      <span className="text-sm" style={{ color: "var(--nd-text-2)" }}>{city}</span>
+                    </div>
+                    <span className="text-sm font-bold" style={{ color: "var(--nd-text)" }}>{count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Order Trends Chart */}
-        <div className="lg:col-span-2 rounded-2xl p-6 shadow-sm" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
-          <h3 className="text-sm font-bold mb-4" style={{ color: "var(--nd-text)" }}>اتجاه الطلبات</h3>
+        <div className="lg:col-span-2 rounded-xl border border-gray-200 bg-white p-6 shadow-sm" style={cardStyle}>
+          <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+            <h3 className="text-lg font-semibold" style={{ color: "var(--nd-text)" }}>اتجاه الطلبات</h3>
+            <div className="flex gap-1.5 p-1 rounded-xl" style={{ background: "var(--nd-bg)", border: "1px solid var(--nd-border)" }}>
+              {rangeBtns.map((r) => (
+                <button
+                  key={r.value}
+                  onClick={() => setRange(r.value)}
+                  className="px-3 py-1.5 rounded-lg text-[12px] font-bold transition-all"
+                  style={{
+                    background: range === r.value ? PINK : "transparent",
+                    color: range === r.value ? "#fff" : "var(--nd-text-3)",
+                  }}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
+          </div>
           {stats.timeline.length === 0 ? (
             <div className="py-12 text-center text-sm" style={{ color: "var(--nd-text-3)" }}>لا توجد بيانات كافية</div>
           ) : (
@@ -320,10 +417,10 @@ export default function Dashboard() {
 
                     <CartesianGrid strokeDasharray="4 8" stroke="#E5E7EB" strokeOpacity={1} horizontal vertical={false} />
 
-                    <ReferenceLine x={stats.timeline[Math.floor(stats.timeline.length / 2)].day} stroke="#CE2C60" strokeDasharray="4 4" strokeWidth={1} />
+                    <ReferenceLine x={stats.timeline[Math.floor(stats.timeline.length / 2)].day} stroke={PINK} strokeDasharray="4 4" strokeWidth={1} />
 
-                    <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#CE2C60" }} tickMargin={12} interval="preserveStartEnd" tickCount={5} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#CE2C60" }} tickMargin={12} allowDecimals={false} />
+                    <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: PINK }} tickMargin={12} interval="preserveStartEnd" tickCount={5} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: PINK }} tickMargin={12} allowDecimals={false} />
 
                     <Tooltip
                       content={<TrendTooltip />}
@@ -333,7 +430,7 @@ export default function Dashboard() {
                     <Line
                       type="monotone"
                       dataKey="orders"
-                      stroke="#CE2C60"
+                      stroke={PINK}
                       strokeWidth={2}
                       filter="url(#dashLineShadow)"
                       dot={(props: any) => {
@@ -346,14 +443,14 @@ export default function Dashboard() {
                             cx={cx}
                             cy={cy}
                             r={5}
-                            fill="#CE2C60"
+                            fill={PINK}
                             stroke="#fff"
                             strokeWidth={2}
                             filter="url(#dashDotShadow)"
                           />
                         );
                       }}
-                      activeDot={{ r: 5, fill: "#CE2C60", stroke: "#fff", strokeWidth: 2, filter: "url(#dashDotShadow)" }}
+                      activeDot={{ r: 5, fill: PINK, stroke: "#fff", strokeWidth: 2, filter: "url(#dashDotShadow)" }}
                     />
                   </ComposedChart>
                 </ResponsiveContainer>
@@ -363,8 +460,8 @@ export default function Dashboard() {
         </div>
 
         {/* Status Distribution Pie */}
-        <div className="rounded-2xl p-6 shadow-sm" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
-          <h3 className="text-sm font-bold mb-4" style={{ color: "var(--nd-text)" }}>توزيع الحالات</h3>
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm" style={cardStyle}>
+          <h3 className="text-lg font-semibold mb-4" style={{ color: "var(--nd-text)" }}>توزيع الحالات</h3>
           {stats.statusDist.every((s) => s.value === 0) ? (
             <div className="py-12 text-center text-sm" style={{ color: "var(--nd-text-3)" }}>لا توجد بيانات كافية</div>
           ) : (
@@ -385,97 +482,6 @@ export default function Dashboard() {
                     <div className="w-2.5 h-2.5 rounded-full" style={{ background: s.color }} />
                     <span className="text-[12px]" style={{ color: "var(--nd-text-2)" }}>{s.name}</span>
                     <span className="text-[12px] font-bold" style={{ color: "var(--nd-text)" }}>{s.value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Orders Table */}
-        <div className="lg:col-span-2 rounded-2xl overflow-hidden shadow-sm" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
-          <div className="flex items-center justify-between p-6 border-b" style={{ borderColor: "var(--nd-border)" }}>
-            <h3 className="text-lg font-semibold" style={{ color: "var(--nd-text)" }}>آخر الطلبات</h3>
-            <Link to={`/${ADMIN_PATH}/orders`}>
-              <AButton variant="default" size="xs" icon={<ArrowLeft size={14} />}>عرض الكل</AButton>
-            </Link>
-          </div>
-          {stats.recentOrders.length === 0 ? (
-            <div className="p-8 text-center text-sm" style={{ color: "var(--nd-text-3)" }}>لا توجد طلبات بعد</div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-right" style={{ minWidth: 600 }}>
-                <thead>
-                  <tr style={{ background: "var(--nd-bg)" }}>
-                    {["رقم الطلب", "العميل", "المدينة", "الحالة", "التاريخ"].map((h) => (
-                      <th key={h} className="px-5 py-3 text-[11px] font-bold whitespace-nowrap" style={{ color: "var(--nd-text-3)" }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y" style={{ borderColor: "var(--nd-border)" }}>
-                  {stats.recentOrders.map((o, i) => (
-                    <tr key={o.orderId} className="hover:bg-gray-50 transition-colors" style={i % 2 === 0 ? { background: "rgba(0,0,0,0.01)" } : undefined}>
-                      <td className="px-5 py-3.5">
-                        <Link to={`/admin/orders/${o.orderId}`} className="text-[13px] font-bold" style={{ color: "var(--nd-primary-500)" }}>
-                          {o.orderId}
-                        </Link>
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <p className="text-[13px] font-semibold" style={{ color: "var(--nd-text)" }}>{o.name || "—"}</p>
-                        <p className="text-[10px]" style={{ color: "var(--nd-text-3)" }} dir="ltr">{o.phone}</p>
-                      </td>
-                      <td className="px-5 py-3.5 text-[13px]" style={{ color: "var(--nd-text-2)" }}>{o.location}</td>
-                      <td className="px-5 py-3.5"><StatusBadge status={o.status} size="sm" /></td>
-                      <td className="px-5 py-3.5">
-                        <p className="text-[12px]" style={{ color: "var(--nd-text-2)" }}>{fmtDate(o.createdAt)}</p>
-                        <p className="text-[10px]" style={{ color: "var(--nd-text-3)" }}>{relativeAr(o.createdAt)}</p>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-
-        {/* Quick Stats */}
-        <div className="flex flex-col gap-6">
-          <div className="rounded-2xl p-6 shadow-sm" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
-            <h3 className="text-lg font-semibold mb-4" style={{ color: "var(--nd-text)" }}>مؤشرات سريعة</h3>
-            <div className="space-y-4">
-              {quickBars.map((bar) => (
-                <div key={bar.label}>
-                  <div className="flex justify-between items-center mb-1.5">
-                    <span className="text-sm" style={{ color: "var(--nd-text-2)" }}>{bar.label}</span>
-                    <span className="text-sm font-bold" style={{ color: "var(--nd-text)" }}>{bar.value}%</span>
-                  </div>
-                  <div className="w-full rounded-full h-2" style={{ background: "var(--nd-bg)" }}>
-                    <div
-                      className="h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${bar.value}%`, background: bar.color }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {stats.topCities.length > 0 && (
-            <div className="rounded-2xl p-6 shadow-sm" style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: "var(--nd-text)" }}>أفضل المدن</h3>
-              <div className="space-y-3">
-                {stats.topCities.map(([city, count], i) => (
-                  <div key={city} className="flex items-center justify-between py-1.5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0" style={{ background: STATUS_COLORS[i] }}>
-                        {i + 1}
-                      </div>
-                      <span className="text-sm" style={{ color: "var(--nd-text-2)" }}>{city}</span>
-                    </div>
-                    <span className="text-sm font-bold" style={{ color: "var(--nd-text)" }}>{count}</span>
                   </div>
                 ))}
               </div>
