@@ -23,6 +23,8 @@ export interface AuthenticatedProductCardProps {
   onCertificate?: () => void;
   /** Flatten the outer card chrome — used inside a unified order segment. */
   flat?: boolean;
+  /** Hide the per-piece barcode (deduplicated in the success ticket). */
+  showBarcode?: boolean;
   className?: string;
 }
 
@@ -33,6 +35,7 @@ export const AuthenticatedProductCard = memo(function AuthenticatedProductCard({
   barcodeValue,
   onCertificate,
   flat = false,
+  showBarcode = true,
   className,
 }: AuthenticatedProductCardProps) {
   const fields = [
@@ -114,7 +117,7 @@ export const AuthenticatedProductCard = memo(function AuthenticatedProductCard({
         className="flex flex-col items-center gap-1 border-t px-4 py-3"
         style={{ borderColor: "rgba(201,162,94,0.25)", background: "#fffdf9" }}
       >
-        <Barcode value={barcodeValue} label="رمز التوثيق" className="w-full max-w-[320px]" />
+        {showBarcode && <Barcode value={barcodeValue} label="رمز التوثيق" className="w-full max-w-[320px]" />}
         {onCertificate && (
           <button
             onClick={onCertificate}

@@ -93,6 +93,7 @@ export function OrderDetails({
           })}
           onCertificate={onCertificate}
           flat={unified}
+          showBarcode={!unified}
         />
       ))}
     </div>
