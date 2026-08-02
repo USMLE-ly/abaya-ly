@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { Award, Star } from "lucide-react";
+import { Star } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -240,9 +240,6 @@ export function Awards({
           {description && (
             <p className="text-[11px] leading-relaxed text-fg-tertiary">{description}</p>
           )}
-          <div className="mt-6 flex justify-center">
-            <Award strokeWidth={1} className="h-4 w-4" />
-          </div>
           {children && <div className="mt-6 text-right">{children}</div>}
         </div>
       </div>
