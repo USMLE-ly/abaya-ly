@@ -233,7 +233,7 @@ export function Awards({
             <span className="text-sm font-light tracking-tight">{title}</span>
           </h1>
 
-          <p className="mt-4 mb-1 text-xs text-fg-tertiary">تشهد هذه الوثيقة بأن</p>
+          <p className="mt-4 mb-1 text-xs text-fg-tertiary">شهادة مقدمة إلى</p>
           <h2 className="mb-1 border-b border-line-subtle text-xl font-semibold tracking-tight text-[#c42855]">
             {recipient}
           </h2>
