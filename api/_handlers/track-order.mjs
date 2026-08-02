@@ -25,8 +25,8 @@ export default async function handler(req, res) {
   try {
     const items = await readItems(EC_URL);
     const order = ecGetItem(items, `order:${safeOrder}`);
-    if (!order) return res.status(200).json({ found: false });
-    if (order.phone !== safePhone) return res.status(200).json({ found: false });
+    if (!order) return res.status(200).json({ found: false, reason: "order" });
+    if (order.phone !== safePhone) return res.status(200).json({ found: false, reason: "phone" });
     return res.status(200).json({ found: true, order });
   } catch (err) {
     console.error("Track order error:", err);

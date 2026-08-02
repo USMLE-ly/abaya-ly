@@ -92,6 +92,15 @@ export default async function handler(req, res) {
     }
   }
 
+  // Never return success for an order that was not persisted — otherwise the
+  // customer gets an order number that can never be tracked.
+  if (EC_URL && !stored) {
+    return res.status(503).json({
+      success: false,
+      error: "تعذر حفظ الطلب الآن، يرجى المحاولة مرة أخرى",
+    });
+  }
+
   if (BOT_TOKEN && CHAT_ID && stored) {
     const consentEmoji = sanitized.whatsappConsent ? "✅" : "❌";
     const productLines = orderItems.length > 0

@@ -35,6 +35,7 @@ function TrackOrderContent() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [error, setError] = useState("");
+  const [notFoundReason, setNotFoundReason] = useState<"" | "order" | "phone">("");
   const [order, setOrder] = useState<any>(null);
   const [certOpen, setCertOpen] = useState(false);
 
@@ -73,12 +74,25 @@ function TrackOrderContent() {
       const res = await fetch(
         `/api/track-order?orderNumber=${encodeURIComponent(orderNumber.trim())}&phone=${encodeURIComponent(phone.trim())}`
       );
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        setOrder(null);
+        setNotFoundReason("");
+        if (res.status === 429) {
+          setError("عدد محاولات البحث تجاوز الحد، يرجى المحاولة بعد قليل");
+        } else {
+          setError(data?.error || "حدث خطأ، يرجى المحاولة مرة أخرى");
+        }
+        return;
+      }
 
       if (!data.found || !data.order) {
         setOrder(null);
+        setNotFoundReason(data?.reason === "phone" ? "phone" : "order");
       } else {
         setOrder(data.order);
+        setNotFoundReason("");
       }
     } catch {
       setError("حدث خطأ، يرجى المحاولة مرة أخرى");
@@ -198,13 +212,21 @@ function TrackOrderContent() {
           )}
 
           {/* Not found */}
-          {!loading && searched && !order && (
+          {!loading && searched && !order && !error && (
             <div className="rounded-3xl border bg-white p-10 text-center" style={{ borderColor: "rgba(201,162,94,0.4)" }}>
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full" style={{ background: "rgba(201,162,94,0.12)" }}>
                 <Package size={30} className="text-brand/60" />
               </div>
-              <p className="mt-4 text-sm font-bold text-fg">لم يتم العثور على طلب بهذه البيانات</p>
-              <p className="text-[11px] text-fg-tertiary mt-1.5">تأكدي من رقم الطلب ورقم الهاتف المستخدم في الحجز</p>
+              <p className="mt-4 text-sm font-bold text-fg">
+                {notFoundReason === "phone"
+                  ? "رقم الطلب موجود، لكن رقم الهاتف غير مطابق"
+                  : "لم يتم العثور على طلب بهذه البيانات"}
+              </p>
+              <p className="text-[11px] text-fg-tertiary mt-1.5">
+                {notFoundReason === "phone"
+                  ? "تأكدي من رقم الهاتف المستخدم في الحجز — يجب أن يكون نفس الرقم المُدخل عند إتمام الطلب"
+                  : "تأكدي من رقم الطلب ورقم الهاتف المستخدم في الحجز"}
+              </p>
             </div>
           )}
 
