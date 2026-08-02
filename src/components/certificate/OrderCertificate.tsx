@@ -7,6 +7,10 @@ import { CustomerInformation } from "./CustomerInformation";
 import { ProductInformation } from "./ProductInformation";
 import { RecognitionZone } from "./RecognitionZone";
 import { CertificateMessage } from "./CertificateMessage";
+import { CertificateFooter } from "./CertificateFooter";
+import { MonogramWatermark } from "./MonogramWatermark";
+import { certificateSerial } from "@/lib/certificate-serial";
+import { IVORY } from "./tokens";
 import type { OutfitSealItem } from "./OutfitSeal";
 
 export interface CertificateData {
@@ -16,33 +20,34 @@ export interface CertificateData {
   items: OutfitSealItem[];
 }
 
-const IVORY = "#fdfaf3";
-
-/** The printable luxury certificate surface: the original certificate from the Awards
- *  component (ribbon, dotted frame, authenticity wording) with every certificate
- *  section — customer, product, recognition zone — rendered inside it. */
+/** The printable luxury certificate surface: the original certificate frame with every
+ *  section — letter, authentication registry, product passport, recognition zone, footer. */
 export function OrderCertificate({ data }: { data: CertificateData }) {
+  const serial = certificateSerial(data.orderId, data.date);
   return (
     <div
       dir="rtl"
-      className="w-full"
+      className="relative w-full"
       style={{ background: IVORY, fontFamily: "Tajawal, sans-serif" }}
     >
+      <MonogramWatermark />
       <Awards
         variant="certificate"
         title="أصالة"
         recipient={data.customerName || "—"}
         className="w-full"
       >
-        <div className="space-y-6">
+        <div className="space-y-7">
           <CertificateMessage />
           <CustomerInformation
             name={data.customerName}
             orderId={data.orderId}
             date={data.date}
+            serial={serial}
           />
           <ProductInformation items={data.items} />
-          <RecognitionZone items={data.items} orderId={data.orderId} date={data.date} />
+          <RecognitionZone items={data.items} orderId={data.orderId} serial={serial} />
+          <CertificateFooter serial={serial} />
         </div>
       </Awards>
     </div>
@@ -91,7 +96,7 @@ export function OrderCertificateModal({
     setBusy(true);
     try {
       const url = await toPng(ref.current, {
-        pixelRatio: 3,
+        pixelRatio: 4,
         backgroundColor: IVORY,
       });
       const a = document.createElement("a");

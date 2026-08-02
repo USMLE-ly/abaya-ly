@@ -1,8 +1,7 @@
 import type { OutfitSealItem } from "./OutfitSeal";
 
-const GOLD_MID = "#b48a45";
-const GOLD_DEEP = "#9c7138";
-const STRAWBERRY = "#c42855";
+import { GOLD_MID, GOLD_DEEP, STRAWBERRY } from "./tokens";
+import { AuthenticitySeal } from "./AuthenticitySeal";
 
 /** Reference laurel branch vectors (designali-in/award — "award" variant), full paths. */
 const LAUREL_BRANCH_RIGHT =
@@ -36,14 +35,16 @@ function LaurelWreath() {
   );
 }
 
-/** Recognition Zone — the certificate's visual centerpiece: the Fashion Excellence award. */
+/** Recognition Zone — the certificate's emotional centrepiece: the Fashion Excellence
+ *  award with the integrated Official Authenticity Seal. */
 export function RecognitionZone({
   items,
   orderId,
+  serial,
 }: {
   items: OutfitSealItem[];
   orderId: string;
-  date?: string;
+  serial: string;
 }) {
   const primary = items[0];
   const collection = primary?.collection?.trim() || "مجموعة نادين";
@@ -51,19 +52,19 @@ export function RecognitionZone({
   const pieceLabel = items.length > 1 ? `${items.length} قطع موثّقة` : "قطعة موثّقة";
 
   return (
-    <section className="mt-9">
+    <section className="mt-10">
       {/* Section label */}
       <div className="flex items-center justify-center gap-3">
         <span
           className="h-px w-12 sm:w-16"
-          style={{ background: "linear-gradient(90deg, transparent, rgba(201,162,94,0.8))" }}
+          style={{ background: "linear-gradient(90deg, transparent, rgba(201,162,94,0.7))" }}
         />
         <p className="text-[11px] font-bold tracking-[0.26em]" style={{ color: GOLD_DEEP }}>
           منطقة التكريم
         </p>
         <span
           className="h-px w-12 sm:w-16"
-          style={{ background: "linear-gradient(90deg, rgba(201,162,94,0.8), transparent)" }}
+          style={{ background: "linear-gradient(90deg, rgba(201,162,94,0.7), transparent)" }}
         />
       </div>
       <p
@@ -75,9 +76,9 @@ export function RecognitionZone({
 
       {/* Fashion Excellence Award — single centered focal element */}
       <div className="mx-auto mt-6 w-full max-w-lg">
-        <div className="relative flex min-h-[300px] items-stretch justify-center overflow-hidden sm:min-h-[400px]">
+        <div className="relative flex min-h-[320px] items-stretch justify-center overflow-hidden sm:min-h-[430px]">
           <LaurelWreath />
-          <div className="relative z-10 flex flex-1 flex-col items-center justify-center py-4 text-center sm:py-6">
+          <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-10 text-center sm:py-14">
             <p
               className="text-[7px] font-semibold tracking-[0.32em] sm:text-[7.5px] sm:tracking-[0.38em]"
               style={{ color: GOLD_MID, fontFamily: "'Playfair Display', serif" }}
@@ -85,48 +86,56 @@ export function RecognitionZone({
               NADINE LUXURY
             </p>
             <p
-              className="mt-2 text-[12px] font-bold leading-none tracking-[0.12em] sm:mt-2.5 sm:text-[18px] sm:tracking-[0.14em]"
+              className="mt-3 text-[12px] font-bold leading-none tracking-[0.12em] sm:mt-4 sm:text-[18px] sm:tracking-[0.14em]"
               style={{ color: "#221a12", fontFamily: "'Playfair Display', serif" }}
             >
               FASHION
             </p>
             <p
-              className="mt-1 text-[12px] font-bold leading-none tracking-[0.08em] sm:text-[18px] sm:tracking-[0.1em]"
+              className="mt-1.5 text-[12px] font-bold leading-none tracking-[0.08em] sm:text-[18px] sm:tracking-[0.1em]"
               style={{ color: GOLD_DEEP, fontFamily: "'Playfair Display', serif" }}
             >
               EXCELLENCE
             </p>
-            <div className="mt-3 flex items-center justify-center gap-1.5 sm:mt-4">
+            <div className="mt-4 flex items-center justify-center gap-1.5 sm:mt-5">
               <span
-                className="h-px w-7 sm:w-10"
+                className="h-px w-8 sm:w-12"
                 style={{ background: "linear-gradient(90deg, transparent, rgba(201,162,94,0.9))" }}
               />
               <span className="block h-[5px] w-[5px] rotate-45" style={{ background: STRAWBERRY }} />
               <span
-                className="h-px w-7 sm:w-10"
+                className="h-px w-8 sm:w-12"
                 style={{ background: "linear-gradient(90deg, rgba(201,162,94,0.9), transparent)" }}
               />
             </div>
             <p
-              className="mt-4 text-[13px] font-bold leading-tight text-fg sm:mt-6 sm:text-[16px]"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              className="mt-6 text-[13px] font-bold leading-tight sm:mt-8 sm:text-[16px]"
+              style={{ color: "#221a12", fontFamily: "'Playfair Display', serif" }}
             >
               {collection}
             </p>
             <p
-              className="mt-1.5 text-[8px] font-semibold tracking-[0.14em] sm:text-[9px] sm:tracking-[0.18em]"
+              className="mt-2 text-[8px] font-semibold tracking-[0.14em] sm:text-[9px] sm:tracking-[0.18em]"
               style={{ color: GOLD_MID }}
             >
               {edition}
             </p>
-            <div className="mt-5 space-y-1 sm:mt-7">
-              <p className="text-[6px] font-semibold tracking-[0.22em] sm:text-[6.5px] sm:tracking-[0.26em]" style={{ color: "#8c8276" }}>
+            <div className="mt-7 space-y-1.5 sm:mt-9">
+              <p
+                className="text-[6px] font-semibold tracking-[0.22em] sm:text-[6.5px] sm:tracking-[0.26em]"
+                style={{ color: "#8c8276" }}
+              >
                 REFERENCE NUMBER
               </p>
-              <p className="text-[10px] font-bold tabular-nums text-fg sm:text-[11px]">{orderId}</p>
+              <p className="text-[10px] font-bold tabular-nums sm:text-[11px]" style={{ color: "#22201c" }}>
+                {orderId}
+              </p>
             </div>
-            <div className="mt-4 space-y-1 sm:mt-5">
-              <p className="text-[6px] font-semibold tracking-[0.22em] sm:text-[6.5px] sm:tracking-[0.26em]" style={{ color: "#8c8276" }}>
+            <div className="mt-5 space-y-1.5 sm:mt-6">
+              <p
+                className="text-[6px] font-semibold tracking-[0.22em] sm:text-[6.5px] sm:tracking-[0.26em]"
+                style={{ color: "#8c8276" }}
+              >
                 CERTIFIED PIECE
               </p>
               <p className="text-[9px] font-bold sm:text-[10px]" style={{ color: GOLD_DEEP }}>
@@ -137,8 +146,13 @@ export function RecognitionZone({
         </div>
       </div>
 
-      <p className="mt-6 text-center text-[10px] leading-relaxed" style={{ color: "#8c8276" }}>
-        هذه الشهادة صادرة إلكترونياً من دار نادين للأزياء — رقم الشهادة: {orderId}
+      {/* Integrated Official Authenticity Seal */}
+      <div className="mt-4 flex justify-center">
+        <AuthenticitySeal serial={serial} size={176} />
+      </div>
+
+      <p className="mt-7 text-center text-[10px] leading-relaxed" style={{ color: "#8c8276" }}>
+        هذه الشهادة صادرة إلكترونياً من دار نادين للأزياء — رقم الشهادة: {serial}
       </p>
     </section>
   );

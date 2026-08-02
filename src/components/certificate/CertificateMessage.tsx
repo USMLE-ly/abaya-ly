@@ -1,4 +1,6 @@
-/** The brand's personal authenticity letter, addressed to the customer. */
+import { CHARCOAL, GOLD_MID } from "./tokens";
+
+/** The brand's personal authenticity letter — approved copy, editorial presentation. */
 export function CertificateMessage() {
   const paragraphs = [
     "شكرًا لاختيارك نادين.",
@@ -10,14 +12,15 @@ export function CertificateMessage() {
   ];
 
   return (
-    <div className="mx-auto max-w-md text-center" style={{ color: "#4a3a2a" }}>
-      <p
-        className="text-sm font-bold"
-        style={{ color: "#9c7138", letterSpacing: "-0.01em" }}
-      >
+    <div className="mx-auto max-w-lg text-center">
+      <p className="text-sm font-bold" style={{ color: GOLD_MID, letterSpacing: "-0.01em" }}>
         إلى عميلتنا العزيزة،
       </p>
-      <div className="mt-3 space-y-3 text-[13px] leading-7">
+      <div
+        className="mx-auto mt-4 h-px w-24"
+        style={{ background: "linear-gradient(90deg, transparent, rgba(201,162,94,0.7), transparent)" }}
+      />
+      <div className="mt-5 space-y-4 text-[13px] leading-8" style={{ color: CHARCOAL }}>
         {paragraphs.map((text, i) => (
           <p key={i}>{text}</p>
         ))}

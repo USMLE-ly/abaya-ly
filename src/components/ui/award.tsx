@@ -208,39 +208,52 @@ export function Awards({
 
   // ── Certificate ─────────────────────────────────────────────────
   if (variant === "certificate") {
-    const Ribbon = () => (
-      <svg
-        className="-mt-12 h-16 w-full overflow-hidden fill-[#c42855]"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-      >
-        <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
-      </svg>
-    );
-
     return (
       <div
         className={cn(
-          "relative z-0 flex flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dotted border-[#c42855]/40 p-2",
+          "relative z-0 overflow-hidden rounded-xl border border-[#c9a25e]/50 p-1.5",
           className
         )}
+        style={{ background: "#fdfaf3" }}
       >
-        <div className="z-10 w-full rounded-sm border border-line-subtle bg-white p-6 px-8 text-center">
-          <Ribbon />
-          <h1 className="mt-4 grid text-3xl font-bold uppercase leading-7 tracking-tighter">
+        <div className="relative overflow-hidden rounded-lg border-2 border-dotted border-[#c42855]/40 px-6 py-9 text-center sm:px-10">
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(120% 90% at 50% 0%, rgba(244,234,208,0.5), transparent 60%)",
+            }}
+          />
+          <p
+            className="relative mt-5 text-[15px] font-bold tracking-[0.34em]"
+            style={{ color: "#9c7138", fontFamily: "'Playfair Display', serif" }}
+          >
+            NADINE LUXURY
+          </p>
+          <div
+            className="relative mx-auto mt-4 flex h-px w-40 max-w-full items-center justify-center"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, rgba(201,162,94,0.85), transparent)",
+            }}
+          />
+          <h1 className="relative mt-5 text-3xl font-bold leading-9 tracking-tight">
             شهادة
-            <span className="text-sm font-light tracking-tight">{title}</span>
+            <span className="text-[#c42855]"> {title}</span>
           </h1>
 
-          <p className="mt-4 mb-1 text-xs text-fg-tertiary">شهادة مقدمة إلى</p>
-          <h2 className="mb-1 border-b border-line-subtle text-xl font-semibold tracking-tight text-[#c42855]">
+          <p className="relative mt-6 mb-1 text-xs tracking-[0.12em] text-fg-tertiary">
+            شهادة مقدمة إلى
+          </p>
+          <h2 className="relative mb-1 inline-block border-b border-[#c9a25e]/60 pb-1 text-xl font-semibold tracking-tight text-[#c42855]">
             {recipient}
           </h2>
           {description && (
-            <p className="text-[11px] leading-relaxed text-fg-tertiary">{description}</p>
+            <p className="relative text-[11px] leading-relaxed text-fg-tertiary">
+              {description}
+            </p>
           )}
-          {children && <div className="mt-6 text-right">{children}</div>}
+          {children && <div className="relative mt-8 text-right">{children}</div>}
         </div>
       </div>
     );
