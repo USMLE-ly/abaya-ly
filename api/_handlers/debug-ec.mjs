@@ -64,6 +64,24 @@ export default async function handler(req, res) {
       summary.prefixCounts = prefixCounts;
       summary.rest = await restMeta(EC_URL);
       if (!summaryOnly) summary.keys = keys;
+      if (req.query?.check) {
+        // Targeted key probe for diagnostics (order/phone prefixes only).
+        const keys = [].concat(req.query.check).slice(0, 5);
+        const out = {};
+        for (const raw of keys) {
+          const k = String(raw).trim();
+          if (!/^(order_|phone_)/.test(k)) continue;
+          const val = items[k];
+          if (val === undefined) {
+            out[k] = null;
+          } else if (k.startsWith("phone_") && Array.isArray(val)) {
+            out[k] = val; // order-id list for a specific phone the caller supplied
+          } else {
+            out[k] = "exists";
+          }
+        }
+        summary.checks = out;
+      }
       if (req.query?.recent === "1") {
         summary.recentOrders = Object.entries(items)
           .filter(([k]) => k.startsWith("order_") || k.startsWith("order:"))
