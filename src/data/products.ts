@@ -185,7 +185,7 @@ const base: BaseFields[] = [
   { id: "noir-black-lace-halter", fabric: "ساتان كريب", category: "السهرة", price: 790, originalPrice: 1090,
     colors: [{name:"أسود مع دانتيل",hex:"#1C1C1C"}], sizes: ["S","M","L","XL"], images: ["/outfits/ivory-grace-abaya.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "botanique-pink-embroidered", fabric: "شيفون مزدوج", category: "المطرّزة", price: 810, originalPrice: 1140, badge: "حصري",
-    colors: [{name:"وردي فاتح",hex:"#FFB7C5"}], sizes: ["S","M","L","XL"], images: ["/outfits/cherry-blossom-abaya.jpg"], rating: 4.9, reviewCount: 0 },
+    colors: [{name:"وردي فاتح",hex:"#FFB7C5"}], sizes: ["S","M","L","XL"], images: ["/outfits/cherry-blossom-abaya.jpg","/outfits/cherry-blossom-abaya-thumb.jpg"], rating: 4.9, reviewCount: 0 },
   { id: "botanique-pink-leopard-maxi", fabric: "كريب ناعم", category: "الكاجوال", price: 620, originalPrice: 850,
     colors: [{name:"وردي غبار",hex:"#D8A49C"}], sizes: ["S","M","L","XL"], images: ["/outfits/obsidian-mist-abaya.jpg"], rating: 4.7, reviewCount: 0 },
 ];
