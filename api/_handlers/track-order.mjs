@@ -1,4 +1,4 @@
-import { createRateLimiter, clientIp, readItems, ecGetItem } from "./shared.mjs";
+import { createRateLimiter, clientIp, readItem } from "./shared.mjs";
 
 const rl = createRateLimiter();
 
@@ -23,13 +23,14 @@ export default async function handler(req, res) {
   if (!EC_URL) return res.status(200).json({ found: false });
 
   try {
-    const items = await readItems(EC_URL);
-    const order = ecGetItem(items, `order:${safeOrder}`);
+    // Key-based read: tracking must not depend on downloading the whole store
+    // (a full-store GET breaks once the store approaches its size limit).
+    const order = await readItem(EC_URL, `order:${safeOrder}`);
     if (!order) return res.status(200).json({ found: false, reason: "order" });
     if (order.phone !== safePhone) return res.status(200).json({ found: false, reason: "phone" });
     return res.status(200).json({ found: true, order });
   } catch (err) {
     console.error("Track order error:", err);
-    return res.status(200).json({ found: false });
+    return res.status(200).json({ found: false, reason: "error" });
   }
 }

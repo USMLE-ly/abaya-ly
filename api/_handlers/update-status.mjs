@@ -1,4 +1,4 @@
-import { cors, createRateLimiter, clientIp, readItems, writeItem, ecGetItem } from "./shared.mjs";
+import { cors, createRateLimiter, clientIp, readItem, writeItem } from "./shared.mjs";
 
 const rl = createRateLimiter();
 
@@ -35,9 +35,8 @@ export default async function handler(req, res) {
   if (!EC_URL) return res.status(200).json({ success: false, note: "Edge Config not configured" });
 
   try {
-    const items = await readItems(EC_URL);
     const orderKey = `order:${orderId.trim()}`;
-    const order = ecGetItem(items, orderKey);
+    const order = await readItem(EC_URL, orderKey);
     if (!order) return res.status(404).json({ error: "Order not found" });
 
     order.status = status;

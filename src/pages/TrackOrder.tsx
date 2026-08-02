@@ -89,7 +89,12 @@ function TrackOrderContent() {
 
       if (!data.found || !data.order) {
         setOrder(null);
-        setNotFoundReason(data?.reason === "phone" ? "phone" : "order");
+        if (data?.reason === "error") {
+          setNotFoundReason("");
+          setError("حدث خطأ أثناء البحث، يرجى المحاولة مرة أخرى");
+        } else {
+          setNotFoundReason(data?.reason === "phone" ? "phone" : "order");
+        }
       } else {
         setOrder(data.order);
         setNotFoundReason("");

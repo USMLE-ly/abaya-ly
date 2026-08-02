@@ -67,6 +67,26 @@ export default async function handler(req, res) {
     }
     data.visitors = v;
 
+    // Bound the rest of the store growth: daily rollups and per-page/product
+    // counters are only useful for recent history. Pruning here keeps the store
+    // well under the 1MB cap so writes never start failing.
+    const DAYS_TO_KEEP = 60;
+    const dayCutoff = new Date(now.getTime() - DAYS_TO_KEEP * 864e5).toISOString().slice(0, 10);
+    if (data.byDay && typeof data.byDay === "object") {
+      for (const d of Object.keys(data.byDay)) {
+        if (d < dayCutoff) delete data.byDay[d];
+      }
+    }
+    const capMap = (obj, max) => {
+      if (!obj || typeof obj !== "object") return obj;
+      const entries = Object.entries(obj);
+      if (entries.length <= max) return obj;
+      entries.sort((a, b) => Number(b[1]) - Number(a[1]));
+      return Object.fromEntries(entries.slice(0, max));
+    };
+    data.byPage = capMap(data.byPage, 500);
+    data.byProduct = capMap(data.byProduct, 500);
+
     data.raw = [
       ...(data.raw || []),
       ...clean.map((e) => ({

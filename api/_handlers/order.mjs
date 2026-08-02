@@ -1,4 +1,4 @@
-import { cors, createRateLimiter, clientIp, readItems, writeItem, sanitize, ecGetItem } from "./shared.mjs";
+import { cors, createRateLimiter, clientIp, readItem, writeItem, sanitize } from "./shared.mjs";
 
 const rl = createRateLimiter();
 
@@ -83,8 +83,7 @@ export default async function handler(req, res) {
     try {
       await writeItem(EC_URL, `order:${orderId}`, order);
 
-      const existing = await readItems(EC_URL);
-      const ids = ecGetItem(existing, `phone:${phoneClean}`);
+      const ids = await readItem(EC_URL, `phone:${phoneClean}`);
       await writeItem(EC_URL, `phone:${phoneClean}`, Array.isArray(ids) ? [...ids, orderId] : [orderId]);
       stored = true;
     } catch (e) {
