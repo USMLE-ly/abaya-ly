@@ -177,7 +177,7 @@ const base: BaseFields[] = [
   { id: "maison-brown-draped", fabric: "شيفون ساتان", category: "الكاجوال", price: 580, originalPrice: 790,
     colors: [{name:"بني غامق",hex:"#4A3C31"}], sizes: ["S","M","L","XL"], images: ["/outfits/moonlight-silver-abaya.jpg"], rating: 4.7, reviewCount: 0 },
   { id: "rouge-burgundy-silk-fitted", fabric: "حرير طبيعي 100%", category: "السهرة", price: 820, originalPrice: 1150, badge: "جديد",
-    colors: [{name:"نبيذي غامق",hex:"#4A0020"}], sizes: ["S","M","L","XL"], images: ["/outfits/silk-cloud-abaya.jpg"], rating: 4.8, reviewCount: 0 },
+    colors: [{name:"نبيذي غامق",hex:"#4A0020"}], sizes: ["S","M","L","XL"], images: ["/outfits/silk-cloud-abaya.jpg","/outfits/silk-cloud-abaya-thumb.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "rouge-burgundy-polka-halter", fabric: "مخمل فاخر", category: "السهرة", price: 790, originalPrice: 1090, badge: "جديد",
     colors: [{name:"عنابي غامق",hex:"#4A0020"}], sizes: ["S","M","L","XL"], images: ["/outfits/velvet-burgundy-abaya.jpg","/outfits/velvet-burgundy-abaya-thumb.jpg"], rating: 4.9, reviewCount: 0 },
   { id: "azure-white-polka-halter", fabric: "شيفون خفيف", category: "الكاجوال", price: 540, originalPrice: 750,
