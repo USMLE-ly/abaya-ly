@@ -101,15 +101,25 @@ export default function App() {
 
             {/* Secret admin dashboard route (path set via VITE_ADMIN_PATH env var) */}
             <Route path={`/${ADMIN_PATH}/login`} element={<AdminLogin />} />
-            <Route path={`/${ADMIN_PATH}`} element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="orders/:id" element={<AdminOrderDetail />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="reviews" element={<AdminReviews />} />
-              <Route path="analytics" element={<AdminAnalytics />} />
-              <Route path="settings" element={<AdminSettings />} />
-              <Route path="calendar" element={<AdminCalendar />} />
+            <Route path={`/${ADMIN_PATH}`} element={<AdminDashboard />} />
+            <Route path={`/${ADMIN_PATH}/orders`} element={<AdminLayout />}>
+              <Route index element={<AdminOrders />} />
+              <Route path=":id" element={<AdminOrderDetail />} />
+            </Route>
+            <Route path={`/${ADMIN_PATH}/products`} element={<AdminLayout />}>
+              <Route index element={<AdminProducts />} />
+            </Route>
+            <Route path={`/${ADMIN_PATH}/reviews`} element={<AdminLayout />}>
+              <Route index element={<AdminReviews />} />
+            </Route>
+            <Route path={`/${ADMIN_PATH}/analytics`} element={<AdminLayout />}>
+              <Route index element={<AdminAnalytics />} />
+            </Route>
+            <Route path={`/${ADMIN_PATH}/settings`} element={<AdminLayout />}>
+              <Route index element={<AdminSettings />} />
+            </Route>
+            <Route path={`/${ADMIN_PATH}/calendar`} element={<AdminLayout />}>
+              <Route index element={<AdminCalendar />} />
             </Route>
 
             {/* Catch-all 404 */}

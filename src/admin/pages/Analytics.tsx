@@ -17,10 +17,9 @@ import {
   Activity,
 } from "lucide-react";
 import {
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
+  ComposedChart,
+  Line,
+  ReferenceLine,
   PieChart,
   Pie,
   Cell,
@@ -29,7 +28,6 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  Legend,
 } from "recharts";
 import { useOrders } from "../lib/metrics";
 import { useQuery } from "@tanstack/react-query";
@@ -57,6 +55,25 @@ const EVENT_LABELS: Record<string, string> = {
   coupon_applied: "كوبون مطبق",
   coupon_rejected: "كوبون مرفوض",
 };
+
+type TrendTooltipProps = {
+  active?: boolean;
+  payload?: Array<{ payload: { day: string; orders: number } }>;
+};
+
+function TrendTooltip({ active, payload }: TrendTooltipProps) {
+  if (!active || !payload || payload.length === 0) return null;
+  const data = payload[0].payload;
+  return (
+    <div
+      className="rounded-xl px-3.5 py-2.5 shadow-lg"
+      style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}
+    >
+      <p className="text-[11px] font-bold mb-0.5" style={{ color: "var(--nd-text-3)" }}>{data.day}</p>
+      <p className="text-base font-bold" style={{ color: "var(--nd-text)" }}>{data.orders} طلب</p>
+    </div>
+  );
+}
 
 export default function Analytics() {
   const { data: orders, isLoading, error } = useOrders();
@@ -125,6 +142,20 @@ export default function Analytics() {
       orders: count,
     }));
 
+    const high = timelineChart.length ? Math.max(...timelineChart.map((t) => t.orders)) : 0;
+    const low = timelineChart.length ? Math.min(...timelineChart.map((t) => t.orders)) : 0;
+    const firstOrders = timelineChart.length ? timelineChart[0].orders : 0;
+    const lastOrders = timelineChart.length ? timelineChart[timelineChart.length - 1].orders : 0;
+    const rangeChange = firstOrders > 0
+      ? Math.round(((lastOrders - firstOrders) / firstOrders) * 100) : 0;
+    const yesterday = filtered.filter((o) => {
+      const t = new Date(o.createdAt).getTime();
+      return t >= now - 172800000 && t < now - 86400000;
+    }).length;
+    const todayChange = yesterday > 0
+      ? Math.round(((recent.length - yesterday) / yesterday) * 100)
+      : recent.length > 0 ? 100 : 0;
+
     const deliveryRate = filtered.length > 0
       ? Math.round((delivered.length / filtered.length) * 100)
       : 0;
@@ -157,6 +188,10 @@ export default function Analytics() {
       statusChart,
       cityChart,
       timelineChart,
+      high,
+      low,
+      rangeChange,
+      todayChange,
       deliveryRate,
       avgProcessing,
       topCities,
@@ -269,20 +304,87 @@ export default function Analytics() {
           {stats.timelineChart.length === 0 ? (
             <p className="text-[13px] py-8 text-center" style={{ color: "var(--nd-text-4)" }}>لا توجد بيانات كافية</p>
           ) : (
-            <ResponsiveContainer width="100%" height={260}>
-              <AreaChart data={stats.timelineChart}>
-                <defs>
-                  <linearGradient id="orderGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#c42855" stopOpacity={0.2} />
-                    <stop offset="100%" stopColor="#c42855" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="day" tick={{ fontSize: 11, fill: "#878787" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: "#878787" }} axisLine={false} tickLine={false} allowDecimals={false} />
-                <Tooltip />
-                <Area type="monotone" dataKey="orders" stroke="#c42855" fill="url(#orderGrad)" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
+            <div className="flex flex-col gap-4">
+              {/* Header */}
+              <div>
+                <p className="text-sm mb-1" style={{ color: "var(--nd-text-3)", fontWeight: 500 }}>الاتجاه العام</p>
+                <div className="flex flex-wrap items-baseline gap-1.5 sm:gap-3.5">
+                  <span className="text-3xl font-extrabold" style={{ color: "var(--nd-text)" }}>{stats.total}</span>
+                  <div className="flex items-center gap-1" style={{ color: stats.todayChange >= 0 ? "#16A34A" : "#DC2626" }}>
+                    <TrendingUp className="w-4 h-4" />
+                    <span className="font-medium">{stats.todayChange > 0 ? "+" : ""}{stats.todayChange}%</span>
+                    <span className="font-normal" style={{ color: "var(--nd-text-3)" }}>قارنة بالأمس</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats row */}
+              <div className="flex items-center justify-between flex-wrap gap-2.5 text-sm">
+                <span style={{ color: "var(--nd-text-3)" }}>طلبات اليوم: <span className="font-semibold" style={{ color: "var(--nd-text)" }}>{stats.recent}</span></span>
+                <span style={{ color: "var(--nd-text-3)" }}>الأعلى: <span className="font-medium" style={{ color: "#0EA5E9" }}>{stats.high}</span></span>
+                <span style={{ color: "var(--nd-text-3)" }}>الأدنى: <span className="font-medium" style={{ color: "#EAB308" }}>{stats.low}</span></span>
+                <span style={{ color: "var(--nd-text-3)" }}>التغير: <span className="font-medium" style={{ color: stats.rangeChange >= 0 ? "#16A34A" : "#DC2626" }}>{stats.rangeChange > 0 ? "+" : ""}{stats.rangeChange}%</span></span>
+              </div>
+
+              {/* Chart */}
+              <div style={{ width: "100%", height: 260 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={stats.timelineChart} margin={{ top: 20, right: 10, left: 5, bottom: 20 }}>
+                    <defs>
+                      <pattern id="analyticsDotGrid" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <circle cx="10" cy="10" r="1" fill="#9CA3AF" fillOpacity="0.25" />
+                      </pattern>
+                      <filter id="analyticsDotShadow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feDropShadow dx="2" dy="3" stdDeviation="3" floodColor="rgba(196,40,85,0.45)" />
+                      </filter>
+                      <filter id="analyticsLineShadow" x="-100%" y="-100%" width="300%" height="300%">
+                        <feDropShadow dx="4" dy="6" stdDeviation="25" floodColor="rgba(196,40,85,0.35)" />
+                      </filter>
+                    </defs>
+
+                    <rect x="0" y="0" width="100%" height="100%" fill="url(#analyticsDotGrid)" style={{ pointerEvents: "none" }} />
+
+                    <CartesianGrid strokeDasharray="4 8" stroke="#E5E7EB" strokeOpacity={1} horizontal vertical={false} />
+
+                    <ReferenceLine x={stats.timelineChart[Math.floor(stats.timelineChart.length / 2)].day} stroke="#c42855" strokeDasharray="4 4" strokeWidth={1} />
+
+                    <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#c42855" }} tickMargin={12} interval="preserveStartEnd" tickCount={5} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#c42855" }} tickMargin={12} allowDecimals={false} />
+
+                    <Tooltip
+                      content={<TrendTooltip />}
+                      cursor={{ strokeDasharray: "3 3", stroke: "#9CA3AF", strokeOpacity: 0.5 }}
+                    />
+
+                    <Line
+                      type="monotone"
+                      dataKey="orders"
+                      stroke="#c42855"
+                      strokeWidth={2}
+                      filter="url(#analyticsLineShadow)"
+                      dot={(props: any) => {
+                        const { cx, cy, payload } = props;
+                        const notable = payload.orders === stats.high || payload.orders === stats.low;
+                        if (!notable) return <g key={`dot-${payload.day}`} />;
+                        return (
+                          <circle
+                            key={`dot-${payload.day}`}
+                            cx={cx}
+                            cy={cy}
+                            r={5}
+                            fill="#c42855"
+                            stroke="#fff"
+                            strokeWidth={2}
+                            filter="url(#analyticsDotShadow)"
+                          />
+                        );
+                      }}
+                      activeDot={{ r: 5, fill: "#c42855", stroke: "#fff", strokeWidth: 2, filter: "url(#analyticsDotShadow)" }}
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           )}
         </ACard>
 
