@@ -10,6 +10,15 @@ export type OrderStatus =
   | "shipped"
   | "delivered";
 
+export interface OrderItem {
+  id: string;
+  name: string;
+  color: string;
+  size: string;
+  quantity: number;
+  price: number;
+}
+
 export interface Order {
   orderId: string;
   code: string;
@@ -28,6 +37,8 @@ export interface Order {
   paymentMethod?: "cod" | "transfer" | "card";
   whatsappConsent?: boolean;
   couponCode?: string;
+  /** Per-item payload for multi-item orders (includes real prices). */
+  items?: OrderItem[];
 }
 
 export interface AdminCoupon {

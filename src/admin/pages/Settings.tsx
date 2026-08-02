@@ -15,9 +15,6 @@ import {
   Bell,
   User,
   Shield,
-  Lock,
-  Eye,
-  EyeOff,
   Tag,
   Trash2,
   Plus,
@@ -68,22 +65,21 @@ export default function Settings() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
-  // Account tab
-  const [adminEmail, setAdminEmail] = useState("admin@nadine.ly");
-  const [adminName, setAdminName] = useState("Admin");
+  // Account tab (persisted via the settings API)
+  const [adminEmail, setAdminEmail] = useState("");
+  const [adminName, setAdminName] = useState("");
+  const [accountMsg, setAccountMsg] = useState("");
+  const [accountSaving, setAccountSaving] = useState(false);
 
-  // Security tab
-  const [currentPw, setCurrentPw] = useState("");
-  const [newPw, setNewPw] = useState("");
-  const [confirmPw, setConfirmPw] = useState("");
-  const [showPw, setShowPw] = useState(false);
+  // Notifications tab (persisted via the settings API)
+  const [notifMsg, setNotifMsg] = useState("");
+  const [notifSaving, setNotifSaving] = useState(false);
   const [coupons, setCoupons] = useState<any[]>([]);
   const [newCouponCode, setNewCouponCode] = useState("");
   const [newCouponType, setNewCouponType] = useState<"percent" | "fixed">("percent");
   const [newCouponValue, setNewCouponValue] = useState("");
   const [newCouponLabel, setNewCouponLabel] = useState("");
   const [couponMsg, setCouponMsg] = useState("");
-  const [pwChanged, setPwChanged] = useState(false);
 
   // Notifications tab
   const [emailNotif, setEmailNotif] = useState(true);
@@ -93,7 +89,14 @@ export default function Settings() {
   useEffect(() => {
     fetchSettings()
       .then((s) => {
-        if (s && Object.keys(s).length > 0) setSettings({ ...DEFAULTS, ...s });
+        if (s && Object.keys(s).length > 0) {
+          setSettings({ ...DEFAULTS, ...s });
+          setAdminName(s.adminName || "");
+          setAdminEmail(s.adminEmail || "");
+          setEmailNotif(s.notifications?.email ?? true);
+          setTelegramNotif(s.notifications?.telegram ?? true);
+          setWhatsappNotif(s.notifications?.whatsapp ?? false);
+        }
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -165,13 +168,35 @@ export default function Settings() {
     }
   };
 
-  const handleChangePassword = () => {
-    if (!currentPw || !newPw || newPw !== confirmPw) return;
-    setPwChanged(true);
-    setTimeout(() => setPwChanged(false), 3000);
-    setCurrentPw("");
-    setNewPw("");
-    setConfirmPw("");
+  const handleSaveAccount = async () => {
+    setAccountSaving(true);
+    setAccountMsg("");
+    try {
+      await saveSettings({ ...settings, adminName: adminName.trim(), adminEmail: adminEmail.trim() });
+      setAccountMsg("تم حفظ الملف الشخصي");
+      setTimeout(() => setAccountMsg(""), 3000);
+    } catch {
+      setAccountMsg("فشل حفظ الملف الشخصي");
+    } finally {
+      setAccountSaving(false);
+    }
+  };
+
+  const handleSaveNotifications = async () => {
+    setNotifSaving(true);
+    setNotifMsg("");
+    try {
+      await saveSettings({
+        ...settings,
+        notifications: { email: emailNotif, telegram: telegramNotif, whatsapp: whatsappNotif },
+      });
+      setNotifMsg("تم حفظ إعدادات الإشعارات");
+      setTimeout(() => setNotifMsg(""), 3000);
+    } catch {
+      setNotifMsg("فشل حفظ الإعدادات");
+    } finally {
+      setNotifSaving(false);
+    }
   };
 
   if (loading) {
@@ -350,8 +375,19 @@ export default function Settings() {
               </div>
             ))}
           </div>
+          {notifMsg && (
+            <div className="mt-4 text-[12px] font-bold flex items-center gap-1" style={{ color: notifMsg.includes("فشل") ? "#dc2626" : "#16a34a" }}>
+              <CheckCircle2 size={14} /> {notifMsg}
+            </div>
+          )}
           <div className="mt-4 flex justify-end">
-            <AButton variant="solid" size="md" icon={<Save size={15} />} onClick={() => { setSaved(true); setTimeout(() => setSaved(false), 3000); }}>
+            <AButton
+              variant="solid"
+              size="md"
+              icon={notifSaving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
+              onClick={handleSaveNotifications}
+              disabled={notifSaving}
+            >
               حفظ الإعدادات
             </AButton>
           </div>
@@ -384,8 +420,19 @@ export default function Settings() {
               />
             </div>
           </div>
+          {accountMsg && (
+            <div className="mt-4 text-[12px] font-bold flex items-center gap-1" style={{ color: accountMsg.includes("فشل") ? "#dc2626" : "#16a34a" }}>
+              <CheckCircle2 size={14} /> {accountMsg}
+            </div>
+          )}
           <div className="mt-4 flex justify-end">
-            <AButton variant="solid" size="md" icon={<Save size={15} />} onClick={() => { setSaved(true); setTimeout(() => setSaved(false), 3000); }}>
+            <AButton
+              variant="solid"
+              size="md"
+              icon={accountSaving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
+              onClick={handleSaveAccount}
+              disabled={accountSaving}
+            >
               حفظ التغييرات
             </AButton>
           </div>
@@ -397,76 +444,12 @@ export default function Settings() {
         <div className="flex flex-col gap-5">
           <ACard className="p-5 sm:p-6">
             <h3 className="text-[15px] font-extrabold mb-4 flex items-center gap-2" style={{ color: "var(--nd-text)" }}>
-              <Lock size={16} /> تغيير كلمة المرور
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <p className="text-[12px] font-bold mb-1.5" style={{ color: "var(--nd-text-4)" }}>كلمة المرور الحالية</p>
-                <div className="relative">
-                  <AInput
-                    icon={<Lock size={14} />}
-                    type={showPw ? "text" : "password"}
-                    value={currentPw}
-                    onChange={(e: any) => setCurrentPw(e.target.value)}
-                    style={{ direction: "ltr" } as any}
-                  />
-                  <button
-                    onClick={() => setShowPw(!showPw)}
-                    className="absolute left-3 top-1/2 -translate-y-1/2"
-                    style={{ color: "var(--nd-text-3)" }}
-                  >
-                    {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
-                  </button>
-                </div>
-              </div>
-              <div>
-                <p className="text-[12px] font-bold mb-1.5" style={{ color: "var(--nd-text-4)" }}>كلمة المرور الجديدة</p>
-                <AInput
-                  icon={<Lock size={14} />}
-                  type="password"
-                  value={newPw}
-                  onChange={(e: any) => setNewPw(e.target.value)}
-                  style={{ direction: "ltr" } as any}
-                />
-              </div>
-              <div>
-                <p className="text-[12px] font-bold mb-1.5" style={{ color: "var(--nd-text-4)" }}>تأكيد كلمة المرور</p>
-                <AInput
-                  icon={<Lock size={14} />}
-                  type="password"
-                  value={confirmPw}
-                  onChange={(e: any) => setConfirmPw(e.target.value)}
-                  style={{ direction: "ltr" } as any}
-                />
-              </div>
-            </div>
-            {pwChanged && (
-              <div className="mt-3 text-[12px] font-bold flex items-center gap-1" style={{ color: "#16a34a" }}>
-                <CheckCircle2 size={14} /> تم تغيير كلمة المرور بنجاح
-              </div>
-            )}
-            <div className="mt-4 flex justify-end">
-              <AButton
-                variant="solid"
-                size="md"
-                icon={<Save size={15} />}
-                onClick={handleChangePassword}
-                disabled={!currentPw || !newPw || newPw !== confirmPw}
-              >
-                تغيير كلمة المرور
-              </AButton>
-            </div>
-          </ACard>
-
-          <ACard className="p-5 sm:p-6">
-            <h3 className="text-[15px] font-extrabold mb-4 flex items-center gap-2" style={{ color: "var(--nd-text)" }}>
-              <Shield size={16} /> معلومات الأمان
+              <Shield size={16} /> حماية الوصول
             </h3>
             <div className="space-y-3 text-[13px]" style={{ color: "var(--nd-text-3)" }}>
-              <p>🔒 تم تمكين المصادقة لكافة لوحات الإدارة</p>
-              <p>🛡️ جميع طلبات API محمية بكلمة مرور المسؤول</p>
-              <p>📋 يتم تسجيل جميع العمليات الحساسة</p>
-              <p>⏱️ timeout الجلسة: 24 ساعة</p>
+              <p>🔒 يتم التحقق من كل طلب ببيانات اعتماد المسؤول (متغير <span dir="ltr">ADMIN_PASSWORD</span>) قبل الوصول إلى أي واجهة إدارية.</p>
+              <p>🛡️ جميع واجهات <span dir="ltr">/api/admin/*</span> و <span dir="ltr">/api/update-status</span> ترفض الطلبات بدون كلمة المرور الصحيحة.</p>
+              <p>⏱️ جلسة العمل تنتهي عند إغلاق المتصفح (تُحفظ في <span dir="ltr">sessionStorage</span>).</p>
             </div>
           </ACard>
         </div>

@@ -92,7 +92,7 @@ export function Topbar({
               }}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && searchQuery.trim()) {
-                  navigate(`/admin/orders?q=${encodeURIComponent(searchQuery.trim())}`);
+                  navigate(`/${ADMIN_PATH}/orders?q=${encodeURIComponent(searchQuery.trim())}`);
                   setSearchOpen(false);
                   setSearchQuery("");
                 }
@@ -168,7 +168,7 @@ export function Topbar({
                   {pendingOrders.slice(0, 5).map((order) => (
                     <button
                       key={order.orderId}
-                      onClick={() => { navigate(`/admin/orders/${order.orderId}`); setShowNotif(false); }}
+                      onClick={() => { navigate(`/${ADMIN_PATH}/orders/${order.orderId}`); setShowNotif(false); }}
                       className="w-full flex items-start gap-3 p-3 hover:bg-gray-50 transition-colors text-right"
                     >
                       <div
@@ -194,7 +194,7 @@ export function Topbar({
         {/* Profile */}
         <div
           className="flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-colors hover:bg-gray-50"
-          onClick={() => navigate("/dashboard-nadine-admin/settings")}
+          onClick={() => navigate(`/${ADMIN_PATH}/settings`)}
         >
           <div
             className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"

@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { useOrders } from "../lib/metrics";
+import { ADMIN_PATH } from "../lib/config";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchCoupons, clearAllOrders } from "../lib/api";
 import {
@@ -126,7 +127,7 @@ export default function Orders() {
     const csv = [
       head.join(","),
       ...rows.map((o) =>
-        [o.orderId, o.code, o.name, o.color, o.size, o.phone, o.phone, o.location, o.couponCode || "", o.statusLabel, o.createdAt, o.updatedAt]
+        [o.orderId, o.code, o.name, o.color, o.size, o.customerName || "—", o.phone, o.location, o.couponCode || "", o.statusLabel, o.createdAt, o.updatedAt]
           .map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`)
           .join(",")
       ),
@@ -339,7 +340,7 @@ export default function Orders() {
                       </td>
                       <td className={td}>
                         <Link
-                          to={`/admin/orders/${o.orderId}`}
+                          to={`/${ADMIN_PATH}/orders/${o.orderId}`}
                           className="font-extrabold"
                           style={{ color: "var(--nd-primary-500)" }}
                         >
@@ -361,7 +362,7 @@ export default function Orders() {
                       <td className={td} style={{ color: "var(--nd-text-3)" }}>{fmtDate(o.createdAt)}</td>
                       <td className={td} style={{ color: "var(--nd-text-3)" }}>{fmtDateTime(o.updatedAt)}</td>
                       <td className={td}>
-                        <Link to={`/admin/orders/${o.orderId}`}>
+                        <Link to={`/${ADMIN_PATH}/orders/${o.orderId}`}>
                           <AButton size="xs">تفاصيل</AButton>
                         </Link>
                       </td>
@@ -497,7 +498,7 @@ function SortTh({
 
 function MobileOrderCard({ order: o, couponMap }: { order: Order; couponMap: Record<string, AdminCoupon> }) {
   return (
-    <Link to={`/admin/orders/${o.orderId}`}>
+    <Link to={`/${ADMIN_PATH}/orders/${o.orderId}`}>
       <ACard className="p-4">
         <div className="flex items-start justify-between gap-3 mb-2.5">
           <div className="min-w-0">

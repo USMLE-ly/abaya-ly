@@ -1,26 +1,25 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Lock, Mail, Loader2, Store } from "lucide-react";
+import { Lock, Loader2, Store } from "lucide-react";
 import { setPassword, verifyPassword } from "../lib/api";
 import { ADMIN_PATH } from "../lib/config";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
   const [password, setPw] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) return;
+    if (!password.trim()) return;
     setLoading(true);
     setError("");
     try {
       const ok = await verifyPassword(password.trim());
       if (!ok) {
-        setError("البريد الإلكتروني أو كلمة المرور غير صحيحة");
+        setError("كلمة المرور غير صحيحة");
         return;
       }
       setPassword(password.trim());
@@ -67,33 +66,6 @@ export default function AdminLogin() {
           </div>
 
           <form onSubmit={submit} className="space-y-4">
-            {/* Email */}
-            <div>
-              <label className="text-[12px] font-semibold block mb-1.5" style={{ color: "#4B5563" }}>
-                البريد الإلكتروني
-              </label>
-              <div
-                className="flex items-center gap-3 h-12 px-4 rounded-xl transition-all focus-within:ring-4"
-                style={{
-                  background: "#F9FAFB",
-                  border: "1px solid #E5E7EB",
-                  "--tw-ring-color": "rgba(206,44,96,0.15)",
-                } as React.CSSProperties}
-              >
-                <Mail size={16} style={{ color: "#9CA3AF" }} />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@nadine.ly"
-                  required
-                  className="flex-1 bg-transparent outline-none text-[14px]"
-                  style={{ color: "#1A1C1E" }}
-                  dir="ltr"
-                />
-              </div>
-            </div>
-
             {/* Password */}
             <div>
               <label className="text-[12px] font-semibold block mb-1.5" style={{ color: "#4B5563" }}>
@@ -128,7 +100,7 @@ export default function AdminLogin() {
 
             <button
               type="submit"
-              disabled={loading || !email.trim() || !password.trim()}
+              disabled={loading || !password.trim()}
               className="w-full h-12 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-pink-200/50"
               style={{
                 background: "linear-gradient(135deg, #CE2C60, #A81F47)",

@@ -37,6 +37,7 @@ export interface DashboardNavItem {
 export interface DashboardStats {
   total: number;
   revenue: number;
+  revenueOrders: number;
   uniqueCustomers: number;
   pending: number;
   processing: number;
@@ -81,6 +82,7 @@ export interface DashboardShellProps {
   nav: DashboardNavItem[];
   accountNav: DashboardNavItem[];
   data: DashboardData;
+  ordersTo: string;
   settingsTo: string;
   onLogout?: () => void;
 }
@@ -287,11 +289,13 @@ const ExampleContent = ({
   isDark,
   setIsDark,
   data,
+  ordersTo,
   settingsTo,
 }: {
   isDark: boolean;
   setIsDark: (v: boolean) => void;
   data: DashboardData;
+  ordersTo: string;
   settingsTo: string;
 }) => {
   const { stats } = data;
@@ -313,9 +317,9 @@ const ExampleContent = ({
       icon: DollarSign,
       tint: "bg-blue-50 dark:bg-blue-900/20",
       iconColor: "text-blue-600 dark:text-blue-400",
-      label: "الإيرادات التقديرية",
+      label: "إيرادات القطع",
       value: `${stats.revenue.toLocaleString()} د.ل`,
-      delta: "تقديري بناءً على متوسط السعر",
+      delta: stats.revenueOrders > 0 ? `مجموع أسعار ${stats.revenueOrders} طلب موثق` : "لا توجد بيانات أسعار",
       deltaClass: "text-gray-500 dark:text-gray-400",
       deltaStyle: undefined,
     },
@@ -355,7 +359,7 @@ const ExampleContent = ({
         </div>
         <div className="flex items-center gap-4">
           <NavLink
-            to="/dashboard-nadine-admin/orders?status=pending"
+            to={`${ordersTo}?status=pending`}
             className="relative rounded-lg border border-gray-200 bg-white p-2 text-gray-600 transition-colors hover:text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
             title="طلبات بحاجة للمراجعة"
           >
@@ -413,7 +417,7 @@ const ExampleContent = ({
             <div className="mb-6 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">آخر الطلبات</h3>
               <NavLink
-                to="/dashboard-nadine-admin/orders"
+                to={ordersTo}
                 className="text-sm font-medium text-[#CE2C60] hover:text-[#A81F47]"
               >
                 عرض الكل
@@ -509,7 +513,7 @@ const ExampleContent = ({
 
 /* ── Main shell (reference port) ──────────────────────────────── */
 
-export const Example = ({ nav, accountNav, data, settingsTo, onLogout }: DashboardShellProps) => {
+export const Example = ({ nav, accountNav, data, ordersTo, settingsTo, onLogout }: DashboardShellProps) => {
   const [isDark, setIsDark] = useState(false);
   const [open, setOpen] = useState(true);
 
@@ -521,7 +525,7 @@ export const Example = ({ nav, accountNav, data, settingsTo, onLogout }: Dashboa
     <div dir="rtl" className="flex min-h-screen w-full" style={{ fontFamily: "var(--nd-font)" }}>
       <div className="flex w-full bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
         <Sidebar nav={nav} accountNav={accountNav} open={open} setOpen={setOpen} onLogout={onLogout} />
-        <ExampleContent isDark={isDark} setIsDark={setIsDark} data={data} settingsTo={settingsTo} />
+        <ExampleContent isDark={isDark} setIsDark={setIsDark} data={data} ordersTo={ordersTo} settingsTo={settingsTo} />
       </div>
     </div>
   );

@@ -27,12 +27,12 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  { to: "/dashboard-nadine-admin", label: "لوحة القيادة", icon: LayoutDashboard, end: true },
-  { to: "/dashboard-nadine-admin/orders", label: "الطلبات", icon: ShoppingBag, badge: 0 },
-  { to: "/dashboard-nadine-admin/products", label: "المنتجات", icon: Package },
-  { to: "/dashboard-nadine-admin/reviews", label: "التقييمات", icon: Star },
-  { to: "/dashboard-nadine-admin/analytics", label: "التحليلات", icon: BarChart3 },
-  { to: "/dashboard-nadine-admin/calendar", label: "تقويم الشحن", icon: Calendar },
+  { to: `/${ADMIN_PATH}`, label: "لوحة القيادة", icon: LayoutDashboard, end: true },
+  { to: `/${ADMIN_PATH}/orders`, label: "الطلبات", icon: ShoppingBag },
+  { to: `/${ADMIN_PATH}/products`, label: "المنتجات", icon: Package },
+  { to: `/${ADMIN_PATH}/reviews`, label: "التقييمات", icon: Star },
+  { to: `/${ADMIN_PATH}/analytics`, label: "التحليلات", icon: BarChart3 },
+  { to: `/${ADMIN_PATH}/calendar`, label: "تقويم الشحن", icon: Calendar },
 ];
 
 const PINK = "#CE2C60";
@@ -123,7 +123,7 @@ export function Sidebar({
           )}
           {NAV.map((item) => {
             const navItem = { ...item };
-            if (navItem.to === "/dashboard-nadine-admin/orders") navItem.badge = pendingCount;
+            if (navItem.to === `/${ADMIN_PATH}/orders`) navItem.badge = pendingCount;
             return (
               <NavLink
                 key={item.to}

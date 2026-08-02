@@ -63,13 +63,20 @@ export default function Dashboard() {
     const deliveryRate = filtered.length > 0
       ? Math.round((delivered.length / filtered.length) * 100) : 0;
 
+    const revenue = filtered.reduce((sum, o) => {
+      if (!Array.isArray(o.items) || o.items.length === 0) return sum;
+      return sum + o.items.reduce((acc, it) => acc + (Number(it.price) || 0) * (Number(it.quantity) || 1), 0);
+    }, 0);
+    const pricedOrders = filtered.filter((o) => Array.isArray(o.items) && o.items.length > 0).length;
+
     return {
       total: filtered.length,
       pending: pending.length,
       processing: processing.length,
       delivered: delivered.length,
       recent: recent.length,
-      revenue: filtered.length * 750,
+      revenue,
+      revenueOrders: pricedOrders,
       uniqueCustomers: uniquePhones.size,
       deliveryRate,
       todayChange,
@@ -109,11 +116,10 @@ export default function Dashboard() {
   const data: DashboardData = {
     title: "لوحة القيادة",
     subtitle: "مرحباً بعودتك إلى لوحة نادين",
-    userName: "نادين",
-    userPlan: "لوحة الإدارة",
     stats: {
       total: stats.total,
       revenue: stats.revenue,
+      revenueOrders: stats.revenueOrders,
       uniqueCustomers: stats.uniqueCustomers,
       pending: stats.pending,
       processing: stats.processing,
@@ -128,7 +134,7 @@ export default function Dashboard() {
       desc: `${o.location || "—"} • ${o.phone}`,
       time: relativeAr(o.createdAt),
       color: statusActivityColor(o.status),
-      to: `/admin/orders/${o.orderId}`,
+      to: `/${ADMIN_PATH}/orders/${o.orderId}`,
     })),
     quickBars: [
       { label: "نسبة التوصيل", value: stats.deliveryRate, color: "#16A34A" },
@@ -143,6 +149,7 @@ export default function Dashboard() {
       nav={nav}
       accountNav={accountNav}
       data={data}
+      ordersTo={`/${ADMIN_PATH}/orders`}
       settingsTo={`/${ADMIN_PATH}/settings`}
       onLogout={() => {
         clearPassword();

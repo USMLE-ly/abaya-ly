@@ -4,6 +4,7 @@ import { ACard, AEmpty, StatusBadge, ASkeleton } from "../components/ui";
 import { fmtDate, STATUSES } from "../lib/types";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Package } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ADMIN_PATH } from "../lib/config";
 
 const MONTHS = [
   "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
@@ -117,7 +118,7 @@ export default function OrderCalendar() {
                           {cell.orders.slice(0, 3).map((o) => (
                             <Link
                               key={o.orderId}
-                              to={`/admin/orders/${o.orderId}`}
+                              to={`/${ADMIN_PATH}/orders/${o.orderId}`}
                               className="block text-[8px] px-1 py-0.5 rounded truncate font-semibold"
                               style={{
                                 background: STATUSES[o.status]?.bg || "#F1F1F3",
@@ -154,7 +155,7 @@ export default function OrderCalendar() {
               {upcoming.map((o) => (
                 <Link
                   key={o.orderId}
-                  to={`/admin/orders/${o.orderId}`}
+                  to={`/${ADMIN_PATH}/orders/${o.orderId}`}
                   className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors"
                 >
                   <div className="w-2 h-2 rounded-full mt-1.5 shrink-0" style={{ background: STATUSES[o.status]?.color }} />
