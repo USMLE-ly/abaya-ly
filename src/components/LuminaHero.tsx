@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { OptimizedImage } from "@/components/OptimizedImage";
+import { ProgressBar } from "@/components/ui/progress-bar";
 
 const SLIDES_DESKTOP = [
   {
@@ -138,12 +139,11 @@ export default function LuminaHero() {
               </a>
 
               {/* Progress bar */}
-              <div className="h-[2px] w-full max-w-md rounded-full bg-raised/10 overflow-hidden mt-2 self-start">
-                <div
-                  className="h-full rounded-full"
-                  style={{ width: `${progress * 100}%`, backgroundColor: SLIDES[idx].accent, transition: "none" }}
-                />
-              </div>
+              <ProgressBar
+                value={progress * 100}
+                label={SLIDES[idx].title}
+                className="max-w-md mt-2 self-start [&_span]:text-white/90"
+              />
             </div>
 
             {/* Left: nav dots + arrows */}

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import { Badge, Tag, Alert, Card, Button, Input, Textarea, Select, Checkbox, Radio, Switch, Avatar, Divider, Progress, Accordion, Tabs, Tooltip, Chip, Spinner } from "@/components/velar";
 import { usePageMeta } from "@/lib/usePageMeta";
+import ProgressBarDemo from "@/components/ui/progress-bar-demo";
 
 const RAMPS = ["strawberry","bubblegum","cotton","lavender","lemon","mint","peach","sky"] as const;
 const STEPS = [50,100,200,300,400,500,600,700,800,900,950];
@@ -118,6 +119,11 @@ export default function DesignSystem() {
               <Progress value={70} tone="success" />
               <Progress value={90} tone="warning" />
             </div>
+          </Card>
+
+          <Card padding="lg" className="mt-4">
+            <p className="text-xs uppercase tracking-wider text-fg-tertiary mb-3">UI · ProgressBar (motion)</p>
+            <ProgressBarDemo />
           </Card>
         </section>
 
