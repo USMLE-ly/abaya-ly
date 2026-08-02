@@ -6,6 +6,7 @@ import { Awards } from "@/components/ui/award";
 import { CustomerInformation } from "./CustomerInformation";
 import { ProductInformation } from "./ProductInformation";
 import { RecognitionZone } from "./RecognitionZone";
+import { CertificateMessage } from "./CertificateMessage";
 import type { OutfitSealItem } from "./OutfitSeal";
 
 export interface CertificateData {
@@ -35,7 +36,8 @@ export function OrderCertificate({ data }: { data: CertificateData }) {
         date={data.date || "—"}
         className="w-full"
       >
-        <div className="space-y-5">
+        <div className="space-y-6">
+          <CertificateMessage name={data.customerName} />
           <CustomerInformation
             name={data.customerName}
             orderId={data.orderId}
