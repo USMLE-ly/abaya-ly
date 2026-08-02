@@ -11,7 +11,12 @@ async function restMeta(EC_URL) {
   const tryFetch = (u) =>
     fetch(u, { headers: { Authorization: `Bearer ${apiToken}` } }).then(async (r) => {
       const body = await r.json().catch(() => null);
-      if (r.ok) return { sizeInBytes: body?.sizeInBytes, itemCount: body?.itemCount };
+      if (r.ok) return {
+        sizeInBytes: body?.sizeInBytes,
+        itemCount: body?.itemCount,
+        updatedAt: body?.updatedAt,
+        digest: body?.digest,
+      };
       if (r.status === 404 && body?.error?.code === "not_found") return { retrySlug: true };
       return { error: `${r.status} ${body?.error?.message || ""}`.trim() };
     });

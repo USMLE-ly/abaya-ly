@@ -1,4 +1,4 @@
-import { cors, createRateLimiter, clientIp, readItem, writeItem, sanitize } from "./shared.mjs";
+import { cors, createRateLimiter, clientIp, readItem, writeItem, restReadItem, sanitize } from "./shared.mjs";
 
 const rl = createRateLimiter();
 
@@ -82,6 +82,15 @@ export default async function handler(req, res) {
   if (EC_URL) {
     try {
       await writeItem(EC_URL, `order:${orderId}`, order);
+
+      // Verify the write actually landed before telling the customer anything.
+      // (Writes failed silently for a period, so orders showed "success" but
+      // could never be tracked. A confirmed order must always be trackable.)
+      // Use the REST read: the CDN read endpoint can lag the write by ~10s.
+      const check = await restReadItem(EC_URL, `order:${orderId}`);
+      if (!check || check.orderId !== orderId) {
+        throw new Error("order write verify failed (not readable after write)");
+      }
 
       const ids = await readItem(EC_URL, `phone:${phoneClean}`);
       await writeItem(EC_URL, `phone:${phoneClean}`, Array.isArray(ids) ? [...ids, orderId] : [orderId]);

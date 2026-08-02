@@ -198,6 +198,34 @@ export async function writeItem(EC_URL, key, value) {
   return patchItem(EC_URL, "upsert", key, value);
 }
 
+/**
+ * Read one key through the Vercel REST API (always the latest version, unlike
+ * the CDN connection-string endpoint which lags writes by up to ~10s). Used to
+ * verify writes immediately after they land.
+ */
+export async function restReadItem(EC_URL, key) {
+  const storeId = ecStoreId(EC_URL);
+  const apiToken = process.env.VERCEL_API_TOKEN || "";
+  if (!storeId || !apiToken) return undefined;
+  const url = `${GLOBAL_CONFIG_API}/${storeId}/items`;
+  const tryFetch = async (u) => {
+    const r = await fetch(u, { headers: { Authorization: `Bearer ${apiToken}` } });
+    if (r.ok) {
+      const body = await r.json();
+      const items = body?.items || body || {};
+      return items[ecSanitizeKey(key)] ?? items[key];
+    }
+    if (r.status === 404) return { __rest404: true };
+    return undefined;
+  };
+  const direct = await tryFetch(url);
+  if (direct && direct.__rest404) {
+    const teamSlug = process.env.VERCEL_TEAM_SLUG || "luxor1";
+    return tryFetch(`${url}?slug=${encodeURIComponent(teamSlug)}`);
+  }
+  return direct;
+}
+
 /** Remove one key from the store (REST delete). No-op safe if the key is absent. */
 export async function deleteItem(EC_URL, key) {
   try {
