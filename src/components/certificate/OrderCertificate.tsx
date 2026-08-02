@@ -1,7 +1,7 @@
 import { Component, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { X, Download, Share2 } from "lucide-react";
-import { toPng } from "html-to-image";
+import { toBlob, toPng } from "html-to-image";
 import { Awards } from "@/components/ui/award";
 import { CustomerInformation } from "./CustomerInformation";
 import { ProductInformation } from "./ProductInformation";
@@ -120,12 +120,13 @@ export function OrderCertificateModal({
     setBusy("share");
     setStatus("");
     try {
-      const url = await renderPng(2);
-      if (!url) {
+      const blob = ref.current
+        ? await toBlob(ref.current, { pixelRatio: 2, backgroundColor: IVORY })
+        : null;
+      if (!blob) {
         setStatus("تعذّرت المشاركة — جربي التنزيل بدلاً من ذلك");
         return;
       }
-      const blob = await (await fetch(url)).blob();
       const file = new File([blob], `nadine-certificate-${data.orderId}.png`, {
         type: "image/png",
       });
