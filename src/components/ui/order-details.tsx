@@ -37,6 +37,8 @@ export interface OrderDetailsProps {
   compact?: boolean;
   /** Merge every section into one single segment (used inside the success ticket). */
   unified?: boolean;
+  /** Hide per-piece barcodes (the order summary already carries رمز التوثيق). */
+  showPieceBarcodes?: boolean;
   className?: string;
 }
 
@@ -50,6 +52,7 @@ export function OrderDetails({
   onCertificate,
   compact = false,
   unified = false,
+  showPieceBarcodes = true,
   className,
 }: OrderDetailsProps) {
   const statusIndex = Math.max(0, ORDER_STATUS_KEYS.indexOf(status));
@@ -93,7 +96,7 @@ export function OrderDetails({
           })}
           onCertificate={onCertificate}
           flat={unified}
-          showBarcode={!unified}
+          showBarcode={showPieceBarcodes}
         />
       ))}
     </div>

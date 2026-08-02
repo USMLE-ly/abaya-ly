@@ -315,6 +315,7 @@ function TrackOrderContent() {
 
               <OrderDetails
                 orderId={order.orderId}
+                showPieceBarcodes={false}
                 status={order.status}
                 createdAt={order.createdAt}
                 pieces={pieces}
