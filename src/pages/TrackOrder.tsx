@@ -14,7 +14,9 @@ import {
   MessageCircle,
   Wallet,
   CalendarDays,
+  CheckCircle2,
 } from "lucide-react";
+import { Barcode } from "@/components/ui/barcode";
 import type { CertificateData } from "@/components/certificate/OrderCertificate";
 import { LuxuryTimeline, type TimelineStage } from "@/components/ui/luxury-timeline";
 import { LuxuryStatusBadge } from "@/components/ui/luxury-status-badge";
@@ -244,40 +246,101 @@ function TrackOrderContent() {
               transition={{ duration: 0.45, ease: "easeOut" }}
               className="space-y-6"
             >
-              {/* Order header card */}
+              {/* Order found — confirmation ticket */}
               <div
-                className="overflow-hidden rounded-[28px] bg-white"
+                className="relative z-10 w-full overflow-hidden rounded-2xl bg-card shadow-lg"
                 style={{
-                  border: "1px solid rgba(201,162,94,0.45)",
-                  boxShadow: "0 24px 60px -32px rgba(34,32,28,0.3)",
+                  border: "1px solid rgba(201,162,94,0.35)",
+                  boxShadow: "0 18px 50px -22px rgba(34,32,28,0.32)",
                 }}
               >
-                <div className="h-1.5 w-full" style={{ background: "linear-gradient(90deg, #c9a25e, #e6d5a6, #c9a25e)" }} />
-                <div className="p-6 sm:p-8 text-center">
-                  <p className="text-[10px] font-bold tracking-[0.32em]" style={{ color: "#b48a45" }}>
+                {/* Ticket cut-out effect */}
+                <div className="absolute -left-4 top-[38%] h-8 w-8 rounded-full bg-background" aria-hidden="true" />
+                <div className="absolute -right-4 top-[38%] h-8 w-8 rounded-full bg-background" aria-hidden="true" />
+
+                {/* Success mark + heading */}
+                <div className="flex flex-col items-center px-6 pt-8 text-center sm:px-8">
+                  <div className="rounded-full bg-primary/10 p-3">
+                    <CheckCircle2 className="h-10 w-10" style={{ color: "#c42855" }} strokeWidth={2} aria-hidden="true" />
+                  </div>
+                  <p className="mt-4 text-[10px] font-bold tracking-[0.32em]" style={{ color: "#b48a45" }}>
                     NADINE LUXURY · HOUSE CERTIFIED
                   </p>
-                  <h2
-                    className="mt-3 text-2xl sm:text-3xl font-bold tabular-nums tracking-wider"
-                    style={{ color: "#22201c", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}
-                    dir="ltr"
-                  >
-                    {order.orderId}
+                  <h2 className="mt-2 text-2xl font-bold" style={{ color: "#22201c" }}>
+                    تم استلام طلبك بنجاح
                   </h2>
-                  <div className="mt-3 flex justify-center">
-                    <LuxuryStatusBadge status={order.status} label={order.statusLabel || order.status} />
+                  <p className="mt-1 text-sm font-medium text-muted-foreground">
+                    قطعتكِ قيد التوثيق
+                  </p>
+                </div>
+
+                <div className="space-y-6 px-8 pb-8">
+                  <div className="mt-6 w-full border-t-2 border-dashed border-border/60" aria-hidden="true" />
+
+                  {/* Ticket registry */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground">رقم الطلب</p>
+                      <p
+                        className="mt-0.5 font-mono text-sm font-semibold tabular-nums tracking-wider"
+                        dir="ltr"
+                        style={{ textAlign: "right", color: "#22201c" }}
+                      >
+                        {order.orderId}
+                      </p>
+                    </div>
+                    <div className="text-left">
+                      <p className="text-xs text-muted-foreground">حالة الطلب</p>
+                      <div className="mt-1 flex justify-end">
+                        <LuxuryStatusBadge status={order.status} label={order.statusLabel || order.status} />
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="mx-auto mt-6 grid max-w-md grid-cols-2 gap-x-8 gap-y-4">
-                    <div>
-                      <p className="text-[10px] font-semibold" style={{ color: "#8c8276" }}>الاسم الكريم</p>
-                      <p className="mt-0.5 text-sm font-bold" style={{ color: "#22201c" }}>{order.customerName || "—"}</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground">الاسم الكريم</p>
+                      <p className="mt-0.5 text-sm font-bold" style={{ color: "#22201c" }}>
+                        {order.customerName || "—"}
+                      </p>
                     </div>
-                    <div>
-                      <p className="text-[10px] font-semibold" style={{ color: "#8c8276" }}>تاريخ الطلب</p>
-                      <p className="mt-0.5 text-sm font-bold" style={{ color: "#22201c" }}>{orderDateLabel}</p>
+                    <div className="text-left">
+                      <p className="text-xs text-muted-foreground">تاريخ الطلب</p>
+                      <p className="mt-0.5 text-sm font-bold" style={{ color: "#22201c" }}>
+                        {orderDateLabel}
+                      </p>
                     </div>
                   </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground">القطع الموثّقة</p>
+                      <p className="mt-0.5 text-sm font-bold" style={{ color: "#c42855" }}>
+                        {pieces.length > 1 ? `${pieces.length} قطع موثّقة` : "قطعة موثّقة"}
+                      </p>
+                    </div>
+                    <div className="text-left">
+                      <p className="text-xs text-muted-foreground">طريقة الدفع</p>
+                      <p className="mt-0.5 text-sm font-bold" style={{ color: "#22201c" }}>
+                        الدفع عند الاستلام
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="w-full border-t-2 border-dashed border-border/60" aria-hidden="true" />
+
+                  {pieces[0] && (
+                    <Barcode
+                      value={pieceBarcode({
+                        orderId: order.orderId,
+                        sku: pieces[0].code,
+                        pieceIndex: 1,
+                        date: order.createdAt,
+                      })}
+                      label="رمز التوثيق"
+                      className="mx-auto"
+                    />
+                  )}
                 </div>
               </div>
 

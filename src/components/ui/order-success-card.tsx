@@ -149,7 +149,7 @@ export const OrderSuccessCard = memo(function OrderSuccessCard({
             شكراً لاختيارك نادين
           </h1>
           <p className="mt-1 text-sm font-medium text-muted-foreground">
-            تم استلام طلبك بنجاح — قطعتكِ قيد التوثيق
+            تم استلام طلبك بنجاح
           </p>
         </div>
 
