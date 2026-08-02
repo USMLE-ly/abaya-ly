@@ -317,13 +317,16 @@ function ProductContent() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
           {/* LEFT: IMAGE GALLERY */}
-          <div className="relative">
+          <div>
             {product.images.length === 1 ? (
               <div className="relative aspect-[3/4] rounded-2xl overflow-hidden glass-card border-0 p-0">
                 <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
                 {product.badge && (
                   <Badge tone="brand" className="absolute top-4 right-4">{product.badge}</Badge>
                 )}
+                <div className="absolute top-4 left-4 z-10">
+                  <WishlistButton productId={product.id} size={18} />
+                </div>
               </div>
             ) : (
               <div className="flex gap-3">
@@ -337,6 +340,9 @@ function ProductContent() {
                   {product.badge && (
                     <Badge tone="brand" className="absolute top-4 right-4">{product.badge}</Badge>
                   )}
+                  <div className="absolute top-4 left-4 z-10">
+                    <WishlistButton productId={product.id} size={18} />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2 w-16 md:w-20 flex-shrink-0">
                   {product.images.map((src, i) => (
@@ -357,11 +363,6 @@ function ProductContent() {
                 </div>
               </div>
             )}
-
-            {/* Wishlist overlay */}
-            <div className="absolute top-4 left-4 z-10">
-              <WishlistButton productId={product.id} size={18} />
-            </div>
           </div>
 
           {/* RIGHT: DETAILS */}
