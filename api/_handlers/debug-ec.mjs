@@ -78,8 +78,9 @@ export default async function handler(req, res) {
             out[k] = val; // order-id list for a specific phone the caller supplied
           } else if (k === "analytics" && val && typeof val === "object") {
             // Timeline + counts only (no visitor/raw data).
+            const byDay = val.byDay || {};
             out[k] = {
-              byDayKeys: Object.keys(val.byDay || {}).sort(),
+              byDay: Object.fromEntries(Object.keys(byDay).sort().map((d) => [d, byDay[d]])),
               byPageCount: Object.keys(val.byPage || {}).length,
               byProductCount: Object.keys(val.byProduct || {}).length,
               rawCount: Array.isArray(val.raw) ? val.raw.length : 0,
