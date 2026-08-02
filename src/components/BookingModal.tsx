@@ -650,6 +650,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               {certificate && (
                 <OrderDetails
                   compact
+                  unified
                   orderId={orderId}
                   status="pending"
                   createdAt={new Date().toISOString()}

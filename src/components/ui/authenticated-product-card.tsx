@@ -21,6 +21,8 @@ export interface AuthenticatedProductCardProps {
   pieceNumber: number;
   barcodeValue: string;
   onCertificate?: () => void;
+  /** Flatten the outer card chrome — used inside a unified order segment. */
+  flat?: boolean;
   className?: string;
 }
 
@@ -30,6 +32,7 @@ export const AuthenticatedProductCard = memo(function AuthenticatedProductCard({
   pieceNumber,
   barcodeValue,
   onCertificate,
+  flat = false,
   className,
 }: AuthenticatedProductCardProps) {
   const fields = [
@@ -43,8 +46,8 @@ export const AuthenticatedProductCard = memo(function AuthenticatedProductCard({
     <div
       className={cn("w-full overflow-hidden rounded-3xl bg-white", className)}
       style={{
-        border: "1px solid rgba(201,162,94,0.4)",
-        boxShadow: "0 18px 44px -26px rgba(34,32,28,0.25)",
+        border: flat ? "1px solid rgba(201,162,94,0.25)" : "1px solid rgba(201,162,94,0.4)",
+        boxShadow: flat ? "none" : "0 18px 44px -26px rgba(34,32,28,0.25)",
       }}
     >
       <div className="flex gap-4 p-4 sm:p-5">
