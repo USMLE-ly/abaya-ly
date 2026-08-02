@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import {
   Search, Package, Grid3X3, List, Plus, Edit3, Trash2,
-  X, Check, Loader2, Save, Image,
+  X, Check, Loader2, Save, Image, ChevronUp, ChevronDown,
 } from "lucide-react";
 import {
   ACard, AButton, AInput, ASelect, StatusBadge, ASkeleton, AEmpty,
@@ -34,7 +34,9 @@ export default function Products() {
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<AdminProduct>>({ ...EMPTY_FORM });
   const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<AdminProduct | null>(null);
+  const [deleteMsg, setDeleteMsg] = useState("");
   const [error, setError] = useState("");
 
   const load = async () => {
@@ -128,15 +130,18 @@ export default function Products() {
   };
 
   const handleDelete = async (id: string) => {
-    setDeleting(id);
+    setDeleting(true);
     setError("");
+    setDeleteMsg("");
     try {
       await deleteProduct(id);
-      setDeleting(null);
+      setDeleting(false);
+      setDeleteTarget(null);
       await load();
     } catch (e: any) {
       setError(e.message || "فشل الحذف");
-      setDeleting(null);
+      setDeleteMsg(e.message || "فشل الحذف");
+      setDeleting(false);
     }
   };
 
@@ -153,6 +158,13 @@ export default function Products() {
   const removeArrayItem = (key: string, idx: number) => {
     const arr = [...((form as any)[key] || [])];
     arr.splice(idx, 1);
+    updateForm(key, arr);
+  };
+  const moveItem = (key: string, idx: number, dir: -1 | 1) => {
+    const arr = [...((form as any)[key] || [])];
+    const target = idx + dir;
+    if (target < 0 || target >= arr.length) return;
+    [arr[idx], arr[target]] = [arr[target], arr[idx]];
     updateForm(key, arr);
   };
 
@@ -257,12 +269,27 @@ export default function Products() {
 
               {/* Images */}
               <div>
-                <p className="text-[11px] font-bold mb-1" style={{ color: "var(--nd-text-4)" }}>الصور (روابط)</p>
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-[11px] font-bold" style={{ color: "var(--nd-text-4)" }}>الصور (روابط)</p>
+                  <p className="text-[10px]" style={{ color: "var(--nd-text-4)" }}>أول صورة هي صورة العرض الرئيسية</p>
+                </div>
                 <div className="space-y-2">
                   {(form.images || []).map((img, i) => (
-                    <div key={i} className="flex gap-2">
+                    <div key={i} className="flex gap-2 items-center">
+                      <div className="w-12 h-14 rounded-lg overflow-hidden border flex-shrink-0 flex items-center justify-center"
+                        style={{ borderColor: "var(--nd-border)", background: "var(--nd-bg)" }}>
+                        {img.trim() ? (
+                          <img src={img.trim()} alt="" className="w-full h-full object-cover" onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = "hidden"; }} />
+                        ) : (
+                          <Image size={16} style={{ color: "var(--nd-text-3)" }} />
+                        )}
+                      </div>
                       <AInput value={img} onChange={(e: any) => updateArray("images", i, e.target.value)} style={{ direction: "ltr" } as any} />
-                      <button onClick={() => removeArrayItem("images", i)} className="p-2 rounded-lg hover:bg-red-50" style={{ color: "var(--nd-text-3)" }}><X size={14} /></button>
+                      <div className="flex flex-col gap-0.5">
+                        <button onClick={() => moveItem("images", i, -1)} disabled={i === 0} className="p-0.5 rounded hover:bg-gray-100 disabled:opacity-30" style={{ color: "var(--nd-text-3)" }} title="تحريك لأعلى"><ChevronUp size={13} /></button>
+                        <button onClick={() => moveItem("images", i, 1)} disabled={i === (form.images || []).length - 1} className="p-0.5 rounded hover:bg-gray-100 disabled:opacity-30" style={{ color: "var(--nd-text-3)" }} title="تحريك لأسفل"><ChevronDown size={13} /></button>
+                      </div>
+                      <button onClick={() => removeArrayItem("images", i)} className="p-2 rounded-lg hover:bg-red-50" style={{ color: "var(--nd-text-3)" }} aria-label="حذف الصورة"><X size={14} /></button>
                     </div>
                   ))}
                   <AButton variant="default" size="sm" icon={<Image size={13} />} onClick={() => addArrayItem("images", "/outfits/")}>
@@ -312,6 +339,34 @@ export default function Products() {
                     </div>
                   ))}
                   <AButton variant="default" size="sm" onClick={() => addArrayItem("highlights", "")}>+ إضافة</AButton>
+                </div>
+              </div>
+
+              {/* Details */}
+              <div>
+                <p className="text-[11px] font-bold mb-1" style={{ color: "var(--nd-text-4)" }}>التفاصيل (Details)</p>
+                <div className="space-y-2">
+                  {(form.details || []).map((d, i) => (
+                    <div key={i} className="flex gap-2">
+                      <AInput value={d} onChange={(e: any) => updateArray("details", i, e.target.value)} />
+                      <button onClick={() => removeArrayItem("details", i)} className="p-2 rounded-lg hover:bg-red-50" style={{ color: "var(--nd-text-3)" }}><X size={14} /></button>
+                    </div>
+                  ))}
+                  <AButton variant="default" size="sm" onClick={() => addArrayItem("details", "")}>+ إضافة</AButton>
+                </div>
+              </div>
+
+              {/* Tags */}
+              <div>
+                <p className="text-[11px] font-bold mb-1" style={{ color: "var(--nd-text-4)" }}>الوسوم (Tags)</p>
+                <div className="space-y-2">
+                  {(form.tags || []).map((t, i) => (
+                    <div key={i} className="flex gap-2">
+                      <AInput value={t} onChange={(e: any) => updateArray("tags", i, e.target.value)} />
+                      <button onClick={() => removeArrayItem("tags", i)} className="p-2 rounded-lg hover:bg-red-50" style={{ color: "var(--nd-text-3)" }}><X size={14} /></button>
+                    </div>
+                  ))}
+                  <AButton variant="default" size="sm" onClick={() => addArrayItem("tags", "")}>+ إضافة</AButton>
                 </div>
               </div>
 
@@ -390,8 +445,8 @@ export default function Products() {
                     <button onClick={() => openEdit(p)} className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/90 backdrop-blur-sm hover:bg-white transition-all" style={{ color: "var(--nd-text-2)" }}>
                       <Edit3 size={14} />
                     </button>
-                    <button onClick={() => handleDelete(p.id)} className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/90 backdrop-blur-sm hover:bg-white transition-all" style={{ color: "#dc2626" }}>
-                      {deleting === p.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                    <button onClick={() => setDeleteTarget(p)} className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/90 backdrop-blur-sm hover:bg-white transition-all" style={{ color: "#dc2626" }}>
+                      <Trash2 size={14} />
                     </button>
                   </div>
                   {p.badge && (
@@ -454,8 +509,8 @@ export default function Products() {
                         <button onClick={() => openEdit(p)} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors" style={{ color: "var(--nd-text-3)" }}>
                           <Edit3 size={14} />
                         </button>
-                        <button onClick={() => handleDelete(p.id)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors" style={{ color: "#dc2626" }}>
-                          {deleting === p.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                        <button onClick={() => setDeleteTarget(p)} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors" style={{ color: "#dc2626" }}>
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </td>
@@ -472,6 +527,51 @@ export default function Products() {
             </div>
           )}
         </ACard>
+      )}
+
+      {/* Delete-product confirmation */}
+      {deleteTarget && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-10 overflow-y-auto"
+          style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
+          onClick={() => { if (!deleting) setDeleteTarget(null); }}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl overflow-hidden"
+            style={{ background: "var(--nd-white)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: "var(--nd-border)" }}>
+              <h3 className="text-base font-bold flex items-center gap-2" style={{ color: "var(--nd-text)" }}>
+                <Trash2 size={18} style={{ color: "#EF4444" }} />
+                حذف المنتج
+              </h3>
+              <button onClick={() => setDeleteTarget(null)} style={{ color: "var(--nd-text-3)" }} aria-label="إغلاق" disabled={deleting}>
+                <X size={18} />
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              <p className="text-[13.5px] leading-relaxed" style={{ color: "var(--nd-text-2)" }}>
+                سيتم حذف <b>{deleteTarget.name}</b> نهائياً من المتجر، ولا يمكن التراجع عن هذه الخطوة.
+              </p>
+              <p className="text-[11.5px] font-mono" style={{ color: "var(--nd-text-3)", direction: "ltr", textAlign: "right" }}>{deleteTarget.id}</p>
+              {deleteMsg && (
+                <p className="text-[12.5px] font-bold" style={{ color: "#EF4444" }}>{deleteMsg}</p>
+              )}
+              <div className="flex justify-end gap-2 pt-1">
+                <AButton variant="default" size="sm" onClick={() => setDeleteTarget(null)} disabled={deleting}>
+                  إلغاء
+                </AButton>
+                <AButton variant="danger" size="sm" onClick={async () => {
+                  setDeleteMsg("");
+                  await handleDelete(deleteTarget.id);
+                }} disabled={deleting}>
+                  {deleting ? "جاري الحذف..." : "حذف نهائي"}
+                </AButton>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

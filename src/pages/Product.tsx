@@ -17,7 +17,8 @@ import { StickyBookingBar } from "@/components/StickyBookingBar";
 import { trackProductView } from "@/lib/recentlyViewed";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
-import { findProduct, products, Product as ProductType } from "@/data/products";
+import { products, Product as ProductType } from "@/data/products";
+import { useCatalogProducts } from "@/lib/useCatalog";
 import { Button, Badge, Card } from "@/components/velar";
 import { StockIndicator } from "@/components/StockIndicator";
 import { FrequentlyBoughtTogether, CompleteTheLook } from "@/components/CompleteTheLook";
@@ -233,7 +234,8 @@ export function Product() {
 function ProductContent() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const product = findProduct(id || "");
+  const catalog = useCatalogProducts();
+  const product = catalog.find((p) => p.id === id) ?? null;
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
   const [showSizeGuide, setShowSizeGuide] = useState(false);

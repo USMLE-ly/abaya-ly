@@ -1,18 +1,18 @@
 import { Link } from "react-router-dom";
 import { Star, TrendingUp } from "lucide-react";
-import { products } from "@/data/products";
+import { useCatalogProducts } from "@/lib/useCatalog";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { Reveal } from "@/components/PageTransition";
 import { trackCta } from "@/lib/analytics";
 
 const shortName = (name: string) => name.split(" • ").slice(2).join(" • ") || name;
 
-/** Ranked by real review volume × rating — no invented "trending" flags. */
-const bestSellers = [...products]
-  .sort((a, b) => b.reviewCount * b.rating - a.reviewCount * a.rating)
-  .slice(0, 4);
-
 export function BestSellers() {
+  const catalog = useCatalogProducts();
+  const bestSellers = [...catalog]
+    .sort((a, b) => b.reviewCount * b.rating - a.reviewCount * a.rating)
+    .slice(0, 4);
+
   return (
     <Reveal>
       <section className="py-14 md:py-20" aria-labelledby="bestsellers-heading">

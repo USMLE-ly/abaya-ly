@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { products } from "@/data/products";
+import { useCatalogProducts } from "@/lib/useCatalog";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Search, ShoppingBag, Heart } from "lucide-react";
 import { useWishlist } from "@/lib/wishlist";
@@ -107,6 +107,7 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [announce, setAnnounce] = useState(getAnnounceState);
   const [scrollY, setScrollY] = useState(0);
+  const catalog = useCatalogProducts();
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -124,7 +125,7 @@ export function Header() {
   const headerTop = announce.visible ? Math.max(0, announce.height - scrollY) : 0;
 
   const searchResults = searchQuery.trim()
-    ? products.filter(p =>
+    ? catalog.filter(p =>
         p.name.includes(searchQuery) ||
         p.collection.includes(searchQuery) ||
         p.model.includes(searchQuery) ||

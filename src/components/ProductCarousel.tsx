@@ -3,9 +3,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { WishlistButton } from "@/components/WishlistButton";
 import { Link } from "react-router-dom";
-import { products } from "@/data/products";
+import type { Product } from "@/data/products";
+import { useCatalogProducts } from "@/lib/useCatalog";
 
-function InteractiveCard({ product, index = 0 }: { product: typeof products[number]; index?: number }) {
+function InteractiveCard({ product, index = 0 }: { product: Product; index?: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -109,6 +110,7 @@ function InteractiveCard({ product, index = 0 }: { product: typeof products[numb
 }
 
 export function ProductCarousel() {
+  const catalog = useCatalogProducts();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
@@ -160,7 +162,7 @@ export function ProductCarousel() {
             className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide"
             onScroll={checkScroll}
           >
-            {products.map((product, i) => (
+            {catalog.map((product, i) => (
               <div key={product.id} className="flex-shrink-0" style={{ animation: `fadeUp 0.5s ease-out ${i * 0.06}s both` }}>
                 <InteractiveCard product={product} index={i} />
               </div>

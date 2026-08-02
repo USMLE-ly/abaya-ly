@@ -44,6 +44,20 @@ export async function fetchOrders(): Promise<Order[]> {
   return (data.orders ?? []) as Order[];
 }
 
+/** DELETE /api/admin/orders?orderId=… — remove one order + its phone index entry. */
+export async function deleteOrder(orderId: string): Promise<{ success: boolean; deleted: string }> {
+  const pw = getPassword();
+  const res = await fetch(`/api/admin/orders?orderId=${encodeURIComponent(orderId)}`, {
+    method: "DELETE",
+    headers: { "x-admin-password": pw ?? "" },
+  });
+  if (res.status === 401) {
+    clearPassword();
+    throw new Error("كلمة المرور غير صحيحة أو انتهت الجلسة");
+  }
+  return jsonOrThrow(res);
+}
+
 /** DELETE /api/admin/orders?confirm=CLEAR_ALL_ORDERS — wipe all orders + phone indexes. */
 export async function clearAllOrders(): Promise<{ cleared: number }> {
   const pw = getPassword();

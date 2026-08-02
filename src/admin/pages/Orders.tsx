@@ -14,7 +14,7 @@ import {
 import { useOrders } from "../lib/metrics";
 import { ADMIN_PATH } from "../lib/config";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchCoupons, clearAllOrders } from "../lib/api";
+import { fetchCoupons, clearAllOrders, deleteOrder } from "../lib/api";
 import {
   ACard,
   AButton,
@@ -50,6 +50,9 @@ export default function Orders() {
   const [clearTyped, setClearTyped] = useState("");
   const [clearing, setClearing] = useState(false);
   const [clearMsg, setClearMsg] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<Order | null>(null);
+  const [deletingOrder, setDeletingOrder] = useState(false);
+  const [deleteMsg, setDeleteMsg] = useState("");
   const queryClient = useQueryClient();
 
   const status = params.get("status") ?? "";
@@ -154,6 +157,20 @@ export default function Orders() {
       setClearMsg((e as Error).message || "فشل الحذف");
     } finally {
       setClearing(false);
+    }
+  };
+
+  const doDeleteOrder = async (o: Order) => {
+    setDeletingOrder(true);
+    setDeleteMsg("");
+    try {
+      await deleteOrder(o.orderId);
+      queryClient.invalidateQueries({ queryKey: ["admin", "orders"] });
+      setDeleteTarget(null);
+    } catch (e) {
+      setDeleteMsg((e as Error).message || "فشل حذف الطلب");
+    } finally {
+      setDeletingOrder(false);
     }
   };
 
@@ -362,9 +379,20 @@ export default function Orders() {
                       <td className={td} style={{ color: "var(--nd-text-3)" }}>{fmtDate(o.createdAt)}</td>
                       <td className={td} style={{ color: "var(--nd-text-3)" }}>{fmtDateTime(o.updatedAt)}</td>
                       <td className={td}>
-                        <Link to={`/${ADMIN_PATH}/orders/${o.orderId}`}>
-                          <AButton size="xs">تفاصيل</AButton>
-                        </Link>
+                        <div className="flex items-center gap-1.5">
+                          <Link to={`/${ADMIN_PATH}/orders/${o.orderId}`}>
+                            <AButton size="xs">تفاصيل</AButton>
+                          </Link>
+                          <button
+                            onClick={() => setDeleteTarget(o)}
+                            className="p-2 rounded-lg hover:bg-red-50 transition-colors"
+                            style={{ color: "#dc2626" }}
+                            title="حذف الطلب"
+                            aria-label={`حذف الطلب ${o.orderId}`}
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -376,7 +404,7 @@ export default function Orders() {
           {/* Mobile / tablet cards (390px + 800px frames) */}
           <div className="lg:hidden flex flex-col gap-3">
             {slice.map((o) => (
-              <MobileOrderCard key={o.orderId} order={o} couponMap={couponMap} />
+              <MobileOrderCard key={o.orderId} order={o} couponMap={couponMap} onDelete={setDeleteTarget} />
             ))}
           </div>
 
@@ -405,6 +433,48 @@ export default function Orders() {
             </div>
           </div>
         </>
+      )}
+
+      {/* Delete-one confirmation */}
+      {deleteTarget && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-10 overflow-y-auto"
+          style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
+          onClick={() => { if (!deletingOrder) setDeleteTarget(null); }}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl overflow-hidden"
+            style={{ background: "var(--nd-white)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: "var(--nd-border)" }}>
+              <h3 className="text-base font-bold flex items-center gap-2" style={{ color: "var(--nd-text)" }}>
+                <Trash2 size={18} style={{ color: "#EF4444" }} />
+                حذف الطلب
+              </h3>
+              <button onClick={() => setDeleteTarget(null)} style={{ color: "var(--nd-text-3)" }} aria-label="إغلاق" disabled={deletingOrder}>
+                <X size={18} />
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              <p className="text-[13.5px] leading-relaxed" style={{ color: "var(--nd-text-2)" }}>
+                سيتم حذف الطلب <b dir="ltr">{deleteTarget.orderId}</b> نهائياً{deleteTarget.name ? ` (${deleteTarget.name})` : ""}
+                مع سجله في سجل الهاتف، ولا يمكن التراجع عن هذه الخطوة.
+              </p>
+              {deleteMsg && (
+                <p className="text-[12.5px] font-bold" style={{ color: "#EF4444" }}>{deleteMsg}</p>
+              )}
+              <div className="flex justify-end gap-2 pt-1">
+                <AButton variant="default" size="sm" onClick={() => setDeleteTarget(null)} disabled={deletingOrder}>
+                  إلغاء
+                </AButton>
+                <AButton variant="danger" size="sm" onClick={() => doDeleteOrder(deleteTarget)} disabled={deletingOrder}>
+                  {deletingOrder ? "جاري الحذف..." : "حذف نهائي"}
+                </AButton>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Clear-all confirmation */}
@@ -496,10 +566,18 @@ function SortTh({
   );
 }
 
-function MobileOrderCard({ order: o, couponMap }: { order: Order; couponMap: Record<string, AdminCoupon> }) {
+function MobileOrderCard({
+  order: o,
+  couponMap,
+  onDelete,
+}: {
+  order: Order;
+  couponMap: Record<string, AdminCoupon>;
+  onDelete: (o: Order) => void;
+}) {
   return (
-    <Link to={`/${ADMIN_PATH}/orders/${o.orderId}`}>
-      <ACard className="p-4">
+    <ACard className="p-4">
+      <Link to={`/${ADMIN_PATH}/orders/${o.orderId}`} className="block">
         <div className="flex items-start justify-between gap-3 mb-2.5">
           <div className="min-w-0">
             <p className="text-[14.5px] font-extrabold truncate" style={{ color: "var(--nd-text)" }}>
@@ -518,11 +596,22 @@ function MobileOrderCard({ order: o, couponMap }: { order: Order; couponMap: Rec
           <span>📏 {o.size || "—"}</span>
         </div>
         <CouponCell order={o} couponMap={couponMap} />
-        <p className="text-[11.5px] mt-2.5 pt-2.5" style={{ color: "var(--nd-text-3)", borderTop: "1px solid var(--nd-border)" }}>
+      </Link>
+      <div className="flex items-center justify-between mt-2.5 pt-2.5" style={{ borderTop: "1px solid var(--nd-border)" }}>
+        <p className="text-[11.5px]" style={{ color: "var(--nd-text-3)" }}>
           {fmtDateTime(o.createdAt)}
         </p>
-      </ACard>
-    </Link>
+        <button
+          onClick={() => onDelete(o)}
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[12px] font-bold transition-colors"
+          style={{ color: "#dc2626", background: "rgba(239,68,68,0.08)" }}
+          aria-label={`حذف الطلب ${o.orderId}`}
+        >
+          <Trash2 size={13} />
+          حذف
+        </button>
+      </div>
+    </ACard>
   );
 }
 

@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-import { products, brandCollections } from "@/data/products";
+import { brandCollections } from "@/data/products";
+import { useCatalogProducts } from "@/lib/useCatalog";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 
@@ -12,10 +13,11 @@ const CARD_IDS = ["rouge-burgundy-silk-fitted", "rouge-red-polka-sweetheart", "r
 const shortName = (name: string) => name.split(" • ").slice(2).join(" • ") || name;
 
 export function FeaturedCollection() {
+  const catalog = useCatalogProducts();
   const collection = brandCollections.find((c) => c.id === FEATURED_ID);
   if (!collection) return null;
 
-  const all = products.filter((p) => p.collection === collection.name);
+  const all = catalog.filter((p) => p.collection === collection.name);
   const hero = all.find((p) => p.id === HERO_ID) ?? all[0];
   const cards = CARD_IDS.map((id) => all.find((p) => p.id === id)).filter(Boolean);
 

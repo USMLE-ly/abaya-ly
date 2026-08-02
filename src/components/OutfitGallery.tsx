@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { ShoppingBag, Eye } from "lucide-react";
 import { WishlistButton } from "@/components/WishlistButton";
-import { products } from "@/data/products";
+import { useCatalogProducts } from "@/lib/useCatalog";
 import { useNavigate } from "react-router-dom";
 import { StaggerGrid, StaggerItem, Reveal } from "@/components/PageTransition";
 import { OptimizedImage } from "@/components/OptimizedImage";
@@ -28,7 +28,8 @@ export function OutfitGallery() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const newOutfits = products.filter((p) => newOutfitIds.includes(p.id));
+  const catalog = useCatalogProducts();
+  const newOutfits = catalog.filter((p) => newOutfitIds.includes(p.id));
 
   return (
     <section className="py-20 md:py-28">

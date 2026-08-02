@@ -9,6 +9,7 @@ import coupons from "./_handlers/coupons.mjs";
 import analytics from "./_handlers/analytics.mjs";
 import debugEc from "./_handlers/debug-ec.mjs";
 import stock from "./_handlers/stock.mjs";
+import catalog from "./_handlers/catalog.mjs";
 import trackOrder from "./_handlers/track-order.mjs";
 import reviews from "./_handlers/reviews.mjs";
 import updateStatus from "./_handlers/update-status.mjs";
@@ -58,6 +59,7 @@ export default async function handler(req, res) {
       case "analytics": return await analytics(req, res);
       case "debug-ec": return await debugEc(req, res);
       case "stock": return await stock(req, res);
+      case "catalog": return await catalog(req, res);
       case "track-order": return await trackOrder(req, res);
       case "reviews": return await reviews(req, res);
       case "update-status": return await updateStatus(req, res);

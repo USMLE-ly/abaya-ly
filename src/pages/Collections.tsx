@@ -2,7 +2,8 @@ import { PageTransition } from "@/components/PageTransition";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { products, collections } from "@/data/products";
+import { collections } from "@/data/products";
+import { useCatalogProducts } from "@/lib/useCatalog";
 import { Star, Eye, ShoppingBag, Search, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/velar";
 import { Badge } from "@/components/velar";
@@ -24,8 +25,9 @@ function CollectionsContent() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   // Filter by collection (id → name)
+  const catalog = useCatalogProducts();
   const activeName = active === "all" ? null : collections.find((c) => c.id === active)?.name;
-  let filtered = activeName ? products.filter((p) => p.collection === activeName) : products;
+  let filtered = activeName ? catalog.filter((p) => p.collection === activeName) : catalog;
 
   // Filter by search
   if (searchQuery.trim()) {
