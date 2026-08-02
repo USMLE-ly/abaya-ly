@@ -44,6 +44,20 @@ export async function fetchOrders(): Promise<Order[]> {
   return (data.orders ?? []) as Order[];
 }
 
+/** DELETE /api/admin/orders?confirm=CLEAR_ALL_ORDERS — wipe all orders + phone indexes. */
+export async function clearAllOrders(): Promise<{ cleared: number }> {
+  const pw = getPassword();
+  const res = await fetch("/api/admin/orders?confirm=CLEAR_ALL_ORDERS", {
+    method: "DELETE",
+    headers: { "x-admin-password": pw ?? "" },
+  });
+  if (res.status === 401) {
+    clearPassword();
+    throw new Error("كلمة المرور غير صحيحة أو انتهت الجلسة");
+  }
+  return jsonOrThrow(res);
+}
+
 /** POST /api/update-status — existing production endpoint, payload unchanged. */
 export async function updateStatus(orderId: string, status: OrderStatus) {
   const pw = getPassword();

@@ -8,10 +8,12 @@ import {
   ArrowUpDown,
   ShoppingBag,
   AlertTriangle,
+  Trash2,
+  X,
 } from "lucide-react";
 import { useOrders } from "../lib/metrics";
-import { useQuery } from "@tanstack/react-query";
-import { fetchCoupons } from "../lib/api";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchCoupons, clearAllOrders } from "../lib/api";
 import {
   ACard,
   AButton,
@@ -43,6 +45,11 @@ export default function Orders() {
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [clearOpen, setClearOpen] = useState(false);
+  const [clearTyped, setClearTyped] = useState("");
+  const [clearing, setClearing] = useState(false);
+  const [clearMsg, setClearMsg] = useState("");
+  const queryClient = useQueryClient();
 
   const status = params.get("status") ?? "";
   const orders = data ?? [];
@@ -133,6 +140,22 @@ export default function Orders() {
     URL.revokeObjectURL(url);
   };
 
+  const doClearAll = async () => {
+    setClearing(true);
+    setClearMsg("");
+    try {
+      const r = await clearAllOrders();
+      queryClient.invalidateQueries({ queryKey: ["admin", "orders"] });
+      setClearMsg(`تم حذف ${r.cleared} طلب — بدأت بسجل نظيف.`);
+      setClearOpen(false);
+      setClearTyped("");
+    } catch (e) {
+      setClearMsg((e as Error).message || "فشل الحذف");
+    } finally {
+      setClearing(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-col gap-4">
@@ -172,9 +195,14 @@ export default function Orders() {
             {selected.size > 0 && ` · ${selected.size} محدد`}
           </p>
         </div>
-        <AButton variant="solid" size="sm" icon={<Download size={15} />} onClick={exportCsv}>
-          تصدير CSV
-        </AButton>
+        <div className="flex items-center gap-2">
+          <AButton variant="solid" size="sm" icon={<Download size={15} />} onClick={exportCsv}>
+            تصدير CSV
+          </AButton>
+          <AButton variant="danger" size="sm" icon={<Trash2 size={15} />} onClick={() => setClearOpen(true)}>
+            مسح جميع الطلبات
+          </AButton>
+        </div>
       </div>
 
       {/* Filters */}
@@ -376,6 +404,63 @@ export default function Orders() {
             </div>
           </div>
         </>
+      )}
+
+      {/* Clear-all confirmation */}
+      {clearOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-10 overflow-y-auto"
+          style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
+          onClick={() => { if (!clearing) setClearOpen(false); }}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl overflow-hidden"
+            style={{ background: "var(--nd-white)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: "var(--nd-border)" }}>
+              <h3 className="text-base font-bold flex items-center gap-2" style={{ color: "var(--nd-text)" }}>
+                <Trash2 size={18} style={{ color: "#EF4444" }} />
+                مسح جميع الطلبات
+              </h3>
+              <button onClick={() => setClearOpen(false)} style={{ color: "var(--nd-text-3)" }} aria-label="إغلاق" disabled={clearing}>
+                <X size={18} />
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              <p className="text-[13.5px] leading-relaxed" style={{ color: "var(--nd-text-2)" }}>
+                سيتم حذف <b>{orders.length} طلب</b> نهائياً مع سجلات أرقام الهواتف، ولا يمكن التراجع عن هذه الخطوة.
+                للتأكيد اكتبي <b dir="rtl">حذف</b> في الحقل أدناه.
+              </p>
+              <input
+                value={clearTyped}
+                onChange={(e) => setClearTyped(e.target.value)}
+                placeholder="حذف"
+                disabled={clearing}
+                className="w-full px-4 py-3 text-sm rounded-xl border outline-none focus:border-[#EF4444] transition-colors"
+                style={{ background: "var(--nd-bg)", color: "var(--nd-text)", borderColor: "var(--nd-border)" }}
+              />
+              {clearMsg && (
+                <p className="text-[12.5px] font-bold" style={{ color: clearMsg.startsWith("تم") ? "var(--nd-primary-500)" : "#EF4444" }}>
+                  {clearMsg}
+                </p>
+              )}
+              <div className="flex justify-end gap-2 pt-1">
+                <AButton variant="default" size="sm" onClick={() => setClearOpen(false)} disabled={clearing}>
+                  إلغاء
+                </AButton>
+                <AButton
+                  variant="danger"
+                  size="sm"
+                  onClick={doClearAll}
+                  disabled={clearing || clearTyped.trim() !== "حذف"}
+                >
+                  {clearing ? "جاري الحذف..." : "حذف نهائي"}
+                </AButton>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

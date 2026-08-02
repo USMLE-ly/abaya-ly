@@ -131,6 +131,11 @@ export async function readItem(EC_URL, key) {
   return ecGetItem(items, key);
 }
 
+/** Apply a single batch operation. */
+async function patchItem(EC_URL, operation, key, value) {
+  return patchItems(EC_URL, [{ operation, key, value }]);
+}
+
 /**
  * Upsert one key in Edge Config / Global Config.
  *
@@ -141,8 +146,8 @@ export async function readItem(EC_URL, key) {
  * 404. Requires VERCEL_API_TOKEN (Vercel Account Settings → Tokens), set as a
  * Production env var on the project.
  */
-/** Apply one batch operation (upsert or remove) through the Vercel REST API. */
-async function patchItem(EC_URL, operation, key, value) {
+/** Apply batch operations (upsert/remove) through the Vercel REST API. */
+async function patchItems(EC_URL, ops) {
   const storeId = ecStoreId(EC_URL);
   const apiToken = process.env.VERCEL_API_TOKEN || "";
   if (!storeId || !apiToken) {
@@ -151,9 +156,13 @@ async function patchItem(EC_URL, operation, key, value) {
     );
   }
   const itemsUrl = `${GLOBAL_CONFIG_API}/${storeId}/items`;
-  const item = { operation, key: ecSanitizeKey(key) };
-  if (value !== undefined) item.value = value;
-  const payload = JSON.stringify({ items: [item] });
+  const payload = JSON.stringify({
+    items: ops.map((o) => {
+      const it = { operation: o.operation, key: ecSanitizeKey(o.key) };
+      if (o.value !== undefined) it.value = o.value;
+      return it;
+    }),
+  });
   const writeResp = await fetch(itemsUrl, {
     method: "PATCH",
     headers: {
@@ -226,18 +235,25 @@ export async function restReadItem(EC_URL, key) {
   return direct;
 }
 
-/** Remove one key from the store (REST delete). No-op safe if the key is absent. */
-export async function deleteItem(EC_URL, key) {
+/** Remove many keys in one batch (REST delete). No-op safe for empty lists. */
+export async function deleteKeys(EC_URL, keys) {
+  const list = (keys || []).filter((k) => typeof k === "string" && k.trim());
+  if (!list.length) return;
   try {
-    await patchItem(EC_URL, "remove", key);
+    await patchItems(EC_URL, list.map((k) => ({ operation: "remove", key: k })));
   } catch (err) {
     // Older API revisions spell it "delete"; retry once before giving up.
     if (/operation|remove/i.test(String(err.message))) {
-      await patchItem(EC_URL, "delete", key);
+      await patchItems(EC_URL, list.map((k) => ({ operation: "delete", key: k })));
     } else {
       throw err;
     }
   }
+}
+
+/** Remove one key from the store (REST delete). No-op safe if the key is absent. */
+export async function deleteItem(EC_URL, key) {
+  return deleteKeys(EC_URL, [key]);
 }
 
 export const sanitize = (str) => (str || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
