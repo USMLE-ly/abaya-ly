@@ -145,10 +145,12 @@ export function OrderCertificateModal({
         await navigator.clipboard.write([new ClipboardImage({ "image/png": blob })]);
         setStatus("تم نسخ الشهادة — الصقيها أينما تريدين");
       } else {
+        const href = URL.createObjectURL(blob);
         const a = document.createElement("a");
-        a.href = url;
+        a.href = href;
         a.download = `nadine-certificate-${data.orderId}.png`;
         a.click();
+        URL.revokeObjectURL(href);
         setStatus("تم تنزيل الشهادة — شاركيها مع من تحبين");
       }
     } catch (e) {
