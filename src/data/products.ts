@@ -171,7 +171,7 @@ const base: BaseFields[] = [
   { id: "rouge-red-polka-sweetheart", fabric: "ساتان مخملي", category: "السهرة", price: 840, originalPrice: 1190, badge: "جديد",
     colors: [{name:"عنابي",hex:"#722F37"}], sizes: ["S","M","L","XL"], images: ["/outfits/midnight-rose-abaya.jpg","/outfits/midnight-rose-abaya-thumb.jpg"], rating: 4.9, reviewCount: 0 },
   { id: "noir-black-white-polka-bustier", fabric: "كريب فاخر", category: "السهرة", price: 740, originalPrice: 1040,
-    colors: [{name:"أسود",hex:"#1C1C1C"}], sizes: ["S","M","L","XL"], images: ["/outfits/pearl-dream-abaya.jpg"], rating: 4.8, reviewCount: 0 },
+    colors: [{name:"أسود",hex:"#1C1C1C"}], sizes: ["S","M","L","XL"], images: ["/outfits/pearl-dream-abaya.jpg","/outfits/pearl-dream-abaya-thumb.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "noir-black-asymmetric-draped", fabric: "كريب فاخر", category: "السهرة", price: 790, originalPrice: 1090, badge: "حصري",
     colors: [{name:"أسود",hex:"#1C1C1C"}], sizes: ["S","M","L","XL"], images: ["/outfits/desert-gold-abaya.jpg","/outfits/desert-gold-abaya-thumb.jpg"], rating: 4.9, reviewCount: 0 },
   { id: "maison-brown-draped", fabric: "شيفون ساتان", category: "الكاجوال", price: 580, originalPrice: 790,
