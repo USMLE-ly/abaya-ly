@@ -2,9 +2,6 @@ import { Component, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { X, Download } from "lucide-react";
 import { toPng } from "html-to-image";
-import { Awards } from "@/components/ui/award";
-import { CertificateHeader } from "./CertificateHeader";
-import { CertificateMessage } from "./CertificateMessage";
 import { CustomerInformation } from "./CustomerInformation";
 import { ProductInformation } from "./ProductInformation";
 import { RecognitionZone } from "./RecognitionZone";
@@ -38,25 +35,8 @@ export function OrderCertificate({ data }: { data: CertificateData }) {
             background: "rgba(255,255,255,0.35)",
           }}
         >
-          {/* Previous certificate components are all kept; the Awards card is the main certificate */}
-          <CertificateHeader />
-
-          <div className="mt-7">
-            <Awards
-            variant="certificate"
-            title="أصالة"
-            recipient={data.customerName.trim() ? data.customerName.trim() : "عميلتنا الغالية"}
-            subtitle="تُمنح هذه الشهادة توثيقاً لأصالة القطعة المقتناة من دار نادين للأزياء، والمطابقة لأعلى معايير الحرفية والجودة."
-            date={data.date}
-            className="border-[#c9a25e]/60"
-          />
-          </div>
-
-          <div className="mx-auto mt-8 max-w-md">
-            <CertificateMessage customerName={data.customerName} />
-          </div>
-
-          <div className="mx-auto mt-7 max-w-md">
+          {/* New certificate hierarchy only — legacy header, card, and letter are permanently removed */}
+          <div className="mx-auto max-w-md">
             <CustomerInformation
               name={data.customerName}
               orderId={data.orderId}
