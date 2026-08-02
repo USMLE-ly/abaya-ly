@@ -9,9 +9,10 @@ import {
   LogOut,
   X,
   Calendar,
-  ChevronLeft,
-  Store,
+  ChevronDown,
+  ChevronsLeft,
   Star,
+  Monitor,
 } from "lucide-react";
 import { clearPassword } from "../lib/api";
 import { ADMIN_PATH } from "../lib/config";
@@ -22,6 +23,7 @@ interface NavItem {
   icon: any;
   end?: boolean;
   badge?: number;
+  external?: boolean;
 }
 
 const NAV: NavItem[] = [
@@ -31,8 +33,9 @@ const NAV: NavItem[] = [
   { to: "/dashboard-nadine-admin/reviews", label: "التقييمات", icon: Star },
   { to: "/dashboard-nadine-admin/analytics", label: "التحليلات", icon: BarChart3 },
   { to: "/dashboard-nadine-admin/calendar", label: "تقويم الشحن", icon: Calendar },
-  { to: "/dashboard-nadine-admin/settings", label: "الإعدادات", icon: Settings },
 ];
+
+const PINK = "#CE2C60";
 
 export function Sidebar({
   open,
@@ -55,9 +58,6 @@ export function Sidebar({
     navigate(`/${ADMIN_PATH}/login`, { replace: true });
   };
 
-  // Mobile overlay: full sidebar
-  // Desktop collapsed: icons only (80px)
-  // Desktop expanded: full sidebar (280px)
   const sidebarW = collapsed ? 80 : 280;
 
   return (
@@ -72,7 +72,7 @@ export function Sidebar({
       )}
 
       <aside
-        className="fixed lg:sticky top-0 h-screen z-50 flex flex-col overflow-hidden nd-sidebar transition-all duration-300 ease-out"
+        className="fixed lg:sticky top-0 h-screen z-50 flex flex-col overflow-hidden nd-sidebar transition-all duration-300 ease-in-out"
         style={{
           width: open ? 280 : collapsed ? 80 : 0,
           minWidth: open ? 280 : collapsed ? 80 : 0,
@@ -81,33 +81,43 @@ export function Sidebar({
           insetInlineEnd: 0,
         }}
       >
-        {/* Brand */}
-        <div className="flex items-center justify-between h-16 shrink-0 border-b px-3" style={{ borderColor: "var(--nd-border)" }}>
-          <div className={`flex items-center gap-3 ${collapsed ? "justify-center w-full" : ""}`}>
-            <div
-              className="w-9 h-9 rounded-xl grid place-items-center text-white font-bold text-sm shrink-0"
-              style={{ background: "var(--nd-primary-500)" }}
-            >
-              N
-            </div>
-            {!collapsed && (
-              <div className="min-w-0">
-                <p className="text-sm font-bold truncate" style={{ color: "var(--nd-text)" }}>نادين</p>
-                <p className="text-[10px] truncate" style={{ color: "var(--nd-text-3)" }}>لوحة الإدارة</p>
+        {/* Brand / Title section (reference style) */}
+        <div className="shrink-0 border-b" style={{ borderColor: "var(--nd-border)" }}>
+          <div className="flex items-center justify-between p-2.5">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div
+                className="grid size-10 shrink-0 place-content-center rounded-lg text-white font-bold shadow-sm"
+                style={{ background: `linear-gradient(135deg, ${PINK}, #A81F47)` }}
+              >
+                <svg width="20" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-white">
+                  <path d="M12 2C9 7 6.5 9 3 10c1.5 4 4.5 6.5 9 12 4.5-5.5 7.5-8 9-12-3.5-1-6-3-9-10Z" />
+                  <circle cx="12" cy="9" r="2" fill="var(--nd-primary-500)" />
+                </svg>
               </div>
-            )}
+              {!collapsed && (
+                <div className="min-w-0 transition-opacity duration-200">
+                  <p className="text-sm font-bold truncate" style={{ color: "var(--nd-text)" }}>نادين</p>
+                  <p className="text-xs truncate" style={{ color: "var(--nd-text-3)" }}>لوحة الإدارة</p>
+                </div>
+              )}
+            </div>
+            {!collapsed && !open ? (
+              <ChevronDown className="h-4 w-4" style={{ color: "var(--nd-text-3)" }} />
+            ) : open ? (
+              <button onClick={onClose} className="lg:hidden p-1 rounded-lg" style={{ color: "var(--nd-text-3)" }}>
+                <X size={18} />
+              </button>
+            ) : null}
           </div>
-          {open && (
-            <button onClick={onClose} className="lg:hidden p-1 rounded-lg" style={{ color: "var(--nd-text-3)" }}>
-              <X size={18} />
-            </button>
-          )}
         </div>
 
-        {/* Navigation */}
+        {/* Navigation (reference Option style) */}
         <nav className="flex-1 overflow-y-auto p-2 space-y-1">
           {!collapsed && (
-            <p className="text-[10px] font-bold uppercase tracking-widest px-3 pb-2 pt-2" style={{ color: "var(--nd-text-3)" }}>
+            <p
+              className="px-3 py-2 text-[11px] font-bold uppercase tracking-wide"
+              style={{ color: "var(--nd-text-3)" }}
+            >
               القائمة
             </p>
           )}
@@ -120,70 +130,115 @@ export function Sidebar({
                 to={item.to}
                 end={item.end}
                 onClick={onClose}
+                title={collapsed ? item.label : undefined}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 h-11 rounded-xl text-[13px] font-bold transition-all duration-150 ${
-                    collapsed ? "justify-center px-0 w-full" : "px-3.5"
-                  } ${isActive ? "nd-nav-active" : ""}`
+                  `relative flex h-11 w-full items-center rounded-md transition-all duration-200 ${
+                    collapsed ? "justify-center" : ""
+                  }`
                 }
                 style={({ isActive }) => ({
-                  background: isActive ? "var(--nd-primary-500)" : "transparent",
-                  color: isActive ? "#fff" : "var(--nd-text-2)",
+                  background: isActive ? "var(--nd-primary-100)" : "transparent",
+                  color: isActive ? PINK : "var(--nd-text-2)",
+                  boxShadow: isActive ? "var(--nd-e1)" : undefined,
+                  borderInlineStart: isActive ? "2px solid " + PINK : "2px solid transparent",
                 })}
-                title={collapsed ? item.label : undefined}
               >
-                <item.icon size={18} className="shrink-0" />
-                {!collapsed && <span className="flex-1">{item.label}</span>}
-                {!collapsed && item.badge !== undefined && item.badge > 0 && (
+                <div className="grid h-full w-12 shrink-0 place-content-center">
+                  <item.icon className="h-4 w-4" />
+                </div>
+                {!collapsed && (
+                  <span className="flex-1 text-sm font-medium truncate">{item.label}</span>
+                )}
+                {!collapsed && navItem.badge !== undefined && navItem.badge > 0 && (
                   <span
-                    className="text-[10px] font-extrabold px-2 py-0.5 rounded-full"
-                    style={{ background: "rgba(255,255,255,0.2)", color: "#fff" }}
+                    className="absolute right-3 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-medium text-white"
+                    style={{ background: PINK }}
                   >
-                    {item.badge}
+                    {navItem.badge}
                   </span>
                 )}
               </NavLink>
             );
           })}
+
+          {/* View Site */}
+          <a
+            href="/"
+            target="_blank"
+            rel="noreferrer"
+            className={`relative flex h-11 w-full items-center rounded-md transition-all duration-200 ${
+              collapsed ? "justify-center" : ""
+            }`}
+            style={{ color: "var(--nd-text-2)" }}
+            title={collapsed ? "عرض الموقع" : undefined}
+          >
+            <div className="grid h-full w-12 shrink-0 place-content-center">
+              <Monitor className="h-4 w-4" />
+            </div>
+            {!collapsed && <span className="flex-1 text-sm font-medium">عرض الموقع</span>}
+          </a>
         </nav>
 
-        {/* Collapse toggle (desktop only) */}
+        {/* Account section (reference style) */}
+        {!collapsed && (
+          <div className="shrink-0 border-t pt-3 space-y-1 px-2" style={{ borderColor: "var(--nd-border)" }}>
+            <p
+              className="px-3 py-1 text-[11px] font-bold uppercase tracking-wide"
+              style={{ color: "var(--nd-text-3)" }}
+            >
+              الحساب
+            </p>
+            <NavLink
+              to={`/${ADMIN_PATH}/settings`}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `relative flex h-11 w-full items-center rounded-md transition-all duration-200`
+              }
+              style={({ isActive }) => ({
+                background: isActive ? "var(--nd-primary-100)" : "transparent",
+                color: isActive ? PINK : "var(--nd-text-2)",
+                borderInlineStart: isActive ? "2px solid " + PINK : "2px solid transparent",
+              })}
+            >
+              <div className="grid h-full w-12 shrink-0 place-content-center">
+                <Settings className="h-4 w-4" />
+              </div>
+              <span className="flex-1 text-sm font-medium">الإعدادات</span>
+            </NavLink>
+            <button
+              onClick={() => setConfirmLogout(true)}
+              className="relative flex h-11 w-full items-center rounded-md transition-all duration-200"
+              style={{ color: "var(--nd-text-2)" }}
+            >
+              <div className="grid h-full w-12 shrink-0 place-content-center">
+                <LogOut className="h-4 w-4" />
+              </div>
+              <span className="flex-1 text-sm font-medium">تسجيل الخروج</span>
+            </button>
+          </div>
+        )}
+
+        {/* Collapse toggle (reference style, bottom) */}
         {!open && (
           <button
             onClick={onToggleCollapse}
-            className="hidden lg:flex items-center justify-center h-10 mx-2 mb-1 rounded-xl transition-colors hover:bg-gray-100"
-            style={{ color: "var(--nd-text-3)" }}
+            className="shrink-0 flex w-full items-center transition-colors hover:bg-gray-50"
+            style={{ borderTop: "1px solid var(--nd-border)" }}
             title={collapsed ? "توسيع" : "طي"}
           >
-            <ChevronLeft size={16} className={`transition-transform duration-300 ${collapsed ? "rotate-180" : ""}`} />
-          </button>
-        )}
-
-        {/* User */}
-        <div className="border-t shrink-0" style={{ borderColor: "var(--nd-border)" }}>
-          <div className={`flex items-center ${collapsed ? "justify-center p-2" : "gap-3 px-3.5 py-2"}`}>
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
-              style={{ background: "var(--nd-primary-200)", color: "var(--nd-primary-500)" }}
-            >
-              A
+            <div className="grid size-12 shrink-0 place-content-center">
+              <ChevronsLeft
+                className={`h-4 w-4 transition-transform duration-300 ${collapsed ? "rotate-180" : ""}`}
+                style={{ color: "var(--nd-text-3)" }}
+              />
             </div>
             {!collapsed && (
-              <>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[12px] font-bold truncate" style={{ color: "var(--nd-text)" }}>Admin</p>
-                  <p className="text-[10px] truncate" style={{ color: "var(--nd-text-3)" }}>admin@nadine.ly</p>
-                </div>
-                <button
-                  onClick={() => setConfirmLogout(true)}
-                  className="p-1.5 rounded-lg hover:bg-red-50 transition-colors"
-                  style={{ color: "var(--nd-text-3)" }}
-                >
-                  <LogOut size={15} />
-                </button>
-              </>
+              <span className="text-sm font-medium" style={{ color: "var(--nd-text-2)" }}>
+                طي
+              </span>
             )}
-          </div>
-        </div>
+          </button>
+        )}
 
         {/* Logout confirmation */}
         {confirmLogout && (
@@ -192,19 +247,20 @@ export function Sidebar({
             style={{ background: "rgba(255,255,255,0.95)" }}
           >
             <div className="text-center">
-              <p className="text-sm font-bold mb-3" style={{ color: "var(--nd-text)" }}>تأكيد تسجيل الخروج؟</p>
+              <p className="text-sm font-bold mb-1" style={{ color: "var(--nd-text)" }}>تسجيل الخروج؟</p>
+              <p className="text-[12px] mb-3" style={{ color: "var(--nd-text-3)" }}>ستحتاج كلمة المرور للدخول مجدداً</p>
               <div className="flex gap-2 justify-center">
                 <button
                   onClick={logout}
-                  className="px-5 py-2 rounded-xl text-xs font-bold text-white"
-                  style={{ background: "var(--nd-primary-500)" }}
+                  className="px-4 py-2 rounded-lg text-white text-[12px] font-bold"
+                  style={{ background: "#DC2626" }}
                 >
-                  خروج
+                  نعم، خروج
                 </button>
                 <button
                   onClick={() => setConfirmLogout(false)}
-                  className="px-5 py-2 rounded-xl text-xs font-bold"
-                  style={{ background: "var(--nd-bg)", color: "var(--nd-text-2)", border: "1px solid var(--nd-border)" }}
+                  className="px-4 py-2 rounded-lg text-[12px] font-bold"
+                  style={{ background: "var(--nd-bg)", color: "var(--nd-text-2)" }}
                 >
                   إلغاء
                 </button>
