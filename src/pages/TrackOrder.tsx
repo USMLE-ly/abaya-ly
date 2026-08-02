@@ -5,9 +5,6 @@ import { usePageMeta } from "@/lib/usePageMeta";
 import { motion } from "framer-motion";
 import {
   Package,
-  PackageCheck,
-  Truck,
-  MapPin,
   Search,
   Loader2,
   Clock,
@@ -18,7 +15,7 @@ import {
 } from "lucide-react";
 import { Barcode } from "@/components/ui/barcode";
 import type { CertificateData } from "@/components/certificate/OrderCertificate";
-import { LuxuryTimeline, type TimelineStage } from "@/components/ui/luxury-timeline";
+import { OrderTracking } from "@/components/ui/order-tracking";
 import { LuxuryStatusBadge } from "@/components/ui/luxury-status-badge";
 import { AuthenticatedProductCard } from "@/components/ui/authenticated-product-card";
 import { pieceBarcode } from "@/lib/barcode";
@@ -31,12 +28,12 @@ const OrderCertificateModal = lazy(() =>
   }))
 );
 
-const STATUS_STEPS: TimelineStage[] = [
-  { key: "pending", icon: Clock, label: "تأكيد الطلب", caption: "سيتم الاتصال بكِ لتأكيد الطلب خلال 24 ساعة" },
-  { key: "processing", icon: Package, label: "جاري التجهيز", caption: "يتم تجهيز وتغليف قطعتكِ بعناية فائقة" },
-  { key: "waiting_shipping", icon: PackageCheck, label: "في انتظار الشحن", caption: "الطلب في انتظار وصول الشحنة إلى مركز الشحن" },
-  { key: "shipped", icon: Truck, label: "جاري الشحن", caption: "سيتم التوصيل إلى عنوانكِ خلال 1-3 أيام عمل" },
-  { key: "delivered", icon: MapPin, label: "تم التوصيل", caption: "تم تسليم طلبكِ بنجاح ✓" },
+const STATUS_STEPS = [
+  { key: "pending", label: "تأكيد الطلب", caption: "سيتم الاتصال بكِ لتأكيد الطلب خلال 24 ساعة" },
+  { key: "processing", label: "جاري التجهيز", caption: "يتم تجهيز وتغليف قطعتكِ بعناية فائقة" },
+  { key: "waiting_shipping", label: "في انتظار الشحن", caption: "الطلب في انتظار وصول الشحنة إلى مركز الشحن" },
+  { key: "shipped", label: "جاري الشحن", caption: "سيتم التوصيل إلى عنوانكِ خلال 1-3 أيام عمل" },
+  { key: "delivered", label: "تم التوصيل", caption: "تم تسليم طلبكِ بنجاح ✓" },
 ];
 
 const STATUS_ORDER = ["pending", "processing", "waiting_shipping", "shipped", "delivered"];
@@ -352,7 +349,14 @@ function TrackOrderContent() {
                 <h3 className="mb-6 text-center text-[11px] font-bold tracking-[0.28em]" style={{ color: "#b48a45" }}>
                   مسار الطلب
                 </h3>
-                <LuxuryTimeline stages={STATUS_STEPS} currentIndex={getStatusIndex(order.status)} />
+                <OrderTracking
+                  className="mx-auto"
+                  steps={STATUS_STEPS.map((s, i) => ({
+                    name: s.label,
+                    timestamp: s.caption ?? "",
+                    isCompleted: i <= getStatusIndex(order.status),
+                  }))}
+                />
               </div>
 
               {/* Product passports */}
