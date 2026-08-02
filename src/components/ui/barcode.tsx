@@ -1,5 +1,7 @@
-import { memo, useEffect, useRef } from "react";
-import JsBarcode from "jsbarcode";
+import { memo, useRef, useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
+import { toPng } from "html-to-image";
+import { Check, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { hashString, seededRandom } from "@/lib/barcode";
 import { GOLD_DEEP, MUTED } from "@/components/certificate/tokens";
@@ -17,17 +19,17 @@ export interface BarcodeProps {
   tone?: "charcoal" | "gold";
   /** Optional caption above the barcode. */
   label?: string;
-  /** Show the barcode value below the bars. Defaults to true. */
+  /** Show the barcode value below the code. Defaults to true. */
   showValue?: boolean;
-  /** Real linear barcode target — when set, the code is a genuine Code 128 barcode
-   *  encoding this URL (readable by barcode scanner apps), and acts as a hyperlink
-   *  when tapped. */
+  /** Real scannable QR target — when set, the code is a genuine QR encoding this
+   *  URL (readable by phone camera scanners), and acts as a hyperlink when tapped. */
   href?: string;
+  /** Card presentation (border + shadow + download). Defaults to true. */
+  card?: boolean;
 }
 
 /** Deterministic, scannable-looking barcode — identical bars for identical values.
- *  When `href` is provided it becomes a real Code 128 linear barcode encoding that
- *  URL (tap opens the dress page; scanner apps read the URL). */
+ *  When `href` is provided it becomes a real QR code (scan/tap opens the dress page). */
 export const Barcode = memo(function Barcode({
   value,
   className,
@@ -35,48 +37,23 @@ export const Barcode = memo(function Barcode({
   label,
   showValue = true,
   href,
+  card = true,
 }: BarcodeProps) {
   const target = href?.trim() || "";
   const color = tone === "gold" ? GOLD_DEEP : "#22201c";
 
   if (target) {
     return (
-      <div className={cn("flex flex-col items-center", className)}>
-        {label && (
-          <p
-            className="mb-1.5 text-[9px] font-bold tracking-[0.28em] uppercase"
-            style={{ color: tone === "gold" ? GOLD_DEEP : MUTED }}
-          >
-            {label}
-          </p>
-        )}
-        <a
-          href={target}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`افتح صفحة القطعة: ${target}`}
-          title="امسحي الرمز لفتح صفحة القطعة"
-          className="inline-flex flex-col items-center rounded-xl border bg-white px-4 py-3 transition-all hover:bg-black/[0.02] active:scale-[0.98]"
-          style={{ borderColor: tone === "gold" ? "rgba(201,162,94,0.45)" : "rgba(34,32,28,0.14)" }}
-        >
-          <LinearBarcode value={target} color={color} />
-          <span
-            className="mt-1.5 text-[8.5px] font-semibold"
-            style={{ color: tone === "gold" ? GOLD_DEEP : "#8c8276" }}
-          >
-            امسحي الرمز لفتح صفحة القطعة
-          </span>
-        </a>
-        {showValue && (
-          <p
-            dir="ltr"
-            className="mt-1.5 text-[10px] font-semibold tabular-nums tracking-[0.18em]"
-            style={{ color: tone === "gold" ? GOLD_DEEP : "#22201c", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}
-          >
-            {value}
-          </p>
-        )}
-      </div>
+      <BarcodeCard
+        value={value}
+        target={target}
+        color={color}
+        tone={tone}
+        label={label}
+        showValue={showValue}
+        card={card}
+        className={className}
+      />
     );
   }
 
@@ -134,34 +111,130 @@ export const Barcode = memo(function Barcode({
   );
 });
 
-function LinearBarcode({ value, color }: { value: string; color: string }) {
-  const ref = useRef<SVGSVGElement>(null);
+interface BarcodeCardProps {
+  value: string;
+  target: string;
+  color: string;
+  tone: "charcoal" | "gold";
+  label?: string;
+  showValue: boolean;
+  card: boolean;
+  className?: string;
+}
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+/** Card presentation inspired by the QRCodeDisplay component — white rounded card,
+ *  padded code box, scan caption and a download-PNG action with saved/loading states. */
+function BarcodeCard({ value, target, color, tone, label, showValue, card, className }: BarcodeCardProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const codeRef = useRef<HTMLAnchorElement>(null);
+  const [downloading, setDownloading] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+
+  const handleDownload = async () => {
+    const node = codeRef.current || ref.current;
+    if (!node) return;
+    setDownloading(true);
     try {
-      JsBarcode(el, value, {
-        format: "CODE128",
-        width: 1.6,
-        height: 46,
-        margin: 0,
-        displayValue: false,
-        lineColor: color,
-        background: "#ffffff",
+      const dataUrl = await toPng(node, {
+        pixelRatio: 3,
+        backgroundColor: "#ffffff",
+        cacheBust: true,
       });
-    } catch {
-      // Code 128 cannot encode this value — keep the element empty rather than crash.
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `qr-code-${value.replace(/[^\w-]/g, "_").slice(0, 40)}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setDownloaded(true);
+      setTimeout(() => setDownloaded(false), 1500);
+    } catch (error) {
+      console.error("Failed to download QR code:", error);
+    } finally {
+      setDownloading(false);
     }
-  }, [value, color]);
+  };
+
+  const borderColor = tone === "gold" ? "rgba(201,162,94,0.45)" : "rgba(34,32,28,0.14)";
+  const accent = tone === "gold" ? GOLD_DEEP : "#22201c";
 
   return (
-    <svg
+    <div
       ref={ref}
-      className="h-14 w-full min-w-[180px] max-w-[300px]"
-      preserveAspectRatio="xMidYMid meet"
-      aria-hidden="true"
-    />
+      className={cn("w-full", card && "rounded-xl border bg-white p-4 shadow-sm", className)}
+      style={card ? { borderColor } : undefined}
+    >
+      {label && (
+        <p
+          className="text-center text-[11px] font-bold tracking-[0.28em] uppercase"
+          style={{ color: accent }}
+        >
+          {label}
+        </p>
+      )}
+      {showValue && (
+        <p
+          dir="ltr"
+          className="mt-1 text-center text-[9px] font-semibold tabular-nums tracking-[0.14em]"
+          style={{ color: tone === "gold" ? GOLD_DEEP : MUTED, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}
+        >
+          {value}
+        </p>
+      )}
+      <a
+        ref={codeRef}
+        href={target}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`افتح صفحة القطعة: ${target}`}
+        title="امسحي رمز QR لفتح صفحة القطعة"
+        className="mt-2 block rounded-lg bg-white p-2 transition-all hover:opacity-95 active:scale-[0.99]"
+      >
+        <QRCodeSVG
+          value={target}
+          size={140}
+          level="M"
+          marginSize={4}
+          bgColor="#ffffff"
+          fgColor={color}
+          className="mx-auto block h-auto w-full max-w-[170px]"
+        />
+      </a>
+      <p
+        className="mt-1.5 text-center text-[8.5px] font-semibold"
+        style={{ color: tone === "gold" ? GOLD_DEEP : "#8c8276" }}
+      >
+        امسحي الرمز لفتح صفحة القطعة
+      </p>
+      <button
+        type="button"
+        onClick={handleDownload}
+        disabled={downloading}
+        aria-busy={downloading}
+        aria-live="polite"
+        aria-label={
+          downloaded
+            ? "تم حفظ رمز التوثيق"
+            : downloading
+              ? "جارٍ تحميل رمز التوثيق"
+              : "تحميل رمز التوثيق PNG"
+        }
+        className="mt-3 inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-lg border text-[11px] font-bold transition-all hover:bg-black/[0.02] active:scale-[0.99] disabled:opacity-60"
+        style={{ borderColor, color: accent }}
+      >
+        {downloaded ? (
+          <>
+            <Check size={14} />
+            تم الحفظ
+          </>
+        ) : (
+          <>
+            <Download size={14} />
+            {downloading ? "جارٍ التحميل…" : "تحميل PNG"}
+          </>
+        )}
+      </button>
+    </div>
   );
 }
 

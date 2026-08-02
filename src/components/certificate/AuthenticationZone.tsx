@@ -69,7 +69,7 @@ export const AuthenticationZone = memo(function AuthenticationZone({
                     قطعة {pieceNumber}
                   </span>
                 </div>
-                <Barcode value={value} href={productPageUrl(item.id)} tone="gold" className="mt-2" />
+                <Barcode value={value} href={productPageUrl(item.id)} tone="gold" card={false} className="mt-2" />
               </div>
             );
           })}
