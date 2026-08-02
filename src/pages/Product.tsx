@@ -13,6 +13,7 @@ import { SocialShare } from "@/components/SocialShare";
 import { RecentlyViewed } from "@/components/RecentlyViewed";
 import { WishlistButton } from "@/components/WishlistButton";
 import { ProductInfoSections } from "@/components/ProductInfoSections";
+import CardFanCarousel from "@/components/CardFanCarousel";
 import { StickyBookingBar } from "@/components/StickyBookingBar";
 import { trackProductView } from "@/lib/recentlyViewed";
 import { OptimizedImage } from "@/components/OptimizedImage";
@@ -288,7 +289,7 @@ function ProductContent() {
   const isSoldOut = liveStock === 0;
   const primaryColor = product.colors[0] ?? { name: "غير محدد", hex: "transparent" };
   const descriptor = product.name.split(" • ").slice(2).join(" • ") ?? product.name;
-  const related = getRelatedProducts(product);
+  const related = getRelatedProducts(product, 10);
 
   const handleSizeSelect = (index: number) => {
     if (index === selectedSize || checkingSize !== null) return;
@@ -579,36 +580,18 @@ function ProductContent() {
               <h2 className="font-display text-2xl font-bold text-fg mb-2">منتجات <span className="text-accent-brand">مختارة لكِ</span></h2>
               <p className="text-xs text-fg-tertiary">بناءً على المجموعة، الألوان، وستايل التصميم</p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {related.map((p) => (
-                <Link key={p.id} to={`/product/${p.id}`}>
-                  <div className="group relative overflow-hidden rounded-2xl transition-all duration-500 cursor-pointer"
-                    style={{
-                      background: "rgba(255,255,255,0.7)",
-                      backdropFilter: "blur(20px)",
-                      border: "1px solid rgba(196,40,85,0.12)",
-                    }}
-                  >
-                    <div className="aspect-[3/4] overflow-hidden relative">
-                      <img
-                        src={p.images[0]}
-                        alt={p.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    </div>
-                    <div className="p-3 text-start">
-                      <p className="text-[10px] uppercase tracking-[0.15em] text-accent-brand/70 font-semibold mb-0.5">{p.collection}</p>
-                      <p className="text-xs font-semibold text-fg truncate">{p.name.split(" • ").slice(2).join(" • ") ?? p.name}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-sm font-bold text-accent-brand">{p.price} د.ل</span>
-                        {p.originalPrice && <span className="text-xs text-fg-tertiary line-through">{p.originalPrice} د.ل</span>}
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <CardFanCarousel
+              cards={related.map((p) => ({
+                id: p.id,
+                imgUrl: p.images[0],
+                alt: p.name,
+                linkUrl: `/product/${p.id}`,
+                collection: p.collection,
+                name: p.name.split(" • ").slice(2).join(" • ") ?? p.name,
+                price: p.price,
+                originalPrice: p.originalPrice,
+              }))}
+            />
           </div>
         </section>
       )}
