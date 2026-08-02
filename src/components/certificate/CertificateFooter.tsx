@@ -11,8 +11,16 @@ export function CertificateFooter({ serial }: { serial: string }) {
         <br />
         وتُعد وثيقة أصالة رسمية لكل قطعة موثّقة.
       </p>
+      <div
+        className="mx-auto mt-4 h-px w-40 max-w-full"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent, rgba(201,162,94,0.85), transparent)",
+        }}
+        aria-hidden="true"
+      />
       <p
-        className="mt-3 text-xs font-semibold uppercase tracking-[0.4em]"
+        className="mt-4 text-xs font-semibold uppercase tracking-[0.4em]"
         style={{ color: "#B68A3A", fontFamily: "'Playfair Display', serif" }}
       >
         NADINE LUXURY · HOUSE CERTIFIED
