@@ -1,5 +1,4 @@
 import { Guilloche } from "./Guilloche";
-import { HouseMark } from "./HouseMark";
 import { GOLD_DEEP, GOLD_MID, MUTED } from "./tokens";
 
 /** Fixed authenticity statement + certificate reference — every certificate ends here. */
@@ -10,12 +9,9 @@ export function CertificateFooter({ serial }: { serial: string }) {
       <p className="mx-auto mt-5 max-w-md text-[10px] leading-relaxed" style={{ color: MUTED }}>
         تُصدَر هذه الشهادة إلكترونياً من دار نادين للأزياء وتُعدّ وثيقة أصالة رسمية لكل قطعة موثّقة.
       </p>
-      <div className="mt-4 flex items-center justify-center gap-2">
-        <HouseMark className="h-4 w-4" />
-        <p className="text-[8px] font-semibold tracking-[0.28em]" style={{ color: GOLD_MID, fontFamily: "'Playfair Display', serif" }}>
-          NADINE LUXURY · HOUSE CERTIFIED
-        </p>
-      </div>
+      <p className="mt-4 text-[8px] font-semibold tracking-[0.28em]" style={{ color: GOLD_MID, fontFamily: "'Playfair Display', serif" }}>
+        NADINE LUXURY · HOUSE CERTIFIED
+      </p>
       <p className="mt-2 text-[8px] font-semibold tabular-nums tracking-[0.2em]" style={{ color: GOLD_DEEP }}>
         {serial}
       </p>
