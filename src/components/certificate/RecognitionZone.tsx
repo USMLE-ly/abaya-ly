@@ -146,14 +146,10 @@ export function RecognitionZone({
         </div>
       </div>
 
-      {/* Integrated Official Authenticity Seal */}
-      <div className="mt-4 flex justify-center">
+      {/* Integrated Official Authenticity Seal — final focal point of the certificate */}
+      <div className="mt-4 flex justify-center pb-8">
         <AuthenticitySeal serial={serial} size={176} />
       </div>
-
-      <p className="mt-7 text-center text-[10px] leading-relaxed" style={{ color: "#8c8276" }}>
-        هذه الشهادة صادرة إلكترونياً من دار نادين للأزياء — رقم الشهادة: {serial}
-      </p>
     </section>
   );
 }

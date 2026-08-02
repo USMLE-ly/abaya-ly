@@ -8,7 +8,6 @@ import { ProductInformation } from "./ProductInformation";
 import { RecognitionZone } from "./RecognitionZone";
 import { AuthenticationZone } from "./AuthenticationZone";
 import { CertificateMessage } from "./CertificateMessage";
-import { CertificateFooter } from "./CertificateFooter";
 import { MonogramWatermark } from "./MonogramWatermark";
 import { certificateSerial } from "@/lib/certificate-serial";
 import { IVORY } from "./tokens";
@@ -54,7 +53,6 @@ export function OrderCertificate({ data }: { data: CertificateData }) {
             date={data.date}
           />
           <RecognitionZone items={data.items} orderId={data.orderId} serial={serial} />
-          <CertificateFooter serial={serial} />
         </div>
       </Awards>
     </div>
