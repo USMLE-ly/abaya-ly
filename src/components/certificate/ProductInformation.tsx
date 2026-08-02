@@ -25,10 +25,10 @@ export function ProductInformation({ items }: { items: OutfitSealItem[] }) {
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-bold text-fg">{item.name || "—"}</p>
               <span
-                className="rounded-full border px-2.5 py-0.5 text-[9px] font-bold"
+                className="whitespace-nowrap rounded-full border px-2.5 py-0.5 text-[9px] font-bold"
                 style={{ borderColor: "rgba(201,162,94,0.65)", color: "#9c7138" }}
               >
-                قطعة {i + 1}
+                {i + 1} قطعة
               </span>
             </div>
             <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5">

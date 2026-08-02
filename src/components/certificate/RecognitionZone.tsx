@@ -1,7 +1,5 @@
 import type { OutfitSealItem } from "./OutfitSeal";
-import { StoreSeal } from "./StoreSeal";
 
-const GOLD = "#c9a25e";
 const GOLD_MID = "#b48a45";
 const GOLD_DEEP = "#9c7138";
 const STRAWBERRY = "#c42855";
@@ -38,11 +36,10 @@ function LaurelWreath() {
   );
 }
 
-/** Recognition Zone — the certificate's visual centerpiece: an excellence award + the embossed authenticity seal. */
+/** Recognition Zone — the certificate's visual centerpiece: the Fashion Excellence award. */
 export function RecognitionZone({
   items,
   orderId,
-  date,
 }: {
   items: OutfitSealItem[];
   orderId: string;
@@ -76,34 +73,9 @@ export function RecognitionZone({
         RECOGNITION ZONE
       </p>
 
-      <div className="mt-6 grid grid-cols-2 items-center gap-3 sm:gap-8">
-        {/* Official Authenticity Seal (right column in RTL) */}
-        <div className="flex flex-col items-center text-center">
-          <div className="relative grid place-items-center">
-            <div
-              className="absolute h-40 w-40 rounded-full sm:h-64 sm:w-64"
-              style={{
-                background:
-                  "radial-gradient(circle, rgba(244,234,208,0.75) 0%, rgba(244,234,208,0) 66%)",
-              }}
-            />
-            <StoreSeal date={date} className="relative h-36 w-36 sm:h-60 sm:w-60" />
-          </div>
-          <div className="mt-2.5">
-            <p className="text-[9px] font-bold tracking-[0.22em]" style={{ color: GOLD_DEEP }}>
-              ختم الأصالة الرسمي
-            </p>
-            <p
-              className="mt-0.5 text-[7px] font-semibold tracking-[0.3em]"
-              style={{ color: GOLD_MID, fontFamily: "'Playfair Display', serif" }}
-            >
-              OFFICIAL AUTHENTICITY SEAL
-            </p>
-          </div>
-        </div>
-
-        {/* Fashion Excellence Award (left column in RTL) */}
-        <div className="relative flex items-stretch justify-center overflow-hidden">
+      {/* Fashion Excellence Award — single centered focal element */}
+      <div className="mx-auto mt-6 w-full max-w-lg">
+        <div className="relative flex min-h-[300px] items-stretch justify-center overflow-hidden sm:min-h-[400px]">
           <LaurelWreath />
           <div className="relative z-10 flex flex-1 flex-col items-center justify-center py-4 text-center sm:py-6">
             <p
