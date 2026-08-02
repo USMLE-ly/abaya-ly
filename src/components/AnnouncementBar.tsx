@@ -63,12 +63,12 @@ export function AnnouncementBar() {
   return (
     <div
       ref={rootRef}
-      className="relative z-[60] text-center text-[11px] sm:text-xs font-medium"
+      className="relative z-[60] w-full text-center text-[11px] sm:text-xs font-medium"
       style={{ background: "#c42855", color: "#fff" }}
       role="region"
       aria-label="إعلان المتجر"
     >
-      <div className="max-w-[1400px] mx-auto px-10 py-2 flex items-center justify-center gap-2">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-10 py-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
         <Icon size={13} className="flex-shrink-0" aria-hidden="true" />
         {hasCart ? (
           <Link to="/cart" onClick={() => trackCta("resume_cart", "announcement_bar")} className="underline underline-offset-2">

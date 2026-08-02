@@ -262,6 +262,9 @@
 
 /* ── Base ── */
 html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+/* Keep the page locked to the viewport width (RTL/scroll-safe) so fixed
+   bars like the announcement strip can never be clipped at the right edge. */
+html, body { overflow-x: clip; }
 
 /* ── Premium Animation Keyframes ── */
 @keyframes fadeUp {
