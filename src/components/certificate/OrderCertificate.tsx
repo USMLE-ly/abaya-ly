@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { X, Download } from "lucide-react";
 import { toPng } from "html-to-image";
 import { Awards } from "@/components/ui/award";
+import { CertificateHeader } from "./CertificateHeader";
 import { CertificateMessage } from "./CertificateMessage";
 import { CustomerInformation } from "./CustomerInformation";
 import { ProductInformation } from "./ProductInformation";
@@ -37,8 +38,11 @@ export function OrderCertificate({ data }: { data: CertificateData }) {
             background: "rgba(255,255,255,0.35)",
           }}
         >
-          {/* Main certificate — full Awards component, certificate variant (reference anatomy) */}
-          <Awards
+          {/* Previous certificate components are all kept; the Awards card is the main certificate */}
+          <CertificateHeader />
+
+          <div className="mt-7">
+            <Awards
             variant="certificate"
             title="أصالة"
             recipient={data.customerName.trim() ? data.customerName.trim() : "عميلتنا الغالية"}
@@ -46,6 +50,7 @@ export function OrderCertificate({ data }: { data: CertificateData }) {
             date={data.date}
             className="border-[#c9a25e]/60"
           />
+          </div>
 
           <div className="mx-auto mt-8 max-w-md">
             <CertificateMessage customerName={data.customerName} />
