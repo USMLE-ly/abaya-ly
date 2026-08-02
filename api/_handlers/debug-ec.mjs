@@ -33,6 +33,11 @@ export default async function handler(req, res) {
   if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
 
   const summaryOnly = req.query?.summary === "1";
+  // Order-level detail (IDs/timestamps) is admin-only; the public summary only
+  // exposes counts + sizes + the store digest for change monitoring.
+  if (req.query?.recent === "1" && !isAdmin(req)) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
   if (!summaryOnly && !isAdmin(req)) return res.status(401).json({ error: "Unauthorized" });
 
   const EC_URL = process.env.EDGE_CONFIG;
