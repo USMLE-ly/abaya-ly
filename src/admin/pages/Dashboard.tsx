@@ -5,8 +5,8 @@ import {
   Users, AlertTriangle, ArrowLeft,
 } from "lucide-react";
 import {
-  AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
-  ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Legend,
+  ComposedChart, Line, ReferenceLine, PieChart, Pie, Cell,
+  ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid,
 } from "recharts";
 import { useOrders } from "../lib/metrics";
 import { fmtDate, fmtDateTime, relativeAr, STATUSES } from "../lib/types";
@@ -15,6 +15,25 @@ import { AButton, AEmpty, StatusBadge, ACard, ASkeleton } from "../components/ui
 import { ADMIN_PATH } from "../lib/config";
 
 const STATUS_COLORS = ["#F5A524", "#4892FE", "#8F8F8F", "#4F56D3", "#89D233"];
+
+type TrendTooltipProps = {
+  active?: boolean;
+  payload?: Array<{ payload: { day: string; orders: number } }>;
+};
+
+function TrendTooltip({ active, payload }: TrendTooltipProps) {
+  if (!active || !payload || payload.length === 0) return null;
+  const data = payload[0].payload;
+  return (
+    <div
+      className="rounded-xl px-3.5 py-2.5 shadow-lg"
+      style={{ background: "var(--nd-white)", border: "1px solid var(--nd-border)" }}
+    >
+      <p className="text-[11px] font-bold mb-0.5" style={{ color: "var(--nd-text-3)" }}>{data.day}</p>
+      <p className="text-base font-bold" style={{ color: "var(--nd-text)" }}>{data.orders} طلب</p>
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const { data: orders, isLoading } = useOrders();
@@ -64,6 +83,21 @@ export default function Dashboard() {
     const deliveryRate = filtered.length > 0
       ? Math.round((delivered.length / filtered.length) * 100) : 0;
 
+    // Order trends helpers
+    const high = timeline.length ? Math.max(...timeline.map((t) => t.orders)) : 0;
+    const low = timeline.length ? Math.min(...timeline.map((t) => t.orders)) : 0;
+    const firstOrders = timeline.length ? timeline[0].orders : 0;
+    const lastOrders = timeline.length ? timeline[timeline.length - 1].orders : 0;
+    const rangeChange = firstOrders > 0
+      ? Math.round(((lastOrders - firstOrders) / firstOrders) * 100) : 0;
+    const yesterday = filtered.filter((o) => {
+      const t = new Date(o.createdAt).getTime();
+      return t >= now - 172800000 && t < now - 86400000;
+    }).length;
+    const todayChange = yesterday > 0
+      ? Math.round(((recent.length - yesterday) / yesterday) * 100)
+      : recent.length > 0 ? 100 : 0;
+
     // Revenue estimate (based on price — fallback)
     const avgPrice = 750; // Average dress price in LYD
     const revenue = filtered.length * avgPrice;
@@ -79,6 +113,10 @@ export default function Dashboard() {
       weeklyRevenue,
       uniqueCustomers: uniquePhones.size,
       deliveryRate,
+      high,
+      low,
+      rangeChange,
+      todayChange,
       timeline,
       statusDist,
       topCities,
@@ -219,20 +257,96 @@ export default function Dashboard() {
           {stats.timeline.length === 0 ? (
             <div className="py-12 text-center text-sm" style={{ color: "var(--nd-text-3)" }}>لا توجد بيانات كافية</div>
           ) : (
-            <ResponsiveContainer width="100%" height={260}>
-              <AreaChart data={stats.timeline}>
-                <defs>
-                  <linearGradient id="dashGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#CE2C60" stopOpacity={0.15} />
-                    <stop offset="100%" stopColor="#CE2C60" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="day" tick={{ fontSize: 11, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: "#9CA3AF" }} axisLine={false} tickLine={false} allowDecimals={false} />
-                <Tooltip />
-                <Area type="monotone" dataKey="orders" stroke="#CE2C60" strokeWidth={2} fill="url(#dashGrad)" />
-              </AreaChart>
-            </ResponsiveContainer>
+            <div className="flex flex-col gap-5">
+              {/* Header */}
+              <div>
+                <p className="text-base mb-1" style={{ color: "var(--nd-text-3)", fontWeight: 500 }}>الاتجاه العام</p>
+                <div className="flex flex-wrap items-baseline gap-1.5 sm:gap-3.5">
+                  <span className="text-4xl font-bold" style={{ color: "var(--nd-text)" }}>{stats.total}</span>
+                  <div className="flex items-center gap-1" style={{ color: "#16A34A" }}>
+                    <TrendingUp className="w-4 h-4" />
+                    <span className="font-medium">{stats.todayChange > 0 ? "+" : ""}{stats.todayChange}%</span>
+                    <span className="font-normal" style={{ color: "var(--nd-text-3)" }}>قارنة بالأمس</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats Row */}
+              <div className="flex items-center justify-between flex-wrap gap-2.5 text-sm mb-2.5">
+                <div className="flex items-center gap-2">
+                  <span style={{ color: "var(--nd-text-3)" }}>طلبات اليوم:</span>
+                  <span className="font-semibold" style={{ color: "var(--nd-text)" }}>{stats.recent}</span>
+                  <div className="flex items-center gap-1" style={{ color: "#16A34A" }}>
+                    <TrendingUp className="w-3 h-3" />
+                    <span>({stats.todayChange > 0 ? "+" : ""}{stats.todayChange}%)</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 sm:gap-6" style={{ color: "var(--nd-text-3)" }}>
+                  <span>الأعلى: <span className="font-medium" style={{ color: "#0EA5E9" }}>{stats.high}</span></span>
+                  <span>الأدنى: <span className="font-medium" style={{ color: "#EAB308" }}>{stats.low}</span></span>
+                  <span>التغير: <span className="font-medium" style={{ color: stats.rangeChange >= 0 ? "#16A34A" : "#DC2626" }}>{stats.rangeChange > 0 ? "+" : ""}{stats.rangeChange}%</span></span>
+                </div>
+              </div>
+
+              {/* Chart */}
+              <div style={{ width: "100%", height: 300 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={stats.timeline} margin={{ top: 20, right: 10, left: 5, bottom: 20 }}>
+                    <defs>
+                      <pattern id="dashDotGrid" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <circle cx="10" cy="10" r="1" fill="#9CA3AF" fillOpacity="0.25" />
+                      </pattern>
+                      <filter id="dashDotShadow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feDropShadow dx="2" dy="3" stdDeviation="3" floodColor="rgba(206,44,96,0.45)" />
+                      </filter>
+                      <filter id="dashLineShadow" x="-100%" y="-100%" width="300%" height="300%">
+                        <feDropShadow dx="4" dy="6" stdDeviation="25" floodColor="rgba(206,44,96,0.35)" />
+                      </filter>
+                    </defs>
+
+                    <rect x="0" y="0" width="100%" height="100%" fill="url(#dashDotGrid)" style={{ pointerEvents: "none" }} />
+
+                    <CartesianGrid strokeDasharray="4 8" stroke="#E5E7EB" strokeOpacity={1} horizontal vertical={false} />
+
+                    <ReferenceLine x={stats.timeline[Math.floor(stats.timeline.length / 2)].day} stroke="#CE2C60" strokeDasharray="4 4" strokeWidth={1} />
+
+                    <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#CE2C60" }} tickMargin={12} interval="preserveStartEnd" tickCount={5} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#CE2C60" }} tickMargin={12} allowDecimals={false} />
+
+                    <Tooltip
+                      content={<TrendTooltip />}
+                      cursor={{ strokeDasharray: "3 3", stroke: "#9CA3AF", strokeOpacity: 0.5 }}
+                    />
+
+                    <Line
+                      type="monotone"
+                      dataKey="orders"
+                      stroke="#CE2C60"
+                      strokeWidth={2}
+                      filter="url(#dashLineShadow)"
+                      dot={(props: any) => {
+                        const { cx, cy, payload } = props;
+                        const notable = payload.orders === stats.high || payload.orders === stats.low;
+                        if (!notable) return <g key={`dot-${payload.day}`} />;
+                        return (
+                          <circle
+                            key={`dot-${payload.day}`}
+                            cx={cx}
+                            cy={cy}
+                            r={5}
+                            fill="#CE2C60"
+                            stroke="#fff"
+                            strokeWidth={2}
+                            filter="url(#dashDotShadow)"
+                          />
+                        );
+                      }}
+                      activeDot={{ r: 5, fill: "#CE2C60", stroke: "#fff", strokeWidth: 2, filter: "url(#dashDotShadow)" }}
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           )}
         </div>
 
