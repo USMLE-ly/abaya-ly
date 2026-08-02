@@ -1,6 +1,6 @@
 import { Component, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { X, Download } from "lucide-react";
+import { X, Download, Share2 } from "lucide-react";
 import { toPng } from "html-to-image";
 import { Awards } from "@/components/ui/award";
 import { CustomerInformation } from "./CustomerInformation";
@@ -76,7 +76,7 @@ class CertificateBoundary extends Component<{ children: ReactNode }, { failed: b
   }
 }
 
-/** Full-screen viewer with high-resolution PNG download. */
+/** Full-screen viewer with high-resolution PNG download and native share/copy. */
 export function OrderCertificateModal({
   open,
   onClose,
@@ -87,26 +87,75 @@ export function OrderCertificateModal({
   data: CertificateData | null;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<"download" | "share" | null>(null);
+  const [status, setStatus] = useState("");
 
   if (!open || !data) return null;
 
-  const download = async () => {
-    if (!ref.current) return;
-    setBusy(true);
+  const renderPng = async (pixelRatio: number) => {
+    if (!ref.current) return null;
     try {
-      const url = await toPng(ref.current, {
-        pixelRatio: 4,
-        backgroundColor: IVORY,
-      });
+      return await toPng(ref.current, { pixelRatio, backgroundColor: IVORY });
+    } catch {
+      return null;
+    }
+  };
+
+  const download = async () => {
+    setBusy("download");
+    setStatus("");
+    try {
+      const url = await renderPng(4);
+      if (!url) return;
       const a = document.createElement("a");
       a.href = url;
       a.download = `nadine-certificate-${data.orderId}.png`;
       a.click();
-    } catch {
-      /* download unavailable — the certificate stays viewable */
     } finally {
-      setBusy(false);
+      setBusy(null);
+    }
+  };
+
+  const share = async () => {
+    setBusy("share");
+    setStatus("");
+    try {
+      const url = await renderPng(2);
+      if (!url) {
+        setStatus("تعذّرت المشاركة — جربي التنزيل بدلاً من ذلك");
+        return;
+      }
+      const blob = await (await fetch(url)).blob();
+      const file = new File([blob], `nadine-certificate-${data.orderId}.png`, {
+        type: "image/png",
+      });
+      const shareNav = navigator as Navigator & { canShare?: (data?: ShareData) => boolean };
+      if (shareNav.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: "شهادة أصالة نادين",
+          text: "شهادة أصالة من دار نادين للأزياء",
+        });
+        setStatus("");
+      } else if ("ClipboardItem" in window && navigator.clipboard?.write) {
+        const ClipboardImage = (
+          window as unknown as { ClipboardItem: new (items: Record<string, Blob>) => ClipboardItem }
+        ).ClipboardItem;
+        await navigator.clipboard.write([new ClipboardImage({ "image/png": blob })]);
+        setStatus("تم نسخ الشهادة — الصقيها أينما تريدين");
+      } else {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `nadine-certificate-${data.orderId}.png`;
+        a.click();
+        setStatus("تم تنزيل الشهادة — شاركيها مع من تحبين");
+      }
+    } catch (e) {
+      if (!(e instanceof DOMException && e.name === "AbortError")) {
+        setStatus("تعذّرت المشاركة — جربي التنزيل بدلاً من ذلك");
+      }
+    } finally {
+      setBusy(null);
     }
   };
 
@@ -130,15 +179,28 @@ export function OrderCertificateModal({
           </CertificateBoundary>
         </div>
 
-        <button
-          onClick={download}
-          disabled={busy}
-          className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl text-sm font-bold text-white disabled:opacity-60"
-          style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
-        >
-          <Download size={16} />
-          {busy ? "جارٍ التحضير…" : "تحميل الشهادة"}
-        </button>
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+          <button
+            onClick={share}
+            disabled={busy !== null}
+            className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-white/30 text-sm font-bold text-white disabled:opacity-60"
+          >
+            <Share2 size={16} />
+            {busy === "share" ? "جارٍ التجهيز…" : "مشاركة الشهادة"}
+          </button>
+          <button
+            onClick={download}
+            disabled={busy !== null}
+            className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl text-sm font-bold text-white disabled:opacity-60"
+            style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
+          >
+            <Download size={16} />
+            {busy === "download" ? "جارٍ التحضير…" : "تحميل الشهادة"}
+          </button>
+        </div>
+        {status && (
+          <p className="mt-3 text-center text-xs text-white/80">{status}</p>
+        )}
       </div>
     </div>,
     document.body
