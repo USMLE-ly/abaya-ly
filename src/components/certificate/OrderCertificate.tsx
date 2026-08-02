@@ -2,6 +2,7 @@ import { Component, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { X, Download } from "lucide-react";
 import { toPng } from "html-to-image";
+import { Awards } from "@/components/ui/award";
 import { CustomerInformation } from "./CustomerInformation";
 import { ProductInformation } from "./ProductInformation";
 import { RecognitionZone } from "./RecognitionZone";
@@ -15,9 +16,10 @@ export interface CertificateData {
 }
 
 const IVORY = "#fdfaf3";
-const GOLD = "#c9a25e";
 
-/** The printable luxury certificate surface (Tajawal / RTL, ivory + gold). */
+/** The printable luxury certificate surface: the original certificate from the Awards
+ *  component (ribbon, dotted frame, authenticity wording) with every certificate
+ *  section — customer, product, recognition zone — rendered inside it. */
 export function OrderCertificate({ data }: { data: CertificateData }) {
   return (
     <div
@@ -25,32 +27,24 @@ export function OrderCertificate({ data }: { data: CertificateData }) {
       className="w-full"
       style={{ background: IVORY, fontFamily: "Tajawal, sans-serif" }}
     >
-      {/* Outer gold hairline frame */}
-      <div className="p-1.5" style={{ border: "1.5px solid " + GOLD }}>
-        {/* Inner dotted gold frame */}
-        <div
-          className="rounded-sm px-5 py-8 sm:px-10 sm:py-9"
-          style={{
-            border: "1.5px dashed rgba(201,162,94,0.8)",
-            background: "rgba(255,255,255,0.35)",
-          }}
-        >
-          {/* New certificate hierarchy only — legacy header, card, and letter are permanently removed */}
-          <div className="mx-auto max-w-md">
-            <CustomerInformation
-              name={data.customerName}
-              orderId={data.orderId}
-              date={data.date}
-            />
-          </div>
-
-          <div className="mx-auto mt-7 max-w-md">
-            <ProductInformation items={data.items} />
-          </div>
-
+      <Awards
+        variant="certificate"
+        title="أصالة"
+        recipient={data.customerName || "—"}
+        subtitle="حاصلة على شهادة أصالة من دار نادين للأزياء"
+        date={data.date || "—"}
+        className="w-full"
+      >
+        <div className="space-y-5">
+          <CustomerInformation
+            name={data.customerName}
+            orderId={data.orderId}
+            date={data.date}
+          />
+          <ProductInformation items={data.items} />
           <RecognitionZone items={data.items} orderId={data.orderId} date={data.date} />
         </div>
-      </div>
+      </Awards>
     </div>
   );
 }

@@ -17,6 +17,7 @@ export interface AwardsComponentProps {
   className?: string;
   showIcon?: boolean;
   customIcon?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 /** Brand-aligned level ramps (strawberry / gold foil instead of raw tailwind hues). */
@@ -38,6 +39,7 @@ export function Awards({
   className,
   showIcon = true,
   customIcon,
+  children,
 }: AwardsComponentProps) {
   // ── Stamp ───────────────────────────────────────────────────────
   if (variant === "stamp") {
@@ -224,7 +226,7 @@ export function Awards({
           className
         )}
       >
-        <div className="z-10 rounded-sm border border-line-subtle bg-white p-6 px-8 text-center">
+        <div className="z-10 w-full rounded-sm border border-line-subtle bg-white p-6 px-8 text-center">
           <Ribbon />
           <h1 className="mt-4 grid text-3xl font-bold uppercase leading-7 tracking-tighter">
             شهادة
@@ -244,6 +246,7 @@ export function Awards({
             <Award strokeWidth={1} className="h-4 w-4" />
           </div>
           <div className="mt-2 text-xs">صدرت بتاريخ: {date}</div>
+          {children && <div className="mt-6 text-right">{children}</div>}
         </div>
       </div>
     );
