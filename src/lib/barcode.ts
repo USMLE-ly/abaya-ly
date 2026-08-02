@@ -59,3 +59,15 @@ export function seededRandom(seed: number): () => number {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
+
+/** Absolute URL to a dress's product page — what the scannable QR encodes.
+ *  Scanning the code on a phone opens this page; tapping it acts as a link. */
+export function productPageUrl(id?: string): string {
+  const clean = String(id ?? "").trim();
+  if (!clean) return "";
+  const base =
+    typeof window !== "undefined" && window.location?.origin
+      ? window.location.origin
+      : "https://nadine.luxor.ly";
+  return `${base}/product/${encodeURIComponent(clean)}`;
+}

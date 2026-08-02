@@ -13,6 +13,8 @@ export interface OrderSuccessCardProps {
   date: string;
   pieceCount: number;
   barcodeValue: string;
+  /** Real QR target — the dress page the رمز التوثيق code opens when scanned. */
+  barcodeHref?: string;
   paymentLabel?: string;
   statusLabel?: string;
   trackHref: string;
@@ -79,6 +81,7 @@ export const OrderSuccessCard = memo(function OrderSuccessCard({
   date,
   pieceCount,
   barcodeValue,
+  barcodeHref,
   paymentLabel = "الدفع عند الاستلام",
   statusLabel = "قيد التأكيد",
   trackHref,
@@ -206,7 +209,7 @@ export const OrderSuccessCard = memo(function OrderSuccessCard({
           <DashedLine />
 
           {/* Authentication barcode */}
-          <Barcode value={barcodeValue} label="رمز التوثيق" className="mx-auto" />
+          <Barcode value={barcodeValue} href={barcodeHref} label="رمز التوثيق" className="mx-auto" />
 
           {whatsappHref && !children && (
             <a

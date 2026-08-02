@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import { cn } from "@/lib/utils";
 import { hashString, seededRandom } from "@/lib/barcode";
 import { GOLD_DEEP, MUTED } from "@/components/certificate/tokens";
@@ -18,18 +19,66 @@ export interface BarcodeProps {
   label?: string;
   /** Show the barcode value below the bars. Defaults to true. */
   showValue?: boolean;
+  /** Real scannable QR target — when set, the code is a genuine QR that opens this
+   *  URL when scanned with a phone camera, and acts as a hyperlink when tapped. */
+  href?: string;
 }
 
-/** Deterministic, scannable-looking barcode — identical bars for identical values. */
+/** Deterministic, scannable-looking barcode — identical bars for identical values.
+ *  When `href` is provided it becomes a real QR code (scan/tap opens the dress page). */
 export const Barcode = memo(function Barcode({
   value,
   className,
   tone = "charcoal",
   label,
   showValue = true,
+  href,
 }: BarcodeProps) {
-  const bars = useBars(value);
+  const target = href?.trim() || "";
   const color = tone === "gold" ? GOLD_DEEP : "#22201c";
+
+  if (target) {
+    return (
+      <div className={cn("flex flex-col items-center", className)}>
+        {label && (
+          <p
+            className="mb-1.5 text-[9px] font-bold tracking-[0.28em] uppercase"
+            style={{ color: tone === "gold" ? GOLD_DEEP : MUTED }}
+          >
+            {label}
+          </p>
+        )}
+        <a
+          href={target}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`افتح صفحة القطعة: ${target}`}
+          title="امسحي الرمز لفتح صفحة القطعة"
+          className="inline-flex flex-col items-center rounded-xl border bg-white p-2 transition-all hover:bg-black/[0.02] active:scale-[0.98]"
+          style={{ borderColor: tone === "gold" ? "rgba(201,162,94,0.45)" : "rgba(34,32,28,0.14)" }}
+        >
+          <QRCodeSVG value={target} size={110} level="M" bgColor="#ffffff" fgColor={color} />
+          <span
+            className="mt-1 text-[8.5px] font-semibold"
+            style={{ color: tone === "gold" ? GOLD_DEEP : "#8c8276" }}
+          >
+            امسحي الرمز لفتح صفحة القطعة
+          </span>
+        </a>
+        {showValue && (
+          <p
+            dir="ltr"
+            className="mt-1.5 text-[10px] font-semibold tabular-nums tracking-[0.18em]"
+            style={{ color: tone === "gold" ? GOLD_DEEP : "#22201c", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}
+          >
+            {value}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  const bars = useBars(value);
   const gap = 1.6;
   const total = bars.reduce((acc, w) => acc + w + gap, 0) - gap;
   let x = (VIEW_W - total) / 2;

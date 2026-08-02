@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { ShieldCheck } from "lucide-react";
-import { pieceBarcode } from "@/lib/barcode";
+import { pieceBarcode, productPageUrl } from "@/lib/barcode";
 import { Barcode } from "@/components/ui/barcode";
 import { CHARCOAL, GOLD_DEEP, GOLD_LINE, GOLD_MID, MUTED, STRAWBERRY } from "./tokens";
 import type { OutfitSealItem } from "./OutfitSeal";
@@ -69,7 +69,7 @@ export const AuthenticationZone = memo(function AuthenticationZone({
                     قطعة {pieceNumber}
                   </span>
                 </div>
-                <Barcode value={value} tone="gold" className="mt-2" />
+                <Barcode value={value} href={productPageUrl(item.id)} tone="gold" className="mt-2" />
               </div>
             );
           })}

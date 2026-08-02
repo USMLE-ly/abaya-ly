@@ -2,9 +2,11 @@ import { memo } from "react";
 import { BadgeCheck, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Barcode } from "@/components/ui/barcode";
+import { productPageUrl } from "@/lib/barcode";
 import { GOLD_DEEP, GOLD_LINE, GOLD_MID, MUTED, STRAWBERRY } from "@/components/certificate/tokens";
 
 export interface AuthenticatedPiece {
+  id?: string;
   name: string;
   code: string;
   collection?: string;
@@ -117,7 +119,7 @@ export const AuthenticatedProductCard = memo(function AuthenticatedProductCard({
         className="flex flex-col items-center gap-1 border-t px-4 py-3"
         style={{ borderColor: "rgba(201,162,94,0.25)", background: "#fffdf9" }}
       >
-        {showBarcode && <Barcode value={barcodeValue} label="رمز التوثيق" className="w-full max-w-[320px]" />}
+        {showBarcode && <Barcode value={barcodeValue} href={productPageUrl(piece.id)} label="رمز التوثيق" className="w-full max-w-[320px]" />}
         {onCertificate && (
           <button
             onClick={onCertificate}

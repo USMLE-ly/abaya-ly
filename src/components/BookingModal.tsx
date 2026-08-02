@@ -5,7 +5,7 @@ import type { CertificateData } from "@/components/certificate/OrderCertificate"
 import { OrderSuccessCard } from "@/components/ui/order-success-card";
 import { OrderDetails } from "@/components/ui/order-details";
 import type { AuthenticatedPiece } from "@/components/ui/authenticated-product-card";
-import { pieceBarcode } from "@/lib/barcode";
+import { pieceBarcode, productPageUrl } from "@/lib/barcode";
 
 /** The certificate surface (html-to-image) is heavy — load it only when opened. */
 const OrderCertificateModal = lazy(() =>
@@ -248,6 +248,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
           items: source.map((it) => {
             const p = products.find((x) => x.id === it.id) ?? products.find((x) => x.name === it.name);
             return {
+              id: it.id,
               name: p?.seoName || p?.model || it.name,
               code: p?.code || productCode,
               collection: p?.collection,
@@ -283,6 +284,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
       ? certificate.items
       : cart
         ? cart.items.map((it) => ({
+            id: it.id,
             name: it.name,
             code: products.find((p) => p.id === it.id)?.code || productCode,
             color: it.color,
@@ -292,6 +294,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   ).map((it: AuthenticatedPiece) => {
     const p = products.find((x) => x.code === it.code) ?? products.find((x) => x.name === it.name);
     return {
+      id: it.id ?? "",
       name: p?.seoName || p?.model || it.name,
       code: p?.code || it.code,
       collection: it.collection ?? p?.collection,
@@ -636,6 +639,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                 pieceIndex: 1,
                 date: new Date().toISOString(),
               })}
+              barcodeHref={certificate?.items?.[0]?.id ? productPageUrl(certificate.items[0].id) : undefined}
               trackHref={`/track-order?orderNumber=${encodeURIComponent(orderId)}&phone=${encodeURIComponent(submittedPhone || "")}`}
               onTrack={onClose}
               onContinue={onClose}

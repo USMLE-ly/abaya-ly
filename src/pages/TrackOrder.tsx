@@ -13,7 +13,7 @@ import { Barcode } from "@/components/ui/barcode";
 import type { CertificateData } from "@/components/certificate/OrderCertificate";
 import { OrderDetails } from "@/components/ui/order-details";
 import { LuxuryStatusBadge } from "@/components/ui/luxury-status-badge";
-import { pieceBarcode } from "@/lib/barcode";
+import { pieceBarcode, productPageUrl } from "@/lib/barcode";
 import { products } from "@/data/products";
 
 /** The certificate surface (html-to-image) is heavy — load it only when opened. */
@@ -103,6 +103,7 @@ function TrackOrderContent() {
           products.find((x) => x.id === it.id) ??
           products.find((x) => x.name === it.name);
         return {
+          id: it.id || "",
           name: p?.seoName || p?.model || it.name || order.name,
           code: p?.code || order.code,
           collection: p?.collection,
@@ -306,6 +307,7 @@ function TrackOrderContent() {
                         pieceIndex: 1,
                         date: order.createdAt,
                       })}
+                      href={productPageUrl(pieces[0].id)}
                       label="رمز التوثيق"
                       className="mx-auto"
                     />
@@ -352,6 +354,7 @@ function certificateFromOrder(order: any): CertificateData {
     items: raw.map((it: any) => {
       const p = products.find((x) => x.id === it.id) ?? products.find((x) => x.name === it.name);
       return {
+        id: it.id || "",
         name: p?.seoName || p?.model || it.name || order.name,
         code: p?.code || order.code,
         collection: p?.collection,
