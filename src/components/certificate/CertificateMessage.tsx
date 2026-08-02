@@ -1,5 +1,5 @@
 /** The brand's personal authenticity letter, addressed to the customer. */
-export function CertificateMessage({ name }: { name: string }) {
+export function CertificateMessage() {
   const paragraphs = [
     "شكرًا لاختيارك نادين.",
     "الأناقة الحقيقية لا تُقاس بعدد القطع، بل بجودة ما تختاره.",
@@ -15,7 +15,7 @@ export function CertificateMessage({ name }: { name: string }) {
         className="text-sm font-bold"
         style={{ color: "#9c7138", letterSpacing: "-0.01em" }}
       >
-        إلى {name || "عميلتنا"}،
+        إلى عميلتنا العزيزة،
       </p>
       <div className="mt-3 space-y-3 text-[13px] leading-7">
         {paragraphs.map((text, i) => (

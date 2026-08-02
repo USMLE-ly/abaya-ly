@@ -32,12 +32,10 @@ export function OrderCertificate({ data }: { data: CertificateData }) {
         variant="certificate"
         title="أصالة"
         recipient={data.customerName || "—"}
-        subtitle="حاصلة على شهادة أصالة من دار نادين للأزياء"
-        date={data.date || "—"}
         className="w-full"
       >
         <div className="space-y-6">
-          <CertificateMessage name={data.customerName} />
+          <CertificateMessage />
           <CustomerInformation
             name={data.customerName}
             orderId={data.orderId}

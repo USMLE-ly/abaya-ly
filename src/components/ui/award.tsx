@@ -234,18 +234,15 @@ export function Awards({
           </h1>
 
           <p className="mt-4 mb-1 text-xs text-fg-tertiary">تشهد هذه الوثيقة بأن</p>
-          <h2 className="mb-2 border-b border-line-subtle text-xl font-semibold tracking-tight text-[#c42855]">
+          <h2 className="mb-1 border-b border-line-subtle text-xl font-semibold tracking-tight text-[#c42855]">
             {recipient}
           </h2>
-
-          <p className="mb-1 text-xs text-fg-tertiary">{subtitle}</p>
           {description && (
             <p className="text-[11px] leading-relaxed text-fg-tertiary">{description}</p>
           )}
           <div className="mt-6 flex justify-center">
             <Award strokeWidth={1} className="h-4 w-4" />
           </div>
-          <div className="mt-2 text-xs">صدرت بتاريخ: {date}</div>
           {children && <div className="mt-6 text-right">{children}</div>}
         </div>
       </div>
