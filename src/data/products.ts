@@ -225,13 +225,13 @@ const base: BaseFields[] = [
   { id: "rouge-burgundy-gold-ring-gown", fabric: "جيرسي فاخر", category: "السهرة", price: 1050, originalPrice: 1150, badge: "جديد",
     colors: [{name:"بورغندي غامق",hex:"#500020"}], sizes: ["S","M","L","XL"], images: ["/outfits/rouge-burgundy-gold-ring-gown.jpg","/outfits/rouge-burgundy-gold-ring-gown-thumb.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "lumiere-cream-polka-halter", fabric: "شيفون فاخر", category: "السهرة", price: 720, originalPrice: 920, badge: "جديد",
-    colors: [{name:"كريمي فاتح",hex:"#F5ECD7"}], sizes: ["S","M","L","XL"], images: ["/outfits/lumiere-cream-polka-halter.jpg","/outfits/lumiere-cream-polka-halter-thumb.jpg"], rating: 4.8, reviewCount: 0 },
+    colors: [{name:"كريمي فاتح",hex:"#F5ECD7"},{name:"أزرق سماوي فاتح",hex:"#ADD8E6",linkTo:"azure-sky-polka-halter"},{name:"أسود",hex:"#000000",linkTo:"noir-black-polka-halter-midi"},{name:"وردي فاتح",hex:"#F4A7B9",linkTo:"botanique-pink-polka-midi"}], sizes: ["S","M","L","XL"], images: ["/outfits/lumiere-cream-polka-halter.jpg","/outfits/lumiere-cream-polka-halter-thumb.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "azure-sky-polka-halter", fabric: "شيفون خفيف", category: "السهرة", price: 680, originalPrice: 850, badge: "جديد",
-    colors: [{name:"أزرق سماوي فاتح",hex:"#ADD8E6"}], sizes: ["S","M","L","XL"], images: ["/outfits/azure-sky-polka-halter.jpg","/outfits/azure-sky-polka-halter-thumb.jpg"], rating: 4.8, reviewCount: 0 },
+    colors: [{name:"أزرق سماوي فاتح",hex:"#ADD8E6"},{name:"كريمي فاتح",hex:"#F5ECD7",linkTo:"lumiere-cream-polka-halter"},{name:"أسود",hex:"#000000",linkTo:"noir-black-polka-halter-midi"},{name:"وردي فاتح",hex:"#F4A7B9",linkTo:"botanique-pink-polka-midi"}], sizes: ["S","M","L","XL"], images: ["/outfits/azure-sky-polka-halter.jpg","/outfits/azure-sky-polka-halter-thumb.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "noir-black-polka-halter-midi", fabric: "شيفون خفيف", category: "السهرة", price: 750, originalPrice: 850, badge: "جديد",
-    colors: [{name:"أسود",hex:"#000000"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-black-polka-halter-midi.jpg","/outfits/noir-black-polka-halter-midi-thumb.jpg"], rating: 4.8, reviewCount: 0 },
+    colors: [{name:"أسود",hex:"#000000"},{name:"كريمي فاتح",hex:"#F5ECD7",linkTo:"lumiere-cream-polka-halter"},{name:"أزرق سماوي فاتح",hex:"#ADD8E6",linkTo:"azure-sky-polka-halter"},{name:"وردي فاتح",hex:"#F4A7B9",linkTo:"botanique-pink-polka-midi"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-black-polka-halter-midi.jpg","/outfits/noir-black-polka-halter-midi-thumb.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "botanique-pink-polka-midi", fabric: "شيفون ناعم", category: "السهرة", price: 780, originalPrice: 950, badge: "جديد",
-    colors: [{name:"وردي فاتح",hex:"#F4A7B9"}], sizes: ["S","M","L","XL"], images: ["/outfits/botanique-pink-polka-midi.jpg","/outfits/botanique-pink-polka-midi-thumb.jpg"], rating: 4.8, reviewCount: 0 },
+    colors: [{name:"وردي فاتح",hex:"#F4A7B9"},{name:"كريمي فاتح",hex:"#F5ECD7",linkTo:"lumiere-cream-polka-halter"},{name:"أزرق سماوي فاتح",hex:"#ADD8E6",linkTo:"azure-sky-polka-halter"},{name:"أسود",hex:"#000000",linkTo:"noir-black-polka-halter-midi"}], sizes: ["S","M","L","XL"], images: ["/outfits/botanique-pink-polka-midi.jpg","/outfits/botanique-pink-polka-midi-thumb.jpg"], rating: 4.8, reviewCount: 0 },
 
 
 ];

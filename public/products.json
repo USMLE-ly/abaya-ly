@@ -3515,6 +3515,21 @@
       {
         "name": "كريمي فاتح",
         "hex": "#F5ECD7"
+      },
+      {
+        "name": "أزرق سماوي فاتح",
+        "hex": "#ADD8E6",
+        "linkTo": "azure-sky-polka-halter"
+      },
+      {
+        "name": "أسود",
+        "hex": "#000000",
+        "linkTo": "noir-black-polka-halter-midi"
+      },
+      {
+        "name": "وردي فاتح",
+        "hex": "#F4A7B9",
+        "linkTo": "botanique-pink-polka-midi"
       }
     ],
     "sizes": [
@@ -3580,6 +3595,21 @@
       {
         "name": "أزرق سماوي فاتح",
         "hex": "#ADD8E6"
+      },
+      {
+        "name": "كريمي فاتح",
+        "hex": "#F5ECD7",
+        "linkTo": "lumiere-cream-polka-halter"
+      },
+      {
+        "name": "أسود",
+        "hex": "#000000",
+        "linkTo": "noir-black-polka-halter-midi"
+      },
+      {
+        "name": "وردي فاتح",
+        "hex": "#F4A7B9",
+        "linkTo": "botanique-pink-polka-midi"
       }
     ],
     "sizes": [
@@ -3645,6 +3675,21 @@
       {
         "name": "أسود",
         "hex": "#000000"
+      },
+      {
+        "name": "كريمي فاتح",
+        "hex": "#F5ECD7",
+        "linkTo": "lumiere-cream-polka-halter"
+      },
+      {
+        "name": "أزرق سماوي فاتح",
+        "hex": "#ADD8E6",
+        "linkTo": "azure-sky-polka-halter"
+      },
+      {
+        "name": "وردي فاتح",
+        "hex": "#F4A7B9",
+        "linkTo": "botanique-pink-polka-midi"
       }
     ],
     "sizes": [
@@ -3710,6 +3755,21 @@
       {
         "name": "وردي فاتح",
         "hex": "#F4A7B9"
+      },
+      {
+        "name": "كريمي فاتح",
+        "hex": "#F5ECD7",
+        "linkTo": "lumiere-cream-polka-halter"
+      },
+      {
+        "name": "أزرق سماوي فاتح",
+        "hex": "#ADD8E6",
+        "linkTo": "azure-sky-polka-halter"
+      },
+      {
+        "name": "أسود",
+        "hex": "#000000",
+        "linkTo": "noir-black-polka-halter-midi"
       }
     ],
     "sizes": [
