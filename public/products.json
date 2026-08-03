@@ -1755,6 +1755,11 @@
       {
         "name": "عنابي",
         "hex": "#722F37"
+      },
+      {
+        "name": "أسود",
+        "hex": "#000000",
+        "linkTo": "noir-black-silver-sparkle-bustier-midi"
       }
     ],
     "sizes": [
@@ -1817,6 +1822,11 @@
       {
         "name": "أسود",
         "hex": "#000000"
+      },
+      {
+        "name": "عنابي",
+        "hex": "#722F37",
+        "linkTo": "rouge-red-polka-sweetheart"
       }
     ],
     "sizes": [
