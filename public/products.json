@@ -2922,6 +2922,11 @@
       {
         "name": "أبيض",
         "hex": "#FFFFFF"
+      },
+      {
+        "name": "أسود",
+        "hex": "#000000",
+        "linkTo": "noir-halter-lace-mermaid"
       }
     ],
     "sizes": [
@@ -2986,6 +2991,11 @@
       {
         "name": "أسود",
         "hex": "#000000"
+      },
+      {
+        "name": "أبيض",
+        "hex": "#FFFFFF",
+        "linkTo": "lumiere-white-halter-lace-mermaid"
       }
     ],
     "sizes": [

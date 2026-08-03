@@ -206,9 +206,9 @@ const base: BaseFields[] = [
   { id: "maison-mocha-ruched-gown", fabric: "ساتان فاخر", category: "السهرة", price: 785, originalPrice: 1150, badge: "جديد",
     colors: [{name:"بني موكا",hex:"#7A5C4E"},{name:"أسود فحمي",hex:"#1C1C1C",linkTo:"noir-black-ruched-midi"},{name:"أزرق فاتح",hex:"#A8D8EA",linkTo:"azure-light-blue-gold-ring-midi"},{name:"وردي فاتح",hex:"#F8BBD0",linkTo:"botanique-pink-gold-ring-midi"}], sizes: ["S","M","L","XL"], images: ["/outfits/maison-mocha-ruched-gown.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "lumiere-white-halter-lace-mermaid", fabric: "ساتان مع دانتيل", category: "السهرة", price: 1150, originalPrice: 1480, badge: "جديد",
-    colors: [{name:"أبيض",hex:"#FFFFFF"}], sizes: ["S","M","L","XL"], images: ["/outfits/white-halter-lace-mermaid.jpg"], rating: 4.8, reviewCount: 0 },
+    colors: [{name:"أبيض",hex:"#FFFFFF"},{name:"أسود",hex:"#000000",linkTo:"noir-halter-lace-mermaid"}], sizes: ["S","M","L","XL"], images: ["/outfits/white-halter-lace-mermaid.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "noir-halter-lace-mermaid", fabric: "دانتيل", category: "السهرة", price: 1120, originalPrice: 1450, badge: "جديد",
-    colors: [{name:"أسود",hex:"#000000"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-halter-lace-mermaid.jpg"], rating: 4.8, reviewCount: 0 },
+    colors: [{name:"أسود",hex:"#000000"},{name:"أبيض",hex:"#FFFFFF",linkTo:"lumiere-white-halter-lace-mermaid"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-halter-lace-mermaid.jpg"], rating: 4.8, reviewCount: 0 },
 
   { id: "lumiere-white-lace-strapless", fabric: "قماش مطاطي مع شبك مطرز", category: "السهرة", price: 780, originalPrice: 980, badge: "جديد",
     colors: [{name:"أبيض",hex:"#FFFFFF"},{name:"أسود فاحم",hex:"#0A0A0A",linkTo:"noir-black-lace-collar-midi"}], sizes: ["S","M","L","XL"], images: ["/outfits/lumiere-white-lace-strapless.jpg"], rating: 4.8, reviewCount: 0 },
