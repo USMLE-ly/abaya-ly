@@ -7,7 +7,7 @@ import { OptimizedImage } from "@/components/OptimizedImage";
 import { Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 
 const FEATURED_ID = "rouge-heritage";
-const HERO_ID = "rouge-burgundy-mermaid";
+const HERO_ID = "rouge-burgundy-asymmetric-drape-mermaid";
 const CARD_IDS = ["rouge-burgundy-silk-fitted", "rouge-red-polka-sweetheart", "rouge-burgundy-off-shoulder"];
 
 const shortName = (name: string) => name.split(" • ").slice(2).join(" • ") || name;

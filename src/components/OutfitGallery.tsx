@@ -11,17 +11,17 @@ import { OptimizedImage } from "@/components/OptimizedImage";
 
 const newOutfitIds = [
   "lumiere-white-polka-midi",
-  "noir-navy-polka-belted",
-  "maison-gold-polka-belted",
+  "noir-black-polka-belted-midi",
+  "lumiere-yellow-polka-belted-midi",
   "rouge-burgundy-polka-vneck",
   "azure-sky-blue-polka-belted",
-  "lumiere-white-polka-off-shoulder",
+  "lumiere-white-polka-lapel-midi",
   "botanique-pink-polka-belted",
   "lumiere-cream-polka-maxi",
   "noir-black-polka-mandarin",
   "rouge-burgundy-off-shoulder",
   "noir-black-asymmetric-draped",
-  "botanique-pink-embroidered",
+  "rouge-halter-lace-satin-evening-gown",
 ];
 
 export function OutfitGallery() {
