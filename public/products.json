@@ -1687,6 +1687,11 @@
       {
         "name": "نبيذي غامق مع نقشة زاهية",
         "hex": "#2C1810"
+      },
+      {
+        "name": "وردي غامق",
+        "hex": "#D9A6B5",
+        "linkTo": "botanique-dark-pink-leopard-midi"
       }
     ],
     "sizes": [
@@ -2317,6 +2322,11 @@
       {
         "name": "وردي غامق",
         "hex": "#D9A6B5"
+      },
+      {
+        "name": "نبيذي غامق مع نقشة زاهية",
+        "hex": "#2C1810",
+        "linkTo": "rouge-black-abstract-bandeau"
       }
     ],
     "sizes": [
