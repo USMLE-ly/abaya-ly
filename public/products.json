@@ -1881,6 +1881,16 @@
       {
         "name": "أسود",
         "hex": "#1C1C1C"
+      },
+      {
+        "name": "نبيذي غامق",
+        "hex": "#4A0020",
+        "linkTo": "rouge-burgundy-silk-fitted"
+      },
+      {
+        "name": "بني غامق",
+        "hex": "#4A3C31",
+        "linkTo": "maison-brown-draped"
       }
     ],
     "sizes": [
@@ -1944,6 +1954,16 @@
       {
         "name": "بني غامق",
         "hex": "#4A3C31"
+      },
+      {
+        "name": "نبيذي غامق",
+        "hex": "#4A0020",
+        "linkTo": "rouge-burgundy-silk-fitted"
+      },
+      {
+        "name": "أسود",
+        "hex": "#1C1C1C",
+        "linkTo": "noir-black-asymmetric-draped"
       }
     ],
     "sizes": [
@@ -2007,6 +2027,16 @@
       {
         "name": "نبيذي غامق",
         "hex": "#4A0020"
+      },
+      {
+        "name": "أسود",
+        "hex": "#1C1C1C",
+        "linkTo": "noir-black-asymmetric-draped"
+      },
+      {
+        "name": "بني غامق",
+        "hex": "#4A3C31",
+        "linkTo": "maison-brown-draped"
       }
     ],
     "sizes": [
