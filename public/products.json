@@ -3320,6 +3320,16 @@
       {
         "name": "أسود",
         "hex": "#000000"
+      },
+      {
+        "name": "بني شوكولاتي غامق",
+        "hex": "#3B2117",
+        "linkTo": "maison-chocolate-gold-ring-midi"
+      },
+      {
+        "name": "بورغندي غامق",
+        "hex": "#500020",
+        "linkTo": "rouge-burgundy-gold-ring-gown"
       }
     ],
     "sizes": [
@@ -3385,6 +3395,16 @@
       {
         "name": "بني شوكولاتي غامق",
         "hex": "#3B2117"
+      },
+      {
+        "name": "أسود",
+        "hex": "#000000",
+        "linkTo": "noir-black-gold-asymmetric"
+      },
+      {
+        "name": "بورغندي غامق",
+        "hex": "#500020",
+        "linkTo": "rouge-burgundy-gold-ring-gown"
       }
     ],
     "sizes": [
@@ -3450,6 +3470,16 @@
       {
         "name": "بورغندي غامق",
         "hex": "#500020"
+      },
+      {
+        "name": "بني شوكولاتي غامق",
+        "hex": "#3B2117",
+        "linkTo": "maison-chocolate-gold-ring-midi"
+      },
+      {
+        "name": "أسود",
+        "hex": "#000000",
+        "linkTo": "noir-black-gold-asymmetric"
       }
     ],
     "sizes": [
