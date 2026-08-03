@@ -2196,6 +2196,11 @@
       {
         "name": "أسود مع دانتيل",
         "hex": "#1C1C1C"
+      },
+      {
+        "name": "قرمزي غامق",
+        "hex": "#800020",
+        "linkTo": "rouge-halter-lace-satin-evening-gown"
       }
     ],
     "sizes": [
@@ -2259,6 +2264,11 @@
       {
         "name": "قرمزي غامق",
         "hex": "#800020"
+      },
+      {
+        "name": "أسود مع دانتيل",
+        "hex": "#1C1C1C",
+        "linkTo": "noir-black-lace-halter"
       }
     ],
     "sizes": [
