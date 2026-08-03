@@ -3049,6 +3049,11 @@
       {
         "name": "أبيض",
         "hex": "#FFFFFF"
+      },
+      {
+        "name": "أسود فاحم",
+        "hex": "#0A0A0A",
+        "linkTo": "noir-black-lace-collar-midi"
       }
     ],
     "sizes": [
@@ -3113,6 +3118,11 @@
       {
         "name": "أسود فاحم",
         "hex": "#0A0A0A"
+      },
+      {
+        "name": "أبيض",
+        "hex": "#FFFFFF",
+        "linkTo": "lumiere-white-lace-strapless"
       }
     ],
     "sizes": [
