@@ -436,7 +436,7 @@ function ProductContent() {
                     to={color.linkTo ? `/product/${color.linkTo}` : "#"}
                     onMouseEnter={() => setHoveredColor(i)}
                     onMouseLeave={() => setHoveredColor(null)}
-                    className="relative size-4 appearance-none rounded-full border border-neutral-200"
+                    className="relative size-12 appearance-none rounded-full border border-neutral-200"
                     style={{ backgroundColor: color.hex }}
                     title={color.name}
                     aria-label={`${color.name} — اختيار اللون`}
@@ -444,7 +444,7 @@ function ProductContent() {
                     {i === activeColorIndex && (
                       <motion.span
                         layoutId={product.id}
-                        className="pointer-events-none absolute -left-[2px] -top-[2px] block size-[18px] rounded-full border border-gray-500"
+                        className="pointer-events-none absolute -left-[2px] -top-[2px] block size-[52px] rounded-full border border-gray-500"
                         transition={{ type: "spring", stiffness: 500, damping: 50, mass: 1 }}
                       />
                     )}
