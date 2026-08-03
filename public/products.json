@@ -2800,6 +2800,21 @@
       {
         "name": "أسود فحمي",
         "hex": "#1C1C1C"
+      },
+      {
+        "name": "أزرق فاتح",
+        "hex": "#A8D8EA",
+        "linkTo": "azure-light-blue-gold-ring-midi"
+      },
+      {
+        "name": "وردي فاتح",
+        "hex": "#F8BBD0",
+        "linkTo": "botanique-pink-gold-ring-midi"
+      },
+      {
+        "name": "بني موكا",
+        "hex": "#7A5C4E",
+        "linkTo": "maison-mocha-ruched-gown"
       }
     ],
     "sizes": [
@@ -2866,6 +2881,21 @@
       {
         "name": "بني موكا",
         "hex": "#7A5C4E"
+      },
+      {
+        "name": "أسود فحمي",
+        "hex": "#1C1C1C",
+        "linkTo": "noir-black-ruched-midi"
+      },
+      {
+        "name": "أزرق فاتح",
+        "hex": "#A8D8EA",
+        "linkTo": "azure-light-blue-gold-ring-midi"
+      },
+      {
+        "name": "وردي فاتح",
+        "hex": "#F8BBD0",
+        "linkTo": "botanique-pink-gold-ring-midi"
       }
     ],
     "sizes": [
@@ -3192,6 +3222,21 @@
       {
         "name": "وردي فاتح",
         "hex": "#F8BBD0"
+      },
+      {
+        "name": "أسود فحمي",
+        "hex": "#1C1C1C",
+        "linkTo": "noir-black-ruched-midi"
+      },
+      {
+        "name": "أزرق فاتح",
+        "hex": "#A8D8EA",
+        "linkTo": "azure-light-blue-gold-ring-midi"
+      },
+      {
+        "name": "بني موكا",
+        "hex": "#7A5C4E",
+        "linkTo": "maison-mocha-ruched-gown"
       }
     ],
     "sizes": [
@@ -3257,6 +3302,21 @@
       {
         "name": "أزرق فاتح",
         "hex": "#A8D8EA"
+      },
+      {
+        "name": "أسود فحمي",
+        "hex": "#1C1C1C",
+        "linkTo": "noir-black-ruched-midi"
+      },
+      {
+        "name": "وردي فاتح",
+        "hex": "#F8BBD0",
+        "linkTo": "botanique-pink-gold-ring-midi"
+      },
+      {
+        "name": "بني موكا",
+        "hex": "#7A5C4E",
+        "linkTo": "maison-mocha-ruched-gown"
       }
     ],
     "sizes": [
