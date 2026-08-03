@@ -197,9 +197,9 @@ const base: BaseFields[] = [
   { id: "lumiere-white-lace-maxi", fabric: "دانتيل", category: "السهرة", price: 1100, originalPrice: 1400, badge: "جديد",
     colors: [{name:"أبيض",hex:"#FFFFFF"}], sizes: ["S","M","L","XL"], images: ["/outfits/white-lace-maxi.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "rouge-wine-lace-mermaid", fabric: "دانتيل فاخر", category: "السهرة", price: 1050, originalPrice: 1380, badge: "جديد",
-    colors: [{name:"نبيذي",hex:"#800020"}], sizes: ["S","M","L","XL"], images: ["/outfits/wine-lace-mermaid.jpg"], rating: 4.8, reviewCount: 0 },
+    colors: [{name:"نبيذي",hex:"#800020"},{name:"أسود",hex:"#000000",linkTo:"noir-lace-button-mermaid"}], sizes: ["S","M","L","XL"], images: ["/outfits/wine-lace-mermaid.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "noir-lace-button-mermaid", fabric: "دانتيل مطرز", category: "السهرة", price: 1080, originalPrice: 1420, badge: "جديد",
-    colors: [{name:"أسود",hex:"#000000"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-lace-button-mermaid.jpg"], rating: 4.8, reviewCount: 0 },
+    colors: [{name:"أسود",hex:"#000000"},{name:"نبيذي",hex:"#800020",linkTo:"rouge-wine-lace-mermaid"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-lace-button-mermaid.jpg"], rating: 4.8, reviewCount: 0 },
 
   { id: "noir-black-ruched-midi", fabric: "جورجيت متماسك", category: "السهرة", price: 685, originalPrice: 750, badge: "جديد",
     colors: [{name:"أسود فحمي",hex:"#1C1C1C"},{name:"أزرق فاتح",hex:"#A8D8EA",linkTo:"azure-light-blue-gold-ring-midi"},{name:"وردي فاتح",hex:"#F8BBD0",linkTo:"botanique-pink-gold-ring-midi"},{name:"بني موكا",hex:"#7A5C4E",linkTo:"maison-mocha-ruched-gown"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-black-ruched-midi.jpg"], rating: 4.8, reviewCount: 0 },

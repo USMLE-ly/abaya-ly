@@ -2634,6 +2634,11 @@
       {
         "name": "نبيذي",
         "hex": "#800020"
+      },
+      {
+        "name": "أسود",
+        "hex": "#000000",
+        "linkTo": "noir-lace-button-mermaid"
       }
     ],
     "sizes": [
@@ -2697,6 +2702,11 @@
       {
         "name": "أسود",
         "hex": "#000000"
+      },
+      {
+        "name": "نبيذي",
+        "hex": "#800020",
+        "linkTo": "rouge-wine-lace-mermaid"
       }
     ],
     "sizes": [
