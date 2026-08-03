@@ -2380,6 +2380,11 @@
       {
         "name": "أسود فاحم",
         "hex": "#000000"
+      },
+      {
+        "name": "أحمر قاني",
+        "hex": "#B22222",
+        "linkTo": "rouge-red-crepe-gown"
       }
     ],
     "sizes": [
@@ -2443,6 +2448,11 @@
       {
         "name": "أحمر قاني",
         "hex": "#B22222"
+      },
+      {
+        "name": "أسود فاحم",
+        "hex": "#000000",
+        "linkTo": "noir-navy-off-shoulder-clasp-gown"
       }
     ],
     "sizes": [
