@@ -2508,6 +2508,11 @@
       {
         "name": "أسود",
         "hex": "#000000"
+      },
+      {
+        "name": "أبيض",
+        "hex": "#FFFFFF",
+        "linkTo": "lumiere-white-lace-maxi"
       }
     ],
     "sizes": [
@@ -2571,6 +2576,11 @@
       {
         "name": "أبيض",
         "hex": "#FFFFFF"
+      },
+      {
+        "name": "أسود",
+        "hex": "#000000",
+        "linkTo": "noir-lace-embroidered-midi"
       }
     ],
     "sizes": [
