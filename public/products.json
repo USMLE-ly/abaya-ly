@@ -2070,6 +2070,11 @@
       {
         "name": "أسود",
         "hex": "#000000"
+      },
+      {
+        "name": "عاجي",
+        "hex": "#C8BFAF",
+        "linkTo": "azure-white-polka-halter"
       }
     ],
     "sizes": [
@@ -2133,6 +2138,11 @@
       {
         "name": "عاجي",
         "hex": "#C8BFAF"
+      },
+      {
+        "name": "أسود",
+        "hex": "#000000",
+        "linkTo": "noir-black-polka-smocked-halter"
       }
     ],
     "sizes": [
