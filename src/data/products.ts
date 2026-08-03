@@ -203,8 +203,8 @@ const base: BaseFields[] = [
 
   { id: "noir-black-ruched-midi", fabric: "جورجيت متماسك", category: "السهرة", price: 685, originalPrice: 750, badge: "جديد",
     colors: [{name:"أسود فحمي",hex:"#1C1C1C"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-black-ruched-midi.jpg","/outfits/noir-black-ruched-midi-thumb.jpg"], rating: 4.8, reviewCount: 0 },
-  { id: "rouge-burgundy-ruched-gown", fabric: "ساتان فاخر", category: "السهرة", price: 785, originalPrice: 1150, badge: "جديد",
-    colors: [{name:"بني موكا",hex:"#7A5C4E"}], sizes: ["S","M","L","XL"], images: ["/outfits/rouge-burgundy-ruched-gown.jpg","/outfits/rouge-burgundy-ruched-gown-thumb.jpg"], rating: 4.8, reviewCount: 0 },
+  { id: "maison-mocha-ruched-gown", fabric: "ساتان فاخر", category: "السهرة", price: 785, originalPrice: 1150, badge: "جديد",
+    colors: [{name:"بني موكا",hex:"#7A5C4E"}], sizes: ["S","M","L","XL"], images: ["/outfits/maison-mocha-ruched-gown.jpg","/outfits/maison-mocha-ruched-gown-thumb.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "lumiere-white-halter-lace-mermaid", fabric: "ساتان مع دانتيل", category: "السهرة", price: 1150, originalPrice: 1480, badge: "جديد",
     colors: [{name:"أبيض",hex:"#FFFFFF"}], sizes: ["S","M","L","XL"], images: ["/outfits/white-halter-lace-mermaid.jpg","/outfits/white-halter-lace-mermaid-thumb.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "noir-halter-lace-mermaid", fabric: "دانتيل", category: "السهرة", price: 1120, originalPrice: 1450, badge: "جديد",
@@ -908,7 +908,7 @@ const meta: Record<string, Meta> = {
     slug: "noir-atelier-eleanora-فستان-سهرة-أسود-غير-متماثل",
     tags: ["سهرة","أسود","ميدي","غير-متماثل","كتف-واحدة","رقبة-مرتفعة","تجعيدات","تفاصيل-ذهبية","جورجيت","محدد-الجسم","نسائي","مناسبات","Noir-Atelier","Eleanora","فاخر","راقي","مساء","كوكتيل","عصري","خريف","شتاء","إطلالة-معمارية"],
   },
-  "rouge-burgundy-ruched-gown": {
+  "maison-mocha-ruched-gown": {
     code: "MD26-06",
     collection: "Maison d'Or", model: "Vivienne",
     descriptor: "فستان سهرة بني موكا بقصة ضيقة ورقبة جانبية وتفاصيل مجمعة بمشبك ذهبي",

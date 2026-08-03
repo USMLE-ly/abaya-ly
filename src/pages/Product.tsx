@@ -52,6 +52,12 @@ const COLOR_FAMILIES: Record<string, string[]> = {
 const SILHOUETTE_TAGS = ["ميدي", "ماكسي", "قصيرة", "طويلة", "محدّدة الخصر", "واسعة", "محتشمة"];
 const STYLE_TAGS = ["سهرة", "كاجوال", "رسمي", "نهاري", "مسائي", "مناسبات"];
 
+// Old product ids → current ids, so permalinks shared before a rename
+// keep working instead of landing on "المنتج غير موجود".
+const LEGACY_PRODUCT_REDIRECTS: Record<string, string> = {
+  "rouge-burgundy-ruched-gown": "maison-mocha-ruched-gown",
+};
+
 function getColorFamily(colorName: string): string | null {
   for (const [family, names] of Object.entries(COLOR_FAMILIES)) {
     if (names.some(n => colorName.includes(n) || n.includes(colorName))) return family;
@@ -237,6 +243,13 @@ function ProductContent() {
   const navigate = useNavigate();
   const catalog = useCatalogProducts();
   const product = catalog.find((p) => p.id === id) ?? null;
+
+  useEffect(() => {
+    if (!product && id && LEGACY_PRODUCT_REDIRECTS[id]) {
+      navigate(`/product/${LEGACY_PRODUCT_REDIRECTS[id]}`, { replace: true });
+    }
+  }, [id, product, navigate]);
+
   const [activeImage, setActiveImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
