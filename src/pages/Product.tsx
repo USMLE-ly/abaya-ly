@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "motion/react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Tag, Ruler, Clock } from "lucide-react";
 import { BookingModal } from "@/components/BookingModal";
@@ -251,6 +252,7 @@ function ProductContent() {
   }, [id, product, navigate]);
 
   const [activeImage, setActiveImage] = useState(0);
+  const [hoveredColor, setHoveredColor] = useState<number | null>(null);
   const [selectedSize, setSelectedSize] = useState(0);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
@@ -301,6 +303,7 @@ function ProductContent() {
   const liveStock = stockMap[product.id] ?? product.stock;
   const isSoldOut = liveStock === 0;
   const primaryColor = product.colors[0] ?? { name: "غير محدد", hex: "transparent" };
+  const activeColorIndex = hoveredColor ?? 0;
   const descriptor = product.name.split(" • ").slice(2).join(" • ") ?? product.name;
   const related = getRelatedProducts(product, 10);
 
@@ -431,10 +434,21 @@ function ProductContent() {
                   <Link
                     key={i}
                     to={color.linkTo ? `/product/${color.linkTo}` : "#"}
-                    className={`w-8 h-8 rounded-full border-2 transition-all ${i === 0 ? "border-primary ring-2 ring-primary/20" : "border-line-subtle hover:border-line-default"}`}
+                    onMouseEnter={() => setHoveredColor(i)}
+                    onMouseLeave={() => setHoveredColor(null)}
+                    className="relative size-4 appearance-none rounded-full border border-neutral-200"
                     style={{ backgroundColor: color.hex }}
                     title={color.name}
-                  />
+                    aria-label={`${color.name} — اختيار اللون`}
+                  >
+                    {i === activeColorIndex && (
+                      <motion.span
+                        layoutId={product.id}
+                        className="pointer-events-none absolute -left-[2px] -top-[2px] block size-[18px] rounded-full border border-gray-500"
+                        transition={{ type: "spring", stiffness: 500, damping: 50, mass: 1 }}
+                      />
+                    )}
+                  </Link>
                 ))}
               </div>
             </div>
