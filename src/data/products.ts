@@ -201,10 +201,10 @@ const base: BaseFields[] = [
   { id: "noir-lace-button-mermaid", fabric: "دانتيل مطرز", category: "السهرة", price: 1080, originalPrice: 1420, badge: "جديد",
     colors: [{name:"أسود",hex:"#000000"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-lace-button-mermaid.jpg","/outfits/noir-lace-button-mermaid-thumb.jpg"], rating: 4.8, reviewCount: 0 },
 
-  { id: "lumiere-white-fitted-embroidered-mini", fabric: "جورجيت متماسك", category: "السهرة", price: 685, originalPrice: 750, badge: "جديد",
-    colors: [{name:"أسود فحمي",hex:"#1C1C1C"}], sizes: ["S","M","L","XL"], images: ["/outfits/lumiere-white-fitted-embroidered-mini.jpg","/outfits/lumiere-white-fitted-embroidered-mini-thumb.jpg"], rating: 4.8, reviewCount: 0 },
-  { id: "noir-embroidered-short", fabric: "ساتان فاخر", category: "السهرة", price: 785, originalPrice: 1150, badge: "جديد",
-    colors: [{name:"بورغندي غامق",hex:"#4A1528"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-embroidered-short.jpg","/outfits/noir-embroidered-short-thumb.jpg"], rating: 4.8, reviewCount: 0 },
+  { id: "noir-black-ruched-midi", fabric: "جورجيت متماسك", category: "السهرة", price: 685, originalPrice: 750, badge: "جديد",
+    colors: [{name:"أسود فحمي",hex:"#1C1C1C"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-black-ruched-midi.jpg","/outfits/noir-black-ruched-midi-thumb.jpg"], rating: 4.8, reviewCount: 0 },
+  { id: "rouge-burgundy-ruched-gown", fabric: "ساتان فاخر", category: "السهرة", price: 785, originalPrice: 1150, badge: "جديد",
+    colors: [{name:"بورغندي غامق",hex:"#4A1528"}], sizes: ["S","M","L","XL"], images: ["/outfits/rouge-burgundy-ruched-gown.jpg","/outfits/rouge-burgundy-ruched-gown-thumb.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "lumiere-white-halter-lace-mermaid", fabric: "ساتان مع دانتيل", category: "السهرة", price: 1150, originalPrice: 1480, badge: "جديد",
     colors: [{name:"أبيض",hex:"#FFFFFF"}], sizes: ["S","M","L","XL"], images: ["/outfits/white-halter-lace-mermaid.jpg","/outfits/white-halter-lace-mermaid-thumb.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "noir-halter-lace-mermaid", fabric: "دانتيل", category: "السهرة", price: 1120, originalPrice: 1450, badge: "جديد",
@@ -214,12 +214,12 @@ const base: BaseFields[] = [
     colors: [{name:"أبيض",hex:"#FFFFFF"}], sizes: ["S","M","L","XL"], images: ["/outfits/lumiere-white-lace-strapless.jpg","/outfits/lumiere-white-lace-strapless-thumb.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "noir-black-lace-collar-midi", fabric: "ساتان مع دانتيل", category: "السهرة", price: 890, originalPrice: 1150, badge: "جديد",
     colors: [{name:"أسود فاحم",hex:"#0A0A0A"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-black-lace-collar-midi.jpg","/outfits/noir-black-lace-collar-midi-thumb.jpg"], rating: 4.8, reviewCount: 0 },
-  { id: "lumiere-ivory-keyhole-mermaid", fabric: "جيرسي ناعم", category: "السهرة", price: 720, originalPrice: 950, badge: "جديد",
-    colors: [{name:"وردي فاتح",hex:"#F8BBD0"}], sizes: ["S","M","L","XL"], images: ["/outfits/lumiere-ivory-keyhole-mermaid.jpg","/outfits/lumiere-ivory-keyhole-mermaid-thumb.jpg"], rating: 4.8, reviewCount: 0 },
-  { id: "noir-black-keyhole-lace-mermaid", fabric: "جيرسي مطاطي ناعم", category: "السهرة", price: 720, originalPrice: 920, badge: "جديد",
-    colors: [{name:"أزرق فاتح",hex:"#A8D8EA"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-black-keyhole-lace-mermaid.jpg","/outfits/noir-black-keyhole-lace-mermaid-thumb.jpg"], rating: 4.8, reviewCount: 0 },
-  { id: "azure-navy-gold-asymmetric", fabric: "جورجيت فاخر", category: "السهرة", price: 890, originalPrice: 1150, badge: "جديد",
-    colors: [{name:"أسود",hex:"#000000"}], sizes: ["S","M","L","XL"], images: ["/outfits/azure-navy-gold-asymmetric.jpg","/outfits/azure-navy-gold-asymmetric-thumb.jpg"], rating: 4.8, reviewCount: 0 },
+  { id: "botanique-pink-gold-ring-midi", fabric: "جيرسي ناعم", category: "السهرة", price: 720, originalPrice: 950, badge: "جديد",
+    colors: [{name:"وردي فاتح",hex:"#F8BBD0"}], sizes: ["S","M","L","XL"], images: ["/outfits/botanique-pink-gold-ring-midi.jpg","/outfits/botanique-pink-gold-ring-midi-thumb.jpg"], rating: 4.8, reviewCount: 0 },
+  { id: "azure-light-blue-gold-ring-midi", fabric: "جيرسي مطاطي ناعم", category: "السهرة", price: 720, originalPrice: 920, badge: "جديد",
+    colors: [{name:"أزرق فاتح",hex:"#A8D8EA"}], sizes: ["S","M","L","XL"], images: ["/outfits/azure-light-blue-gold-ring-midi.jpg","/outfits/azure-light-blue-gold-ring-midi-thumb.jpg"], rating: 4.8, reviewCount: 0 },
+  { id: "noir-black-gold-asymmetric", fabric: "جورجيت فاخر", category: "السهرة", price: 890, originalPrice: 1150, badge: "جديد",
+    colors: [{name:"أسود",hex:"#000000"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-black-gold-asymmetric.jpg","/outfits/noir-black-gold-asymmetric-thumb.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "maison-chocolate-gold-ring-midi", fabric: "جيرسيه مطاطي", category: "السهرة", price: 890, originalPrice: 1150, badge: "جديد",
     colors: [{name:"بني شوكولاتي غامق",hex:"#3B2117"}], sizes: ["S","M","L","XL"], images: ["/outfits/maison-chocolate-gold-ring-midi.jpg","/outfits/maison-chocolate-gold-ring-midi-thumb.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "rouge-burgundy-gold-ring-gown", fabric: "جيرسي فاخر", category: "السهرة", price: 1050, originalPrice: 1150, badge: "جديد",
@@ -892,7 +892,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","أسود","ماكسي","دانتيل","حورية-البحر","أزرار-أمامية","أكمام-طويلة","مطرز","نسائي","مناسبات","Noir-Atelier","Waad","فاخر","راقي","مساء","حفلات","غامض","خريف","شتاء","إطلالة-ملكية"],
   },
 
-  "lumiere-white-fitted-embroidered-mini": {
+  "noir-black-ruched-midi": {
     code: "NA26-14",
     collection: "Noir Atelier", model: "Eleanora",
     descriptor: "فستان سهرة أسود غير متماثل بأكمام معدومة ورقبة مرتفعة وتفاصيل ذهبية عند الخصر",
@@ -908,7 +908,7 @@ const meta: Record<string, Meta> = {
     slug: "noir-atelier-eleanora-فستان-سهرة-أسود-غير-متماثل",
     tags: ["سهرة","أسود","ميدي","غير-متماثل","كتف-واحدة","رقبة-مرتفعة","تجعيدات","تفاصيل-ذهبية","جورجيت","محدد-الجسم","نسائي","مناسبات","Noir-Atelier","Eleanora","فاخر","راقي","مساء","كوكتيل","عصري","خريف","شتاء","إطلالة-معمارية"],
   },
-  "noir-embroidered-short": {
+  "rouge-burgundy-ruched-gown": {
     code: "RH26-12",
     collection: "Rouge Héritage", model: "Vivienne",
     descriptor: "فستان سهرة بورغندي غامق بقصة ضيقة ورقبة جانبية وتفاصيل مجمعة بمشبك ذهبي",
@@ -989,7 +989,7 @@ const meta: Record<string, Meta> = {
     slug: "noir-atelier-yasmine-فستان-سهرة-أسود-ياقة-دانتيل",
     tags: ["سهرة","أسود","ميدي","ياقة-دانتيل","دانتيل","ساتان","محدد-الجسم","نسائي","مناسبات","Noir-Atelier","Yasmine","فاخر","راقي","مساء","حفلات","ملكي","أنيق","خريف","شتاء","إطلالة-مسائية"],
   },
-  "lumiere-ivory-keyhole-mermaid": {
+  "botanique-pink-gold-ring-midi": {
     code: "BT26-06",
     collection: "Botanique", model: "Nour",
     descriptor: "فستان سهرة وردي فاتح بقصة ضيقة ورقبة مائلة بمشبك ذهبي وتفاصيل مجمعة",
@@ -1005,7 +1005,7 @@ const meta: Record<string, Meta> = {
     slug: "botanique-nour-فستان-سهرة-وردي-فاتح",
     tags: ["سهرة","وردي-فاتح","ميدي","رقبة-مائلة","مشبك-ذهبي","ثنيات","جيرسي","محدد-الجسم","ساتر-جانبي","نسائي","مناسبات","Botanique","Nour","فاخر","راقي","مساء","حفلات","رقيق","ربيع","صيف","إطلالة-أنثوية"],
   },
-  "noir-black-keyhole-lace-mermaid": {
+  "azure-light-blue-gold-ring-midi": {
     code: "AZ26-07",
     collection: "Azure", model: "Jana",
     descriptor: "فستان سهرة أزرق فاتح بقصة ضيقة ورقبة مكشوفة بتأثير الدراينغ وحلقة ذهبية عند الخصر",
@@ -1022,7 +1022,7 @@ const meta: Record<string, Meta> = {
     tags: ["سهرة","أزرق-فاتح","بودري","ميدي","رقبة-مكشوفة","دراينغ","حلقة-ذهبية","جيرسي","محدد-الجسم","نسائي","مناسبات","Azure","Jana","فاخر","راقي","مساء","حفلات","ناعم","ربيع","صيف","إطلالة-رقيقة"],
   },
 
-  "azure-navy-gold-asymmetric": {
+  "noir-black-gold-asymmetric": {
     code: "NA26-16",
     collection: "Noir Atelier", model: "Selene",
     descriptor: "فستان سهرة أسود بقصة ملفوفة ورقبة غير متماثلة على كتف واحدة وتفاصيل ذهبية",

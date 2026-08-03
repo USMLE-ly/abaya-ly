@@ -2776,7 +2776,7 @@
     "reviewCount": 0
   },
   {
-    "id": "lumiere-white-fitted-embroidered-mini",
+    "id": "noir-black-ruched-midi",
     "name": "Noir Atelier • Eleanora • فستان سهرة أسود غير متماثل بأكمام معدومة ورقبة مرتفعة وتفاصيل ذهبية عند الخصر • إصدار 2026",
     "price": 685,
     "originalPrice": 750,
@@ -2785,8 +2785,8 @@
     "fabric": "جورجيت متماسك",
     "category": "السهرة",
     "images": [
-      "/outfits/lumiere-white-fitted-embroidered-mini.jpg",
-      "/outfits/lumiere-white-fitted-embroidered-mini-thumb.jpg"
+      "/outfits/noir-black-ruched-midi.jpg",
+      "/outfits/noir-black-ruched-midi-thumb.jpg"
     ],
     "colors": [
       {
@@ -2842,7 +2842,7 @@
     "reviewCount": 0
   },
   {
-    "id": "noir-embroidered-short",
+    "id": "rouge-burgundy-ruched-gown",
     "name": "Rouge Héritage • Vivienne • فستان سهرة بورغندي غامق بقصة ضيقة ورقبة جانبية وتفاصيل مجمعة بمشبك ذهبي • إصدار 2026",
     "price": 785,
     "originalPrice": 1150,
@@ -2851,8 +2851,8 @@
     "fabric": "ساتان فاخر",
     "category": "السهرة",
     "images": [
-      "/outfits/noir-embroidered-short.jpg",
-      "/outfits/noir-embroidered-short-thumb.jpg"
+      "/outfits/rouge-burgundy-ruched-gown.jpg",
+      "/outfits/rouge-burgundy-ruched-gown-thumb.jpg"
     ],
     "colors": [
       {
@@ -3166,7 +3166,7 @@
     "reviewCount": 0
   },
   {
-    "id": "lumiere-ivory-keyhole-mermaid",
+    "id": "botanique-pink-gold-ring-midi",
     "name": "Botanique • Nour • فستان سهرة وردي فاتح بقصة ضيقة ورقبة مائلة بمشبك ذهبي وتفاصيل مجمعة • إصدار 2026",
     "price": 720,
     "originalPrice": 950,
@@ -3175,8 +3175,8 @@
     "fabric": "جيرسي ناعم",
     "category": "السهرة",
     "images": [
-      "/outfits/lumiere-ivory-keyhole-mermaid.jpg",
-      "/outfits/lumiere-ivory-keyhole-mermaid-thumb.jpg"
+      "/outfits/botanique-pink-gold-ring-midi.jpg",
+      "/outfits/botanique-pink-gold-ring-midi-thumb.jpg"
     ],
     "colors": [
       {
@@ -3231,7 +3231,7 @@
     "reviewCount": 0
   },
   {
-    "id": "noir-black-keyhole-lace-mermaid",
+    "id": "azure-light-blue-gold-ring-midi",
     "name": "Azure • Jana • فستان سهرة أزرق فاتح بقصة ضيقة ورقبة مكشوفة بتأثير الدراينغ وحلقة ذهبية عند الخصر • إصدار 2026",
     "price": 720,
     "originalPrice": 920,
@@ -3240,8 +3240,8 @@
     "fabric": "جيرسي مطاطي ناعم",
     "category": "السهرة",
     "images": [
-      "/outfits/noir-black-keyhole-lace-mermaid.jpg",
-      "/outfits/noir-black-keyhole-lace-mermaid-thumb.jpg"
+      "/outfits/azure-light-blue-gold-ring-midi.jpg",
+      "/outfits/azure-light-blue-gold-ring-midi-thumb.jpg"
     ],
     "colors": [
       {
@@ -3296,7 +3296,7 @@
     "reviewCount": 0
   },
   {
-    "id": "azure-navy-gold-asymmetric",
+    "id": "noir-black-gold-asymmetric",
     "name": "Noir Atelier • Selene • فستان سهرة أسود بقصة ملفوفة ورقبة غير متماثلة على كتف واحدة وتفاصيل ذهبية • إصدار 2026",
     "price": 890,
     "originalPrice": 1150,
@@ -3305,8 +3305,8 @@
     "fabric": "جورجيت فاخر",
     "category": "السهرة",
     "images": [
-      "/outfits/azure-navy-gold-asymmetric.jpg",
-      "/outfits/azure-navy-gold-asymmetric-thumb.jpg"
+      "/outfits/noir-black-gold-asymmetric.jpg",
+      "/outfits/noir-black-gold-asymmetric-thumb.jpg"
     ],
     "colors": [
       {
