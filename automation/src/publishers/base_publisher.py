@@ -35,14 +35,40 @@ class BasePublisher(ABC):
         driver.implicitly_wait(10)
         return driver
 
+    def _normalize_cookie(self, raw: dict) -> dict | None:
+        """Map common export formats (Cookie-Editor/EditThisCookie) to Selenium's add_cookie."""
+        name = raw.get("name")
+        value = raw.get("value")
+        if not name or value is None:
+            return None
+        cookie = {"name": name, "value": value, "path": raw.get("path", "/")}
+        if raw.get("domain"):
+            cookie["domain"] = raw["domain"]
+        if raw.get("secure"):
+            cookie["secure"] = True
+        expiry = raw.get("expirationDate") or raw.get("expiry")
+        if expiry:
+            cookie["expiry"] = int(expiry)
+        return cookie
+
     def _load_cookies(self) -> bool:
-        """Load cookies for this platform. Returns True if cookies loaded."""
+        """Load cookies for this platform. Returns True if cookies loaded.
+
+        Selenium requires the browser to already be on the cookie's domain before
+        add_cookie() succeeds, so we park on the platform host first.
+        """
         cookies = load_cookies(self.PLATFORM_NAME)
         if not cookies:
             print(f"  [!] No cookies found for {self.PLATFORM_NAME}")
             return False
 
-        for cookie in cookies:
+        self.driver.get(self.HOME_URL)
+        time.sleep(2)
+
+        for raw in cookies:
+            cookie = self._normalize_cookie(raw)
+            if not cookie:
+                continue
             try:
                 self.driver.add_cookie(cookie)
             except Exception:

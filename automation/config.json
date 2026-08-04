@@ -11,7 +11,11 @@
   },
   "posting": {
     "frequency": "3-5 per day",
-    "time_windows": ["09:00-11:00", "14:00-16:00", "19:00-22:00"],
+    "time_windows": [
+      "09:00-11:00",
+      "14:00-16:00",
+      "19:00-22:00"
+    ],
     "platform_delay_min": 5,
     "platform_delay_max": 15
   },
@@ -41,6 +45,17 @@
     "facebook": {
       "enabled": true,
       "cookies_file": "cookies/facebook.json"
+    },
+    "snapchat": {
+      "enabled": true,
+      "manual": true
     }
-  }
+  },
+  "hashtags_en": [
+    "#Nadine",
+    "#TopDress",
+    "#Benghazi",
+    "#Libya",
+    "#LuxuryFashion"
+  ]
 }

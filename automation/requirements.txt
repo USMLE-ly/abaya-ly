@@ -3,3 +3,5 @@ webdriver-manager>=4.0.0
 schedule>=1.2.0
 requests>=2.31.0
 termcolor>=2.4.0
+
+instagrapi>=2.0.0

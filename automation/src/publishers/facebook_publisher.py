@@ -11,6 +11,7 @@ class FacebookPublisher(BasePublisher):
     """Publish videos to Facebook Pages using cookie-based Selenium."""
 
     PLATFORM_NAME = "facebook"
+    HOME_URL = "https://www.facebook.com/"
 
     def __init__(self, headless: bool = True, page_url: str = ""):
         super().__init__(headless)

@@ -11,6 +11,7 @@ class InstagramPublisher(BasePublisher):
     """Publish Reels to Instagram using cookie-based Selenium."""
 
     PLATFORM_NAME = "instagram"
+    HOME_URL = "https://www.instagram.com/"
     UPLOAD_URL = "https://www.instagram.com/reels/upload/"
 
     def publish(self, video_path: str, caption: str) -> bool:
@@ -18,6 +19,32 @@ class InstagramPublisher(BasePublisher):
             print(f"  [!] Video not found: {video_path}")
             return False
 
+        # Preferred path: instagrapi with the sessionid cookie (stable, no browser).
+        sessionid = self._get_sessionid()
+        if sessionid:
+            try:
+                return self._publish_instagrapi(video_path, caption, sessionid)
+            except Exception as e:
+                print(f"  [!] instagrapi failed ({e}) — falling back to Selenium")
+
+        return self._publish_selenium(video_path, caption)
+
+    def _get_sessionid(self) -> str | None:
+        from cookie_manager import load_cookies
+        for raw in load_cookies(self.PLATFORM_NAME):
+            if raw.get("name") == "sessionid" and raw.get("value"):
+                return raw["value"]
+        return None
+
+    def _publish_instagrapi(self, video_path: str, caption: str, sessionid: str) -> bool:
+        from instagrapi import Client
+        client = Client()
+        client.login_by_sessionid(sessionid)
+        media = client.clip_upload(os.path.abspath(video_path), caption[:2200])
+        print(f"  [✓] Instagram posted → https://www.instagram.com/reel/{media.pk}/")
+        return True
+
+    def _publish_selenium(self, video_path: str, caption: str) -> bool:
         self.driver.get("https://www.instagram.com/")
         time.sleep(3)
 

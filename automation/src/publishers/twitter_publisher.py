@@ -11,6 +11,7 @@ class TwitterPublisher(BasePublisher):
     """Publish video tweets to Twitter/X using cookie-based Selenium."""
 
     PLATFORM_NAME = "twitter"
+    HOME_URL = "https://x.com/"
     COMPOSE_URL = "https://x.com/compose/post"
 
     def publish(self, video_path: str, caption: str) -> bool:

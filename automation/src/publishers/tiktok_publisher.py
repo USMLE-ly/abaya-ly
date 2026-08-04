@@ -11,6 +11,7 @@ class TikTokPublisher(BasePublisher):
     """Publish videos to TikTok using cookie-based Selenium."""
 
     PLATFORM_NAME = "tiktok"
+    HOME_URL = "https://www.tiktok.com/"
     UPLOAD_URL = "https://www.tiktok.com/creator#/upload?scene=creator_center"
 
     def publish(self, video_path: str, caption: str) -> bool:

@@ -9,7 +9,8 @@ from caption_generator import (
     get_all_products,
     find_product_by_name,
     find_product_by_id,
-    generate_caption,
+    generate_structured_caption,
+    adapt_caption,
 )
 from cookie_manager import has_valid_cookies
 from scheduler import (
@@ -23,6 +24,7 @@ from publishers import (
     InstagramPublisher,
     TwitterPublisher,
     FacebookPublisher,
+    SnapchatPublisher,
 )
 
 
@@ -105,8 +107,8 @@ def select_video():
 
 
 def generate_and_show(product):
-    """Generate caption and show for approval."""
-    caption = generate_caption(product)
+    """Generate caption (hook → bullets → URL → hashtags) and show for approval."""
+    caption = generate_structured_caption(product)
 
     print("\n" + "=" * 60)
     print("📝 GENERATED CAPTION:")
@@ -167,7 +169,8 @@ def post_to_all(video_path, caption, product):
 
         print(f"\n  📤 Publishing to {platform_name}...")
         publisher = publisher_class(headless=True)
-        success = publisher.run(video_path, caption)
+        platform_caption = adapt_caption(caption, platform_name)
+        success = publisher.run(video_path, platform_caption)
 
         status = "success" if success else "failed"
         log_post(platform_name, video_path, product["id"], status)
@@ -188,6 +191,15 @@ def post_to_all(video_path, caption, product):
             status = "success" if success else "failed"
             log_post("facebook", video_path, product["id"], status)
             results["facebook"] = success
+
+    # Snapchat — no web upload path; publisher writes the caption for manual posting
+    sc_conf = platforms_config.get("snapchat", {})
+    if sc_conf.get("enabled", True):
+        print(f"\n  📤 Preparing snapchat caption...")
+        publisher = SnapchatPublisher()
+        success = publisher.run(video_path, adapt_caption(caption, "snapchat"))
+        log_post("snapchat", video_path, product["id"], "manual")
+        results["snapchat"] = success
 
     return results
 
@@ -244,7 +256,7 @@ def main():
     elif choice == "3":
         from cookie_manager import has_valid_cookies
         print("\n🔐 Cookie Status:")
-        for platform in ["tiktok", "instagram", "twitter", "facebook"]:
+        for platform in ["tiktok", "instagram", "twitter", "facebook", "snapchat"]:
             status = "✅ Valid" if has_valid_cookies(platform) else "❌ Missing"
             print(f"  {platform}: {status}")
 
