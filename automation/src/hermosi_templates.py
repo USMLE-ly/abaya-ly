@@ -44,6 +44,22 @@ HOOK_TEMPLATES = [
     "كل مرة تشترين فستان جديد وتبان عليه إطلالة قديمة؟",
     "كل مرة تلبسين شي وتحسين إنه مو أنتِ؟",
     "كل مرة تدورين على التصميم الصح وما تلقينه؟",
+    # ── Hormozi frameworks ($100M Leads) ──
+    # Curiosity gap
+    "السبب اللي يخلّي كل وحدة تسألك وين لقيتي هالفسطان؟",
+    "السر اللي ما تقوله مصممات الأزياء عن إطلالات السهرة",
+    # Specific claim / number (lists & steps)
+    "3 أسباب تخليك تختارين هذا التصميم الليلة",
+    "5 تفاصيل تخلي هذا الفستان يخطف الأنظار",
+    # How-to / transformation
+    "وين لو قلتلك إن فيه فستان يخلّي كل العيون عليك بدون مجهود؟",
+    "كيف تكونين الأشيك بالمناسبة بدون ما تتكلمين",
+    # Story opener
+    "تخيّلي تدخلين المناسبة وكل العيون عليك…",
+    "تخيّلي تلبسين قطعة تجمع الأناقة والفخامة بثقة كاملة",
+    # Pattern interrupt
+    "كذبوا عليكي إن الفستان الغالي لازم يكون أحلى",
+    "ما تدرين إن الفستان الصح يغيّر إطلالة كاملة",
 ]
 
 
@@ -65,6 +81,14 @@ def generate_story(product: dict) -> str:
         f"تخيّلي إطلالة تجمع بين {highlights[0] if highlights else 'الأناقة'} و{highlights[1] if len(highlights) > 1 else 'الفخامة'}. {name} من نادين يعطيك هالشي بالضبط.",
     ]
 
+
+    # ── Hormozi value equation: dream outcome + likelihood + low effort ──
+    story_templates += [
+        f"تخيّلي {name} على إطلالتك بالمناسبة، والكل يسألك وين لقيتيه. {highlights[0] if highlights else 'تصميم يخطف الأنظار.'}",
+        f"{name} من نادين — خامة فاخرة وترقّي ينبع من التفاصيل. {highlights[1] if len(highlights) > 1 else 'قطعة تجمع بين الأناقة والفخامة.'}",
+        f"من مجموعة {product.get('collection', 'نادين')} — {highlights[0] if highlights else 'تصميم يليق بكِ'}. شحن مجاني خلال 3-5 أيام، واطلبيها بضغطة زر.",
+    ]
+
     return random.choice(story_templates).strip()
 
 
@@ -84,6 +108,19 @@ def generate_offer(product: dict) -> str:
         f" {price} د.ل بس عشان تكونين الأشيك بالمناسبة. مو بس فستان، هو ثقة تلبسينها.",
     ]
 
+
+    # ── Hormozi grand slam: value × exclusivity × price anchor ──
+    original = product.get("originalPrice")
+    if original and original > price:
+        offer_templates += [
+            f"بس {price} د.ل بدل {original} د.ل — إصدار 2026 حصري من نادين. القيمة لا تُقدّر بثمن.",
+            f"بـ {price} د.ل بدل {original} د.ل، تاخذين قطعة {highlights[0] if highlights else 'أنيقة'} من مجموعة حصرية. استثمار في إطلالتك.",
+        ]
+    else:
+        offer_templates += [
+            f"بس {price} د.ل والقطعة هذي تبيّن إطلالة بآلاف الدولارات. إصدار 2026 حصري.",
+        ]
+
     return random.choice(offer_templates).strip()
 
 
@@ -99,6 +136,10 @@ CTA_TEMPLATES = [
     "تريدينها؟ اطلبيها الحين قبل ما يخلص",
     "القطع محدودة، اطلبي الحين",
     "لا تفكرين مرتين — اطلبيه الحين",
+    # ── Hormozi CTA rules: clear, direct, single ask, short time-to-act ──
+    "اطلبيها الحين من الرابط 👇",
+    "الرابط تحت — اطلبي مقاسك بضغطة زر",
+    "اطلبيها قبل ما تخلص — القطع محدودة",
 ]
 
 
