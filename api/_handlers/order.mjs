@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     });
   }
 
-  const couponDiscount = Math.max(0, Number(couponDiscount) || 0);
+  const cleanDiscount = Math.max(0, Number(couponDiscount) || 0);
   const orderFinalTotal = Math.max(0, Number(finalTotal) || 0);
 
   const sanitized = {
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     color: sanitize(color),
     paymentMethod: "cod",
     couponCode: sanitize(couponCode).toUpperCase(),
-    couponDiscount,
+    couponDiscount: cleanDiscount,
     finalTotal: orderFinalTotal,
     whatsappConsent: !!whatsappConsent,
     size: sanitize(size),
