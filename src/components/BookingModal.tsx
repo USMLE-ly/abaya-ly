@@ -40,6 +40,7 @@ interface BookingModalProps {
   productName: string;
   colors: { name: string; hex: string }[];
   sizes: string[];
+  price?: number;
   presetCoupon?: string;
   cart?: BookingCartContext | null;
   onSuccess?: () => void;
@@ -96,7 +97,7 @@ function colorImageFor(item: BookingCartItem, colorName: string): string {
   return item.image;
 }
 
-export function BookingModal({ open, onClose, productCode, productName, colors, sizes, presetCoupon = "", cart = null, onSuccess, preOrder = false }: BookingModalProps) {
+export function BookingModal({ open, onClose, productCode, productName, colors, sizes, price = 0, presetCoupon = "", cart = null, onSuccess, preOrder = false }: BookingModalProps) {
   const [selectedColor, setSelectedColor] = useState(colors[0]?.name || "");
   const [selectedSize, setSelectedSize] = useState(sizes[0] || "");
   const [selectedCity, setSelectedCity] = useState("");
@@ -114,7 +115,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const errorRef = useRef<HTMLParagraphElement | null>(null);
   const [whatsappConsent, setWhatsappConsent] = useState(false);
   const [couponCode, setCouponCode] = useState("");
-  const [couponApplied, setCouponApplied] = useState<{ code: string; label: string; discount: number } | null>(null);
+  const [couponApplied, setCouponApplied] = useState<{ code: string; label: string; type: "percent" | "fixed"; value: number } | null>(null);
   const [couponChecking, setCouponChecking] = useState(false);
   const [couponError, setCouponError] = useState("");
   const [selections, setSelections] = useState<Record<number, { color: string; size: string }>>({});
@@ -146,6 +147,17 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   useEffect(() => {
     if (error) errorRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
   }, [error]);
+
+  // Real discount math: percent applies to the order base total, fixed is a flat
+  // amount capped at the total. Shown in the UI and sent with the order.
+  const baseTotal = cart ? cart.total : Math.max(0, Number(price) || 0);
+  const discountAmount =
+    couponApplied && baseTotal > 0
+      ? couponApplied.type === "percent"
+        ? Math.round((baseTotal * couponApplied.value) / 100)
+        : Math.min(couponApplied.value, baseTotal)
+      : 0;
+  const finalTotal = Math.max(0, baseTotal - discountAmount);
 
 
   if (!open) return null;
@@ -224,6 +236,8 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
           phone: phone.trim(),
           whatsappConsent,
           couponCode: couponApplied?.code || "",
+          couponDiscount: discountAmount,
+          finalTotal,
           preOrder,
         }),
       });
@@ -335,7 +349,12 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                 <span className="text-[11px] font-bold text-fg">
                   {cart.itemCount > 1 ? `سلتكِ تحتوي على ${cart.itemCount} قطع — سيتم تأكيد الطلب كاملاً` : "تأكيد طلب السلة"}
                 </span>
-                <span className="text-xs font-bold text-brand tabular-nums">{cart.total} د.ل</span>
+                <span className="text-end">
+                  {discountAmount > 0 && (
+                    <span className="block text-[10px] font-medium text-fg-tertiary line-through">{cart.total} د.ل</span>
+                  )}
+                  <span className="text-xs font-bold text-brand tabular-nums">{finalTotal} د.ل</span>
+                </span>
               </div>
             )}
 
@@ -560,7 +579,8 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                         setCouponApplied({
                           code: data.coupon.code,
                           label: data.coupon.label || "",
-                          discount: data.coupon.type === "percent" ? data.coupon.value : data.coupon.value,
+                          type: data.coupon.type === "fixed" ? "fixed" : "percent",
+                          value: Number(data.coupon.value) || 0,
                         });
                       } catch (err: any) {
                         setCouponError(err.message || "كود غير صالح");
@@ -584,6 +604,27 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                 {couponError && <p className="text-[11px] text-status-danger mt-1.5">{couponError}</p>}
               </div>
 
+              {/* Discount breakdown — shown once a valid coupon is applied */}
+              {couponApplied && baseTotal > 0 && discountAmount > 0 && (
+                <div
+                  className="rounded-xl px-4 py-3 space-y-1.5"
+                  style={{ background: "rgba(22,163,74,0.07)", border: "1px solid rgba(22,163,74,0.22)" }}
+                >
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-fg-tertiary">الإجمالي</span>
+                    <span className="font-medium text-fg-secondary line-through">{baseTotal} د.ل</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-fg-tertiary">الخصم{couponApplied.label ? ` (${couponApplied.label})` : ""}</span>
+                    <span className="font-medium text-status-success">-{discountAmount} د.ل</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm font-bold pt-1 border-t border-emerald-500/10">
+                    <span className="text-fg">الإجمالي بعد الخصم</span>
+                    <span className="text-brand tabular-nums">{finalTotal} د.ل</span>
+                  </div>
+                </div>
+              )}
+
               {/* WhatsApp consent */}
               <div className="flex items-start gap-2">
                 <input
@@ -594,7 +635,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                   className="mt-0.5 w-4 h-4 rounded border-line-subtle accent-strawberry-600 cursor-pointer"
                 />
                 <label htmlFor="whatsapp-consent" className="text-[11px] text-fg-tertiary leading-relaxed cursor-pointer">
-                  أوافق على تلقي إشعارات الطلب عبر <span className="font-semibold text-accent-brand">واتساب</span>
+                  أوافق على تواصل فريق خدمة العملاء معي عبر <span className="font-semibold text-accent-brand">واتساب</span> لإرسال أي معلومات تتعلق بطلبي
                 </label>
               </div>
 

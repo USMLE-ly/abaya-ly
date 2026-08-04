@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   const r = rl(clientIp(req));
   if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
 
-  const { code, name, customerName, color, size, location, phone, whatsappConsent, couponCode, items, preOrder } = req.body || {};
+  const { code, name, customerName, color, size, location, phone, whatsappConsent, couponCode, couponDiscount, finalTotal, items, preOrder } = req.body || {};
 
   if (!code || !phone) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -25,6 +25,9 @@ export default async function handler(req, res) {
     });
   }
 
+  const couponDiscount = Math.max(0, Number(couponDiscount) || 0);
+  const orderFinalTotal = Math.max(0, Number(finalTotal) || 0);
+
   const sanitized = {
     code: sanitize(code),
     name: sanitize(name),
@@ -32,6 +35,8 @@ export default async function handler(req, res) {
     color: sanitize(color),
     paymentMethod: "cod",
     couponCode: sanitize(couponCode).toUpperCase(),
+    couponDiscount,
+    finalTotal: orderFinalTotal,
     whatsappConsent: !!whatsappConsent,
     size: sanitize(size),
     location: sanitize(location),
@@ -68,6 +73,8 @@ export default async function handler(req, res) {
     color: sanitized.color,
     size: sanitized.size,
     items: orderItems,
+    couponDiscount: sanitized.couponDiscount,
+    finalTotal: sanitized.finalTotal,
     preOrder: isPreOrder,
     location: sanitized.location,
     phone: phoneClean,
@@ -125,9 +132,12 @@ export default async function handler(req, res) {
       ...productLines,
       `📍 الموقع: ${sanitized.location || "—"}`,
       `📞 الهاتف: ${phoneClean}`,
-      `💬 إشعار واتساب: ${consentEmoji}`,
+      `💬 تواصل واتساب: ${consentEmoji}`,
       `💳 طريقة الدفع: عند الاستلام 💵`,
       sanitized.couponCode ? `🏷️ كود الخصم: ${sanitized.couponCode}` : null,
+      sanitized.couponDiscount > 0
+        ? `🏷️ الخصم: ${sanitized.couponDiscount} د.ل${sanitized.finalTotal ? ` — الإجمالي بعد الخصم: ${sanitized.finalTotal} د.ل` : ""}`
+        : null,
       "━━━━━━━━━━━━━━━",
       `📅 ${new Date().toLocaleDateString("ar-LY", {
         weekday: "long", year: "numeric", month: "long", day: "numeric",

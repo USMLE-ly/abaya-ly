@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import {
-  getCart, setCart, cartCount, cartSubtotal, FREE_SHIPPING_THRESHOLD,
+  getCart, setCart, cartCount, cartSubtotal,
   type CartItem,
 } from "@/lib/cart";
 import { BookingModal, type BookingCartContext } from "@/components/BookingModal";
@@ -48,8 +48,6 @@ export function CartDrawer() {
 
   const count = cartCount(items);
   const subtotal = cartSubtotal(items);
-  const progress = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
-  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
 
   const cartCtx: BookingCartContext | null = items.length > 0
     ? {
@@ -127,25 +125,6 @@ export function CartDrawer() {
               </div>
             ) : (
               <>
-                {/* Free-shipping progress */}
-                <div className="px-5 py-3 border-b border-line-subtle bg-sunken/50">
-                  {remaining > 0 ? (
-                    <p className="text-[11px] text-fg-secondary mb-2">
-                      أضيفي <span className="font-bold text-brand">{remaining} د.ل</span> لتفعيل الشحن السريع
-                    </p>
-                  ) : (
-                    <p className="text-[11px] font-bold text-status-success mb-2">🎉 مبروك! شحنك السريع مفعّل</p>
-                  )}
-                  <div className="h-1.5 rounded-full bg-line-subtle overflow-hidden" dir="ltr">
-                    <motion.div
-                      className="h-full rounded-full"
-                      style={{ background: "linear-gradient(90deg, #e63d6a, #c42855)" }}
-                      animate={{ width: `${progress}%` }}
-                      transition={{ duration: 0.5 }}
-                    />
-                  </div>
-                </div>
-
                 {/* Items */}
                 <div className="flex-1 overflow-y-auto px-4 py-3">
                   {items.map((item) => (

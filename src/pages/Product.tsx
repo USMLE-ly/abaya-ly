@@ -574,6 +574,7 @@ function ProductContent() {
         preOrder={isSoldOut}
         productCode={product.code}
         productName={product.name.split(" • ").slice(2).join(" • ") ?? product.name}
+        price={product.price}
         colors={product.colors}
         sizes={product.sizes}
       />
