@@ -91,6 +91,7 @@ export default async function handler(req, res) {
   };
 
   let stored = false;
+  let writeError = "";
   if (EC_URL) {
     try {
       await writeItem(EC_URL, `order:${orderId}`, order);
@@ -112,6 +113,7 @@ export default async function handler(req, res) {
       stored = true;
     } catch (e) {
       console.error("Edge Config write error:", e);
+      writeError = String(e?.message || e);
     }
   }
 
@@ -121,6 +123,7 @@ export default async function handler(req, res) {
     return res.status(503).json({
       success: false,
       error: "تعذر حفظ الطلب الآن، يرجى المحاولة مرة أخرى",
+      ...(req.query?.debug === "1" ? { writeError } : {}),
     });
   }
 
