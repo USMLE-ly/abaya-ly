@@ -23,7 +23,7 @@ interface Props {
 /** Admit-One ticket anatomy (21st.dev reference) in rose/white brand colors. */
 const GEO: TicketGeom = { w: 741, h: 425, corner: 25, notch: 21, dividerX: 562 };
 
-export function PromoCountdown({ label = "عرض اليوم — خصم 10% على جميع الفساتين" }: Props) {
+export function PromoCountdown({ label = "خصم 10% على طلبكِ — كود NADINE10" }: Props) {
   const target = useMemo(() => {
     const t = getTarget();
     try {
@@ -158,11 +158,11 @@ export function PromoCountdown({ label = "عرض اليوم — خصم 10% عل�
                   <div className="flex items-center" dir="ltr">
                     {cells.map((c, i) => (
                       <div key={i} className="flex items-center">
-                        <div className="flex h-[76px] w-[88px] flex-col items-center justify-center rounded-2xl border border-strawberry-200/60 bg-white/70 shadow-sm">
+                        <div className="flex h-[62px] w-[88px] flex-col items-center justify-center rounded-2xl border border-strawberry-200/60 bg-white/70 shadow-sm">
                           <span className="text-[40px] font-bold tabular-nums leading-none text-brand">
                             {String(c.value).padStart(2, "0")}
                           </span>
-                          <span className="mt-1.5 text-[11px] font-semibold text-fg-disabled">{c.label}</span>
+                          <span className="mt-1 text-[11px] font-semibold text-fg-disabled">{c.label}</span>
                         </div>
                         {i < cells.length - 1 && (
                           <span className="mx-2 text-2xl font-bold text-brand/30">:</span>
