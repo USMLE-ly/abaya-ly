@@ -6,7 +6,24 @@ No platform APIs are used — auth comes from session cookies you export and upl
 **The video file is never touched.** No re-encoding, no watermarking, no format conversion.
 If a platform rejects the file, the tool reports the error and leaves the video untouched.
 
+## Caption workflow (chat-system driven)
+
+Captions are written in the **Alex Hermosi style** and humanized **in-session** — no
+external LLM or API is used:
+
+1. The chat system drafts the caption using the **Alex Hermosi skill**
+   (`~/.agents/skills/alex-hermosi/`), built from the author's book via
+   **book-to-skill** (`~/.agents/skills/book-to-skill/`).
+2. The draft is run through the **humanizer skill** (`~/.agents/skills/humanizer/`)
+   to remove AI-isms while keeping the Hermosi voice, Arabic, emoji, the product
+   URL, and hashtags intact.
+3. You approve the humanized caption, then the pipeline posts it with cookies.
+
+The template engine in `src/hermosi_templates.py` is kept in sync with the book's
+frameworks, so even fully automatic captions follow the same style.
+
 ## Caption format (auto-generated)
+
 
 Every post gets this exact structure, in Arabic with emojis:
 

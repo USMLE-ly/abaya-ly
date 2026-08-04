@@ -57,5 +57,13 @@
     "#Benghazi",
     "#Libya",
     "#LuxuryFashion"
-  ]
+  ],
+  "humanizer": {
+    "skill_path": "~/.agents/skills/humanizer",
+    "enabled": true
+  },
+  "book_to_skill": {
+    "skill_path": "~/.agents/skills/book-to-skill",
+    "enabled": true
+  }
 }
