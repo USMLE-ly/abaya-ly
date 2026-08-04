@@ -436,15 +436,18 @@ function ProductContent() {
                     to={color.linkTo ? `/product/${color.linkTo}` : "#"}
                     onMouseEnter={() => setHoveredColor(i)}
                     onMouseLeave={() => setHoveredColor(null)}
-                    className="relative size-12 appearance-none rounded-full border border-neutral-200"
-                    style={{ backgroundColor: color.hex }}
+                    className="relative size-6 appearance-none rounded-full p-0"
+                    style={{
+                      backgroundColor: color.hex,
+                      border: "1px solid rgba(0, 0, 0, 0.15)",
+                    }}
                     title={color.name}
                     aria-label={`${color.name} — اختيار اللون`}
                   >
                     {i === activeColorIndex && (
                       <motion.span
                         layoutId={product.id}
-                        className="pointer-events-none absolute -left-[2px] -top-[2px] block size-[52px] rounded-full border border-gray-500"
+                        className="pointer-events-none absolute -left-[1.5px] -top-[1.5px] block size-[27px] rounded-full border border-gray-500"
                         transition={{ type: "spring", stiffness: 500, damping: 50, mass: 1 }}
                       />
                     )}
@@ -498,7 +501,7 @@ function ProductContent() {
             {product.highlights && product.highlights.length > 0 && (
               <div className="mb-6">
                 <p className="text-xs font-medium text-fg-secondary mb-3 flex items-center gap-1.5">
-                  مميزات التصميم
+                  لماذا ستعجبكِ هذه القطعة؟
                 </p>
                 <ul className="space-y-2">
                   {product.highlights.map((h, i) => (
@@ -555,6 +558,9 @@ function ProductContent() {
             {/* Payment Method */}
             <div className="flex items-center justify-center mb-1.5">
               <p className="text-[10px] font-bold text-center" style={{ color: "#e63d6a" }}>الدفع عند الاستلام 💵</p>
+            </div>
+            <div className="flex items-center justify-center gap-1.5 mb-1">
+              <p className="text-[10px] font-medium text-fg-tertiary text-center">شحن مجاني خلال 3-5 أيام · إرجاع خلال 7 أيام</p>
             </div>
           </div>
         </div>
