@@ -57,7 +57,7 @@ export const Barcode = memo(function Barcode({
     );
   }
 
-  const bars = useBars(value);
+  const bars = buildBars(value);
   const gap = 1.6;
   const total = bars.reduce((acc, w) => acc + w + gap, 0) - gap;
   let x = (VIEW_W - total) / 2;
@@ -238,7 +238,7 @@ function BarcodeCard({ value, target, color, tone, label, showValue, card, class
   );
 }
 
-function useBars(value: string): number[] {
+function buildBars(value: string): number[] {
   const rng = seededRandom(hashString(value));
   return Array.from({ length: BAR_COUNT }, () => {
     const rand = rng();

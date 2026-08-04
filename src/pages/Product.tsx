@@ -280,6 +280,15 @@ function ProductContent() {
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const stockMap = useStock();
 
+  // Track view for "recently viewed" + GA4 funnel — must run unconditionally
+  // (before the early return) to keep the hook count stable across renders.
+  useEffect(() => {
+    if (product) {
+      trackProductView(product.id);
+      trackViewItem(product);
+    }
+  }, [product?.id]);
+
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -290,14 +299,6 @@ function ProductContent() {
       </div>
     );
   }
-
-  // Track view for "recently viewed" + GA4 funnel
-  useEffect(() => {
-    if (product) {
-      trackProductView(product.id);
-      trackViewItem(product);
-    }
-  }, [product?.id]);
 
   const savings = product.originalPrice ? product.originalPrice - product.price : 0;
   const liveStock = stockMap[product.id] ?? product.stock;
