@@ -6,6 +6,7 @@ import { OrderSuccessCard } from "@/components/ui/order-success-card";
 import { OrderDetails } from "@/components/ui/order-details";
 import type { AuthenticatedPiece } from "@/components/ui/authenticated-product-card";
 import { pieceBarcode, productPageUrl } from "@/lib/barcode";
+import { DELIVERY, deliveryFeeFor } from "@/lib/delivery";
 
 /** The certificate surface (html-to-image) is heavy — load it only when opened. */
 const OrderCertificateModal = lazy(() =>
@@ -156,7 +157,8 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
         ? Math.round((baseTotal * couponApplied.value) / 100)
         : Math.min(couponApplied.value, baseTotal)
       : 0;
-  const finalTotal = Math.max(0, baseTotal - discountAmount);
+  const deliveryFee = deliveryFeeFor(selectedCity);
+  const finalTotal = Math.max(0, baseTotal - discountAmount + deliveryFee);
 
 
   if (!open) return null;
@@ -236,6 +238,8 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
           whatsappConsent: true,
           couponCode: couponApplied?.code || "",
           couponDiscount: discountAmount,
+          deliveryFee,
+          baseTotal,
           finalTotal,
           preOrder,
         }),
@@ -510,6 +514,11 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                     />
                   </div>
                 )}
+                <p className="text-[10px] text-fg-tertiary mt-1.5">
+                  {selectedCity && selectedCity !== DELIVERY.freeCity
+                    ? `التوصيل إلى ${selectedCity}: ${DELIVERY.fee} د.ل`
+                    : `التوصيل مجاني داخل ${DELIVERY.freeCity} — لبقية المدن ${DELIVERY.fee} د.ل`}
+                </p>
               </div>
 
               {/* Customer name */}
@@ -617,8 +626,18 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                     <span className="text-fg-tertiary">الخصم{couponApplied.label ? ` (${couponApplied.label})` : ""}</span>
                     <span className="font-medium text-status-success">-{discountAmount} د.ل</span>
                   </div>
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-fg-tertiary">التوصيل</span>
+                    {deliveryFee > 0 ? (
+                      <span className="font-medium text-fg-secondary">{deliveryFee} د.ل</span>
+                    ) : selectedCity ? (
+                      <span className="font-medium text-status-success">مجاني ({DELIVERY.freeCity})</span>
+                    ) : (
+                      <span className="text-fg-tertiary">حسب المدينة</span>
+                    )}
+                  </div>
                   <div className="flex items-center justify-between text-sm font-bold pt-1 border-t border-emerald-500/10">
-                    <span className="text-fg">الإجمالي بعد الخصم</span>
+                    <span className="text-fg">الإجمالي النهائي</span>
                     <span className="text-brand tabular-nums">{finalTotal} د.ل</span>
                   </div>
                 </div>

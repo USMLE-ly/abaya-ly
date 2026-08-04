@@ -29,7 +29,7 @@ export function ProductShippingEstimate({ minDays = 3, maxDays = 7 }: Props) {
       <div className="min-w-0">
         <p className="text-xs font-bold text-fg">التوصيل المتوقع</p>
         <p className="text-[11px] text-fg-secondary leading-relaxed">
-          اطلبي الآن ليصلكِ بين <span className="font-bold text-brand">{formatDate(start)}</span> و<span className="font-bold text-brand">{formatDate(end)}</span> — شحن مجاني لجميع مدن ليبيا
+          اطلبي الآن ليصلكِ بين <span className="font-bold text-brand">{formatDate(start)}</span> و<span className="font-bold text-brand">{formatDate(end)}</span> — توصيل مجاني داخل بنغازي
         </p>
       </div>
     </div>

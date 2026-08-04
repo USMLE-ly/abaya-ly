@@ -1,4 +1,5 @@
 import { cors, createRateLimiter, clientIp, readItem, writeItem, sanitize } from "./shared.mjs";
+import { DELIVERY } from "./delivery-config.mjs";
 
 const rl = createRateLimiter();
 
@@ -10,7 +11,7 @@ export default async function handler(req, res) {
   const r = rl(clientIp(req));
   if (!r.allowed) return res.status(429).json({ error: "Too many requests", retryAfter: r.retryAfter });
 
-  const { code, name, customerName, color, size, location, phone, whatsappConsent, couponCode, couponDiscount, finalTotal, items, preOrder } = req.body || {};
+  const { code, name, customerName, color, size, location, phone, whatsappConsent, couponCode, couponDiscount, deliveryFee, baseTotal, finalTotal, items, preOrder } = req.body || {};
 
   if (!code || !phone) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -26,6 +27,8 @@ export default async function handler(req, res) {
   }
 
   const cleanDiscount = Math.max(0, Number(couponDiscount) || 0);
+  const cleanDeliveryFee = Math.max(0, Number(deliveryFee) || 0);
+  const cleanBaseTotal = Math.max(0, Number(baseTotal) || 0);
   const orderFinalTotal = Math.max(0, Number(finalTotal) || 0);
 
   const sanitized = {
@@ -74,6 +77,8 @@ export default async function handler(req, res) {
     size: sanitized.size,
     items: orderItems,
     couponDiscount: sanitized.couponDiscount,
+    deliveryFee: cleanDeliveryFee,
+    baseTotal: cleanBaseTotal,
     finalTotal: sanitized.finalTotal,
     preOrder: isPreOrder,
     location: sanitized.location,
@@ -134,6 +139,7 @@ export default async function handler(req, res) {
       `📞 الهاتف: ${phoneClean}`,
       `💬 تواصل واتساب: ${consentEmoji}`,
       `💳 طريقة الدفع: عند الاستلام 💵`,
+      `🚚 التوصيل: ${cleanDeliveryFee > 0 ? cleanDeliveryFee + " د.ل" : "مجاني (" + DELIVERY.freeCity + ")"}`,
       sanitized.couponCode ? `🏷️ كود الخصم: ${sanitized.couponCode}` : null,
       sanitized.couponDiscount > 0
         ? `🏷️ الخصم: ${sanitized.couponDiscount} د.ل${sanitized.finalTotal ? ` — الإجمالي بعد الخصم: ${sanitized.finalTotal} د.ل` : ""}`

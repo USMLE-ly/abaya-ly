@@ -11,7 +11,7 @@ import {
 } from "@/lib/announcement";
 
 const messages = [
-  { icon: Truck, text: "شحن مجاني لجميع مدن ليبيا · التوصيل خلال 3-5 أيام", to: "/shipping-policy" },
+  { icon: Truck, text: "توصيل مجاني داخل بنغازي · التوصيل خلال 3-5 أيام", to: "/shipping-policy" },
   { icon: Banknote, text: "الدفع عند الاستلام · إرجاع سهل خلال 7 أيام", to: "/refund-policy" },
 ];
 

@@ -6,8 +6,8 @@ import { ChevronLeft, Truck, Clock, MapPin, Package } from "lucide-react";
 const sections = [
   {
     icon: Truck,
-    title: "الشحن المجاني",
-    content: "نقدم شحناً مجانيّاً لجميع مدن ليبيا. لا توجد أي رسوم إضافية على الشحن — السعر الذي ترين هو السعر النهائي.",
+    title: "التوصيل المجاني",
+    content: "التوصيل مجاني داخل بنغازي. للمدن الأخرى تُضاف رسوم توصيل ثابتة (15 د.ل) تُعرض بوضوح عند إتمام الطلب.",
   },
   {
     icon: Clock,
@@ -27,7 +27,7 @@ const sections = [
 ];
 
 export default function ShippingPolicy() {
-  usePageMeta("الشحن والتوصيل", "شحن مجاني لجميع مدن ليبيا خلال 3-5 أيام عمل.");
+  usePageMeta("الشحن والتوصيل", "توصيل مجاني داخل بنغازي خلال 3-5 أيام عمل.");
   return (
     <div className="min-h-screen pt-24 pb-16">
       <div className="max-w-[800px] mx-auto px-4 sm:px-6">
