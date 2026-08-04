@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { motion } from "motion/react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, Check, Tag, Ruler, Clock } from "lucide-react";
 import { BookingModal } from "@/components/BookingModal";
@@ -436,22 +435,22 @@ function ProductContent() {
                     to={color.linkTo ? `/product/${color.linkTo}` : "#"}
                     onMouseEnter={() => setHoveredColor(i)}
                     onMouseLeave={() => setHoveredColor(null)}
-                    className="relative size-6 appearance-none rounded-full p-0"
+                    className="block rounded-full"
                     style={{
+                      width: 24,
+                      height: 24,
+                      flexShrink: 0,
+                      boxSizing: "border-box",
+                      borderRadius: "50%",
                       backgroundColor: color.hex,
-                      border: "1px solid rgba(0, 0, 0, 0.15)",
+                      boxShadow:
+                        i === activeColorIndex
+                          ? "0 0 0 2px #fff, 0 0 0 3.5px #6b7280"
+                          : "inset 0 0 0 1px rgba(0, 0, 0, 0.12)",
                     }}
                     title={color.name}
                     aria-label={`${color.name} — اختيار اللون`}
-                  >
-                    {i === activeColorIndex && (
-                      <motion.span
-                        layoutId={product.id}
-                        className="pointer-events-none absolute -left-[1.5px] -top-[1.5px] block size-[27px] rounded-full border border-gray-500"
-                        transition={{ type: "spring", stiffness: 500, damping: 50, mass: 1 }}
-                      />
-                    )}
-                  </Link>
+                  />
                 ))}
               </div>
             </div>
