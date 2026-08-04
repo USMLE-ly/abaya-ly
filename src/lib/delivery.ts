@@ -1,14 +1,112 @@
 // ─────────────────────────────────────────────────────────────
 // Delivery policy — single source of truth for the storefront.
-// Free delivery inside Benghazi; a flat fee for every other city.
+// Free delivery inside Benghazi; every other city has its own
+// flat fee (د.ل). Cities not listed fall back to defaultFee.
 // (Mirrored server-side in api/_handlers/delivery-config.mjs)
 // ─────────────────────────────────────────────────────────────
 export const DELIVERY = {
   freeCity: "بنغازي",
-  fee: 15, // د.ل — applied to all cities except the free city
+  defaultFee: 30, // د.ل — applies to "أخرى" / unlisted cities
+  prices: {
+    "طرابلس": 20,
+    "مصراتة": 25,
+    "الخمس": 25,
+    "الزاوية": 25,
+    "المرج": 20,
+    "زوارة": 35,
+    "إجدابيا": 20,
+    "سرت": 30,
+    "سبها": 35,
+    "طبرق": 30,
+    "ورشفانة": 30,
+    "صبراتة": 25,
+    "زليتن": 25,
+    "ترهونة": 30,
+    "غريان": 35,
+    "درنة": 30,
+    "يفرن": 20,
+    "نالوت": 40,
+    "صرمان": 25,
+    "القبة": 20,
+    "بني وليد": 30,
+    "مرزق": 45,
+    "هون": 30,
+    "ودان": 30,
+    "سوكنة": 30,
+    "زلة": 40,
+    "قصرخيار": 25,
+    "وادي كعام": 25,
+    "الأبيار": 25,
+    "امساعد": 40,
+    "العلوص": 25,
+    "القربولي": 25,
+    "قماطة": 20,
+    "أبو عيسى": 25,
+    "الماية": 20,
+    "المطرد": 25,
+    "تيجي": 35,
+    "قصر بن غشير": 25,
+    "زليطن": 40,
+    "الجميل": 35,
+    "رقدالين": 40,
+    "العجيلات": 35,
+    "الزنتان": 35,
+    "الرياينة": 35,
+    "كاباو": 35,
+    "جادو": 35,
+    "الأصابعة": 40,
+    "رأس لانوف": 25,
+    "البريقة": 25,
+    "بن جواد": 25,
+    "هراوة": 25,
+    "براك الشاطئ": 35,
+    "أوباري": 45,
+    "غات": 50,
+    "أم الأرانب": 45,
+    "القطرون": 50,
+    "مسلاتة": 25,
+    "البيضاء": 20,
+    "جالو": 35,
+    "أوجلة": 35,
+    "الكفرة": 40,
+    "تازربو": 45,
+    "الرجمه": 20,
+    "سلوق": 20,
+    "قمينس": 30,
+    "شحات": 20,
+    "الأبرق": 20,
+    "سوسة": 30,
+    "التميمي": 30,
+    "إجخرة": 35,
+    "توكرة": 20,
+    "قصر ليبيا": 25,
+    "دريانة": 30,
+    "ككلة": 35,
+    "البدر": 35,
+    "وزان": 40,
+    "أبو قرين": 30,
+    "القلعة": 35,
+    "تراغن": 45,
+    "سمنو": 45,
+    "وادي عتبة": 45,
+    "مزدة": 40,
+    "الشويرف": 35,
+    "غدامس": 40,
+    "تاورغاء": 30,
+    "برسس": 30,
+    "بشر": 25,
+    "برقن الشاطئ": 45,
+    "درج": 55,
+    "النواقية": 20,
+    "جردينة": 20,
+  } as Record<string, number>,
 };
 
 export function deliveryFeeFor(city: string): number {
   if (!city) return 0;
-  return city === DELIVERY.freeCity ? 0 : DELIVERY.fee;
+  if (city === DELIVERY.freeCity) return 0;
+  return DELIVERY.prices[city] ?? DELIVERY.defaultFee;
 }
+
+/** All selectable cities (free city first, then the priced cities). */
+export const SHIPPING_CITIES = [DELIVERY.freeCity, ...Object.keys(DELIVERY.prices)];

@@ -6,7 +6,7 @@ import { OrderSuccessCard } from "@/components/ui/order-success-card";
 import { OrderDetails } from "@/components/ui/order-details";
 import type { AuthenticatedPiece } from "@/components/ui/authenticated-product-card";
 import { pieceBarcode, productPageUrl } from "@/lib/barcode";
-import { DELIVERY, deliveryFeeFor } from "@/lib/delivery";
+import { DELIVERY, deliveryFeeFor, SHIPPING_CITIES } from "@/lib/delivery";
 
 /** The certificate surface (html-to-image) is heavy — load it only when opened. */
 const OrderCertificateModal = lazy(() =>
@@ -48,43 +48,7 @@ interface BookingModalProps {
   preOrder?: boolean;
 }
 
-const LIBYAN_CITIES = [
-  "طرابلس",
-  "بنغازي",
-  "مصراتة",
-  "الزاوية",
-  "الخمس",
-  "زليتن",
-  "صبراتة",
-  "سرت",
-  "سبها",
-  "طبرق",
-  "درنة",
-  "البيضاء",
-  "المرج",
-  "إجدابيا",
-  "الكفرة",
-  "غريان",
-  "ترهونة",
-  "بني وليد",
-  "مزدة",
-  "نالوت",
-  "غات",
-  "غدامس",
-  "يفرن",
-  "زوارة",
-  "الأصابعة",
-  "جادو",
-  "أوباري",
-  "مرزق",
-  "البريقة",
-  "أوجلة",
-  "جالو",
-  "سلوق",
-  "قمينس",
-  "تازربو",
-  "أخرى",
-];
+const LIBYAN_CITIES = [...SHIPPING_CITIES, "أخرى"];
 
 /** Resolve the dress image for the color currently selected in the order confirmation. */
 function colorImageFor(item: BookingCartItem, colorName: string): string {
@@ -515,9 +479,13 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                   </div>
                 )}
                 <p className="text-[10px] text-fg-tertiary mt-1.5">
-                  {selectedCity && selectedCity !== DELIVERY.freeCity
-                    ? `التوصيل إلى ${selectedCity}: ${DELIVERY.fee} د.ل`
-                    : `التوصيل مجاني داخل ${DELIVERY.freeCity} — لبقية المدن ${DELIVERY.fee} د.ل`}
+                  {isOtherCity
+                    ? `التوصيل إلى منطقتك: ${deliveryFee} د.ل`
+                    : selectedCity === DELIVERY.freeCity
+                      ? `التوصيل مجاني داخل ${DELIVERY.freeCity}`
+                      : selectedCity
+                        ? `التوصيل إلى ${selectedCity}: ${deliveryFee} د.ل`
+                        : `التوصيل مجاني داخل ${DELIVERY.freeCity} — رسوم التوصيل حسب كل مدينة`}
                 </p>
               </div>
 
