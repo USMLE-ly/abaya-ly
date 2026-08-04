@@ -251,7 +251,6 @@ function ProductContent() {
   }, [id, product, navigate]);
 
   const [activeImage, setActiveImage] = useState(0);
-  const [hoveredColor, setHoveredColor] = useState<number | null>(null);
   const [selectedSize, setSelectedSize] = useState(0);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
@@ -302,7 +301,6 @@ function ProductContent() {
   const liveStock = stockMap[product.id] ?? product.stock;
   const isSoldOut = liveStock === 0;
   const primaryColor = product.colors[0] ?? { name: "غير محدد", hex: "transparent" };
-  const activeColorIndex = hoveredColor ?? 0;
   const descriptor = product.name.split(" • ").slice(2).join(" • ") ?? product.name;
   const related = getRelatedProducts(product, 10);
 
@@ -433,8 +431,6 @@ function ProductContent() {
                   <Link
                     key={i}
                     to={color.linkTo ? `/product/${color.linkTo}` : "#"}
-                    onMouseEnter={() => setHoveredColor(i)}
-                    onMouseLeave={() => setHoveredColor(null)}
                     className="block rounded-full"
                     style={{
                       width: 24,
@@ -444,7 +440,7 @@ function ProductContent() {
                       borderRadius: "50%",
                       backgroundColor: color.hex,
                       boxShadow:
-                        i === activeColorIndex
+                        i === 0
                           ? "0 0 0 2px #fff, 0 0 0 3.5px #6b7280"
                           : "inset 0 0 0 1px rgba(0, 0, 0, 0.12)",
                     }}
