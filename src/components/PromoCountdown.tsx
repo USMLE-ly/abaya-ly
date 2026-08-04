@@ -158,11 +158,11 @@ export function PromoCountdown({ label = "خصم 10% على طلبكِ — كو�
                   <div className="flex items-center" dir="ltr">
                     {cells.map((c, i) => (
                       <div key={i} className="flex items-center">
-                        <div className="flex h-[62px] w-[88px] flex-col items-center justify-center rounded-2xl border border-strawberry-200/60 bg-white/70 shadow-sm">
+                        <div className="flex h-[62px] w-[88px] flex-col items-center justify-center">
                           <span className="text-[40px] font-bold tabular-nums leading-none text-brand">
                             {String(c.value).padStart(2, "0")}
                           </span>
-                          <span className="text-[11px] font-semibold text-fg-disabled">{c.label}</span>
+                          <span className="mt-1.5 text-[11px] font-semibold text-fg-disabled">{c.label}</span>
                         </div>
                         {i < cells.length - 1 && (
                           <span className="mx-2 text-2xl font-bold text-brand/30">:</span>
