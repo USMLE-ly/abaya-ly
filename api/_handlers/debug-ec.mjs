@@ -1,4 +1,4 @@
-import { createRateLimiter, clientIp, isAdmin, ecStoreId, storageBackend } from "./shared.mjs";
+import { createRateLimiter, clientIp, isAdmin, ecStoreId, storageBackend, readItems } from "./shared.mjs";
 
 const rl = createRateLimiter();
 
@@ -41,69 +41,65 @@ export default async function handler(req, res) {
   if (!summaryOnly && !isAdmin(req)) return res.status(401).json({ error: "Unauthorized" });
 
   const EC_URL = process.env.EDGE_CONFIG;
-  if (!EC_URL) return res.status(200).json({ error: "No EC_URL" });
+  if (storageBackend() === "edge-config" && !EC_URL) {
+    return res.status(200).json({ error: "No store configured" });
+  }
 
   const summary = { read: "pending", backend: storageBackend() };
   try {
-    const resp = await fetch(EC_URL);
-    if (!resp.ok) {
-      summary.read = `failed ${resp.status}`;
-    } else {
-      const data = await resp.json();
-      const items = data?.items || {};
-      const keys = Object.keys(items);
-      const prefixCounts = {};
-      for (const k of keys) {
-        const p = k.split(/[_:-]/)[0];
-        prefixCounts[p] = (prefixCounts[p] || 0) + 1;
-      }
-      summary.read = "ok";
-      summary.keyCount = keys.length;
-      summary.bytes = Buffer.byteLength(JSON.stringify(items), "utf8");
-      summary.orderCount = prefixCounts.order || 0;
-      summary.prefixCounts = prefixCounts;
-      summary.rest = await restMeta(EC_URL);
-      if (!summaryOnly) summary.keys = keys;
-      if (req.query?.check) {
-        // Targeted key probe for diagnostics (order/phone prefixes only).
-        const keys = [].concat(req.query.check).slice(0, 5);
-        const out = {};
-        for (const raw of keys) {
-          const k = String(raw).trim();
-          if (!/^(order_|phone_|analytics$)/.test(k)) continue;
-          const val = items[k];
-          if (val === undefined) {
-            out[k] = null;
-          } else if (k.startsWith("phone_") && Array.isArray(val) && isAdmin(req)) {
-            out[k] = val; // order-id list for a specific phone (admin only)
-          } else if (k === "analytics" && val && typeof val === "object") {
-            // Timeline + counts only (no visitor/raw data).
-            const byDay = val.byDay || {};
-            out[k] = {
-              byDay: Object.fromEntries(Object.keys(byDay).sort().map((d) => [d, byDay[d]])),
-              byPageCount: Object.keys(val.byPage || {}).length,
-              byProductCount: Object.keys(val.byProduct || {}).length,
-              rawCount: Array.isArray(val.raw) ? val.raw.length : 0,
-            };
-          } else {
-            out[k] = "exists";
-          }
+    const items = await readItems(EC_URL);
+    const keys = Object.keys(items);
+    const prefixCounts = {};
+    for (const k of keys) {
+      const p = k.split(/[_:-]/)[0];
+      prefixCounts[p] = (prefixCounts[p] || 0) + 1;
+    }
+    summary.read = "ok";
+    summary.keyCount = keys.length;
+    summary.bytes = Buffer.byteLength(JSON.stringify(items), "utf8");
+    summary.orderCount = prefixCounts.order || 0;
+    summary.prefixCounts = prefixCounts;
+    summary.rest = storageBackend() === "upstash" ? null : await restMeta(EC_URL);
+    if (!summaryOnly) summary.keys = keys;
+    if (req.query?.check) {
+      // Targeted key probe for diagnostics (order/phone prefixes only).
+      const probeKeys = [].concat(req.query.check).slice(0, 5);
+      const out = {};
+      for (const raw of probeKeys) {
+        const k = String(raw).trim();
+        if (!/^(order_|phone_|analytics$)/.test(k)) continue;
+        const val = items[k];
+        if (val === undefined) {
+          out[k] = null;
+        } else if (k.startsWith("phone_") && Array.isArray(val) && isAdmin(req)) {
+          out[k] = val; // order-id list for a specific phone (admin only)
+        } else if (k === "analytics" && val && typeof val === "object") {
+          // Timeline + counts only (no visitor/raw data).
+          const byDay = val.byDay || {};
+          out[k] = {
+            byDay: Object.fromEntries(Object.keys(byDay).sort().map((d) => [d, byDay[d]])),
+            byPageCount: Object.keys(val.byPage || {}).length,
+            byProductCount: Object.keys(val.byProduct || {}).length,
+            rawCount: Array.isArray(val.raw) ? val.raw.length : 0,
+          };
+        } else {
+          out[k] = "exists";
         }
-        summary.checks = out;
       }
-      if (req.query?.recent === "1") {
-        summary.recentOrders = Object.entries(items)
-          .filter(([k]) => k.startsWith("order_") || k.startsWith("order:"))
-          .map(([, o]) => o && typeof o === "object" ? {
-            orderId: o.orderId,
-            createdAt: o.createdAt,
-            status: o.status,
-            hasPhone: Boolean(o.phone),
-            items: Array.isArray(o.items) ? o.items.length : 0,
-          } : null)
-          .filter(Boolean)
-          .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
-      }
+      summary.checks = out;
+    }
+    if (req.query?.recent === "1") {
+      summary.recentOrders = Object.entries(items)
+        .filter(([k]) => k.startsWith("order_") || k.startsWith("order:"))
+        .map(([, o]) => o && typeof o === "object" ? {
+          orderId: o.orderId,
+          createdAt: o.createdAt,
+          status: o.status,
+          hasPhone: Boolean(o.phone),
+          items: Array.isArray(o.items) ? o.items.length : 0,
+        } : null)
+        .filter(Boolean)
+        .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
     }
   } catch (err) {
     summary.read = `error: ${err.message}`;

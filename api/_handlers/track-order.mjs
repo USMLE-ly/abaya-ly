@@ -19,13 +19,10 @@ export default async function handler(req, res) {
   const safeOrder = orderNumber.trim().replace(/[^NAD\-0-9a-zA-Z]/g, "");
   const safePhone = phone.trim().replace(/[^0-9]/g, "");
 
-  const EC_URL = process.env.EDGE_CONFIG;
-  if (!EC_URL) return res.status(200).json({ found: false });
-
   try {
     // Key-based read: tracking must not depend on downloading the whole store
     // (a full-store GET breaks once the store approaches its size limit).
-    const order = await readItem(EC_URL, `order:${safeOrder}`);
+    const order = await readItem(process.env.EDGE_CONFIG, `order:${safeOrder}`);
     if (!order) return res.status(200).json({ found: false, reason: "order" });
     if (order.phone !== safePhone) return res.status(200).json({ found: false, reason: "phone" });
     return res.status(200).json({ found: true, order });
