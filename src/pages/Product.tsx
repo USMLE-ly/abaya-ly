@@ -20,6 +20,7 @@ import { OptimizedImage } from "@/components/OptimizedImage";
 import { PageTransition, Reveal, StaggerGrid, StaggerItem } from "@/components/PageTransition";
 import { products, Product as ProductType } from "@/data/products";
 import { useCatalogProducts } from "@/lib/useCatalog";
+import { usePromo } from "@/lib/promo";
 import { Button, Badge, Card } from "@/components/velar";
 import { StockIndicator } from "@/components/StockIndicator";
 import { FrequentlyBoughtTogether, CompleteTheLook } from "@/components/CompleteTheLook";
@@ -255,6 +256,7 @@ function ProductContent() {
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
   const [revealedCoupon, setRevealedCoupon] = useState("");
+  const { promo } = usePromo();
   const [checkingSize, setCheckingSize] = useState<number | null>(null);
   const [sizeMessage, setSizeMessage] = useState('');
 
@@ -530,7 +532,9 @@ function ProductContent() {
             {/* Urgency + clickable discount */}
             <div className="mb-4 space-y-3">
               <UrgencyText />
-              <ClickableDiscount code="NADINE10" label="كوبون خصم 10% على طلبكِ" onReveal={(c) => setRevealedCoupon(c)} />
+              {promo?.active && (
+                <ClickableDiscount code={promo.code} label={`كوبون خصم ${promo.value}% على طلبكِ`} onReveal={(c) => setRevealedCoupon(c)} />
+              )}
             </div>
 
             {/* Booking — Shrine-style add to cart / pre-order when sold out */}

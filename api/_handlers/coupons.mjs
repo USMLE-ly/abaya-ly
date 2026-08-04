@@ -1,4 +1,5 @@
 import { cors, createRateLimiter, clientIp, readItems, writeItem, isAdmin } from "./shared.mjs";
+import { promoStatus } from "./promo-config.mjs";
 
 const rl = createRateLimiter({ windowMs: 60_000, max: 60 });
 
@@ -22,10 +23,23 @@ export default async function handler(req, res) {
       const admin = isAdmin(req);
 
       if (code && !admin) {
+        const clean = String(code).trim().toLowerCase();
         const coupon = coupons.find(
-          (c) => c.code.toLowerCase() === String(code).trim().toLowerCase() && c.active !== false
+          (c) => c.code.toLowerCase() === clean && c.active !== false
         );
-        if (!coupon) return res.status(404).json({ error: "كود غير صالح" });
+
+        if (!coupon) {
+          // Built-in site promotion (single source: promo-config.mjs)
+          const promo = promoStatus();
+          if (!promo.disabled && promo.code.toLowerCase() === clean) {
+            if (promo.ended) return res.status(410).json({ error: "انتهت صلاحية هذا الكود" });
+            return res.status(200).json({
+              success: true,
+              coupon: { code: promo.code, type: promo.type, value: promo.value, label: promo.label || "" },
+            });
+          }
+          return res.status(404).json({ error: "كود غير صالح" });
+        }
 
         const now = Date.now();
         if (coupon.expiresAt && new Date(coupon.expiresAt).getTime() < now) {

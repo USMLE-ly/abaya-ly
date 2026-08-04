@@ -1,4 +1,6 @@
-const PHRASES = [
+import { usePromo } from "@/lib/promo";
+
+const BASE_PHRASES = [
   "توصيل مجاني لجميع مدن ليبيا",
   "الدفع عند الاستلام",
   "أقمشة فاخرة بخياطة راقية",
@@ -7,7 +9,11 @@ const PHRASES = [
 
 /** Shrine-style horizontal ticker — seamless RTL marquee. */
 export function TickerMarquee() {
-  const row = [...PHRASES, ...PHRASES];
+  const { promo } = usePromo();
+  const phrases = promo?.active
+    ? [...BASE_PHRASES, `خصم ${promo.value}% بكود ${promo.code}`]
+    : BASE_PHRASES;
+  const row = [...phrases, ...phrases];
 
   return (
     <div

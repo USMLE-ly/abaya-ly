@@ -1,47 +1,45 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ticketPath, useIsRTL, useTicketScale, type TicketGeom } from "./ticket";
-
-const TARGET_KEY = "nadine-promo-end";
-
-function getTarget(): number {
-  try {
-    const saved = Number(localStorage.getItem(TARGET_KEY));
-    if (saved && saved > Date.now()) return saved;
-  } catch {
-    /* ignore */
-  }
-  // Next occurrence of 11:59 PM — promo resets daily.
-  const t = new Date();
-  t.setHours(23, 59, 59, 0);
-  return t.getTime();
-}
-
-interface Props {
-  label?: string;
-}
+import { usePromo } from "@/lib/promo";
 
 /** Admit-One ticket anatomy (21st.dev reference) in rose/white brand colors. */
 const GEO: TicketGeom = { w: 741, h: 425, corner: 25, notch: 21, dividerX: 562 };
 
-export function PromoCountdown({ label = "خصم 10% على طلبكِ — كود NADINE10" }: Props) {
-  const target = useMemo(() => {
-    const t = getTarget();
-    try {
-      localStorage.setItem(TARGET_KEY, String(t));
-    } catch {
-      /* ignore */
-    }
-    return t;
-  }, []);
+function PromoEnded() {
+  return (
+    <section className="py-10 md:py-14">
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10">
+        <div className="mx-auto flex max-w-xl flex-col items-center rounded-3xl border border-strawberry-200/50 bg-white/70 px-6 py-12 text-center shadow-sm">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand">Nadine</span>
+          <h2 className="mt-3 font-display text-2xl font-bold text-fg">انتهت صلاحية العرض</h2>
+          <p className="mt-2 text-sm font-medium text-fg-tertiary">أهلاً بكِ في نادين — بيت الفساتين الفاخرة</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function PromoCountdown() {
+  const { promo, loading } = usePromo();
+  const target = useMemo(
+    () => (promo?.expiresAt ? Date.parse(promo.expiresAt) : NaN),
+    [promo?.expiresAt]
+  );
 
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
+    if (Number.isNaN(target)) return;
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [target]);
 
-  const diff = Math.max(0, target - now);
+  if (loading) return null;
+  // Disabled → hidden completely. Expired / reached zero → permanent ended state.
+  if (!promo || promo.disabled) return null;
+  if (promo.ended || Number.isNaN(target) || target - now <= 0) return <PromoEnded />;
+
+  const diff = target - now;
   const days = Math.floor(diff / 864e5);
   const hours = Math.floor((diff % 864e5) / 36e5);
   const minutes = Math.floor((diff % 36e5) / 6e4);
@@ -121,7 +119,7 @@ export function PromoCountdown({ label = "خصم 10% على طلبكِ — كو�
                   }}
                 >
                   <span style={{ writingMode: "vertical-rl", fontSize: 118, lineHeight: 1, letterSpacing: "-0.04em" }}>
-                    خصم 10%
+                    {promo.value}%
                   </span>
                 </div>
 
@@ -141,7 +139,7 @@ export function PromoCountdown({ label = "خصم 10% على طلبكِ — كو�
                     dir="ltr"
                     style={{ writingMode: "vertical-rl", fontSize: 34, lineHeight: 1.1, letterSpacing: "0.08em" }}
                   >
-                    NADINE10
+                    {promo.code}
                   </span>
                 </div>
 
@@ -150,7 +148,7 @@ export function PromoCountdown({ label = "خصم 10% على طلبكِ — كو�
                   <span className="inline-flex items-center rounded-full bg-brand-subtle px-3.5 py-1 text-[11px] uppercase tracking-[0.22em] font-semibold text-brand shadow-[inset_0_0_0_1px_rgba(196,40,85,0.12)]">
                     عرض محدود
                   </span>
-                  <h2 className="mt-3 font-display text-[22px] leading-snug font-bold text-fg">{label}</h2>
+                  <h2 className="mt-3 font-display text-[22px] leading-snug font-bold text-fg">{promo.label}</h2>
                 </div>
 
                 {/* countdown */}
@@ -177,7 +175,7 @@ export function PromoCountdown({ label = "خصم 10% على طلبكِ — كو�
                   <p className="text-[13px] font-medium text-fg-tertiary">
                     استخدمي كود{" "}
                     <span className="font-bold text-brand" dir="ltr">
-                      NADINE10
+                      {promo.code}
                     </span>{" "}
                     عند الحجز — ينتهي العداد أدناه
                   </p>

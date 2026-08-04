@@ -6,6 +6,7 @@ import order from "./_handlers/order.mjs";
 import newsletter from "./_handlers/newsletter.mjs";
 import contact from "./_handlers/contact.mjs";
 import coupons from "./_handlers/coupons.mjs";
+import promo from "./_handlers/promo.mjs";
 import analytics from "./_handlers/analytics.mjs";
 import debugEc from "./_handlers/debug-ec.mjs";
 import stock from "./_handlers/stock.mjs";
@@ -56,6 +57,7 @@ export default async function handler(req, res) {
       case "newsletter": return await newsletter(req, res);
       case "contact": return await contact(req, res);
       case "coupons": return await coupons(req, res);
+      case "promo": return await promo(req, res);
       case "analytics": return await analytics(req, res);
       case "debug-ec": return await debugEc(req, res);
       case "stock": return await stock(req, res);
