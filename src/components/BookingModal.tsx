@@ -113,7 +113,6 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const [orderId, setOrderId] = useState("");
   const [submittedPhone, setSubmittedPhone] = useState("");
   const errorRef = useRef<HTMLParagraphElement | null>(null);
-  const [whatsappConsent, setWhatsappConsent] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [couponApplied, setCouponApplied] = useState<{ code: string; label: string; type: "percent" | "fixed"; value: number } | null>(null);
   const [couponChecking, setCouponChecking] = useState(false);
@@ -234,7 +233,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
           items: cart ? orderedItems : undefined,
           location: locationValue,
           phone: phone.trim(),
-          whatsappConsent,
+          whatsappConsent: true,
           couponCode: couponApplied?.code || "",
           couponDiscount: discountAmount,
           finalTotal,
@@ -625,19 +624,10 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
                 </div>
               )}
 
-              {/* WhatsApp consent */}
-              <div className="flex items-start gap-2">
-                <input
-                  type="checkbox"
-                  id="whatsapp-consent"
-                  checked={whatsappConsent}
-                  onChange={(e) => setWhatsappConsent(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 rounded border-line-subtle accent-strawberry-600 cursor-pointer"
-                />
-                <label htmlFor="whatsapp-consent" className="text-[11px] text-fg-tertiary leading-relaxed cursor-pointer">
-                  أوافق على تواصل فريق خدمة العملاء معي عبر <span className="font-semibold text-accent-brand">واتساب</span> لإرسال أي معلومات تتعلق بطلبي
-                </label>
-              </div>
+              {/* Customer-service note — no checkbox, support is available on WhatsApp */}
+              <p className="text-[11px] text-fg-tertiary leading-relaxed">
+                فريق خدمة العملاء متواجد لخدمتكِ عبر <span className="font-semibold text-accent-brand">واتساب</span> — إذا احتجتِ أي شيء بخصوص طلبكِ، راسلينا في أي وقت
+              </p>
 
               {error && (
                 <p ref={errorRef} className="text-xs text-status-danger">{error}</p>
