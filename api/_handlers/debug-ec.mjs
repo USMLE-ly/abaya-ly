@@ -1,4 +1,4 @@
-import { createRateLimiter, clientIp, isAdmin, ecStoreId } from "./shared.mjs";
+import { createRateLimiter, clientIp, isAdmin, ecStoreId, storageBackend } from "./shared.mjs";
 
 const rl = createRateLimiter();
 
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
   const EC_URL = process.env.EDGE_CONFIG;
   if (!EC_URL) return res.status(200).json({ error: "No EC_URL" });
 
-  const summary = { read: "pending" };
+  const summary = { read: "pending", backend: storageBackend() };
   try {
     const resp = await fetch(EC_URL);
     if (!resp.ok) {

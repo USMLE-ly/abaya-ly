@@ -47,8 +47,82 @@ export function isAdmin(req) {
   return !!ADMIN_PASSWORD && req.headers["x-admin-password"] === ADMIN_PASSWORD;
 }
 
-/** Read the whole Edge Config dataset → { key: value } map. */
+// ── Storage backend ─────────────────────────────────────────
+// Upstash Redis REST is the primary write path (Vercel free-tier Edge Config
+// updates are quota-limited). Enabled when UPSTASH_REDIS_REST_URL and
+// UPSTASH_REDIS_REST_TOKEN are set; otherwise falls back to Vercel Edge Config.
+const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL || "";
+const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || "";
+
+export function storageBackend() {
+  return UPSTASH_URL && UPSTASH_TOKEN ? "upstash" : "edge-config";
+}
+
+async function upstash(cmd, pipeline = false) {
+  const url = pipeline ? `${UPSTASH_URL}/pipeline` : UPSTASH_URL;
+  const resp = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${UPSTASH_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(cmd),
+  });
+  if (!resp.ok) {
+    throw new Error(`Upstash error [${resp.status}]: ${(await resp.text()).slice(0, 300)}`);
+  }
+  const data = await resp.json();
+  return pipeline ? data.map((d) => d.result) : data.result;
+}
+
+/** Values are stored JSON-encoded (mirrors Edge Config's JSON values). */
+function upstashDecode(raw) {
+  if (raw === null || raw === undefined) return undefined;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return raw;
+  }
+}
+
+async function upstashReadAll() {
+  let cursor = "0";
+  const keys = [];
+  do {
+    const res = await upstash(["SCAN", cursor, "MATCH", "*", "COUNT", "1000"]);
+    cursor = String(res?.[0] ?? "0");
+    keys.push(...(Array.isArray(res?.[1]) ? res[1] : []));
+  } while (cursor && cursor !== "0");
+  const out = {};
+  for (let i = 0; i < keys.length; i += 500) {
+    const chunk = keys.slice(i, i + 500);
+    const values = await upstash(["MGET", ...chunk]);
+    chunk.forEach((k, idx) => {
+      const v = upstashDecode(values?.[idx]);
+      if (v !== undefined) out[k] = v;
+    });
+  }
+  return out;
+}
+
+async function upstashGet(key) {
+  return upstashDecode(await upstash(["GET", key]));
+}
+
+async function upstashSet(key, value) {
+  return upstash(["SET", key, JSON.stringify(value)]);
+}
+
+async function upstashDel(keys) {
+  if (!keys.length) return;
+  for (let i = 0; i < keys.length; i += 500) {
+    await upstash(["DEL", ...keys.slice(i, i + 500)]);
+  }
+}
+
+/** Read the whole dataset → { key: value } map (Upstash or Edge Config). */
 export async function readItems(EC_URL) {
+  if (storageBackend() === "upstash") return upstashReadAll();
   if (!EC_URL) return {};
   const readResp = await fetch(EC_URL);
   const allData = readResp.ok ? await readResp.json() : { items: {} };
@@ -110,6 +184,7 @@ export function ecConnection(EC_URL) {
  * behavior is never worse than the legacy path.
  */
 export async function readItem(EC_URL, key) {
+  if (storageBackend() === "upstash") return upstashGet(key);
   if (!EC_URL) return undefined;
   const conn = ecConnection(EC_URL);
   if (conn) {
@@ -204,6 +279,7 @@ async function patchItems(EC_URL, ops) {
  * Production env var on the project.
  */
 export async function writeItem(EC_URL, key, value) {
+  if (storageBackend() === "upstash") return upstashSet(key, value);
   return patchItem(EC_URL, "upsert", key, value);
 }
 
@@ -213,6 +289,7 @@ export async function writeItem(EC_URL, key, value) {
  * verify writes immediately after they land.
  */
 export async function restReadItem(EC_URL, key) {
+  if (storageBackend() === "upstash") return upstashGet(key);
   const storeId = ecStoreId(EC_URL);
   const apiToken = process.env.VERCEL_API_TOKEN || "";
   if (!storeId || !apiToken) return undefined;
@@ -239,6 +316,7 @@ export async function restReadItem(EC_URL, key) {
 export async function deleteKeys(EC_URL, keys) {
   const list = (keys || []).filter((k) => typeof k === "string" && k.trim());
   if (!list.length) return;
+  if (storageBackend() === "upstash") return upstashDel(list);
   try {
     await patchItems(EC_URL, list.map((k) => ({ operation: "remove", key: k })));
   } catch (err) {
