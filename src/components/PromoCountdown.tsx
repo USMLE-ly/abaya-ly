@@ -34,6 +34,12 @@ export function PromoCountdown() {
     return () => clearInterval(id);
   }, [target]);
 
+  // Hooks must run unconditionally: an early return below would change the
+  // hook count between renders and crash with React error #310.
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const rtl = useIsRTL();
+  const scale = useTicketScale(wrapRef, GEO.w);
+
   if (loading) return null;
   // Disabled → hidden completely. Expired / reached zero → permanent ended state.
   if (!promo || promo.disabled) return null;
@@ -52,9 +58,6 @@ export function PromoCountdown() {
     { value: seconds, label: "ثانية" },
   ];
 
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const rtl = useIsRTL();
-  const scale = useTicketScale(wrapRef, GEO.w);
   const clip = ticketPath(GEO, rtl);
   const dividerLeft = rtl ? GEO.w - GEO.dividerX - 0.8 : GEO.dividerX - 0.8;
   const stubLeft = rtl ? 0 : GEO.dividerX;
