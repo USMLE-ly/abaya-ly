@@ -1,55 +1,52 @@
-## Goal
+# Meta Pixel tracking + conversion gap fill
 
-1. Fix the misaligned buttons in the "تم استلام طلبك بنجاح" success modal.
-2. Collect the customer's name at checkout (required).
-3. After a confirmed order, generate a personalized luxury certificate carrying two seals: a fixed store authenticity seal and a per-outfit seal.
+Pixel ID: `760469593227327`. Fires immediately on load, no consent gate.
 
-## 1. Success popup button fix
+## 1. Install the pixel
 
-In `src/components/BookingModal.tsx` (success state, lines ~510-551) the track button is an `inline-flex … px-5 py-2.5 text-xs mt-4` link while "متابعة التسوق" is a `px-6 py-2.5 text-sm mt-6` button — different widths, text sizes and gaps.
+- Add the Meta Pixel base snippet to the `<head>` of `index.html` with `fbq('init','760469593227327')`. The initial `PageView` fires from the app router (below) so single-page navigations aren't missed, not from the snippet.
+- Add the `<noscript>` tracking image at the top of `<body>` (it is not valid inside `<head>`).
 
-Replace both with one flex container:
-- `flex flex-col sm:flex-row gap-3 mt-6` (RTL-safe, gap only, no per-button margins)
-- Each button: `flex-1 h-12 inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold` — identical height, padding, and type scale.
-- Primary = track order (gradient fill), secondary = continue shopping (outlined, `border border-brand text-brand`) so weights read as a pair.
-- Stack full-width on mobile, side-by-side from `sm:` up.
-- A third, quieter link "شهادة الطلب" opens the certificate.
+## 2. Wire the events into the existing analytics layer
 
-## 2. Customer name (required)
+The store already has an internal analytics module (`src/lib/analytics.ts`) with typed helpers for page views, product views, cart, checkout, purchase, wishlist, coupons and newsletter. Rather than sprinkling `fbq` calls across components, each helper will also forward the matching Meta event, so both systems stay in sync from one place.
 
-- `BookingModal`: add a required "الاسم الكريم" text input above the phone field, min 2 / max 60 chars, trimmed, Arabic-friendly. Block submit with an inline error when empty.
-- Send it as a new `customerName` field in the POST body.
-- `api/_handlers/order.mjs`: sanitize `customerName`, require it, store it on the order object, and add a `👤 الاسم` line to the Telegram message. `code`, `phone` validation and the response shape stay exactly as they are — no change to the existing checkout contract, so old clients keep working.
-- Admin order detail + track-order display the name where the order fields are listed.
+| Store event | Meta event |
+|---|---|
+| page view (every route change) | `PageView` |
+| product page opened | `ViewContent` |
+| add to cart | `AddToCart` |
+| wishlist add | `AddToWishlist` |
+| checkout modal opened | `InitiateCheckout` |
+| order confirmed | `Purchase` |
+| newsletter / contact form submit | `Lead` |
+| search submitted | `Search` |
 
-## 3. Certificate components
+Each payload carries `content_ids`, `content_name`, `content_type: 'product'`, `value`, `num_items` and `currency: 'LYD'` (the store prices in Libyan dinar, so Meta's catalog and ad reporting match the real order values).
 
-Create the provided component library under the shadcn UI path already used by this project (`src/components/ui/`):
+## 3. Gaps to close (helpers that exist but are never called)
 
-- `src/components/ui/award.tsx` — the full `Awards` component exactly as supplied (variants: stamp, award, certificate, badge, sticker, id-card), with `cn` from `@/lib/utils` (already exists). Only the color classes are re-pointed to brand tokens (strawberry `#c42855` / gold accent) instead of raw yellow/gray gradients.
-- `src/components/ui/certificate.tsx` — thin wrapper rendering `variant="certificate"`.
+Confirmed by reading the code — these are wired to nothing today, so both the internal dashboard and the pixel are blind to them:
 
-Then the brand layer:
+- **AddToCart** — the product page and cart drawer add items without firing the event.
+- **InitiateCheckout** — never fired when the booking/checkout modal opens.
+- **Purchase** — never fired after a confirmed order. This is the one that matters most for ads: without it, no conversion optimisation, no ROAS, no purchaser lookalike audience.
+- **AddToWishlist** — wishlist toggle fires nothing.
+- **Lead** — newsletter and contact form submissions fire nothing.
+- **Search** — header search fires nothing.
 
-- `src/components/certificate/StoreSeal.tsx` — `Awards` **stamp** variant, fixed content: "NADINE LUXURY" curved top, "دار الأزياء المعتمدة" curved bottom, brand star. Identical on every order.
-- `src/components/certificate/OutfitSeal.tsx` — `Awards` **badge** variant, generated per ordered item from `src/data/products.ts`: model/name, SKU code, collection, color/edition, and the order reference.
-- `src/components/certificate/OrderCertificate.tsx` — the main certificate that composes them: Tajawal RTL, dotted gold border, crown/award mark, "شهادة أصالة", customer name, order number, purchased outfit(s), date in Arabic, store seal bottom-right, outfit seal bottom-left. Multi-item orders render one outfit seal per item (wrapped row, capped at 4 then "+N").
+All six get wired in this pass.
 
-## 4. Data flow & delivery
+## 4. Facebook catalog readiness
 
-- On success, `BookingModal` already holds everything needed (`orderId`, name, phone, and `cart.items` / single product props). It stores a `CertificateData` object in state and passes it to the certificate.
-- Delivery: "شهادة الطلب" opens a full-screen modal with the rendered certificate and a **تحميل الشهادة** button using `html-to-image` (`toPng`, pixelRatio 2) → downloads `nadine-certificate-<orderId>.png`. This is a client-only render; nothing is persisted server-side.
-- The same certificate is reachable later from `/track-order` once an order is found, so the customer isn't forced to save it immediately.
+Product IDs sent to the pixel will use the same `id` as `src/data/products.ts` and `public/products.json`, so a catalog feed built from that file matches the pixel events and dynamic retargeting ads work without an ID remap. No feed generation in this pass — flag it as a next step if you want dynamic ads.
 
-## Not breaking checkout
+## Not included
 
-- No change to the order POST endpoint's URL, status codes, or `{ success, orderId, message }` response.
-- `customerName` is additive; the handler treats a missing value as `"—"` for any legacy caller.
-- Certificate rendering happens strictly after `res.ok` — it cannot block or fail the order, and it's wrapped in an error boundary so a render fault still leaves the success modal intact.
-- Cart clearing (`onSuccess`) still fires exactly as today, before the certificate is opened; the certificate reads from a snapshot taken at submit time, not from the live cart.
+Your brief also lists user accounts/login, a blog, and Stripe checkout. Those are large, separate builds (accounts need a backend with auth and order history; the store currently checks out via order form + Telegram notification, with order tracking by number + phone). They are out of scope here — say the word and I'll plan them separately.
 
 ## Technical notes
 
-- Project is Vite + React + TS + Tailwind with `@/` alias and `cn` in `src/lib/utils.ts`, so the shadcn-style `src/components/ui/` path works as-is; `lucide-react` is already installed.
-- One new dependency: `html-to-image`.
-- Tokens used: existing `--color-strawberry-*`, `bg-card`, `text-muted-foreground` equivalents in `src/index.css`; no new hardcoded hex outside the certificate's gold foil accent, which will be added as a token.
+- Files touched: `index.html`, `src/lib/analytics.ts` (add a `src/lib/meta-pixel.ts` module it delegates to), `src/pages/Product.tsx`, `src/components/BookingModal.tsx`, `src/components/CartDrawer.tsx`, `src/lib/wishlist.ts` consumers, `src/components/Footer.tsx` (newsletter), `src/components/ContactForm.tsx`, `src/components/Header.tsx` (search).
+- Pixel calls are wrapped in a guard so a blocked/failed `fbevents.js` can never throw into React render or break checkout.
+- `Purchase` fires once per order id, deduped in `sessionStorage`, so a page refresh on the success screen doesn't double-count revenue.
