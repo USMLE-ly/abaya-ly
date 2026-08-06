@@ -4,6 +4,8 @@
 // Data appears in the admin dashboard (التحليلات → نشاط المتجر).
 // ─────────────────────────────────────────────────────────────
 
+import { pixelTrack, pixelTrackOnce } from "@/lib/meta-pixel";
+
 const FLUSH_INTERVAL = 15_000;
 const FLUSH_BATCH = 25;
 const MAX_BUFFER = 100;
@@ -88,10 +90,12 @@ export function track(event: string, params: Record<string, unknown> = {}) {
   else scheduleFlush();
 }
 
-// ── Typed event helpers (same API as before, internal backend) ──
+// ── Typed event helpers (internal backend + Meta Pixel) ──
 
-export const trackPageView = (path: string, title?: string) =>
+export const trackPageView = (path: string, title?: string) => {
   track("page_view", { page_path: path, page_title: title ?? document.title });
+  pixelTrack("PageView");
+};
 
 interface TrackableProduct {
   id: string;
@@ -111,23 +115,45 @@ const toItem = (p: TrackableProduct, quantity = 1) => ({
   quantity,
 });
 
-export const trackViewItem = (p: TrackableProduct) =>
-  track("view_item", { value: p.price, items: [toItem(p)] });
+/** Meta payload shared by ViewContent / AddToCart / AddToWishlist. */
+const toPixelItems = (items: TrackableProduct[], quantities: number[] = []) => ({
+  content_ids: items.map((i) => i.id),
+  content_name: items.map((i) => i.name).join(" • "),
+  content_type: "product",
+  contents: items.map((i, idx) => ({ id: i.id, quantity: quantities[idx] ?? 1 })),
+  num_items: quantities.length ? quantities.reduce((a, b) => a + b, 0) : items.length,
+});
 
-export const trackAddToCart = (p: TrackableProduct, quantity = 1) =>
+export const trackViewItem = (p: TrackableProduct) => {
+  track("view_item", { value: p.price, items: [toItem(p)] });
+  pixelTrack("ViewContent", { ...toPixelItems([p]), value: p.price });
+};
+
+export const trackAddToCart = (p: TrackableProduct, quantity = 1) => {
   track("add_to_cart", { value: p.price * quantity, items: [toItem(p, quantity)] });
+  pixelTrack("AddToCart", { ...toPixelItems([p], [quantity]), value: p.price * quantity });
+};
 
 export const trackRemoveFromCart = (p: TrackableProduct, quantity = 1) =>
   track("remove_from_cart", { value: p.price * quantity, items: [toItem(p, quantity)] });
 
-export const trackAddToWishlist = (p: TrackableProduct) =>
+export const trackAddToWishlist = (p: TrackableProduct) => {
   track("add_to_wishlist", { value: p.price, items: [toItem(p)] });
+  pixelTrack("AddToWishlist", { ...toPixelItems([p]), value: p.price });
+};
 
-export const trackBeginCheckout = (value: number, items: TrackableProduct[]) =>
+export const trackBeginCheckout = (value: number, items: TrackableProduct[], quantities: number[] = []) => {
   track("begin_checkout", { value, items: items.map((i) => toItem(i)) });
+  pixelTrack("InitiateCheckout", { ...toPixelItems(items, quantities), value });
+};
 
-export const trackPurchase = (transactionId: string, value: number, items: TrackableProduct[]) =>
+export const trackPurchase = (transactionId: string, value: number, items: TrackableProduct[], quantities: number[] = []) => {
   track("purchase", { transaction_id: transactionId, value, items: items.map((i) => toItem(i)) });
+  pixelTrackOnce(transactionId || "no-id", "Purchase", {
+    ...toPixelItems(items, quantities),
+    value,
+  });
+};
 
 export const trackCta = (label: string, location: string) =>
   track("cta_click", { cta_label: label, cta_location: location });
@@ -135,10 +161,25 @@ export const trackCta = (label: string, location: string) =>
 export const trackCoupon = (code: string, status: "applied" | "rejected") =>
   track(status === "applied" ? "coupon_applied" : "coupon_rejected", { coupon: code });
 
-export const trackNewsletter = (source: string) => track("newsletter_signup", { source });
+/** Newsletter, contact form and any other lead capture. */
+export const trackLead = (source: string) => {
+  track("lead", { source });
+  pixelTrack("Lead", { content_name: source, value: 0 });
+};
+
+export const trackNewsletter = (source: string) => {
+  track("newsletter_signup", { source });
+  pixelTrack("Lead", { content_name: "Newsletter Signup", value: 0 });
+};
+
+export const trackSearch = (query: string, resultCount = 0) => {
+  track("search", { search_term: query, result_count: resultCount });
+  pixelTrack("Search", { search_string: query, content_type: "product" });
+};
 
 export const trackPopup = (name: string, action: "shown" | "converted" | "dismissed") =>
   track(`popup_${action}`, { popup_name: name });
+
 
 // ── Scroll depth (25 / 50 / 75 / 100) ────────────────────────
 export function startScrollDepthTracking() {

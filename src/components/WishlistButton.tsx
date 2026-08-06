@@ -1,5 +1,7 @@
 import { Heart } from "lucide-react";
 import { useWishlist } from "@/lib/wishlist";
+import { products } from "@/data/products";
+import { trackAddToWishlist } from "@/lib/analytics";
 
 interface Props {
   productId: string;
@@ -16,6 +18,10 @@ export function WishlistButton({ productId, size = 16, className = "" }: Props) 
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        if (!active) {
+          const p = products.find((x) => x.id === productId);
+          if (p) trackAddToWishlist(p);
+        }
         toggle(productId);
       }}
       className={`flex items-center justify-center rounded-full transition-all duration-300 hover:scale-110 ${className}`}

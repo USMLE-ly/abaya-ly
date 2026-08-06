@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCatalogProducts } from "@/lib/useCatalog";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Search, ShoppingBag, Heart } from "lucide-react";
+import { trackSearch } from "@/lib/analytics";
 import { useWishlist } from "@/lib/wishlist";
 import { getAnnounceState, subscribeAnnounceState } from "@/lib/announcement";
 import { openCartDrawer } from "@/components/CartDrawer";
@@ -135,6 +136,7 @@ export function Header() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    if (searchQuery.trim()) trackSearch(searchQuery.trim(), searchResults.length);
     if (searchResults.length > 0) {
       navigate(`/product/${searchResults[0].id}`);
       setSearchOpen(false);

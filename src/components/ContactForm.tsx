@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Send, CheckCircle, Loader2 } from "lucide-react";
 import { Button, Input, Textarea } from "@/components/velar";
+import { trackLead } from "@/lib/analytics";
 
 export function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -34,6 +35,7 @@ export function ContactForm() {
         setError(body.error || "حدث خطأ، يرجى المحاولة لاحقاً");
         return;
       }
+      trackLead("Contact Form");
       form.reset();
       setSubmitted(true);
     } catch {
