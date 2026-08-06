@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { X, Loader2, ChevronDown } from "lucide-react";
 import { products } from "@/data/products";
+import { trackPurchase } from "@/lib/analytics";
 import type { CertificateData } from "@/components/certificate/OrderCertificate";
 import { OrderSuccessCard } from "@/components/ui/order-success-card";
 import { OrderDetails } from "@/components/ui/order-details";
@@ -241,6 +242,21 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
         });
       } catch {
         /* the certificate is optional — never block the confirmed order */
+      }
+
+      // Meta Purchase — deduped by order id so a refresh can't double-count.
+      try {
+        const purchased = cart
+          ? orderedItems.map((it) => ({ id: it.id, name: it.name, price: it.price, quantity: it.quantity }))
+          : [{ id: productCode, name: productName, price: baseTotal, quantity: 1 }];
+        trackPurchase(
+          data.orderId || "",
+          finalTotal,
+          purchased.map((it) => ({ id: it.id, name: it.name, price: it.price })),
+          purchased.map((it) => it.quantity),
+        );
+      } catch {
+        /* tracking must never affect a confirmed order */
       }
 
       onSuccess?.();

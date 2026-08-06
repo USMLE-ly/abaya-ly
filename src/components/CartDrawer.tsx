@@ -9,6 +9,7 @@ import {
 } from "@/lib/cart";
 import { BookingModal, type BookingCartContext } from "@/components/BookingModal";
 import { products } from "@/data/products";
+import { trackBeginCheckout } from "@/lib/analytics";
 
 export const CART_DRAWER_EVENT = "nadine-cart-drawer";
 
@@ -164,7 +165,15 @@ export function CartDrawer() {
                     <span className="text-lg font-bold text-brand">{subtotal} د.ل</span>
                   </div>
                   <button
-                    onClick={() => { setOpen(false); setBookingOpen(true); }}
+                    onClick={() => {
+                      trackBeginCheckout(
+                        subtotal,
+                        items.map((i) => ({ id: i.id, name: i.name, price: i.price })),
+                        items.map((i) => i.quantity),
+                      );
+                      setOpen(false);
+                      setBookingOpen(true);
+                    }}
                     className="w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white transition-all active:scale-[0.98] shadow-lg shadow-brand/25"
                     style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
                   >

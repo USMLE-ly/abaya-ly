@@ -24,7 +24,7 @@ import { usePromo } from "@/lib/promo";
 import { Button, Badge, Card } from "@/components/velar";
 import { StockIndicator } from "@/components/StockIndicator";
 import { FrequentlyBoughtTogether, CompleteTheLook } from "@/components/CompleteTheLook";
-import { trackViewItem } from "@/lib/analytics";
+import { trackViewItem, trackAddToCart } from "@/lib/analytics";
 import { useStock } from "@/lib/useStock";
 import { addToCart } from "@/lib/cart";
 import { openCartDrawer } from "@/components/CartDrawer";
@@ -272,6 +272,7 @@ function ProductContent() {
       size: product.sizes[selectedSize] || product.sizes[0] || "M",
       quantity: 1,
     });
+    trackAddToCart(product, 1);
     openCartDrawer();
   };
   const [sizeAvailable, setSizeAvailable] = useState(true);
