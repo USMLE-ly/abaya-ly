@@ -23,8 +23,15 @@ const OrderCertificateModal = lazy(() =>
   }))
 );
 
+/** Certificate preview surface — heavy, so load it only when an order is found. */
+const CertificatePreview = lazy(() =>
+  import("@/components/certificate/CertificatePreview").then((m) => ({
+    default: m.CertificatePreview,
+  }))
+);
+
 export function TrackOrder() {
-  usePageMeta("تتبع الطلب", "أدخلي رقم الطلب ورقم الهاتف لتتبعي حالة طلبك من نادين لحظة بلحظة.");
+  usePageMeta("تتبعي طلبكِ", "تتبعي طلبكِ من نادين لحظة بلحظة — من التأكيد حتى باب منزلكِ، بخطوتين فقط.");
   return <PageTransition><TrackOrderContent /></PageTransition>;
 }
 
@@ -151,7 +158,7 @@ function TrackOrderContent() {
           <h1 className="font-display text-3xl md:text-4xl font-bold text-fg mt-2 mb-3">
             تتبع <span className="text-accent-brand">طلبكِ</span>
           </h1>
-          <p className="text-sm text-fg-tertiary">أدخلي رقم الطلب ورقم الهاتف لمتابعة حالة طلبكِ</p>
+          <p className="text-sm text-fg-tertiary">خطوتان فقط — رقم الطلب ورقم الهاتف — وتتابعين قطعتكِ من التأكيد حتى التوصيل</p>
         </div>
       </section>
 
@@ -230,7 +237,7 @@ function TrackOrderContent() {
               <p className="text-[11px] text-fg-tertiary mt-1.5">
                 {notFoundReason === "phone"
                   ? "تأكدي من رقم الهاتف المستخدم في الحجز — يجب أن يكون نفس الرقم المُدخل عند إتمام الطلب"
-                  : "تأكدي من رقم الطلب ورقم الهاتف المستخدم في الحجز"}
+                  : "تحقّقي من: رقم الطلب يبدأ بـ NAD · الهاتف 10 أرقام بدون مسافات · نفس الرقم المستخدم في الحجز"}
               </p>
             </div>
           )}
@@ -350,6 +357,11 @@ function TrackOrderContent() {
                 pieces={pieces}
                 onCertificate={() => setCertOpen(true)}
               />
+
+              {/* Certificate preview — view the generated certificate before downloading */}
+              <Suspense fallback={null}>
+                <CertificatePreview data={certificateFromOrder(order)} />
+              </Suspense>
 
               <Suspense fallback={null}>
                 <OrderCertificateModal

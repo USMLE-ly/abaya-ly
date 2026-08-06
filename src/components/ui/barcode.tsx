@@ -135,6 +135,7 @@ function BarcodeCard({ value, target, color, tone, label, showValue, card, class
     if (!node) return;
     setDownloading(true);
     try {
+      await document.fonts.ready;
       const dataUrl = await toPng(node, {
         pixelRatio: 3,
         backgroundColor: "#ffffff",

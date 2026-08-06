@@ -5,6 +5,13 @@ import { fileURLToPath } from 'url'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  server: {
+    watch: {
+      // The automation Python venv contains tens of thousands of files; watching
+      // it exhausts the inotify watcher limit and crashes `vite dev`.
+      ignored: ["**/automation/venv/**", "**/.venv/**", "**/__pycache__/**"],
+    },
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

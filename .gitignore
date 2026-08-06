@@ -33,7 +33,7 @@ dist-ssr
 # Playwright test files
 inspect*.spec.*
 inspect*.mjs
-playwright.config.ts
 test-inspect.spec.mjs
 test-results/
+playwright-report/
 .env

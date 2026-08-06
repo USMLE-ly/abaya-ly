@@ -8,6 +8,7 @@ import { OrderDetails } from "@/components/ui/order-details";
 import type { AuthenticatedPiece } from "@/components/ui/authenticated-product-card";
 import { pieceBarcode, productPageUrl } from "@/lib/barcode";
 import { DELIVERY, deliveryFeeFor, SHIPPING_CITIES } from "@/lib/delivery";
+import { validateBookingPayload } from "@/lib/validateBooking";
 
 /** The certificate surface (html-to-image) is heavy — load it only when opened. */
 const OrderCertificateModal = lazy(() =>
@@ -131,44 +132,13 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
   const isOtherCity = selectedCity === "أخرى";
   const locationValue = isOtherCity ? customLocation.trim() : selectedCity;
 
-  const validatePhone = (value: string): string | null => {
-    const digits = value.replace(/\s/g, "");
-    if (!/^\d{10}$/.test(digits)) {
-      return "رقم الهاتف يجب أن يتكون من 10 أرقام";
-    }
-    if (!/^(091|092|093|094)/.test(digits)) {
-      return "رقم الهاتف يجب أن يبدأ بـ 091 أو 092 أو 093 أو 094";
-    }
-    return null;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const nameClean = customerName.trim();
-    if (nameClean.length < 2 || nameClean.length > 60) {
-      setError("يرجى كتابة الاسم الكريم (من حرفين إلى 60 حرفاً)");
-      return;
-    }
-
-    const phoneError = validatePhone(phone);
-    if (phoneError) {
-      setError(phoneError);
-      return;
-    }
-
-    if (!selectedCity) {
-      setError("يرجى اختيار المدينة أو المنطقة");
-      return;
-    }
 
     if (isOtherCity && !customLocation.trim()) {
       setError("يرجى كتابة اسم المدينة أو المنطقة");
       return;
     }
-
-    setError("");
-    setSubmitting(true);
 
     const orderedItems = cart
       ? cart.items.map((it, i) => {
@@ -184,6 +154,33 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
         })
       : [];
 
+    // Strict payload validation — every field is checked BEFORE the API call.
+    const validation = validateBookingPayload({
+      code: cart ? cart.codes : productCode,
+      name: cart ? cart.names : productName,
+      customerName,
+      color: cart ? `${cart.itemCount} قطع` : selectedColor,
+      size: cart ? "" : selectedSize,
+      items: cart ? orderedItems : undefined,
+      location: locationValue,
+      phone,
+      whatsappConsent: true,
+      couponCode: couponApplied?.code || "",
+      couponDiscount: discountAmount,
+      deliveryFee,
+      baseTotal,
+      finalTotal,
+      preOrder,
+    });
+
+    if (!validation.ok) {
+      setError(validation.errors[0]);
+      return;
+    }
+
+    setError("");
+    setSubmitting(true);
+
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 20000);
     try {
@@ -191,23 +188,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         signal: controller.signal,
-        body: JSON.stringify({
-          code: cart ? cart.codes : productCode,
-          name: cart ? cart.names : productName,
-          customerName: nameClean,
-          color: cart ? `${cart.itemCount} قطع` : selectedColor,
-          size: cart ? "" : selectedSize,
-          items: cart ? orderedItems : undefined,
-          location: locationValue,
-          phone: phone.trim(),
-          whatsappConsent: true,
-          couponCode: couponApplied?.code || "",
-          couponDiscount: discountAmount,
-          deliveryFee,
-          baseTotal,
-          finalTotal,
-          preOrder,
-        }),
+        body: JSON.stringify(validation.payload),
       });
 
       const data = await res.json().catch(() => null);
@@ -225,7 +206,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
           : [{ id: "", name: productName, color: selectedColor, size: selectedSize }];
         setCertificate({
           orderId: data.orderId || "",
-          customerName: nameClean,
+          customerName: customerName.trim(),
           date: new Date().toLocaleDateString("ar-LY", { year: "numeric", month: "long", day: "numeric" }),
           items: source.map((it) => {
             const p = products.find((x) => x.id === it.id) ?? products.find((x) => x.name === it.name);

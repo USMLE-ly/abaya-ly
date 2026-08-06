@@ -1,7 +1,7 @@
 import { Component, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { X, Download, Share2 } from "lucide-react";
-import { toBlob, toPng } from "html-to-image";
+import { X, Download, Share2, FileText } from "lucide-react";
+import { downloadCertificatePdf, downloadCertificatePng, shareCertificate } from "@/lib/certificateExport";
 import { Awards } from "@/components/ui/award";
 import { CustomerInformation } from "./CustomerInformation";
 import { ProductInformation } from "./ProductInformation";
@@ -83,7 +83,7 @@ class CertificateBoundary extends Component<{ children: ReactNode }, { failed: b
   }
 }
 
-/** Full-screen viewer with high-resolution PNG download and native share/copy. */
+/** Full-screen viewer with high-resolution PNG/PDF download and native share/copy. */
 export function OrderCertificateModal({
   open,
   onClose,
@@ -94,72 +94,52 @@ export function OrderCertificateModal({
   data: CertificateData | null;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [busy, setBusy] = useState<"download" | "share" | null>(null);
+  const [busy, setBusy] = useState<"download" | "pdf" | "share" | null>(null);
   const [status, setStatus] = useState("");
 
   if (!open || !data) return null;
 
-  const renderPng = async (pixelRatio: number) => {
-    if (!ref.current) return null;
-    try {
-      return await toPng(ref.current, { pixelRatio, backgroundColor: IVORY });
-    } catch {
-      return null;
-    }
-  };
+  const fileName = `nadine-certificate-${data.orderId}`;
 
   const download = async () => {
+    if (!ref.current) return;
     setBusy("download");
     setStatus("");
     try {
-      const url = await renderPng(4);
-      if (!url) return;
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `nadine-certificate-${data.orderId}.png`;
-      a.click();
+      await downloadCertificatePng(ref.current, `${fileName}.png`, 4);
+    } catch {
+      setStatus("تعذّر تنزيل الشهادة — حاولي مرة أخرى");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const downloadPdf = async () => {
+    if (!ref.current) return;
+    setBusy("pdf");
+    setStatus("");
+    try {
+      await downloadCertificatePdf(ref.current, `${fileName}.pdf`);
+    } catch {
+      setStatus("تعذّر تنزيل نسخة PDF — جربي تحميل الصورة");
     } finally {
       setBusy(null);
     }
   };
 
   const share = async () => {
+    if (!ref.current) return;
     setBusy("share");
     setStatus("");
     try {
-      const blob = ref.current
-        ? await toBlob(ref.current, { pixelRatio: 2, backgroundColor: IVORY })
-        : null;
-      if (!blob) {
-        setStatus("تعذّرت المشاركة — جربي التنزيل بدلاً من ذلك");
-        return;
-      }
-      const file = new File([blob], `nadine-certificate-${data.orderId}.png`, {
-        type: "image/png",
-      });
-      const shareNav = navigator as Navigator & { canShare?: (data?: ShareData) => boolean };
-      if (shareNav.canShare?.({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: "شهادة أصالة نادين",
-          text: "شهادة أصالة من دار نادين للأزياء",
-        });
-        setStatus("");
-      } else if ("ClipboardItem" in window && navigator.clipboard?.write) {
-        const ClipboardImage = (
-          window as unknown as { ClipboardItem: new (items: Record<string, Blob>) => ClipboardItem }
-        ).ClipboardItem;
-        await navigator.clipboard.write([new ClipboardImage({ "image/png": blob })]);
-        setStatus("تم نسخ الشهادة — الصقيها أينما تريدين");
-      } else {
-        const href = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = href;
-        a.download = `nadine-certificate-${data.orderId}.png`;
-        a.click();
-        URL.revokeObjectURL(href);
-        setStatus("تم تنزيل الشهادة — شاركيها مع من تحبين");
-      }
+      const result = await shareCertificate(ref.current, `${fileName}.png`);
+      setStatus(
+        result === "copied"
+          ? "تم نسخ الشهادة — الصقيها أينما تريدين"
+          : result === "downloaded"
+            ? "تم تنزيل الشهادة — شاركيها مع من تحبين"
+            : ""
+      );
     } catch (e) {
       if (!(e instanceof DOMException && e.name === "AbortError")) {
         setStatus("تعذّرت المشاركة — جربي التنزيل بدلاً من ذلك");
@@ -189,7 +169,26 @@ export function OrderCertificateModal({
           </CertificateBoundary>
         </div>
 
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-4 flex flex-col gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <button
+              onClick={downloadPdf}
+              disabled={busy !== null}
+              className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl text-sm font-bold text-white disabled:opacity-60"
+              style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
+            >
+              <FileText size={16} />
+              {busy === "pdf" ? "جارٍ التجهيز…" : "تحميل PDF"}
+            </button>
+            <button
+              onClick={download}
+              disabled={busy !== null}
+              className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-white/30 text-sm font-bold text-white disabled:opacity-60"
+            >
+              <Download size={16} />
+              {busy === "download" ? "جارٍ التحضير…" : "تحميل الصورة"}
+            </button>
+          </div>
           <button
             onClick={share}
             disabled={busy !== null}
@@ -197,15 +196,6 @@ export function OrderCertificateModal({
           >
             <Share2 size={16} />
             {busy === "share" ? "جارٍ التجهيز…" : "مشاركة الشهادة"}
-          </button>
-          <button
-            onClick={download}
-            disabled={busy !== null}
-            className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl text-sm font-bold text-white disabled:opacity-60"
-            style={{ background: "linear-gradient(135deg, #e63d6a, #c42855)" }}
-          >
-            <Download size={16} />
-            {busy === "download" ? "جارٍ التحضير…" : "تحميل الشهادة"}
           </button>
         </div>
         {status && (
