@@ -4,6 +4,8 @@
 // Data appears in the admin dashboard (التحليلات → نشاط المتجر).
 // ─────────────────────────────────────────────────────────────
 
+import { pixelTrack, pixelTrackOnce } from "@/lib/meta-pixel";
+
 const FLUSH_INTERVAL = 15_000;
 const FLUSH_BATCH = 25;
 const MAX_BUFFER = 100;
