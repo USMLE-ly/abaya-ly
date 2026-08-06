@@ -9,7 +9,6 @@ import {
 } from "@/lib/cart";
 import { BookingModal, type BookingCartContext } from "@/components/BookingModal";
 import { products } from "@/data/products";
-import { trackBeginCheckout } from "@/lib/analytics";
 
 export const CART_DRAWER_EVENT = "nadine-cart-drawer";
 
@@ -166,11 +165,6 @@ export function CartDrawer() {
                   </div>
                   <button
                     onClick={() => {
-                      trackBeginCheckout(
-                        subtotal,
-                        items.map((i) => ({ id: i.id, name: i.name, price: i.price })),
-                        items.map((i) => i.quantity),
-                      );
                       setOpen(false);
                       setBookingOpen(true);
                     }}

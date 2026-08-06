@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { X, Loader2, ChevronDown } from "lucide-react";
 import { products } from "@/data/products";
-import { trackPurchase } from "@/lib/analytics";
+import { trackBeginCheckout, trackPurchase } from "@/lib/analytics";
 import type { CertificateData } from "@/components/certificate/OrderCertificate";
 import { OrderSuccessCard } from "@/components/ui/order-success-card";
 import { OrderDetails } from "@/components/ui/order-details";
@@ -99,6 +99,28 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
       setSelections(next);
     }
   }, [open, cart]);
+
+  // Meta InitiateCheckout — fires whenever the booking/checkout modal opens,
+  // from any entry point (product page, mobile sticky bar, cart drawer).
+  // Values are read at open time; the effect intentionally keys on `open` only
+  // so a re-render while open never re-fires the event.
+  useEffect(() => {
+    if (!open) return;
+    try {
+      if (cart?.items?.length) {
+        trackBeginCheckout(
+          cart.total,
+          cart.items.map((i) => ({ id: i.id, name: i.name, price: i.price })),
+          cart.items.map((i) => i.quantity),
+        );
+      } else {
+        trackBeginCheckout(price, [{ id: productCode, name: productName, price }]);
+      }
+    } catch {
+      /* tracking must never affect the checkout UI */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   // Auto-apply a code revealed by the clickable discount block.
   useEffect(() => {
