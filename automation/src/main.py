@@ -192,13 +192,14 @@ def post_to_all(video_path, caption, product):
             log_post("facebook", video_path, product["id"], status)
             results["facebook"] = success
 
-    # Snapchat — no web upload path; publisher writes the caption for manual posting
+    # Snapchat — web creator portal upload; falls back to a manual caption file
     sc_conf = platforms_config.get("snapchat", {})
     if sc_conf.get("enabled", True):
-        print(f"\n  📤 Preparing snapchat caption...")
+        print(f"\n  📤 Publishing to snapchat...")
         publisher = SnapchatPublisher()
         success = publisher.run(video_path, adapt_caption(caption, "snapchat"))
-        log_post("snapchat", video_path, product["id"], "manual")
+        status = "success" if success else "manual"
+        log_post("snapchat", video_path, product["id"], status)
         results["snapchat"] = success
 
     return results

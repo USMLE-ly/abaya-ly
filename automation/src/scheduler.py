@@ -54,27 +54,31 @@ def get_today_post_count() -> int:
 
 
 def log_post(platform: str, video: str, product: str, status: str) -> None:
-    """Log a post attempt."""
-    log_dir = os.path.join(ROOT_DIR, "logs")
-    os.makedirs(log_dir, exist_ok=True)
-    log_path = os.path.join(log_dir, "posts.json")
+    """Log a post attempt. Never raises: a logging failure must not kill the
+    multi-platform run (observed transient filesystem ENOSYS in containers)."""
+    try:
+        log_dir = os.path.join(ROOT_DIR, "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        log_path = os.path.join(log_dir, "posts.json")
 
-    if os.path.exists(log_path):
-        with open(log_path, "r", encoding="utf-8") as f:
-            logs = json.load(f)
-    else:
-        logs = []
+        if os.path.exists(log_path):
+            with open(log_path, "r", encoding="utf-8") as f:
+                logs = json.load(f)
+        else:
+            logs = []
 
-    logs.append({
-        "platform": platform,
-        "video": video,
-        "product": product,
-        "status": status,
-        "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-    })
+        logs.append({
+            "platform": platform,
+            "video": video,
+            "product": product,
+            "status": status,
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        })
 
-    with open(log_path, "w", encoding="utf-8") as f:
-        json.dump(logs, f, indent=2, ensure_ascii=False)
+        with open(log_path, "w", encoding="utf-8") as f:
+            json.dump(logs, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        print(f"  [!] Could not log post for {platform}: {e}")
 
 
 def get_pending_posts() -> list[dict]:

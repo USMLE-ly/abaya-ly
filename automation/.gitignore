@@ -28,3 +28,6 @@ Thumbs.db
 
 # Generated captions
 content/snapchat_caption.txt
+
+# Cookie backups
+cookies/*.bak*
