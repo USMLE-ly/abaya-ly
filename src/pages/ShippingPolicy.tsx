@@ -38,7 +38,7 @@ export default function ShippingPolicy() {
         </nav>
 
         <h1 className="font-display text-3xl md:text-4xl font-bold text-fg mb-4">سياسة الشحن <span className="text-accent-brand">والتوصيل</span></h1>
-        <p className="text-sm text-fg/50 mb-10 leading-relaxed">نحرص على وصول طلبك بأمان وسرعة — تعرفي على تفاصيل شحننا وتوصيلنا.</p>
+        <p className="text-sm text-fg/50 mb-10 leading-relaxed">شحن مجاني داخل بنغازي خلال 3-5 أيام. باقي المدن برسوم واضحة تظهر قبل تأكيد الطلب.</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
           {sections.map((s, i) => (

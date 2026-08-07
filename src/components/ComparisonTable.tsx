@@ -18,7 +18,7 @@ export function ComparisonTable() {
             لماذا <span className="text-accent-brand">نادين</span>؟
           </h2>
           <p className="text-sm text-fg-tertiary max-w-xl mx-auto">
-            نقدم لكِ ما لا تجدينه لدى الآخرين — جودة لا تُضاهى بلمسة ليبية أصيلة
+            الجودة تظهر في التفاصيل — قارني بنفسكِ قبل أن تختاري
           </p>
         </div>
 

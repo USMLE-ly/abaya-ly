@@ -12,7 +12,7 @@ import { WishlistButton } from "@/components/WishlistButton";
 import { usePageMeta } from "@/lib/usePageMeta";
 
 export function Collections() {
-  usePageMeta("المجموعات", "تصفّحي جميع مجموعات فساتين نادين — سهرة، خطوبة، أعراس ومناسبات بلمسة فاخرة.");
+  usePageMeta("المجموعات", "فساتين سهرة وخطوبة ومناسبات بخامات عالمية — شحن مجاني داخل بنغازي خلال 3-5 أيام، الدفع عند الاستلام.");
   return <PageTransition><CollectionsContent /></PageTransition>;
 }
 
@@ -59,7 +59,7 @@ function CollectionsContent() {
       <section className="pt-24 pb-10 md:pt-28 md:pb-14">
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 text-center">
           <h1 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">المجموعات</h1>
-          <p className="text-sm text-fg-tertiary max-w-lg mx-auto">اكتشفي مجموعتنا من الفساتين الفاخرة — كل قطعة قصة، كل تطريزة فن</p>
+          <p className="text-sm text-fg-tertiary max-w-lg mx-auto">كل قطعة صُممت لمناسبة واحدة: مناسبتك. اختاري فستانك — والدفع عند الاستلام، والإرجاع خلال 7 أيام.</p>
         </div>
       </section>
 
@@ -143,8 +143,8 @@ function CollectionsContent() {
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(196,40,85,0.08)" }}>
                   <Search size={24} className="text-accent-brand/40" />
                 </div>
-                <p className="text-sm font-bold text-fg mb-1">لا توجد منتجات</p>
-                <p className="text-xs text-fg-tertiary">جربي تغيير معايير البحث أو تصفح جميع المجموعات</p>
+                <p className="text-sm font-bold text-fg mb-1">لا توجد نتائج بهذه المعايير</p>
+                <p className="text-xs text-fg-tertiary">وسّعي نطاق البحث أو تصفّحي جميع المجموعات — قطعتكِ بانتظاركِ</p>
               </div>
             ) : (
               list.map((product, i) => (

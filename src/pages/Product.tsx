@@ -32,10 +32,10 @@ import { openCartDrawer } from "@/components/CartDrawer";
 const SITE_URL = "https://nadine.luxor.ly";
 
 const trustItems = [
-  { icon: Truck, title: "شحن مجاني", description: "لجميع مدن ليبيا — التوصيل خلال 3-5 أيام عمل", stat: "7" },
-  { icon: RotateCcw, title: "إرجاع سهل", description: "خلال 7 أيام من تاريخ الاستلام بدون أي تعقيد", stat: "7" },
-  { icon: Shield, title: "ضمان الجودة", description: "أقمشة عالمية مضمونة من أفضل المصانع العالمية", stat: "100%" },
-  { icon: Headphones, title: "دعم متواصل", description: "فريق خدمة العملاء متاح عبر الواتساب على مدار الساعة", stat: "24/7" },
+  { icon: Truck, title: "شحن مجاني", description: "كل المدن — التوصيل خلال 3-5 أيام عمل", stat: "3-5" },
+  { icon: RotateCcw, title: "إرجاع خلال 7 أيام", description: "بحالتها الأصلية — أو نعيد لك المبلغ كامل", stat: "7" },
+  { icon: Shield, title: "فحص يدوي", description: "كل قطعة تُمحص يدوياً قبل الشحن إليك", stat: "100%" },
+  { icon: Headphones, title: "دعم واتساب", description: "نرشدك لمقاسك قبل الشحن — نرد خلال ساعات النهار", stat: "24/7" },
 ];
 
 // ── Color family mapping for tag-based matching ──────────────────
@@ -500,7 +500,7 @@ function ProductContent() {
             {product.highlights && product.highlights.length > 0 && (
               <div className="mb-6">
                 <p className="text-xs font-medium text-fg-secondary mb-3 flex items-center gap-1.5">
-                  لماذا ستعجبكِ هذه القطعة؟
+                  لماذا تختارين هذه القطعة؟
                 </p>
                 <ul className="space-y-2">
                   {product.highlights.map((h, i) => (
@@ -613,7 +613,7 @@ function ProductContent() {
           <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
             <div className="text-center mb-10">
               <h2 className="font-display text-2xl font-bold text-fg mb-2">منتجات <span className="text-accent-brand">مختارة لكِ</span></h2>
-              <p className="text-xs text-fg-tertiary">بناءً على المجموعة، الألوان، وستايل التصميم</p>
+              <p className="text-xs text-fg-tertiary">قطع بنفس المجموعة والألوان — جاهزة للشحن اليوم</p>
             </div>
             <CardFanCarousel
               cards={related.map((p) => ({

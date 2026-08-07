@@ -19,11 +19,11 @@ import { Testimonials } from "@/components/Testimonials";
 import { PromoCountdown } from "@/components/PromoCountdown";
 
 const faqs = [
-  { q: "كيف يمكنني طلب فستان؟", a: "يمكنكِ تصفح المجموعات واختيار الفستان التي تفضلينها، ثم إضافتها إلى سلة التسوق وإتمام الطلب. يمكنكِ أيضًا التواصل معنا عبر الواتساب." },
-  { q: "هل التوصيل مجاني؟", a: "التوصيل مجاني داخل بنغازي — وللمدن الأخرى تُضاف رسوم توصيل بسيطة تظهر عند إتمام الطلب." },
-  { q: "هل يمكنني إرجاع المنتج؟", a: "نعم، يمكنكِ إرجاع المنتج خلال 7 أيام من تاريخ الاستلام بشرط أن يكون المنتج بحالته الأصلية." },
-  { q: "ما هي طرق الدفع المتاحة؟", a: "نقبل الدفع نقداً عند الاستلام." },
-  { q: "كيف أعرف مقاسي المناسب؟", a: "صفحتنا تحتوي على جدول المقاسات. يمكنكِ أيضًا التواصل معنا للحصول على إرشادات شخصية." },
+  { q: "كيف يمكنني طلب فستان؟", a: "اختاري الفستان. أضيفيه للسلة. أو أرسلي طلبك عبر واتساب خلال دقيقة. نوصل حتى بابك." },
+  { q: "هل التوصيل مجاني؟", a: "داخل بنغازي: مجاني. باقي المدن: رسوم واضحة تظهر قبل ما تأكدي الطلب." },
+  { q: "هل يمكنني إرجاع المنتج؟", a: "نعم. 7 أيام من الاستلام. إذا ما عجبك الفستان، أرجِعي بحالته الأصلية ونعيد لك المبلغ كامل." },
+  { q: "ما هي طرق الدفع المتاحة؟", a: "الدفع عند الاستلام. تشوفين قطعتك أول. تدفعين بعدها." },
+  { q: "كيف أعرف مقاسي المناسب؟", a: "جداول المقاسات في كل صفحة. وإذا مترددة، نرشدك لمقاسك عبر واتساب قبل الشحن." },
 ];
 
 function HomeFAQ() {
@@ -51,7 +51,7 @@ function HomeFAQ() {
 }
 
 export function Home() {
-  usePageMeta("نادين | بيت الفساتين الفاخرة في ليبيا", "اكتشفي تشكيلة نادين من فساتين السهرة والمناسبات في ليبيا — تفصيل راقٍ، توصيل مجاني داخل بنغازي، والدفع عند الاستلام.");
+  usePageMeta("نادين | بيت الفساتين الفاخرة في ليبيا", "فساتين سهرة ومناسبات بخامات عالمية — توصيل مجاني داخل بنغازي خلال 3-5 أيام، الدفع عند الاستلام، وإرجاع خلال 7 أيام.");
   return <PageTransition><HomeContent /></PageTransition>;
 }
 
@@ -60,8 +60,8 @@ function HomeContent() {
     <>
       <LuminaHero />
       <TickerMarquee />
-      <PromoCountdown />
       <TrustStrip />
+      <PromoCountdown />
       <BestSellers />
       <ProductCarousel />
       <FeaturedCollection />
@@ -75,10 +75,10 @@ function HomeContent() {
       <section className="min-h-[80vh] flex flex-col items-center justify-center py-12">
         <div className="text-center mb-8 px-4">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-fg mb-3">
-            تشكيلتنا <span className="text-accent-brand">المميزة</span>
+            إطلالتكِ القادمة <span className="text-accent-brand">تبدأ من هنا</span>
           </h2>
           <p className="text-sm text-fg-tertiary max-w-lg mx-auto">
-            اكتشفي أحدث تصميماتنا من الفساتين الفاخرة
+            أحدث القطع — كل واحدة لِمَناسبتها. اطلبي اليوم، تصلك خلال 3-5 أيام.
           </p>
         </div>
         <div className="flex items-center justify-center overflow-hidden max-w-full">

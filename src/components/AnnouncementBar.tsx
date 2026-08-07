@@ -13,6 +13,7 @@ import {
 const messages = [
   { icon: Truck, text: "توصيل مجاني داخل بنغازي · التوصيل خلال 3-5 أيام", to: "/shipping-policy" },
   { icon: Banknote, text: "الدفع عند الاستلام · إرجاع سهل خلال 7 أيام", to: "/refund-policy" },
+  { icon: ShoppingBag, text: "خصم 10% على طلبكِ — كود NADINE10", to: "/collections" },
 ];
 
 export function AnnouncementBar() {

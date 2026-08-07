@@ -106,7 +106,7 @@ export function Testimonials() {
           <div className="text-center mb-10">
             <p className="text-[11px] uppercase tracking-[0.22em] font-semibold text-accent-brand mb-2">آراء عميلاتنا</p>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-fg">
-              ماذا قالت <span className="text-accent-brand">عميلاتنا</span>
+              قالتها <span className="text-accent-brand">عميلاتنا</span> بعد الاستلام
             </h2>
           </div>
 

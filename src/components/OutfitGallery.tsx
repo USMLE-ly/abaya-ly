@@ -44,7 +44,7 @@ export function OutfitGallery() {
               الوصلات <span className="text-accent-brand">الجديدة</span>
             </h2>
             <p className="text-sm text-fg-tertiary max-w-lg mx-auto leading-relaxed">
-              أحدث الإضافات إلى مجموعتنا — تصاميم حصرية بالخامات الفاخرة
+              قطع جديدة وصلت هذا الأسبوع. خامات تُلمس قبل الدفع. إصدارات محدودة تنفد.
             </p>
             <div className="mt-6 mx-auto w-24 h-[2px] rounded-full" style={{ background: "linear-gradient(135deg, #ffe4eb, #ffe9da)" }} />
           </div>

@@ -166,7 +166,7 @@ export function GlobeSection() {
             ملابسنا من <span className="text-accent-brand">كل أنحاء العالم</span>
           </h2>
           <p className="text-sm text-fg/50 max-w-2xl mx-auto leading-relaxed">
-            نستقبل أجود الملابس العالمية من ٧ دول لتصنع لكِ فستان تجمع بين الفخامة والأصالة
+            جورجيت إيطالي. حرير فرنسي. كريب تركي. نختار الخامة من مصدرها، ونفصّلها عندنا.
           </p>
         </div>
 

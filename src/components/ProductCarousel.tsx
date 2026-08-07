@@ -150,7 +150,7 @@ export function ProductCarousel() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="font-display text-lg md:text-xl font-bold text-fg">مجموعة <span className="text-accent-brand">الفساتين</span></h2>
-            <p className="text-xs text-fg/40 mt-1">اكتشفي أحدث تشكيلاتنا من الفساتين الفاخرة</p>
+            <p className="text-xs text-fg/40 mt-1">أحدث القطع — جاهزة للشحن خلال 3-5 أيام. الدفع عند الاستلام.</p>
           </div>
           <Link to="/collections" className="text-xs font-semibold text-accent-brand hover:underline hidden sm:block">عرض الكل ←</Link>
         </div>

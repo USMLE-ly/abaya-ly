@@ -3,7 +3,7 @@ import { PageTransition } from "@/components/PageTransition";
 import { usePageMeta } from "@/lib/usePageMeta";
 
 export function About() {
-  usePageMeta("من نحن", "تعرّفي على قصة نادين — بيت الفساتين الفاخرة في ليبيا.");
+  usePageMeta("من نحن", "قصة نادين — فساتين سهرة ومناسبات بخامات إيطالية وتركية، فحص يدوي قبل الشحن، وإرجاع خلال 7 أيام.");
   return <PageTransition><AboutContent /></PageTransition>;
 }
 
@@ -20,7 +20,7 @@ function AboutContent() {
         <div className="max-w-[900px] mx-auto px-4 sm:px-6 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-fg mb-6">قصة <span className="text-accent-brand">نادين</span></h2>
-            <p className="text-sm text-fg/50 leading-relaxed max-w-2xl mx-auto">ولدت نادين من حبٍّ عميق للمرأة الليبية ورغبتها في تقديم الأفضل لها. نؤمن أن كل امرأة تستحق فستان تحكي قصتها — فستان تجمع بين الفخامة العالمية والهوية الليبية الأصيلة.</p>
+            <p className="text-sm text-fg/50 leading-relaxed max-w-2xl mx-auto">نبدأ من الخامة. ننتهي بالفستان. نختار أقمشة إيطالية وفرنسية وتركية. نصمم كل قطعة لإطلالة واحدة: مناسبتك. ونفحص كل فستان يدوياً قبل الشحن. إذا ما عجبك عند الاستلام، أرجِعي خلال 7 أيام ونعيد لك المبلغ كامل.</p>
           </motion.div>
         </div>
       </section>
@@ -42,7 +42,7 @@ function AboutContent() {
             <h2 className="font-display text-2xl md:text-3xl font-bold text-fg mb-3">رؤيتنا <span className="text-accent-brand">وقيمنا</span></h2>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[{ title: "الجودة", text: "أقمشة مختارة بعناية من إيطاليا وفرنسا وتركيا" }, { title: "الأصالة", text: "تطريز عالي الجودة يحكي تراثنا العريق" }, { title: "التفرد", text: "كل فستان قطعة فريدة لا تتكرر" }, { title: "خدمة العملاء", text: "نضعكِ في مركز الاهتمام دائماً" }].map((value, i) => (
+            {[{ title: "الجودة", text: "خامات من إيطاليا وفرنسا وتركيا — تُختار باليد" }, { title: "الأصالة", text: "تفصيل وتطريز يُفحص يدوياً قبل الشحن" }, { title: "التفرد", text: "إصدارات محدودة لا تُعاد بعد نفادها" }, { title: "خدمة العملاء", text: "نضعكِ في مركز الاهتمام دائماً" }].map((value, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="glass-card p-6">
                 <h3 className="text-sm font-semibold text-fg mb-2">{value.title}</h3>
                 <p className="text-xs text-fg/40 leading-relaxed">{value.text}</p>

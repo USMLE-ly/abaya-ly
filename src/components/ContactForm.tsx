@@ -52,7 +52,7 @@ export function ContactForm() {
           تواصلي <span className="text-accent-brand">معنا</span>
         </h2>
         <p className="text-sm text-fg-tertiary text-center mb-10">
-          يسعدنا سماعكِ — أرسلي لنا رسالة وسنرد عليكِ في أقرب وقت
+          سؤال عن مقاس، طلب، أو مناسبة؟ اكتبي لنا. نرد خلال ساعات النهار.
         </p>
         {submitted ? (
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-12 glass-card">

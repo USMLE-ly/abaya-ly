@@ -5,14 +5,14 @@ import { ProgressBar } from "@/components/ui/progress-bar";
 const SLIDES_DESKTOP = [
   {
     media: "/images/hero/abaya-gold-1.jpg",
-    title: "فستان السهرة الذهبية",
-    subtitle: "مجموعة السهرة الفاخرة",
+    title: "فستان واحد. ليلة تُذكَر.",
+    subtitle: "مجموعة السهرة · إصدار 2026 · قطع محدودة",
     accent: "#e11d63",
   },
   {
     media: "/images/hero/abaya-gold-2.jpg",
-    title: "الفخامة الليبية",
-    subtitle: "تشكيلة ٢٠٢٥",
+    title: "خامة تُلمس. تفصيل يُرى.",
+    subtitle: "أقمشة إيطالية وتركية · فحص يدوي قبل الشحن",
     accent: "#ff6b9a",
   },
 ];
@@ -20,14 +20,14 @@ const SLIDES_DESKTOP = [
 const SLIDES_MOBILE = [
   {
     media: "/images/hero/abaya-gold-mobile-1.jpg",
-    title: "فستان السهرة الذهبية",
-    subtitle: "مجموعة السهرة الفاخرة",
+    title: "فستان واحد. ليلة تُذكَر.",
+    subtitle: "مجموعة السهرة · إصدار 2026 · قطع محدودة",
     accent: "#e11d63",
   },
   {
     media: "/images/hero/abaya-gold-mobile-2.jpg",
-    title: "الفخامة الليبية",
-    subtitle: "تشكيلة ٢٠٢٥",
+    title: "خامة تُلمس. تفصيل يُرى.",
+    subtitle: "أقمشة إيطالية وتركية · فحص يدوي قبل الشحن",
     accent: "#ff6b9a",
   },
 ];
@@ -135,7 +135,7 @@ export default function LuminaHero() {
                 className="inline-block px-7 py-3 rounded-full text-sm font-semibold text-fg transition-all duration-300 hover:scale-105 self-start"
                 style={{ backgroundColor: SLIDES[idx].accent }}
               >
-                اكتشفي المجموعة
+                اطلبي فستانك الآن
               </a>
 
               {/* Progress bar */}
@@ -170,6 +170,5 @@ export default function LuminaHero() {
     </div>
   );
 }
-
 
 

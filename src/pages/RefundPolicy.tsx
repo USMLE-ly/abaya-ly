@@ -12,7 +12,7 @@ const conditions = [
 ];
 
 export default function RefundPolicy() {
-  usePageMeta("سياسة الاسترجاع", "سياسة إرجاع واستبدال فساتين نادين خلال 7 أيام من الاستلام.");
+  usePageMeta("سياسة الاسترجاع", "إرجاع خلال 7 أيام من الاستلام — إذا ما عجبك الفستان نعيد لك المبلغ كامل.");
   return (
     <div className="min-h-screen pt-24 pb-16">
       <div className="max-w-[800px] mx-auto px-4 sm:px-6">
@@ -23,7 +23,7 @@ export default function RefundPolicy() {
         </nav>
 
         <h1 className="font-display text-3xl md:text-4xl font-bold text-fg mb-4">سياسة الإرجاع <span className="text-accent-brand">والاستبدال</span></h1>
-        <p className="text-sm text-fg/50 mb-10 leading-relaxed">رضاؤكِ هو أولويتنا — تعرفي على سياسة الإرجاع والاستبدال الخاصة بنا.</p>
+        <p className="text-sm text-fg/50 mb-10 leading-relaxed">7 أيام من الاستلام. إذا ما عجبك الفستان، أرجِعي بحالته الأصلية ونعيد لك المبلغ كامل.</p>
 
         <div className="glass-card p-6 rounded-2xl mb-8">
           <div className="flex items-center gap-3 mb-4">
@@ -32,7 +32,7 @@ export default function RefundPolicy() {
             </div>
             <h2 className="font-display text-lg font-bold text-fg">سياسة الإرجاع</h2>
           </div>
-          <p className="text-xs text-fg/50 leading-relaxed mb-4">يمكنكِ إرجاع المنتج خلال ٧ أيام من تاريخ الاستلام بشرط أن يكون بحالته الأصلية. سنقوم باسترداد المبلغ كاملاً خلال ٣-٥ أيام عمل من استلام المنتج المراد إرجاعه.</p>
+          <p className="text-xs text-fg/50 leading-relaxed mb-4">أرجِعي القطعة خلال 7 أيام من الاستلام بحالتها الأصلية. نسترد لك المبلغ كامل خلال 3-5 أيام عمل من استلامها.</p>
         </div>
 
         <div className="glass-card p-6 rounded-2xl mb-8">
@@ -42,7 +42,7 @@ export default function RefundPolicy() {
             </div>
             <h2 className="font-display text-lg font-bold text-fg">مدة الاسترداد</h2>
           </div>
-          <p className="text-xs text-fg/50 leading-relaxed">يتم رد المبلغ نقداً خلال ٣-٥ أيام عمل من تاريخ استلام المنتج المُرجَع.</p>
+          <p className="text-xs text-fg/50 leading-relaxed">نرد المبلغ نقداً خلال 3-5 أيام عمل من استلام القطعة.</p>
         </div>
 
         <div className="glass-card p-6 rounded-2xl mb-8">
@@ -60,7 +60,7 @@ export default function RefundPolicy() {
         <div className="glass-card p-6 rounded-2xl">
           <h2 className="font-display text-lg font-bold text-fg mb-4">كيفية الإرجاع</h2>
           <div className="space-y-3 text-xs text-fg/50 leading-relaxed">
-            <p>١. تواصلي معنا عبر الواتساب وแจفي رقم الطلب وسبب الإرجاع.</p>
+            <p>١. تواصلي معنا عبر الواتساب وأخبرينا برقم الطلب وسبب الإرجاع.</p>
             <p>٢. سنقوم بإرسال عنوان الإرجاع وتفاصيل الشحن.</p>
             <p>٣. ارسلي المنتج في غلافه الأصلي مع الفاتورة إن وجدت.</p>
             <p>٤. بمجرد استلام المنتج والتحقق من حالته، سيتم رد المبلغ خلال ٣-٥ أيام عمل.</p>

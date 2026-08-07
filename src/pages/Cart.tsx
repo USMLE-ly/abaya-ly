@@ -21,7 +21,7 @@ const loadCart = (): CartItem[] => {
 };
 
 export function Cart() {
-  usePageMeta("سلة التسوق", "راجعي سلة تسوقكِ وأكملي طلبك من نادين — الدفع عند الاستلام.");
+  usePageMeta("سلة تسوقكِ", "أكملي طلبكِ من نادين — شحن مجاني داخل بنغازي، الدفع عند الاستلام، وإرجاع خلال 7 أيام.");
   return <PageTransition><CartContent /></PageTransition>;
 }
 
@@ -65,6 +65,10 @@ function CartContent() {
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalSavings = items.reduce((sum, item) => {
+    const p = products.find((x) => x.id === item.id);
+    return sum + (p?.originalPrice ? (p.originalPrice - p.price) * item.quantity : 0);
+  }, 0);
 
   // Recommended: same collections first, then fill from the catalog
   const recommended = useMemo(() => {
@@ -108,14 +112,19 @@ function CartContent() {
                 style={{ background: "rgba(196,40,85,0.08)" }}>
                 <ShoppingBag size={28} className="text-accent-brand" />
               </div>
-              <p className="font-display text-lg font-bold text-fg mb-1">سلتكِ فارغة</p>
-              <p className="text-fg-tertiary text-sm mb-6">اكتشفي تشكيلة نادين واختاري فستانكِ المفضل</p>
+              <p className="font-display text-lg font-bold text-fg mb-1">سلتكِ فارغة — لأول مرة فقط</p>
+              <p className="text-fg-tertiary text-sm mb-6">اختاري فستانك من تشكيلة السهرة والمناسبات. الدفع عند الاستلام. الإرجاع خلال 7 أيام.</p>
               <Link to="/collections"><Button variant="primary" className="px-8">تسوقي الآن</Button></Link>
             </Card>
           ) : (
             <>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2">
+                  <div className="mb-4 flex flex-wrap items-center gap-2 text-[10px] font-bold" style={{ color: "#c42855" }}>
+                    <span className="rounded-full px-3 py-1.5" style={{ background: "rgba(196,40,85,0.07)" }}>شحن مجاني داخل بنغازي</span>
+                    <span className="rounded-full px-3 py-1.5" style={{ background: "rgba(196,40,85,0.07)" }}>الدفع عند الاستلام</span>
+                    <span className="rounded-full px-3 py-1.5" style={{ background: "rgba(196,40,85,0.07)" }}>إرجاع خلال 7 أيام</span>
+                  </div>
                   <div className="hidden md:grid grid-cols-12 gap-4 pb-3 border-b border-line-subtle text-xs font-semibold text-fg-tertiary">
                     <div className="col-span-6">المنتج</div>
                     <div className="col-span-3 text-center">الكمية</div>
@@ -170,6 +179,12 @@ function CartContent() {
                         <span className="text-fg-tertiary">المجموع الفرعي</span>
                         <span className="font-medium text-fg-secondary">{subtotal} د.ل</span>
                       </div>
+                      {totalSavings > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-fg-tertiary">وفّرتِ</span>
+                          <span className="font-medium text-status-success">{totalSavings} د.ل</span>
+                        </div>
+                      )}
                       <div className="flex justify-between items-center">
                         <span className="text-fg-tertiary flex items-center gap-1"><Truck size={12} /> التوصيل</span>
                         <span className="text-status-success font-medium">مجاني داخل بنغازي · 3-5 أيام</span>
@@ -198,7 +213,7 @@ function CartContent() {
               {recommended.length > 0 && (
                 <div className="mt-16">
                   <div className="flex items-center justify-between mb-5">
-                    <h2 className="font-display text-xl md:text-2xl font-bold text-fg">قد يعجبكِ <span className="text-accent-brand">أيضاً</span></h2>
+                    <h2 className="font-display text-xl md:text-2xl font-bold text-fg">أكملي <span className="text-accent-brand">إطلالتكِ</span></h2>
                     <Link to="/collections" className="text-xs text-accent-brand hover:underline font-medium">عرض الكل</Link>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
@@ -216,7 +231,12 @@ function CartContent() {
                             <p className="text-white text-xs font-semibold truncate">{shortName(p.name)}</p>
                           </Link>
                           <div className="flex items-center justify-between mt-1.5">
-                            <span className="text-white text-xs font-bold">{p.price} د.ل</span>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-white text-xs font-bold">{p.price} د.ل</span>
+                              {p.originalPrice && (
+                                <span className="text-white/60 text-[10px] line-through">{p.originalPrice} د.ل</span>
+                              )}
+                            </div>
                             <button
                               onClick={() => addItem(p)}
                               className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1.5 rounded-full text-white transition-all hover:scale-105 active:scale-95"

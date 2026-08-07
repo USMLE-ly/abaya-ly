@@ -25,7 +25,7 @@ export function BestSellers() {
               <h2 id="bestsellers-heading" className="font-display text-3xl md:text-4xl font-bold text-fg">
                 القطع <span className="text-accent-brand">الأكثر مبيعاً</span>
               </h2>
-              <p className="text-sm text-fg-tertiary mt-2">مرتّبة حسب تقييمات عميلاتنا الفعلية</p>
+              <p className="text-sm text-fg-tertiary mt-2">القطع اللي اختارتها عميلاتنا أكثر من غيرها — حسب تقييماتهن الفعلية</p>
             </div>
             <Link
               to="/collections"
