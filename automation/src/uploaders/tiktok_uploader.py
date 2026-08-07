@@ -75,6 +75,45 @@ def _add_website_link(page, url: str) -> None:
         print(f"  [!] TikTok link sticker skipped ({e})")
 
 
+def _comment_on_video(page, url: str) -> None:
+    """Best-effort: comment the link on the just-posted TikTok video.
+
+    TikTok has no API in this stack for comments, so we open the posted video
+    (from the success dialog's link) and type the URL into the comment box.
+    """
+    try:
+        # Grab the posted video link from the success dialog, if visible.
+        view_link = page.locator("//a[contains(@href, '/video/')]").first
+        if view_link.is_visible(timeout=8000):
+            href = view_link.get_attribute("href") or ""
+            target = href if href.startswith("http") else f"https://www.tiktok.com{href}"
+            page.goto(target)
+            time.sleep(3)
+
+        # TikTok's comment box is a contenteditable div with a placeholder.
+        comment_box = None
+        for selector in (
+            "//div[@contenteditable='true' and contains(@data-placeholder, 'comment')]",
+            "//div[@contenteditable='true' and contains(@data-placeholder, 'تعليق')]",
+            "//div[@contenteditable='true']",
+            "//textarea[contains(@placeholder, 'comment')]",
+        ):
+            candidate = page.locator(selector).first
+            if candidate.is_visible(timeout=3000):
+                comment_box = candidate
+                break
+        if comment_box is None:
+            print("  [!] TikTok: comment box not found — skipping comment")
+            return
+        comment_box.click()
+        comment_box.fill(url)
+        page.keyboard.press("Enter")
+        time.sleep(2)
+        print("  [✓] TikTok comment posted")
+    except Exception as e:
+        print(f"  [!] TikTok comment skipped ({e})")
+
+
 class TikTokUploader:
     """Playwright-based TikTok video uploader (wraps tiktok-uploader)."""
 
@@ -131,18 +170,20 @@ class TikTokUploader:
         visibility: str = "everyone",
         num_retries: int = 3,
         website_link: Optional[str] = None,
+        comment_link: Optional[str] = None,
     ) -> dict:
         if not os.path.exists(video_path):
             raise FileNotFoundError(video_path)
 
-        if website_link:
+        if website_link or comment_link:
             # Inject the link step right before the package posts the video.
             import tiktok_uploader.upload as tu
 
             original_post = tu._post_video
 
             def post_with_link(page):
-                _add_website_link(page, website_link)
+                if website_link:
+                    _add_website_link(page, website_link)
                 original_post(page)
 
             tu._post_video = post_with_link
@@ -154,6 +195,8 @@ class TikTokUploader:
                         visibility=visibility,
                         num_retries=num_retries,
                     )
+                    if ok and comment_link:
+                        _comment_on_video(uploader.page, comment_link)
             finally:
                 tu._post_video = original_post
             return {"success": bool(ok)}

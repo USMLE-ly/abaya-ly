@@ -20,11 +20,11 @@ class TikTokPublisher(BasePublisher):
         m = re.search(r"https?://[^\s]+", caption)
         return m.group(0) if m else None
 
-    def publish(self, video_path: str, caption: str) -> bool:
+    def publish(self, video_path: str, caption: str, product_url: str | None = None) -> bool:
         """Concrete implementation required by BasePublisher; run() does the work."""
-        return self.run(video_path, caption)
+        return self.run(video_path, caption, product_url=product_url)
 
-    def run(self, video_path: str, caption: str) -> bool:
+    def run(self, video_path: str, caption: str, product_url: str | None = None) -> bool:
         print(f"  [{self.PLATFORM_NAME}] Starting publish...")
         try:
             from cookie_manager import has_valid_cookies, load_cookies
@@ -37,13 +37,14 @@ class TikTokPublisher(BasePublisher):
                 cookies=load_cookies(self.PLATFORM_NAME),
                 headless=self.headless,
             )
-            link = self._product_url(caption)
+            link = product_url or self._product_url(caption)
             result = uploader.upload_video(
                 video_path=video_path,
                 caption=caption,
                 visibility="everyone",
                 num_retries=3,
                 website_link=link,
+                comment_link=link,
             )
             success = bool(result.get("success"))
             print(

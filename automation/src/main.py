@@ -170,7 +170,9 @@ def post_to_all(video_path, caption, product):
         print(f"\n  📤 Publishing to {platform_name}...")
         publisher = publisher_class(headless=True)
         platform_caption = adapt_caption(caption, platform_name)
-        success = publisher.run(video_path, platform_caption)
+        website = config.get("brand", {}).get("website", "https://nadine.luxor.ly")
+        product_url = f"{website}/product/{product['id']}"
+        success = publisher.run(video_path, platform_caption, product_url=product_url)
 
         status = "success" if success else "failed"
         log_post(platform_name, video_path, product["id"], status)

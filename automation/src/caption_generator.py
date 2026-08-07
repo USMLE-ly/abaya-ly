@@ -122,6 +122,10 @@ PLATFORM_LIMITS = {
     "snapchat": 100,
 }
 
+# Instagram/TikTok don't make caption links clickable — point to the bio
+# instead; the real link goes in the bio and as a comment on the post.
+LINK_IN_BIO = "الرابط في البايو 👆"
+
 
 def generate_structured_caption(product: dict) -> str:
     """
@@ -153,12 +157,38 @@ def _is_url(line: str) -> bool:
     return line.strip().startswith("https://") or line.strip().startswith("http://")
 
 
+def _caption_with_bio_note(caption: str) -> str:
+    """Drop the URL line and insert the link-in-bio note before the hashtags."""
+    body: list[str] = []
+    hashtags: list[str] = []
+    for line in caption.splitlines():
+        if not line.strip():
+            continue
+        if _is_url(line):
+            continue
+        if line.startswith("#"):
+            hashtags.append(line)
+        else:
+            body.append(line)
+    parts = body + [LINK_IN_BIO]
+    if hashtags:
+        parts.append("")
+        parts.extend(hashtags)
+    return "\n".join(parts)
+
+
 def adapt_caption(caption: str, platform: str) -> str:
     """Adapt the approved caption to a platform's length limits.
 
-    The product URL is always kept intact — trimming only ever removes
-    hashtags or bullet lines, never cuts through the link itself.
+    Instagram/TikTok: the URL is removed from the caption and replaced by a
+    link-in-bio note (captions there are not clickable; the URL goes to the
+    bio and as a comment on the post).
+    Twitter/X + Facebook + Snapchat: the full URL is always kept intact —
+    trimming only ever removes hashtags or bullet lines, never the link.
     """
+    if platform in ("instagram", "tiktok"):
+        return _caption_with_bio_note(caption)
+
     limit = PLATFORM_LIMITS.get(platform, 2200)
     if len(caption) <= limit:
         return caption

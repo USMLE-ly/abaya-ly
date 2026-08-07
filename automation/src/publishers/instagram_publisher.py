@@ -20,7 +20,7 @@ class InstagramPublisher(BasePublisher):
         m = re.search(r"https?://[^\s]+", caption)
         return m.group(0) if m else None
 
-    def publish(self, video_path: str, caption: str) -> bool:
+    def publish(self, video_path: str, caption: str, product_url: str | None = None) -> bool:
         if not os.path.exists(video_path):
             print(f"  [!] Video not found: {video_path}")
             return False
@@ -33,11 +33,18 @@ class InstagramPublisher(BasePublisher):
         uploader = InstagramUploader(sessionid=sessionid)
         if sessionid:
             try:
-                link = self._product_url(caption)
+                link = product_url or self._product_url(caption)
                 result = uploader.upload_reel(video_path, caption, link=link)
                 print(f"  [✓] Instagram posted → {result['url']}")
                 if link and result.get('link'):
                     print(f"  [✓] Reel link sticker attached")
+                if link:
+                    time.sleep(5)  # avoid posting the comment too fast
+                    try:
+                        uploader.comment(result["pk"], link)
+                        print("  [✓] Instagram comment with link posted")
+                    except Exception as ce:
+                        print(f"  [!] Instagram comment failed ({ce})")
                 return True
             except Exception as e:
                 print(f"  [!] instagrapi failed ({e}) — falling back to Selenium")

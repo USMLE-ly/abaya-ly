@@ -84,6 +84,11 @@ class InstagramUploader:
             "url": f"https://www.instagram.com/reel/{media.pk}/",
         }
 
+    def comment(self, media_pk: str, text: str) -> dict:
+        """Post a comment on a reel (e.g. the product link)."""
+        comment = self.client.media_comment(media_pk, text[:2200])
+        return {"pk": str(comment.pk)}
+
     def upload_story(self, video_path: str, caption: str = "", link: Optional[str] = None) -> dict:
         """Upload a video to Stories (expires after 24h).
 
