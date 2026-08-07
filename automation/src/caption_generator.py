@@ -14,6 +14,7 @@ from hormozi_templates import (
     get_hormozi_cta,
     build_hormozi_bullets,
     get_hook_emoji,
+    generate_hormozi_caption_variants,
 )
 
 
@@ -175,6 +176,17 @@ def _caption_with_bio_note(caption: str) -> str:
         parts.append("")
         parts.extend(hashtags)
     return "\n".join(parts)
+
+
+def generate_structured_caption_variants(product: dict, n: int = 5) -> list[str]:
+    """Return n distinct Hormozi captions for the same product (same URL/hashtags)."""
+    config = load_config()
+    website = config.get("brand", {}).get("website", "https://nadine.luxor.ly")
+    hashtags_ar = config.get("hashtags", [])
+    hashtags_en = config.get("hashtags_en", [])
+    product_tags = [f"#{t}" for t in (product.get("tags") or [])[:6]]
+    hashtags = (hashtags_ar + product_tags + hashtags_en)[:15]
+    return generate_hormozi_caption_variants(product, hashtags, website, n=n)
 
 
 def adapt_caption(caption: str, platform: str) -> str:

@@ -24,28 +24,36 @@ frameworks, so even fully automatic captions follow the same style.
 
 ## Caption format (auto-generated)
 
-
-Every post gets this exact structure, in Arabic with emojis:
+Every caption is built from the Hormozi frameworks in the books (Value
+Equation, hooks, offer stacking) using only real product data — no invented
+prices, fabrics, or claims. Structure, in Arabic with emojis:
 
 ```
-🔥 <hook line with emoji>
-
-✨ <bullet 1 — feature>
-💎 <bullet 2 — fabric/detail>
-👗 <bullet 3 — fit/occasion>
-
-🔗 https://nadine.luxor.ly/product/<product-id>
-
-#نادين #عبايات_فاخرة ... #Nadine #TopDress ...
+<💃 hook line with emoji>          ← product-aware hook (collection/fabric/model)
+✨ <bullet 1 — dream outcome + status>
+💎 <bullet 2 — proof: real fabric + collection + manual inspection>
+👗 <bullet 3 — fit/exclusivity + الدفع عند الاستلام>
+الرابط في البايو 👇🏻              ← Instagram/TikTok only
+https://nadine.luxor.ly/product/<id>   ← Twitter/X, Facebook, Snapchat
+#نادين ... #Nadine ...
 ```
 
-- Hook: Alex Hormozi–style Arabic hooks (curiosity/desire triggers).
-- Bullets: taken from the product's real highlights in `products.json`.
-- URL: the live product page.
-- Hashtags: brand Arabic + English hashtags, plus up to 6 product tags.
-- Per-platform adaptation: Twitter gets a 275-char version (hashtags dropped first); Snapchat gets just the hook + URL.
+Per-platform behavior:
+- **Instagram / TikTok**: caption URL is replaced by `الرابط في البايو 👇🏻`;
+  the real link is added as a **comment** on the post and attempted as a link
+  sticker on the video (account-eligible).
+- **Twitter/X, Facebook, Snapchat**: the full URL stays in the caption (auto-links).
+- Twitter: 275-char version (hashtags dropped first); Snapchat: hook + URL only.
+- The URL is never truncated by trimming — only hashtags/bullets are dropped.
 
-You approve or edit the caption before anything is posted (`y` / `n` / `edit`).
+## 5-caption mode (same dress, 30s apart)
+
+Menu option **5** generates **5 distinct Hormozi captions** for the same dress
+(different hook + dream-outcome phrasing each) and pushes them in sequence —
+5 posts per platform, **30 seconds between pushes**. All 5 are shown for
+approval (`y` / `n` / `edit<number>`) before anything is posted.
+
+You approve or edit the caption(s) before anything is posted (`y` / `n` / `edit`).
 
 ## Setup
 

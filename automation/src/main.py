@@ -10,6 +10,7 @@ from caption_generator import (
     find_product_by_name,
     find_product_by_id,
     generate_structured_caption,
+    generate_structured_caption_variants,
     adapt_caption,
 )
 from cookie_manager import has_valid_cookies
@@ -26,6 +27,11 @@ from publishers import (
     FacebookPublisher,
     SnapchatPublisher,
 )
+
+
+# Future-plan default: 5 Hormozi captions per dress, pushed 5x at this gap.
+VARIANT_POST_DELAY = 30  # seconds between caption pushes
+VARIANT_COUNT = 5
 
 
 def list_products():
@@ -104,6 +110,46 @@ def select_video():
 
     print("❌ Invalid selection")
     return None
+
+
+def generate_and_show_variants(product, n=VARIANT_COUNT):
+    """Generate n Hormozi captions for the same dress and show all for approval."""
+    captions = generate_structured_caption_variants(product, n=n)
+
+    print("\n" + "=" * 60)
+    print(f"📝 {n} GENERATED CAPTIONS (same dress, {VARIANT_POST_DELAY}s apart):")
+    print("=" * 60)
+    for i, cap in enumerate(captions, 1):
+        print(f"\n--- CAPTION {i}/{n} ---")
+        print(cap)
+    print("=" * 60)
+
+    while True:
+        choice = input("\n✅ Approve all? (y/n/edit-number): ").strip().lower()
+        if choice == "y":
+            return captions
+        if choice == "n":
+            return None
+        if choice.startswith("edit"):
+            # edit a single caption: edit2
+            try:
+                idx = int(choice.replace("edit", "")) - 1
+                if 0 <= idx < len(captions):
+                    print(f"\n✏️ Enter new caption {idx + 1} (blank line to finish):")
+                    lines = []
+                    while True:
+                        line = input()
+                        if line == "" and lines and lines[-1] == "":
+                            break
+                        lines.append(line)
+                    if lines:
+                        captions[idx] = "\n".join(lines[:-1]) if lines else captions[idx]
+                    continue
+            except ValueError:
+                pass
+            print("Invalid caption number — use edit1..edit5")
+        else:
+            print("Please enter y, n, or edit<number>")
 
 
 def generate_and_show(product):
@@ -207,6 +253,25 @@ def post_to_all(video_path, caption, product):
     return results
 
 
+def post_caption_variants(video_path, product, captions, delay_seconds=VARIANT_POST_DELAY):
+    """Push every caption for the same dress — delay_seconds between pushes."""
+    print(f"\n🚀 Publishing {len(captions)} captions for the same dress "
+          f"({delay_seconds}s between each)...")
+    results = {}
+    for i, caption in enumerate(captions, 1):
+        print(f"\n{'=' * 50}")
+        print(f"📤 PUSH {i}/{len(captions)}")
+        print(f"{'=' * 50}")
+        res = post_to_all(video_path, caption, product)
+        for platform, success in res.items():
+            key = f"{platform}#{i}"
+            results[key] = success
+        if i < len(captions):
+            print(f"\n⏳ Waiting {delay_seconds}s before the next push...")
+            time.sleep(delay_seconds)
+    return results
+
+
 def show_results(results):
     """Display posting results."""
     print("\n" + "=" * 40)
@@ -227,7 +292,8 @@ def main():
     print("  2. List products")
     print("  3. Check cookies status")
     print("  4. Check post history")
-    print("  5. Exit")
+    print("  5. Post 5 captions for the same dress (30s apart)")
+    print("  6. Exit")
     print("=" * 50)
 
     choice = input("\nSelect option: ").strip()
@@ -253,6 +319,24 @@ def main():
         results = post_to_all(video_path, caption, product)
         show_results(results)
 
+    elif choice == "5":
+        product = select_product()
+        if not product:
+            return
+        video_path = select_video()
+        if not video_path:
+            return
+        captions = generate_and_show_variants(product, n=VARIANT_COUNT)
+        if not captions:
+            print("❌ Captions cancelled")
+            return
+        results = post_caption_variants(video_path, product, captions)
+        show_results(results)
+
+    elif choice == "6":
+        print("\n👋 Goodbye!")
+        sys.exit(0)
+
     elif choice == "2":
         list_products()
 
@@ -276,9 +360,6 @@ def main():
         else:
             print("\n📋 No posts yet.")
 
-    elif choice == "5":
-        print("\n👋 Goodbye!")
-        sys.exit(0)
     else:
         print("❌ Invalid option")
 

@@ -92,8 +92,12 @@ def _clean(text: str) -> str:
     return text.strip().rstrip(".").strip()
 
 
-def build_hormozi_bullets(product: dict) -> list[tuple[str, str]]:
-    """Return [(emoji, text)] — exactly three Value-Equation bullets."""
+def build_hormozi_bullets(product: dict, b1_variant: int | None = None) -> list[tuple[str, str]]:
+    """Return [(emoji, text)] — exactly three Value-Equation bullets.
+
+    ``b1_variant`` cycles the dream-outcome phrasing (used by the 5-variant
+    posting mode). When None, the choice is deterministic per product.
+    """
     fabric = product.get("fabric") or ""
     collection = product.get("collection") or "نادين"
     category = product.get("category") or "المناسبة"
@@ -109,7 +113,10 @@ def build_hormozi_bullets(product: dict) -> list[tuple[str, str]]:
             f"{feature} — من أول لحظة تدخلين، كل العيون عليكِ",
             f"لحظة دخولك للمناسبة… {feature}. هذا اللي بيذكروه عنك",
         ]
-        b1 = b1_options[_stable_index(product.get("id") or "nadine", len(b1_options))]
+        if b1_variant is None:
+            b1 = b1_options[_stable_index(product.get("id") or "nadine", len(b1_options))]
+        else:
+            b1 = b1_options[b1_variant % len(b1_options)]
     else:
         b1 = f"تخيّلي إطلالتك بمناسبة {category} — إطلالة تخلّي الكل يسألك من وين؟"
 
@@ -180,6 +187,45 @@ CATEGORY_EMOJI = {
     "أعراس": "👰‍♀️",
     "سهرة": "💃",
 }
+
+
+def _variant_hook_pool(product: dict) -> list[str]:
+    """Product hooks first, padded with core-bank hooks — deduped, stable order."""
+    pool: list[str] = []
+    seen: set[str] = set()
+    for hook in _product_hooks(product) + HOOK_TEMPLATES:
+        if hook not in seen:
+            seen.add(hook)
+            pool.append(hook)
+    return pool
+
+
+def generate_hormozi_caption_variants(
+    product: dict,
+    hashtags: list[str],
+    website: str,
+    n: int = 5,
+) -> list[str]:
+    """Return n distinct Hormozi captions for the same product.
+
+    Each variant uses a different hook (product-aware first, core bank after)
+    and a different dream-outcome phrasing; proof/exclusivity facts stay real
+    and identical so every variant is truthful.
+    """
+    hooks = _variant_hook_pool(product)
+    emoji = get_hook_emoji(product)
+    url = f"{website}/product/{product['id']}"
+    hashtag_str = " ".join(hashtags)
+
+    variants = []
+    for i in range(n):
+        hook = hooks[i % len(hooks)]
+        bullets = build_hormozi_bullets(product, b1_variant=i)
+        lines = [f"{emoji} {hook}", ""]
+        lines += [f"{e} {t}" for e, t in bullets]
+        lines += ["", url, "", hashtag_str]
+        variants.append("\n".join(lines))
+    return variants
 
 
 def get_hook_emoji(product: dict | None = None) -> str:
