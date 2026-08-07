@@ -1,4 +1,5 @@
 import os
+import re
 
 from uploaders.tiktok_uploader import TikTokUploader
 from .base_publisher import BasePublisher
@@ -13,6 +14,11 @@ class TikTokPublisher(BasePublisher):
 
     PLATFORM_NAME = "tiktok"
     HOME_URL = "https://www.tiktok.com/"
+
+    @staticmethod
+    def _product_url(caption: str) -> str | None:
+        m = re.search(r"https?://[^\s]+", caption)
+        return m.group(0) if m else None
 
     def publish(self, video_path: str, caption: str) -> bool:
         """Concrete implementation required by BasePublisher; run() does the work."""
@@ -31,11 +37,13 @@ class TikTokPublisher(BasePublisher):
                 cookies=load_cookies(self.PLATFORM_NAME),
                 headless=self.headless,
             )
+            link = self._product_url(caption)
             result = uploader.upload_video(
                 video_path=video_path,
                 caption=caption,
                 visibility="everyone",
                 num_retries=3,
+                website_link=link,
             )
             success = bool(result.get("success"))
             print(

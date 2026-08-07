@@ -1,4 +1,5 @@
 import os
+import re
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -14,6 +15,11 @@ class InstagramPublisher(BasePublisher):
     HOME_URL = "https://www.instagram.com/"
     UPLOAD_URL = "https://www.instagram.com/reels/upload/"
 
+    @staticmethod
+    def _product_url(caption: str) -> str | None:
+        m = re.search(r"https?://[^\s]+", caption)
+        return m.group(0) if m else None
+
     def publish(self, video_path: str, caption: str) -> bool:
         if not os.path.exists(video_path):
             print(f"  [!] Video not found: {video_path}")
@@ -27,8 +33,11 @@ class InstagramPublisher(BasePublisher):
         uploader = InstagramUploader(sessionid=sessionid)
         if sessionid:
             try:
-                result = uploader.upload_reel(video_path, caption)
+                link = self._product_url(caption)
+                result = uploader.upload_reel(video_path, caption, link=link)
                 print(f"  [✓] Instagram posted → {result['url']}")
+                if link and result.get('link'):
+                    print(f"  [✓] Reel link sticker attached")
                 return True
             except Exception as e:
                 print(f"  [!] instagrapi failed ({e}) — falling back to Selenium")

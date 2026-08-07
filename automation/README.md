@@ -8,18 +8,18 @@ If a platform rejects the file, the tool reports the error and leaves the video 
 
 ## Caption workflow (chat-system driven)
 
-Captions are written in the **Alex Hermosi style** and humanized **in-session** — no
+Captions are written in the **Alex Hormozi style** and humanized **in-session** — no
 external LLM or API is used:
 
-1. The chat system drafts the caption using the **Alex Hermosi skill**
+1. The chat system drafts the caption using the **Alex Hormozi skill**
    (`~/.agents/skills/alex-hermosi/`), built from the author's book via
    **book-to-skill** (`~/.agents/skills/book-to-skill/`).
 2. The draft is run through the **humanizer skill** (`~/.agents/skills/humanizer/`)
-   to remove AI-isms while keeping the Hermosi voice, Arabic, emoji, the product
+   to remove AI-isms while keeping the Hormozi voice, Arabic, emoji, the product
    URL, and hashtags intact.
 3. You approve the humanized caption, then the pipeline posts it with cookies.
 
-The template engine in `src/hermosi_templates.py` is kept in sync with the book's
+The template engine in `src/hormozi_templates.py` is kept in sync with the book's
 frameworks, so even fully automatic captions follow the same style.
 
 ## Caption format (auto-generated)
@@ -39,7 +39,7 @@ Every post gets this exact structure, in Arabic with emojis:
 #نادين #عبايات_فاخرة ... #Nadine #TopDress ...
 ```
 
-- Hook: Alex Hermosi–style Arabic hooks (curiosity/desire triggers).
+- Hook: Alex Hormozi–style Arabic hooks (curiosity/desire triggers).
 - Bullets: taken from the product's real highlights in `products.json`.
 - URL: the live product page.
 - Hashtags: brand Arabic + English hashtags, plus up to 6 product tags.

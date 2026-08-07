@@ -5,7 +5,7 @@
     "website": "https://nadine.luxor.ly",
     "products_data": "../src/data/products.ts"
   },
-  "hermosi": {
+  "hormozi": {
     "skill_path": "~/.agents/skills/alex-hermosi",
     "enabled": true
   },
