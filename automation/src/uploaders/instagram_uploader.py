@@ -62,7 +62,7 @@ class InstagramUploader:
         """
         if not os.path.exists(video_path):
             raise FileNotFoundError(video_path)
-        from instagrapi.exceptions import IGClientError
+        from instagrapi.exceptions import ClientError as IGClientError
 
         if link:
             try:

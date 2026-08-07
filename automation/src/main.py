@@ -181,8 +181,9 @@ def generate_and_show(product):
             print("Please enter y, n, or edit")
 
 
-def post_to_all(video_path, caption, product):
-    """Post to all enabled platforms."""
+def post_to_all(video_path, caption, product, skip_platforms=None):
+    """Post to all enabled platforms (skip_platforms: names already posted)."""
+    skip_platforms = skip_platforms or set()
     config_path = os.path.join(ROOT_DIR, "config.json")
     import json
     with open(config_path, "r", encoding="utf-8") as f:
@@ -206,6 +207,9 @@ def post_to_all(video_path, caption, product):
         platform_conf = platforms_config.get(platform_name, {})
         if not platform_conf.get("enabled", False):
             print(f"  ⏭️  {platform_name} — disabled, skipping")
+            continue
+        if platform_name in skip_platforms:
+            print(f"  ⏭️  {platform_name} — already posted (resume skip)")
             continue
 
         if not has_valid_cookies(platform_name):
@@ -231,7 +235,7 @@ def post_to_all(video_path, caption, product):
 
     # Facebook (special handling)
     fb_conf = platforms_config.get("facebook", {})
-    if fb_conf.get("enabled", False):
+    if fb_conf.get("enabled", False) and "facebook" not in skip_platforms:
         if has_valid_cookies("facebook"):
             print(f"\n  📤 Publishing to facebook...")
             publisher = FacebookPublisher(headless=True)
@@ -242,7 +246,7 @@ def post_to_all(video_path, caption, product):
 
     # Snapchat — web creator portal upload; falls back to a manual caption file
     sc_conf = platforms_config.get("snapchat", {})
-    if sc_conf.get("enabled", True):
+    if sc_conf.get("enabled", True) and "snapchat" not in skip_platforms:
         print(f"\n  📤 Publishing to snapchat...")
         publisher = SnapchatPublisher()
         success = publisher.run(video_path, adapt_caption(caption, "snapchat"))

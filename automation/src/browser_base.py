@@ -106,8 +106,12 @@ class BasePublisher(ABC):
         """Publish content to the platform. Returns True on success."""
         pass
 
-    def run(self, video_path: str, caption: str) -> bool:
-        """Run the full publish flow with error handling."""
+    def run(self, video_path: str, caption: str, product_url: str | None = None) -> bool:
+        """Run the full publish flow with error handling.
+
+        ``product_url`` is accepted for API symmetry (TikTok/Instagram attach
+        it as a link sticker/comment); publishers that don't use it ignore it.
+        """
         print(f"  [{self.PLATFORM_NAME}] Starting publish...")
         try:
             self.driver = self._create_driver()

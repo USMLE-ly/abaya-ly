@@ -40,6 +40,7 @@ class FacebookUploader(BasePublisher):
         try:
             create_selectors = [
                 'div[aria-label="Create a post"]',
+                'div[aria-label="إنشاء منشور"]',
                 'div[role="button"]:has(span:text("Photo/video"))',
                 '//div[contains(@aria-label, "Create")]',
                 '//div[@role="button" and contains(., "Photo/video")]',
@@ -67,30 +68,83 @@ class FacebookUploader(BasePublisher):
         except Exception as e:
             print(f"  [!] Composer error: {e}")
 
-        # Attach the video file
+        # Attach the video file — the composer's own hidden input, never the
+        # page-level fallback input (typing into the wrong input posts nothing).
         try:
             file_input = WebDriverWait(self.driver, 15).until(
                 EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, 'input[type="file"][accept*="video"], input[type="file"]')
+                    (By.CSS_SELECTOR,
+                     'div[role="dialog"] input[type="file"], '
+                     'input[type="file"][accept*="video"], '
+                     'input[type="file"]')
                 )
             )
             file_input.send_keys(os.path.abspath(video_path))
-            time.sleep(6)
+            print("  [Facebook] Video file attached, waiting for preview...")
         except Exception as e:
             print(f"  [!] Could not find file input: {e}")
             return False
 
-        # Wait for upload/processing to finish
-        time.sleep(10)
+        # Wait for the video preview to appear — FB shows the thumbnail/video
+        # element only after the upload starts. Posting before this point
+        # publishes a post with no video at all.
+        preview_seen = False
+        preview_deadline = time.time() + 60
+        while time.time() < preview_deadline:
+            try:
+                if self.driver.find_elements(
+                    By.CSS_SELECTOR,
+                    'div[role="dialog"] video, '
+                    'div[role="dialog"] img[src*="video"], '
+                    'div[aria-label*="video"][role="img"], '
+                    'div[aria-label*="فيديو"][role="img"]',
+                ):
+                    preview_seen = True
+                    break
+            except Exception:
+                pass
+            time.sleep(3)
+        if not preview_seen:
+            print("  [!] No video preview appeared — aborting to avoid an empty post")
+            return False
+        print("  [Facebook] Video preview confirmed")
 
-        # Enter caption
+        # Wait for the upload/processing state to clear — the composer shows a
+        # progress bar / "Processing..." until the video is ready.
+        ready_deadline = time.time() + 120
+        while time.time() < ready_deadline:
+            try:
+                busy = self.driver.find_elements(
+                    By.CSS_SELECTOR,
+                    'div[role="dialog"] [aria-label*="Processing"], '
+                    'div[role="dialog"] [aria-label*="معالجة"], '
+                    'div[role="dialog"] [role="progressbar"]',
+                )
+                if not busy:
+                    break
+            except Exception:
+                break
+            time.sleep(3)
+
+        # Enter caption — the video composer's own textbox (Arabic UI labels
+        # included). Scoped to the dialog so we never type into the page's
+        # background "What's on your mind" box.
         try:
             caption_selectors = [
-                'div[role="textbox"][aria-label*="on your mind"]',
+                'div[role="dialog"] div[role="textbox"][aria-label*="this video"]',
+                'div[role="dialog"] div[role="textbox"][aria-label*="هذا الفيديو"]',
+                'div[role="dialog"] div[role="textbox"][aria-label*="الفيديو"]',
+                'div[role="dialog"] div[role="textbox"][aria-label*="Say something"]',
+                'div[role="dialog"] div[role="textbox"][aria-label*="اكتب"]',
+                'div[role="dialog"] div[role="textbox"]',
+                'div[role="dialog"] div[contenteditable="true"]',
+                'div[role="textbox"][aria-label*="this video"]',
+                'div[role="textbox"][aria-label*="هذا الفيديو"]',
+                'div[role="textbox"][aria-label*="الفيديو"]',
                 'div[role="textbox"][aria-label*="Say something"]',
-                'div[role="textbox"][contenteditable="true"]',
+                'div[role="textbox"][aria-label*="اكتب"]',
+                'div[role="textbox"]',
                 'div[contenteditable="true"]',
-                'div[aria-label*="Say something about this video"]',
                 'textarea',
             ]
             typed = False
@@ -108,8 +162,12 @@ class FacebookUploader(BasePublisher):
                         field.send_keys(Keys.DELETE)
                         time.sleep(0.5)
                         field.send_keys(caption[:63000])
-                        typed = True
-                        break
+                        time.sleep(1)
+                        # Verify the text actually landed in this box.
+                        text = (field.get_attribute("textContent") or "").strip()
+                        if text:
+                            typed = True
+                            break
                     except Exception:
                         continue
                 if typed:
@@ -124,13 +182,17 @@ class FacebookUploader(BasePublisher):
             return False
 
         # Click Post — FB disables the button while the video is processing,
-        # so poll until it becomes clickable (up to ~2.5 min).
+        # so poll until it becomes clickable (up to ~2.5 min). Only a Post
+        # button inside the composer dialog is valid.
         try:
             post_selectors = [
+                'div[role="dialog"] div[aria-label="Post"]',
+                'div[role="dialog"] div[aria-label="نشر"]',
+                'div[role="dialog"] button:has(span:text("Post"))',
+                '//div[@role="dialog"]//div[@aria-label="Post"]',
+                '//div[@role="dialog"]//div[@aria-label="نشر"]',
                 'div[aria-label="Post"]',
-                'button:has(span:text("Post"))',
                 '//div[@aria-label="Post"]',
-                '//button[contains(text(), "Post")]',
             ]
             clicked = False
             deadline = time.time() + 150

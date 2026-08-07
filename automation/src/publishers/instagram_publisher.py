@@ -51,6 +51,37 @@ class InstagramPublisher(BasePublisher):
 
         return self._publish_selenium(video_path, caption)
 
+    def run(self, video_path: str, caption: str, product_url: str | None = None) -> bool:
+        """BasePublisher.run with product_url support (link sticker + comment)."""
+        print(f"  [{self.PLATFORM_NAME}] Starting publish...")
+        try:
+            self.driver = self._create_driver()
+
+            if not self._load_cookies():
+                print(f"  [{self.PLATFORM_NAME}] Skipping — no valid cookies")
+                return False
+
+            self.driver.refresh()
+            time.sleep(2)
+
+            success = self.publish(video_path, caption, product_url=product_url)
+
+            if success:
+                print(f"  [✓] {self.PLATFORM_NAME} posted successfully")
+            else:
+                print(f"  [✗] {self.PLATFORM_NAME} post failed")
+
+            return success
+        except Exception as e:
+            print(f"  [✗] {self.PLATFORM_NAME} error: {e}")
+            return False
+        finally:
+            if self.driver:
+                try:
+                    self.driver.quit()
+                except Exception:
+                    pass
+
     def _get_sessionid(self) -> str | None:
         from cookie_manager import load_cookies
         from uploaders.cookies import extract_cookie

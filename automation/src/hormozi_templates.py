@@ -189,6 +189,25 @@ CATEGORY_EMOJI = {
 }
 
 
+# ────────────────────────────────────────────────────────────────────────────
+# FOMO lines — honest scarcity/urgency from the books ($100M Offers):
+# quantity ("قطع محدودة") and edition ("إصدار 2026 — لا يُعاد إنتاجه"),
+# both real Nadine facts. No invented deadlines.
+# ────────────────────────────────────────────────────────────────────────────
+
+FOMO_LINES = [
+    "القطع محدودة لهذا الإصدار — اطلبيها قبل ما تخلص",
+    "إصدار 2026 — ما يتعاد إنتاجه بعد نفاد القطع",
+    "العدد محدود — القطع اللي تخلص ما ترجع",
+    "القطعة هذي من إصدار محدود — بعد ما تخلص، ما تلقاها",
+]
+
+
+def get_fomo_line(index: int = 0) -> str:
+    """Deterministic FOMO line (rotate with variant index for the 5-caption mode)."""
+    return FOMO_LINES[index % len(FOMO_LINES)]
+
+
 def _variant_hook_pool(product: dict) -> list[str]:
     """Product hooks first, padded with core-bank hooks — deduped, stable order."""
     pool: list[str] = []
@@ -223,7 +242,7 @@ def generate_hormozi_caption_variants(
         bullets = build_hormozi_bullets(product, b1_variant=i)
         lines = [f"{emoji} {hook}", ""]
         lines += [f"{e} {t}" for e, t in bullets]
-        lines += ["", url, "", hashtag_str]
+        lines += ["", url, "", get_fomo_line(i), "", hashtag_str]
         variants.append("\n".join(lines))
     return variants
 
@@ -245,5 +264,5 @@ def generate_hormozi_caption(product: dict, hashtags: list[str], website: str) -
 
     lines = [f"{emoji} {hook}", ""]
     lines += [f"{e} {t}" for e, t in bullets]
-    lines += ["", f"🔗 {url}", "", " ".join(hashtags)]
+    lines += ["", url, "", get_fomo_line(0), "", " ".join(hashtags)]
     return "\n".join(lines)

@@ -4,6 +4,7 @@ cookies/*.json
 
 # Ignore video content
 content/*.mp4
+content/*.mp4.jpg
 content/*.mov
 content/*.avi
 !content/.gitkeep

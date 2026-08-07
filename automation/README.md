@@ -102,12 +102,12 @@ Menu:
 | Platform | Method | Notes |
 |---|---|---|
 | Instagram | `instagrapi` (sessionid cookie) | Most reliable; falls back to Selenium web upload |
-| TikTok | Selenium + cookies | Most anti-bot-strict; first live run may need selector tuning |
+| TikTok | browser-use vision agent (anti-detect chromium host, CPU rendering) | LLM sees the page and posts; falls back to the legacy Playwright uploader if it fails |
 | Twitter/X | Selenium + cookies | Uses `auth_token`/`ct0` from your session |
-| Facebook | Selenium + cookies | Posts to the account that owns the cookies |
-| Snapchat | Manual (caption file) | No web upload path exists; tool writes `content/snapchat_caption.txt` + instructions for the mobile app |
+| Facebook | Selenium + cookies | On selector failure, retries via the browser-use vision agent with the same cookies |
+| Snapchat | Manual (caption file) | Tool writes `content/snapchat_caption.txt` + instructions for the mobile app |
 
-> ⚠️ Social platforms change their web UIs frequently. The Selenium flows are best-effort and marked with `TODO(live)` — expect to fine-tune selectors on the first real run against your accounts.
+> ⚠️ Social platforms change their web UIs frequently. The browser-use vision agent (`src/vision_agent.py`) adapts to DOM changes by letting MiMo 2.5 *see* the page and click/type the right element. The browser is the anti-detect chromium from `src/browser_host.py` (modern UA + masked `navigator.webdriver` + session cookies, software rendering via `--disable-gpu`) — platform cookies only restore a session when the browser isn't fingerprinted, so the agent drives that browser over CDP instead of launching its own Chromium.
 
 ## Safety
 
