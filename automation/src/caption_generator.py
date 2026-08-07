@@ -124,7 +124,7 @@ PLATFORM_LIMITS = {
 
 # Instagram/TikTok don't make caption links clickable — point to the bio
 # instead; the real link goes in the bio and as a comment on the post.
-LINK_IN_BIO = "الرابط في البايو 👆"
+LINK_IN_BIO = "الرابط في البايو 👇🏻"
 
 
 def generate_structured_caption(product: dict) -> str:
