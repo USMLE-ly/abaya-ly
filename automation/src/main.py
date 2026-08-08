@@ -19,6 +19,7 @@ from scheduler import (
     get_platform_delay,
     should_post_now,
     get_today_post_count,
+    has_posted,
 )
 from publishers import (
     TikTokPublisher,
@@ -211,6 +212,17 @@ def post_to_all(video_path, caption, product, skip_platforms=None):
         if platform_name in skip_platforms:
             print(f"  ⏭️  {platform_name} — already posted (resume skip)")
             continue
+
+        # TikTok once-per-video rule: never re-upload the same file — duplicate
+        # uploads are what triggered the account shadow-ban (0 views). Skipped
+        # pushes still let the other platforms publish their variants.
+        if platform_name == "tiktok" and platform_conf.get("once_per_video", True):
+            if has_posted("tiktok", video_path):
+                print(
+                    "  ⏭️  tiktok — video already posted (once-per-video rule), "
+                    "skipping duplicate upload"
+                )
+                continue
 
         if not has_valid_cookies(platform_name):
             print(f"  ⏭️  {platform_name} — no cookies, skipping")

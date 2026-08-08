@@ -81,6 +81,30 @@ def log_post(platform: str, video: str, product: str, status: str) -> None:
         print(f"  [!] Could not log post for {platform}: {e}")
 
 
+def has_posted(platform: str, video: str, status: str = "success") -> bool:
+    """True if the same video file was already logged for this platform.
+
+    Used for the TikTok once-per-video rule: never re-upload the same file
+    (duplicate uploads triggered the account shadow-ban). Matches on the
+    absolute video path so relative/absolute spellings still compare equal.
+    """
+    log_path = os.path.join(ROOT_DIR, "logs", "posts.json")
+    if not os.path.exists(log_path):
+        return False
+    try:
+        with open(log_path, "r", encoding="utf-8") as f:
+            logs = json.load(f)
+    except Exception:
+        return False
+    video_abs = os.path.abspath(video)
+    return any(
+        entry.get("platform") == platform
+        and entry.get("status") == status
+        and os.path.abspath(entry.get("video", "")) == video_abs
+        for entry in logs
+    )
+
+
 def get_pending_posts() -> list[dict]:
     """Get posts that haven't been published yet."""
     queue_path = os.path.join(ROOT_DIR, "logs", "queue.json")

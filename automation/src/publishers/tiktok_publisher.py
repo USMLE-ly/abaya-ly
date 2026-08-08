@@ -33,9 +33,33 @@ class TikTokPublisher(BasePublisher):
             import sys
 
             from cookie_manager import has_valid_cookies
+            from scheduler import has_posted
+
+            # Warm-up pause: the account was shadow-banned (0 views, videos
+            # hidden from the public profile). Do not post until it has been
+            # warmed up and the flag is flipped back on in config.json.
+            from scheduler import load_config
+
+            conf = load_config().get("platforms", {}).get("tiktok", {})
+            paused_reason = conf.get("paused_reason")
+            if not conf.get("enabled", False) or paused_reason:
+                print(
+                    f"  [{self.PLATFORM_NAME}] Paused{': ' + paused_reason if paused_reason else ''} "
+                    f"— set enabled:true in config.json to resume"
+                )
+                return False
 
             if not has_valid_cookies(self.PLATFORM_NAME):
                 print(f"  [{self.PLATFORM_NAME}] Skipping — no valid cookies")
+                return False
+
+            # Once-per-video rule (defense in depth): never re-upload the same
+            # file, even if a caller bypasses post_to_all.
+            if conf.get("once_per_video", True) and has_posted(self.PLATFORM_NAME, video_path):
+                print(
+                    f"  [{self.PLATFORM_NAME}] Video already posted (once-per-video "
+                    f"rule) — skipping duplicate upload"
+                )
                 return False
 
             link = product_url or self._product_url(caption)

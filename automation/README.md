@@ -107,6 +107,17 @@ Menu:
 | Facebook | Selenium + cookies | On selector failure, retries via the browser-use vision agent with the same cookies |
 | Snapchat | Manual (caption file) | Tool writes `content/snapchat_caption.txt` + instructions for the mobile app |
 
+> 🚫 **TikTok paused (warm-up).** The account was silently shadow-banned: all videos show 0 views
+> and are hidden from the public profile (`itemList: []` in the profile API). Trigger: the same video
+> file uploaded 4–6 times within hours from automated web uploads on a brand-new account — TikTok's
+> spam/unoriginal-content moderation suppressed everything. TikTok posting is disabled in `config.json`
+> (`platforms.tiktok.enabled: false`, `paused_reason` explains why).
+>
+> **Once-per-video rule (TikTok):** the automation never re-uploads the same video file to TikTok —
+> `has_posted()` checks `logs/posts.json` and skips duplicates in `post_to_all` and in the publisher
+> itself. Re-enable only after the account is warmed up (browse/follow/like on the app for 5–7 days,
+> no posting), then post at most 1 distinct video/day. Never upload the same file twice.
+
 > ⚠️ Social platforms change their web UIs frequently. The browser-use vision agent (`src/vision_agent.py`) adapts to DOM changes by letting MiMo 2.5 *see* the page and click/type the right element. The browser is the anti-detect chromium from `src/browser_host.py` (modern UA + masked `navigator.webdriver` + session cookies, software rendering via `--disable-gpu`) — platform cookies only restore a session when the browser isn't fingerprinted, so the agent drives that browser over CDP instead of launching its own Chromium.
 
 ## Safety
