@@ -27,7 +27,9 @@ class FacebookUploader(BasePublisher):
         super().__init__(headless)
         self.page_url = page_url
 
-    def publish(self, video_path: str, caption: str = "", page_url: str = "") -> bool:
+    def publish(
+        self, video_path: str, caption: str = "", page_url: str = "", dry_run: bool = False
+    ) -> bool:
         if not os.path.exists(video_path):
             print(f"  [!] Video not found: {video_path}")
             return False
@@ -180,6 +182,14 @@ class FacebookUploader(BasePublisher):
         except Exception as e:
             print(f"  [!] Caption error: {e}")
             return False
+
+        # Dry-run mode: everything up to Post is verified (login, composer,
+        # video attach, caption) — the post is never published.
+        if dry_run:
+            print("  [Facebook] DRY RUN — composer ready, video attached, caption "
+                  "set. Post NOT clicked (verification only).")
+            self.driver.save_screenshot("/tmp/fb_dryrun_ready.png")
+            return True
 
         # Click Post — FB disables the button while the video is processing,
         # so poll until it becomes clickable (up to ~2.5 min). Only a Post
