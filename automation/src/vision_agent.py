@@ -124,6 +124,15 @@ def _repair_agent_output(raw: str) -> str:
             # MiMo sometimes emits {"wait": 3000} instead of {"wait": {"seconds": 3}}
             if "wait" in a and isinstance(a["wait"], (int, float)):
                 a["wait"] = {"seconds": max(1, int(a["wait"]) // 1000 or 1)}
+            # Single-key action dicts MiMo emits that browser-use rejects:
+            # bare values ({"input": "..."} / {"done": True}) or unknown keys
+            # ({"search_page": {...}}). Drop them instead of failing the
+            # whole step's JSON parse. (click/scroll/wait were normalized to
+            # dicts above.)
+            if len(a) == 1:
+                _k, _v = next(iter(a.items()))
+                if _k not in _ACTION_KEYS or not isinstance(_v, dict):
+                    continue
             if a:
                 cleaned.append(a)
         data["action"] = cleaned

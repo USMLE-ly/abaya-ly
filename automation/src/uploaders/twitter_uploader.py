@@ -50,6 +50,63 @@ def _build_twitter_task(video_path: str, caption: str, dry_run: bool = False) ->
 """
 
 
+def _tweet_marker(caption: str) -> str:
+    """A short unique substring to find this tweet on the timeline.
+
+    X renders links as cards, so the URL is NOT present in the tweet text
+    innerText — always match on the first text (hook) line. X also strips the
+    leading emoji from tweetText innerText, so the marker must start at the
+    first real character, not the emoji.
+    """
+    import re
+    first = next(
+        (l.strip() for l in caption.splitlines()
+         if l.strip() and not l.startswith("#") and not l.startswith("http")),
+        "",
+    )
+    if first:
+        m = re.search(r"[\u0600-\u06FF\u0041-\u005A\u0061-\u007A]", first)
+        if m:
+            return first[m.start():m.start() + 40]
+        return first[:40]
+    url = next((l.strip() for l in caption.splitlines() if l.strip().startswith("http")), "")
+    return url[:40]
+
+
+def _verify_on_timeline(page, caption: str) -> bool:
+    """Navigate to the profile and look for the posted tweet (caption/URL)."""
+    import re
+    marker = _tweet_marker(caption)
+    try:
+        href = page.eval_on_selector(
+            'a[data-testid="AppTabBar_Profile_Link"]',
+            'a => a.getAttribute("href")',
+        )
+    except Exception:
+        href = None
+    if not href or not href.startswith("/"):
+        print("  [twitter] could not resolve profile handle for verification")
+        return False
+    try:
+        page.goto(f"https://x.com{href}", wait_until="domcontentloaded", timeout=60000)
+    except Exception as e:
+        print(f"  [twitter] profile navigation failed: {e}")
+        return False
+    deadline = time.time() + 30
+    while time.time() < deadline:
+        try:
+            texts = page.evaluate(
+                "() => [...document.querySelectorAll('article [data-testid=\"tweetText\"]')]"
+                ".map(e => e.innerText || '')"
+            )
+            if any(marker in (t or "") for t in texts):
+                return True
+        except Exception:
+            pass
+        time.sleep(4)
+    return False
+
+
 class TwitterUploader:
     """X/Twitter video uploader: deterministic Playwright + vision fallback."""
 
@@ -166,12 +223,13 @@ class TwitterUploader:
                       "caption set. Post NOT clicked (verification only).")
                 return True
 
-            # 5. Click Post (poll until enabled)
+            # 5. Click Post (only when enabled — a force-click on a disabled
+            # button while the video is still processing silently does nothing,
+            # and the video can take a few minutes to process).
             clicked = False
             saw_button = False
-            button_visible_since = None
             last_click_error = ""
-            deadline = time.time() + 180
+            deadline = time.time() + 300
             while time.time() < deadline:
                 for sel in _POST_SELECTORS:
                     try:
@@ -180,13 +238,10 @@ class TwitterUploader:
                         else:
                             btn = page.wait_for_selector(sel, timeout=6000)
                         saw_button = True
-                        if button_visible_since is None:
-                            button_visible_since = time.time()
-                        clickable = False
                         try:
                             clickable = btn.is_enabled()
                         except Exception:
-                            pass
+                            clickable = False
                         if clickable:
                             try:
                                 btn.click(timeout=8000)
@@ -194,12 +249,6 @@ class TwitterUploader:
                                 break
                             except Exception as e:
                                 last_click_error = str(e)[:200]
-                        if time.time() - button_visible_since > 60:
-                            if last_click_error:
-                                print(f"  [twitter] last Post click error: {last_click_error}")
-                            btn.click(force=True, timeout=8000)
-                            clicked = True
-                            break
                     except Exception:
                         continue
                 if clicked:
@@ -208,26 +257,56 @@ class TwitterUploader:
             if not saw_button:
                 print("  [!] Post button never appeared in the composer")
             elif not clicked:
-                print("  [!] Post button never became clickable")
+                if last_click_error:
+                    print(f"  [!] Post click error: {last_click_error}")
+                print("  [!] Post button never became enabled (video may still be processing)")
             if not clicked:
                 return False
             print("  [twitter] Post clicked, waiting for confirmation...")
 
-            # 6. Confirm: compose closes / back on timeline
+            # 6. Confirm: compose closes / back on timeline. X keeps the
+            # composer open briefly after posting, so if it does not close we
+            # re-click (a second Post click is harmless on a closed composer)
+            # and finally verify the tweet on the profile timeline before
+            # ever declaring failure — never start a duplicate draft blindly.
             ok = False
-            deadline = time.time() + 60
-            while time.time() < deadline:
+            for attempt in range(3):
+                deadline = time.time() + 45
+                while time.time() < deadline:
+                    try:
+                        if not page.query_selector(
+                            'div[data-testid="tweetTextarea_0"], '
+                            'div[data-testid="tweetButtonInline"]'
+                        ):
+                            ok = True
+                            break
+                        if "compose" not in page.url:
+                            ok = True
+                            break
+                    except Exception:
+                        pass
+                    time.sleep(3)
+                if ok:
+                    break
+                # One more Post click if the button is still present/enabled
                 try:
-                    if not page.query_selector('div[data-testid="tweetTextarea_0"], div[data-testid="tweetButtonInline"]'):
-                        ok = True
-                        break
-                    if "compose" not in page.url and page.query_selector('a[href="/home"]'):
-                        ok = True
+                    btn = page.locator('button[data-testid="tweetButtonInline"], '
+                                       'button[data-testid="tweetButton"]').last
+                    if btn.count() and btn.is_enabled():
+                        btn.click(timeout=8000)
+                        print(f"  [twitter] re-clicked Post (attempt {attempt + 1}/3)")
+                    else:
                         break
                 except Exception:
-                    pass
-                time.sleep(3)
-            return ok
+                    break
+            if not ok:
+                print("  [twitter] composer still open — verifying on profile timeline...")
+                ok = _verify_on_timeline(page, caption)
+                if ok:
+                    print("  [twitter] tweet verified on profile timeline")
+                    return True
+                return "post_clicked"
+            return True
         except Exception as e:
             print(f"  [✗] twitter playwright error: {e}")
             return False
@@ -288,7 +367,16 @@ class TwitterUploader:
             print(f"  [!] Video not found: {video_path}")
             return False
         target = page_url or self.page_url
-        if self._publish_playwright(video_path, caption, target, dry_run=dry_run):
+        outcome = self._publish_playwright(video_path, caption, target, dry_run=dry_run)
+        if outcome is True:
             return True
+        if outcome == "post_clicked":
+            # Post was clicked and the timeline check could not confirm the
+            # tweet. Never run the vision agent here — it would start a second
+            # draft and risk a duplicate. Report failure and let the caller
+            # decide (manual re-check).
+            print("  [!] twitter Post clicked but unconfirmed — "
+                  "NOT retrying via vision (duplicate risk)")
+            return False
         print("  [!] playwright path failed — trying browser-use vision fallback")
         return self._publish_vision(video_path, caption, target, dry_run=dry_run)

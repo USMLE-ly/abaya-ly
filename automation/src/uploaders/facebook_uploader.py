@@ -52,8 +52,11 @@ def _build_fb_task(
     return f"""You are logged in to Facebook. Create a video post.
 
 1. Go to {page_url}.
-2. If you see the Facebook login screen instead of the logged-in feed, reply with
-   exactly FB_LOGIN_FAILED and stop.
+2. If you see an account chooser page with a 'Continue as ...' / 'Continue' /
+   'متابعة' button, click it first (this is NOT a failure — the session is
+   valid, Facebook just asks which profile to use). Only if you see a real
+   login form (email + password fields) reply with exactly FB_LOGIN_FAILED
+   and stop.
 3. Click 'Photo/video' (or the equivalent create-post button) to open the composer.
 4. Upload the video file "{video_path}" — find the file input / upload control and
    upload it (use the upload_file action with that exact path).
@@ -103,13 +106,72 @@ class FacebookUploader:
             page = context.pages[0]
             page.set_default_timeout(90000)
 
-            # 1. Home + login check
+            # 1. Home + login check. Facebook sometimes shows an account
+            # chooser ("Continue as ...") even with valid cookies — click
+            # through it instead of treating it as a login failure.
             page.goto(page_url, wait_until="domcontentloaded")
             time.sleep(4)
             url = page.url
             if "/login" in url or "checkpoint" in url:
                 print("  [!] facebook login screen — session not restored")
                 return False
+            for _ in range(3):
+                cont = None
+                for sel in (
+                    'div[aria-label="Continue Nadine Luxor"]',
+                    'div[role="button"][aria-label^="Continue"]',
+                    'div[role="button"][aria-label^="متابعة"]',
+                    'button:has-text("Continue")',
+                    'div[role="button"]:has-text("Continue")',
+                ):
+                    try:
+                        loc = page.locator(sel).first
+                        if loc.count() and loc.is_visible():
+                            cont = loc
+                            break
+                    except Exception:
+                        continue
+                if cont is None:
+                    break
+                try:
+                    cont.click(timeout=6000)
+                    print("  [facebook] clicked account chooser Continue")
+                except Exception:
+                    # Button disappeared mid-click (chooser already dismissed)
+                    break
+                # Wait for the chooser to clear before the next iteration.
+                try:
+                    page.locator('div[aria-label^="Continue"]').first.wait_for(
+                        state="detached", timeout=15000
+                    )
+                except Exception:
+                    pass
+                time.sleep(2)
+            # After the chooser, Facebook sometimes shows a
+            # "Remove profiles from this browser" modal that blocks the
+            # composer — dismiss any such dialog before proceeding.
+            for _ in range(3):
+                dismissed = False
+                for sel in (
+                    'div[role="dialog"] div[aria-label="Close"]',
+                    'div[role="dialog"] button[aria-label="Close"]',
+                    'div[role="dialog"] div[aria-label="إغلاق"]',
+                    'div[role="dialog"] div[aria-label="Cancel"]',
+                    'div[role="dialog"] div[aria-label="إلغاء"]',
+                    'div[role="dialog"] div[role="button"]:has-text("Not now")',
+                ):
+                    try:
+                        loc = page.locator(sel).first
+                        if loc.count() and loc.is_visible():
+                            loc.click(timeout=5000)
+                            print("  [facebook] dismissed blocking dialog")
+                            dismissed = True
+                            break
+                    except Exception:
+                        continue
+                if not dismissed:
+                    break
+                time.sleep(3)
             print("  [facebook] logged in")
 
             # 2. Open composer
