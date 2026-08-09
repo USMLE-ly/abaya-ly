@@ -37,7 +37,7 @@ def find_free_port() -> int:
 
 
 _HOST_CODE = r"""
-import sys, time
+import sys, time, json
 sys.path.insert(0, __SRC_DIR__)
 from cookie_manager import load_cookies
 from uploaders.cookies import to_playwright_cookies
@@ -45,8 +45,14 @@ from browser_host import MODERN_UA
 
 from playwright.sync_api import sync_playwright
 
-platform_name, port, keepalive_sec = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
-cookies = load_cookies(platform_name)
+platform_name, port, keepalive_sec, cookies_file = (
+    sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4] if len(sys.argv) > 4 else ""
+)
+if cookies_file:
+    with open(cookies_file, "r", encoding="utf-8") as _f:
+        cookies = json.load(_f)
+else:
+    cookies = load_cookies(platform_name)
 pw_cookies = to_playwright_cookies(cookies, default_domain="")
 print(f"[browser_host] {platform_name}: {len(pw_cookies)} cookies -> port {port}", flush=True)
 
@@ -92,13 +98,36 @@ def launch(
     code = _HOST_CODE.replace("__SRC_DIR__", repr(SRC_DIR))
     env = dict(os.environ)
     env["PYTHONUNBUFFERED"] = "1"
+    cookies_file = ""
+    if cookies is not None:
+        # Explicit cookie sets (e.g. vision fallback with fresh cookies) must
+        # reach the subprocess — the host only loads by platform name by default.
+        import tempfile
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".json", delete=False, encoding="utf-8"
+        ) as _cf:
+            json.dump(cookies, _cf, ensure_ascii=False)
+            cookies_file = _cf.name
     proc = subprocess.Popen(
-        [sys.executable, "-c", code, platform_name, str(port), str(keepalive_sec)],
+        [
+            sys.executable, "-c", code,
+            platform_name, str(port), str(keepalive_sec), cookies_file,
+        ],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         env=env,
     )
     _HANDLES[proc.pid] = port
+    if cookies_file:
+        # Best-effort cleanup after the host has read it.
+        import threading
+        def _cleanup():
+            time.sleep(30)
+            try:
+                os.unlink(cookies_file)
+            except OSError:
+                pass
+        threading.Thread(target=_cleanup, daemon=True).start()
     return proc
 
 

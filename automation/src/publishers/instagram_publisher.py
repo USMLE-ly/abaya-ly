@@ -1,15 +1,45 @@
 import os
 import re
 import time
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
+
 from .base_publisher import BasePublisher
 
 
+def _build_ig_task(
+    video_path: str,
+    caption: str,
+    dry_run: bool = False,
+    page_url: str = "https://www.instagram.com/reels/upload/",
+) -> str:
+    """Prompt for the browser-use agent: publish the Reel on Instagram."""
+    caption_for_task = caption[:2200]
+    post_step = (
+        "8. Click the Share button to publish the Reel.\n"
+        "9. Wait for the post confirmation / the Reels feed to load.\n"
+        "10. On the very last line report exactly: IG_POSTED_OK, plus one short sentence.\n"
+    ) if not dry_run else (
+        "8. STOP NOW — dry run. Do NOT click Share, do NOT publish anything.\n"
+        "9. On the very last line report exactly: IG_DRY_RUN_READY, plus one short sentence.\n"
+    )
+    return f"""You are logged in to Instagram. Publish a Reel.
+
+1. Go to {page_url}.
+2. If you see the Instagram login screen instead of the upload page, reply with
+   exactly IG_LOGIN_FAILED and stop.
+3. Find the file input (input[type="file"]) and upload the video "{video_path}"
+   (use the upload_file action with that exact path).
+4. Wait for the video to process (spinner disappears).
+5. Click Next through the upload flow until you reach the caption screen
+   (usually 1-3 Next clicks; stop when a caption field appears).
+6. Click the caption textarea (role="textbox") and type this exact caption, replace nothing:
+{caption_for_task}
+7. (Optional) Add a location if the screen asks — you can skip it.
+{post_step}If you cannot complete a step, report IG_POST_FAILED with the reason on the last line.
+"""
+
+
 class InstagramPublisher(BasePublisher):
-    """Publish Reels to Instagram using cookie-based Selenium."""
+    """Publish Reels to Instagram — instagrapi primary, browser-use vision fallback."""
 
     PLATFORM_NAME = "instagram"
     HOME_URL = "https://www.instagram.com/"
@@ -47,133 +77,61 @@ class InstagramPublisher(BasePublisher):
                         print(f"  [!] Instagram comment failed ({ce})")
                 return True
             except Exception as e:
-                print(f"  [!] instagrapi failed ({e}) — falling back to Selenium")
+                print(f"  [!] instagrapi failed ({e}) — falling back to vision agent")
 
-        return self._publish_selenium(video_path, caption)
+        return self._publish_vision(video_path, caption)
 
     def run(self, video_path: str, caption: str, product_url: str | None = None) -> bool:
-        """BasePublisher.run with product_url support (link sticker + comment)."""
+        """Run the publish flow. No browser is spawned for the instagrapi path;
+        the vision fallback launches its own browser-use host if needed."""
         print(f"  [{self.PLATFORM_NAME}] Starting publish...")
         try:
-            self.driver = self._create_driver()
-
-            if not self._load_cookies():
-                print(f"  [{self.PLATFORM_NAME}] Skipping — no valid cookies")
-                return False
-
-            self.driver.refresh()
-            time.sleep(2)
-
             success = self.publish(video_path, caption, product_url=product_url)
-
             if success:
                 print(f"  [✓] {self.PLATFORM_NAME} posted successfully")
             else:
                 print(f"  [✗] {self.PLATFORM_NAME} post failed")
-
             return success
         except Exception as e:
             print(f"  [✗] {self.PLATFORM_NAME} error: {e}")
             return False
-        finally:
-            if self.driver:
-                try:
-                    self.driver.quit()
-                except Exception:
-                    pass
 
     def _get_sessionid(self) -> str | None:
         from cookie_manager import load_cookies
         from uploaders.cookies import extract_cookie
         return extract_cookie(load_cookies(self.PLATFORM_NAME), "sessionid")
 
-    def _publish_selenium(self, video_path: str, caption: str) -> bool:
-        self.driver.get("https://www.instagram.com/")
-        time.sleep(3)
+    def _publish_vision(
+        self,
+        video_path: str,
+        caption: str,
+        product_url: str | None = None,
+        dry_run: bool = False,
+    ) -> bool:
+        """browser-use vision fallback on the anti-detect Chromium host."""
+        from vision_agent import vision_agent_run
 
-        # Navigate to Reels upload
-        self.driver.get(self.UPLOAD_URL)
-        time.sleep(5)
+        task = _build_ig_task(video_path, caption, dry_run=dry_run)
+        result = vision_agent_run(
+            task,
+            platform=self.PLATFORM_NAME,
+            max_steps=60,
+            headless=self.headless,
+            allowed_domains=["*.instagram.com", "instagram.com", "www.instagram.com"],
+            timeout_sec=1500,
+            available_file_paths=[os.path.abspath(video_path)],
+        ) or ""
+        detail = result[-400:] if result else "no agent output"
+        print(f"  [instagram vision] {detail[:250]}")
 
-        # Upload video
-        try:
-            file_input = WebDriverWait(self.driver, 15).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, 'input[type="file"][accept*="video"]'))
+        if dry_run:
+            ok = "IG_DRY_RUN_READY" in result and "IG_LOGIN_FAILED" not in result
+        else:
+            ok = (
+                "IG_POSTED_OK" in result
+                and "IG_POST_FAILED" not in result
+                and "IG_LOGIN_FAILED" not in result
             )
-            file_input.send_keys(os.path.abspath(video_path))
-        except Exception:
-            try:
-                file_input = self.driver.find_element(By.CSS_SELECTOR, 'input[type="file"]')
-                file_input.send_keys(os.path.abspath(video_path))
-            except Exception as e:
-                print(f"  [!] Could not find file input: {e}")
-                return False
-
-        # Wait for video to process
-        time.sleep(10)
-
-        # Click Next through the upload flow
-        for _ in range(3):
-            try:
-                next_btn = WebDriverWait(self.driver, 10).until(
-                    EC.element_to_be_clickable((By.XPATH, '//button[contains(text(), "Next")]'))
-                )
-                next_btn.click()
-                time.sleep(3)
-            except Exception:
-                break
-
-        # Enter caption
-        try:
-            caption_selectors = [
-                'textarea[aria-label]',
-                'div[role="textbox"]',
-                'textarea',
-            ]
-            for selector in caption_selectors:
-                try:
-                    caption_field = WebDriverWait(self.driver, 5).until(
-                        EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
-                    )
-                    caption_field.click()
-                    time.sleep(0.5)
-                    caption_field.send_keys(Keys.CONTROL + "a")
-                    caption_field.send_keys(Keys.DELETE)
-                    time.sleep(0.3)
-                    truncated = caption[:2200]
-                    caption_field.send_keys(truncated)
-                    break
-                except Exception:
-                    continue
-            time.sleep(2)
-        except Exception as e:
-            print(f"  [!] Could not set caption: {e}")
-            return False
-
-        # Click Share button
-        try:
-            share_selectors = [
-                'button:has(div:text("Share"))',
-                '//button[contains(text(), "Share")]',
-                'div[role="button"]:has(div:text("Share"))',
-            ]
-            for selector in share_selectors:
-                try:
-                    if selector.startswith('//'):
-                        share_btn = WebDriverWait(self.driver, 10).until(
-                            EC.element_to_be_clickable((By.XPATH, selector))
-                        )
-                    else:
-                        share_btn = WebDriverWait(self.driver, 10).until(
-                            EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
-                        )
-                    share_btn.click()
-                    break
-                except Exception:
-                    continue
-            time.sleep(5)
-        except Exception as e:
-            print(f"  [!] Could not click Share: {e}")
-            return False
-
-        return True
+        print(f"  [{'✓' if ok else '✗'}] instagram vision "
+              f"{'ready (dry run)' if dry_run else 'posted successfully' if ok else 'failed'}")
+        return ok

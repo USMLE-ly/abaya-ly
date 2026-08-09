@@ -31,8 +31,54 @@ _DEFAULT_COOKIE_WHITELIST = [
 ]
 
 
+_ACTION_KEYS = {
+    "click", "input", "upload_file", "done", "wait", "navigate", "scroll",
+    "send_keys", "switch", "close", "extract", "search", "go_back",
+    "dropdown_options", "select_dropdown", "save_as_pdf", "write_file",
+    "replace_file", "read_file", "evaluate", "find_text",
+}
+
+
+def _find_json_object(text: str) -> dict | None:
+    """Locate the first balanced JSON object inside free-form text."""
+    start = text.find("{")
+    if start == -1:
+        return None
+    depth = 0
+    in_str = False
+    esc = False
+    for i in range(start, len(text)):
+        c = text[i]
+        if in_str:
+            if esc:
+                esc = False
+            elif c == "\\":
+                esc = True
+            elif c == '"':
+                in_str = False
+            continue
+        if c == '"':
+            in_str = True
+        elif c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                try:
+                    return json.loads(text[start:i + 1])
+                except Exception:
+                    return None
+    return None
+
+
 def _repair_agent_output(raw: str) -> str:
-    """Strip MiMo's stray `screenshot` fields / markdown fences from structured JSON."""
+    """Repair MiMo's structured output into the schema browser-use expects.
+
+    MiMo emits several shapes that pydantic rejects: markdown fences around the
+    JSON, a stray top-level `screenshot` field, a bare action dict like
+    {"click": 1081} instead of the {"action": [...]} list, `file_path` instead
+    of `path` for upload_file, or {"wait": 3000} instead of {"wait": {"seconds": 3}}.
+    """
     text = raw.strip()
     if text.startswith("```"):
         # strip ```json ... ``` fences MiMo sometimes wraps output in
@@ -43,23 +89,45 @@ def _repair_agent_output(raw: str) -> str:
     try:
         data = json.loads(text)
     except Exception:
+        data = _find_json_object(text)
+    if not isinstance(data, dict):
         return raw
-    if isinstance(data, dict):
-        data.pop("screenshot", None)
-        if isinstance(data.get("action"), list):
-            cleaned = []
-            for a in data["action"]:
-                if not isinstance(a, dict):
-                    continue
-                a = {k: v for k, v in a.items() if k != "screenshot"}
-                # MiMo sometimes emits {"wait": 3000} instead of {"wait": {"seconds": 3}}
-                if "wait" in a and isinstance(a["wait"], (int, float)):
-                    a["wait"] = {"seconds": max(1, int(a["wait"]) // 1000 or 1)}
-                if a:
-                    cleaned.append(a)
-            data["action"] = cleaned
-        return json.dumps(data, ensure_ascii=False)
-    return raw
+    data.pop("screenshot", None)
+
+    # Bare action dict from MiMo: {"click": 1081} / {"upload_file": {...}}
+    if "action" not in data:
+        bare = {k: v for k, v in data.items() if k in _ACTION_KEYS}
+        if bare:
+            data = {"action": [{k: v} for k, v in bare.items()]}
+
+    if isinstance(data.get("action"), list):
+        cleaned = []
+        for a in data["action"]:
+            if not isinstance(a, dict):
+                continue
+            a = {k: v for k, v in a.items() if k != "screenshot"}
+            # upload_file: file_path -> path; normalize index
+            if "upload_file" in a and isinstance(a["upload_file"], dict):
+                uf = dict(a["upload_file"])
+                if "file_path" in uf and "path" not in uf:
+                    uf["path"] = uf.pop("file_path")
+                if isinstance(uf.get("index"), str):
+                    try:
+                        uf["index"] = int(uf["index"])
+                    except ValueError:
+                        pass
+                a["upload_file"] = uf
+            # click/scroll with a bare index
+            for key in ("click", "scroll"):
+                if key in a and isinstance(a[key], (int, str)):
+                    a[key] = {"index": a[key]}
+            # MiMo sometimes emits {"wait": 3000} instead of {"wait": {"seconds": 3}}
+            if "wait" in a and isinstance(a["wait"], (int, float)):
+                a["wait"] = {"seconds": max(1, int(a["wait"]) // 1000 or 1)}
+            if a:
+                cleaned.append(a)
+        data["action"] = cleaned
+    return json.dumps(data, ensure_ascii=False)
 
 
 class MiMoChatOpenAI:

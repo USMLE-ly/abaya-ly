@@ -61,10 +61,12 @@ You approve or edit the caption(s) before anything is posted (`y` / `n` / `edit`
 cd automation
 python3.12 -m venv venv
 source venv/bin/activate          # Windows: venv\Scripts\activate
-pip install -r requirements.txt   # includes selenium, webdriver-manager, instagrapi
+pip install -r requirements.txt   # includes playwright, browser-use, instagrapi
 ```
 
-Requires **Firefox** (geckodriver is auto-installed via `webdriver-manager`).
+The browser is an **anti-detect headless Chromium** (launched via `src/browser_host.py`,
+CPU-only SwiftShader rendering, `navigator.webdriver` masked, session cookies restored).
+No Selenium/Firefox/geckodriver is used.
 
 ## Cookies (you upload these — no APIs)
 
@@ -101,22 +103,16 @@ Menu:
 
 | Platform | Method | Notes |
 |---|---|---|
-| Instagram | `instagrapi` (sessionid cookie) | Most reliable; falls back to Selenium web upload |
+| Instagram | `instagrapi` (sessionid cookie) | Most reliable; falls back to the browser-use vision agent |
 | TikTok | browser-use vision agent (anti-detect chromium host, CPU rendering) | LLM sees the page and posts; falls back to the legacy Playwright uploader if it fails |
-| Twitter/X | Selenium + cookies | Uses `auth_token`/`ct0` from your session |
-| Facebook | Selenium + cookies | On selector failure, retries via the browser-use vision agent with the same cookies |
-| Snapchat | Manual (caption file) | Tool writes `content/snapchat_caption.txt` + instructions for the mobile app |
+| Twitter/X | Playwright on the anti-detect chromium host (CDP) | Deterministic controller; browser-use vision fallback |
+| Facebook | Playwright on the anti-detect chromium host (CDP) | Deterministic controller (RTL/emoji-safe); browser-use vision fallback |
+| Snapchat | Playwright on the anti-detect chromium host (CDP) | Deterministic controller; vision fallback. OTP-blocked sessions need `src/snapchat_otp_login.py` once; otherwise writes `content/snapchat_caption.txt` for manual posting |
 
-> 🚫 **TikTok paused (warm-up).** The account was silently shadow-banned: all videos show 0 views
-> and are hidden from the public profile (`itemList: []` in the profile API). Trigger: the same video
-> file uploaded 4–6 times within hours from automated web uploads on a brand-new account — TikTok's
-> spam/unoriginal-content moderation suppressed everything. TikTok posting is disabled in `config.json`
-> (`platforms.tiktok.enabled: false`, `paused_reason` explains why).
->
-> **Once-per-video rule (TikTok):** the automation never re-uploads the same video file to TikTok —
-> `has_posted()` checks `logs/posts.json` and skips duplicates in `post_to_all` and in the publisher
-> itself. Re-enable only after the account is warmed up (browse/follow/like on the app for 5–7 days,
-> no posting), then post at most 1 distinct video/day. Never upload the same file twice.
+> **TikTok once-per-video rule:** `config.json` (`platforms.tiktok.once_per_video`) gates duplicate
+> uploads of the same file via `logs/posts.json`. The 5×-per-dress campaign plan intentionally sets
+> it to `false` so the same video can go out with different captions; keep it `true` for normal
+> one-shot posting.
 
 > ⚠️ Social platforms change their web UIs frequently. The browser-use vision agent (`src/vision_agent.py`) adapts to DOM changes by letting MiMo 2.5 *see* the page and click/type the right element. The browser is the anti-detect chromium from `src/browser_host.py` (modern UA + masked `navigator.webdriver` + session cookies, software rendering via `--disable-gpu`) — platform cookies only restore a session when the browser isn't fingerprinted, so the agent drives that browser over CDP instead of launching its own Chromium.
 

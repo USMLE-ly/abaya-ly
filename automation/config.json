@@ -31,10 +31,9 @@
   ],
   "platforms": {
     "tiktok": {
-      "enabled": false,
+      "enabled": true,
       "cookies_file": "cookies/tiktok.json",
-      "once_per_video": true,
-      "paused_reason": "account shadow-banned (0 views, videos hidden from public profile) — warm up the account 5-7 days before re-enabling"
+      "once_per_video": false
     },
     "instagram": {
       "enabled": true,

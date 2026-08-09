@@ -1,238 +1,349 @@
-"""Facebook uploader — hardened Selenium (geckodriver) flow.
+"""Facebook uploader — Playwright controller + browser-use vision fallback.
 
-No maintained open-source cookie-based FB video uploader exists, so this is a
-self-contained publisher built on the same hardened base as the other
-platforms: container-safe Firefox, navigation retries (_safe_get), and
-explicit waits around the composer instead of blind sleeps.
+The primary path is a deterministic Playwright controller driving the same
+anti-detect Chromium host (cookies restored, webdriver masked) over CDP —
+adapted from the ByamB4/fb-group-auto-post pattern (fill() on the composer's
+contenteditable + aria-label Post click). Playwright's fill() works on
+contenteditable boxes, unlike Selenium's textContent get_attribute which
+throws on RTL/emoji text. If the DOM shifts, the browser-use LLM vision agent
+takes over and finishes the post with the same cookies.
 """
 
 import os
 import time
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
+_COMPOSER_SELECTORS = [
+    'div[aria-label="Create a post"]',
+    'div[aria-label="إنشاء منشور"]',
+    'div[role="button"]:has(span:text("Photo/video"))',
+    'div[aria-label="Photo/video"]',
+    '//div[@role="button" and contains(., "Photo/video")]',
+]
+_CAPTION_SELECTORS = [
+    'div[role="dialog"] div[contenteditable="true"]',
+    'div[role="dialog"] div[role="textbox"]',
+]
+_POST_SELECTORS = [
+    'div[role="dialog"] div[aria-label="Post"]',
+    'div[role="dialog"] div[aria-label="نشر"]',
+    'div[role="dialog"] button:has-text("Post")',
+    '//div[@role="dialog"]//div[@aria-label="Post"]',
+    '//div[@role="dialog"]//div[@aria-label="نشر"]',
+]
 
-from browser_base import BasePublisher
+
+def _build_fb_task(
+    video_path: str,
+    caption: str,
+    dry_run: bool = False,
+    page_url: str = "https://www.facebook.com/",
+) -> str:
+    """Prompt for the browser-use agent: create the video post on Facebook."""
+    caption_for_task = caption[:2000]
+    post_step = (
+        "6. Click the Post button (not 'Save draft'). The button may be disabled "
+        "while the video processes — wait for it to become clickable.\n"
+        "7. Wait for the post confirmation / the feed to show the new post.\n"
+        "8. On the very last line report exactly: FB_POSTED_OK, plus one short sentence.\n"
+    ) if not dry_run else (
+        "6. STOP NOW — dry run. Do NOT click Post, do NOT publish anything.\n"
+        "7. On the very last line report exactly: FB_DRY_RUN_READY, plus one short sentence.\n"
+    )
+    return f"""You are logged in to Facebook. Create a video post.
+
+1. Go to {page_url}.
+2. If you see the Facebook login screen instead of the logged-in feed, reply with
+   exactly FB_LOGIN_FAILED and stop.
+3. Click 'Photo/video' (or the equivalent create-post button) to open the composer.
+4. Upload the video file "{video_path}" — find the file input / upload control and
+   upload it (use the upload_file action with that exact path).
+5. Wait until the video preview appears and the upload finishes; then type this
+   exact caption into the caption box (the field that says something like
+   'Say something about this video' — replace nothing, type it as-is):
+{caption_for_task}
+{post_step}If you cannot complete a step, report FB_POST_FAILED with the reason on the last line.
+"""
 
 
-class FacebookUploader(BasePublisher):
-    """Upload a video post to a Facebook profile/page using session cookies."""
+class FacebookUploader:
+    """Facebook video uploader: deterministic Playwright + vision fallback."""
 
     PLATFORM_NAME = "facebook"
     HOME_URL = "https://www.facebook.com/"
 
     def __init__(self, headless: bool = True, page_url: str = ""):
-        super().__init__(headless)
-        self.page_url = page_url
+        self.headless = headless
+        self.page_url = page_url or self.HOME_URL
 
-    def publish(
-        self, video_path: str, caption: str = "", page_url: str = "", dry_run: bool = False
+    # ------------------------------------------------------------------ #
+    # Deterministic Playwright controller (primary)                      #
+    # ------------------------------------------------------------------ #
+    def _publish_playwright(
+        self,
+        video_path: str,
+        caption: str,
+        page_url: str,
+        dry_run: bool = False,
     ) -> bool:
-        if not os.path.exists(video_path):
-            print(f"  [!] Video not found: {video_path}")
+        import browser_host
+        from playwright.sync_api import sync_playwright
+
+        launched = browser_host.launch_and_wait(
+            self.PLATFORM_NAME, keepalive_sec=60 * 30
+        )
+        if not launched:
+            print("  [!] Could not launch anti-detect browser host")
             return False
-
-        target = page_url or self.page_url or self.HOME_URL
-        self._safe_get(target)
-        time.sleep(4)
-
-        # Open the composer ("What's on your mind?" / "Photo/video")
+        proc, port = launched
+        pw = None
         try:
-            create_selectors = [
-                'div[aria-label="Create a post"]',
-                'div[aria-label="إنشاء منشور"]',
-                'div[role="button"]:has(span:text("Photo/video"))',
-                '//div[contains(@aria-label, "Create")]',
-                '//div[@role="button" and contains(., "Photo/video")]',
-            ]
+            pw = sync_playwright().start()
+            browser = pw.chromium.connect_over_cdp(f"http://127.0.0.1:{port}")
+            context = browser.contexts[0]
+            page = context.pages[0]
+            page.set_default_timeout(90000)
+
+            # 1. Home + login check
+            page.goto(page_url, wait_until="domcontentloaded")
+            time.sleep(4)
+            url = page.url
+            if "/login" in url or "checkpoint" in url:
+                print("  [!] facebook login screen — session not restored")
+                return False
+            print("  [facebook] logged in")
+
+            # 2. Open composer
             opened = False
-            for selector in create_selectors:
+            for sel in _COMPOSER_SELECTORS:
                 try:
-                    if selector.startswith("//"):
-                        btn = WebDriverWait(self.driver, 8).until(
-                            EC.element_to_be_clickable((By.XPATH, selector))
-                        )
+                    if sel.startswith("//"):
+                        page.click(sel, timeout=8000)
                     else:
-                        btn = WebDriverWait(self.driver, 8).until(
-                            EC.element_to_be_clickable((By.CSS_SELECTOR, selector))
-                        )
-                    btn.click()
+                        page.click(sel, timeout=8000)
                     opened = True
-                    time.sleep(3)
                     break
                 except Exception:
                     continue
             if not opened:
-                # Composer may already be open on the page itself.
-                print("  [!] Could not find create-post area (continuing anyway)")
-        except Exception as e:
-            print(f"  [!] Composer error: {e}")
+                print("  [!] could not open composer")
+                return False
+            time.sleep(4)
 
-        # Attach the video file — the composer's own hidden input, never the
-        # page-level fallback input (typing into the wrong input posts nothing).
-        try:
-            file_input = WebDriverWait(self.driver, 15).until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR,
-                     'div[role="dialog"] input[type="file"], '
-                     'input[type="file"][accept*="video"], '
-                     'input[type="file"]')
-                )
-            )
-            file_input.send_keys(os.path.abspath(video_path))
-            print("  [Facebook] Video file attached, waiting for preview...")
-        except Exception as e:
-            print(f"  [!] Could not find file input: {e}")
-            return False
-
-        # Wait for the video preview to appear — FB shows the thumbnail/video
-        # element only after the upload starts. Posting before this point
-        # publishes a post with no video at all.
-        preview_seen = False
-        preview_deadline = time.time() + 60
-        while time.time() < preview_deadline:
+            # 3. Attach video. Facebook keeps a hidden global file input plus a
+            # dialog-scoped one; wait_for_selector (visible) can stall on the
+            # hidden common input, so wait for "attached" and prefer the input
+            # inside the composer dialog (fall back to the last input found).
             try:
-                if self.driver.find_elements(
-                    By.CSS_SELECTOR,
-                    'div[role="dialog"] video, '
-                    'div[role="dialog"] img[src*="video"], '
-                    'div[aria-label*="video"][role="img"], '
-                    'div[aria-label*="فيديو"][role="img"]',
-                ):
-                    preview_seen = True
-                    break
-            except Exception:
-                pass
-            time.sleep(3)
-        if not preview_seen:
-            print("  [!] No video preview appeared — aborting to avoid an empty post")
-            return False
-        print("  [Facebook] Video preview confirmed")
+                dialog_input = page.locator('div[role="dialog"] input[type="file"]')
+                fi = None
+                try:
+                    dialog_input.first.wait_for(state="attached", timeout=8000)
+                    fi = dialog_input.first
+                except Exception:
+                    page.wait_for_selector(
+                        'input[type="file"]', state="attached", timeout=15000
+                    )
+                    fi = page.locator('input[type="file"]').last
+                fi.set_input_files(video_path)
+            except Exception as e:
+                print(f"  [!] could not attach video: {e}")
+                return False
+            print("  [facebook] video attached, waiting for preview...")
 
-        # Wait for the upload/processing state to clear — the composer shows a
-        # progress bar / "Processing..." until the video is ready.
-        ready_deadline = time.time() + 120
-        while time.time() < ready_deadline:
-            try:
-                busy = self.driver.find_elements(
-                    By.CSS_SELECTOR,
-                    'div[role="dialog"] [aria-label*="Processing"], '
-                    'div[role="dialog"] [aria-label*="معالجة"], '
-                    'div[role="dialog"] [role="progressbar"]',
-                )
-                if not busy:
-                    break
-            except Exception:
-                break
-            time.sleep(3)
-
-        # Enter caption — the video composer's own textbox (Arabic UI labels
-        # included). Scoped to the dialog so we never type into the page's
-        # background "What's on your mind" box.
-        try:
-            caption_selectors = [
-                'div[role="dialog"] div[role="textbox"][aria-label*="this video"]',
-                'div[role="dialog"] div[role="textbox"][aria-label*="هذا الفيديو"]',
-                'div[role="dialog"] div[role="textbox"][aria-label*="الفيديو"]',
-                'div[role="dialog"] div[role="textbox"][aria-label*="Say something"]',
-                'div[role="dialog"] div[role="textbox"][aria-label*="اكتب"]',
-                'div[role="dialog"] div[role="textbox"]',
-                'div[role="dialog"] div[contenteditable="true"]',
-                'div[role="textbox"][aria-label*="this video"]',
-                'div[role="textbox"][aria-label*="هذا الفيديو"]',
-                'div[role="textbox"][aria-label*="الفيديو"]',
-                'div[role="textbox"][aria-label*="Say something"]',
-                'div[role="textbox"][aria-label*="اكتب"]',
-                'div[role="textbox"]',
-                'div[contenteditable="true"]',
-                'textarea',
-            ]
-            typed = False
-            deadline = time.time() + 90  # poll until the composer settles
+            # 4. Wait for preview (video element / upload finishing)
+            preview_seen = False
+            deadline = time.time() + 120
             while time.time() < deadline:
-                for selector in caption_selectors:
+                try:
+                    if page.query_selector(
+                        'div[role="dialog"] video, '
+                        'div[role="dialog"] img[src*="video"]'
+                    ):
+                        preview_seen = True
+                        break
+                except Exception:
+                    pass
+                time.sleep(3)
+            if not preview_seen:
+                print("  [!] no video preview appeared — aborting")
+                return False
+            print("  [facebook] video preview confirmed")
+
+            # 5. Caption via Playwright (contenteditable-safe). The caption box
+            # can be covered by the video-processing overlay for a while —
+            # scroll it in, force-click if intercepted, and fall back to
+            # select-all + keyboard typing for FB's lexical editor.
+            typed = False
+            last_cap_err = ""
+            deadline = time.time() + 180
+            while time.time() < deadline:
+                for sel in _CAPTION_SELECTORS:
                     try:
-                        field = WebDriverWait(self.driver, 5).until(
-                            EC.visibility_of_element_located((By.CSS_SELECTOR, selector))
-                        )
-                        # Click via JS to bypass any processing overlay, then type.
-                        self.driver.execute_script("arguments[0].click();", field)
+                        field = page.wait_for_selector(sel, timeout=5000)
+                        try:
+                            field.scroll_into_view_if_needed(timeout=3000)
+                        except Exception:
+                            pass
+                        try:
+                            field.click(timeout=3000)
+                        except Exception:
+                            field.click(force=True, timeout=3000)
                         time.sleep(1)
-                        field.send_keys(Keys.CONTROL + "a")
-                        field.send_keys(Keys.DELETE)
-                        time.sleep(0.5)
-                        field.send_keys(caption[:63000])
-                        time.sleep(1)
-                        # Verify the text actually landed in this box.
-                        text = (field.get_attribute("textContent") or "").strip()
-                        if text:
-                            typed = True
-                            break
+                        try:
+                            field.fill(caption)
+                        except Exception as e:
+                            last_cap_err = str(e)[:160]
+                            page.keyboard.press("Control+A")
+                            page.keyboard.type(caption, delay=2)
+                        typed = True
+                        break
                     except Exception:
                         continue
                 if typed:
                     break
                 time.sleep(3)
             if not typed:
-                print("  [!] Could not set caption")
+                print(f"  [!] could not set caption ({last_cap_err or 'no field'})")
                 return False
+            print("  [facebook] caption set")
             time.sleep(2)
-        except Exception as e:
-            print(f"  [!] Caption error: {e}")
-            return False
 
-        # Dry-run mode: everything up to Post is verified (login, composer,
-        # video attach, caption) — the post is never published.
-        if dry_run:
-            print("  [Facebook] DRY RUN — composer ready, video attached, caption "
-                  "set. Post NOT clicked (verification only).")
-            self.driver.save_screenshot("/tmp/fb_dryrun_ready.png")
-            return True
+            if dry_run:
+                page.screenshot(path="/tmp/fb_browseruse_ready.png")
+                print("  [facebook] DRY RUN — composer ready, video attached, "
+                      "caption set. Post NOT clicked (verification only).")
+                return True
 
-        # Click Post — FB disables the button while the video is processing,
-        # so poll until it becomes clickable (up to ~2.5 min). Only a Post
-        # button inside the composer dialog is valid.
-        try:
-            post_selectors = [
-                'div[role="dialog"] div[aria-label="Post"]',
-                'div[role="dialog"] div[aria-label="نشر"]',
-                'div[role="dialog"] button:has(span:text("Post"))',
-                '//div[@role="dialog"]//div[@aria-label="Post"]',
-                '//div[@role="dialog"]//div[@aria-label="نشر"]',
-                'div[aria-label="Post"]',
-                '//div[@aria-label="Post"]',
-            ]
-            clicked = False
-            deadline = time.time() + 150
+            # 6. Click Post. Diagnostic: the button enables ~15s after attach
+            # and normal click() times out on an invisible overlay — force-click
+            # works, BUT if the video is still processing FB silently ignores
+            # it and the composer stays open. So after each force-click, verify
+            # the composer actually closed (Post button gone); if not, retry.
+            closed = False
+            saw_button = False
+            attempts = 0
+            deadline = time.time() + 300
             while time.time() < deadline:
-                for selector in post_selectors:
+                btn = None
+                for sel in _POST_SELECTORS:
                     try:
-                        if selector.startswith("//"):
-                            btn = WebDriverWait(self.driver, 5).until(
-                                EC.presence_of_element_located((By.XPATH, selector))
-                            )
-                        else:
-                            btn = WebDriverWait(self.driver, 5).until(
-                                EC.presence_of_element_located((By.CSS_SELECTOR, selector))
-                            )
-                        if btn.get_attribute("aria-disabled") == "true" or not btn.is_enabled():
-                            continue
-                        self.driver.execute_script("arguments[0].click();", btn)
-                        clicked = True
-                        break
+                        b = page.wait_for_selector(sel, timeout=6000)
+                        if b:
+                            btn = b
+                            break
                     except Exception:
                         continue
-                if clicked:
-                    break
+                if btn is not None:
+                    saw_button = True
+                    clickable = False
+                    try:
+                        clickable = btn.is_enabled()
+                    except Exception:
+                        pass
+                    if clickable or attempts >= 3:
+                        try:
+                            btn.click(force=True, timeout=8000)
+                            attempts += 1
+                            # Give FB a beat to accept + start closing
+                            time.sleep(6)
+                            if not page.query_selector(
+                                'div[role="dialog"] div[aria-label="Post"], '
+                                'div[role="dialog"] div[aria-label="نشر"]'
+                            ):
+                                closed = True
+                                break
+                            print(f"  [facebook] Post click #{attempts} ignored "
+                                  "(video still processing?) — retrying")
+                        except Exception as e:
+                            print(f"  [facebook] Post force-click failed: {str(e)[:160]}")
                 time.sleep(3)
-            if not clicked:
-                print("  [!] Could not click Post button")
+            if not saw_button:
+                print("  [!] Post button never appeared in the dialog")
+            elif not closed:
+                print("  [!] Post button clicks never closed the composer")
+            if not closed:
                 return False
-            time.sleep(8)
-        except Exception as e:
-            print(f"  [!] Post error: {e}")
-            return False
+            print("  [facebook] Post clicked, composer closed — confirming...")
 
-        return True
+            # 7. Confirm: wait for the success toast / profile post signal.
+            ok = False
+            deadline = time.time() + 60
+            while time.time() < deadline:
+                try:
+                    if page.query_selector(
+                        'div[aria-label*="تم نشر"], div[aria-label*="post is live"], '
+                        'div[role="status"]:has-text("Post"), '
+                        'div[role="alert"]:has-text("تم نشر")'
+                    ):
+                        ok = True
+                        break
+                except Exception:
+                    pass
+                time.sleep(3)
+            print("  [facebook] composer closed"
+                  + (" + success toast" if ok else " (toast not seen)"))
+            return True  # composer closed => post submitted
+        except Exception as e:
+            print(f"  [✗] facebook playwright error: {e}")
+            return False
+        finally:
+            if pw:
+                try:
+                    pw.stop()
+                except Exception:
+                    pass
+            browser_host.stop(proc)
+
+    # ------------------------------------------------------------------ #
+    # browser-use vision fallback                                        #
+    # ------------------------------------------------------------------ #
+    def _publish_vision(
+        self,
+        video_path: str,
+        caption: str,
+        page_url: str,
+        dry_run: bool = False,
+    ) -> bool:
+        from vision_agent import vision_agent_run
+
+        task = _build_fb_task(video_path, caption, dry_run=dry_run, page_url=page_url)
+        result = vision_agent_run(
+            task,
+            platform=self.PLATFORM_NAME,
+            max_steps=60,
+            headless=self.headless,
+            allowed_domains=["*.facebook.com", "facebook.com"],
+            timeout_sec=1500,
+            available_file_paths=[os.path.abspath(video_path)],
+        ) or ""
+        detail = result[-400:] if result else "no agent output"
+        print(f"  [facebook vision] {detail[:250]}")
+
+        if dry_run:
+            ok = "FB_DRY_RUN_READY" in result and "FB_LOGIN_FAILED" not in result
+        else:
+            ok = (
+                "FB_POSTED_OK" in result
+                and "FB_POST_FAILED" not in result
+                and "FB_LOGIN_FAILED" not in result
+            )
+        print(f"  [{'✓' if ok else '✗'}] facebook vision "
+              f"{'ready (dry run)' if dry_run else 'posted successfully' if ok else 'failed'}")
+        return ok
+
+    def publish(
+        self,
+        video_path: str,
+        caption: str = "",
+        page_url: str = "",
+        dry_run: bool = False,
+    ) -> bool:
+        """Create a video post on Facebook. dry_run verifies without posting."""
+        if not os.path.exists(video_path):
+            print(f"  [!] Video not found: {video_path}")
+            return False
+        target = page_url or self.page_url
+        if self._publish_playwright(video_path, caption, target, dry_run=dry_run):
+            return True
+        print("  [!] playwright path failed — trying browser-use vision fallback")
+        return self._publish_vision(video_path, caption, target, dry_run=dry_run)

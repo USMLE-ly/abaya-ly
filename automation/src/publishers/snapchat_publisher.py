@@ -5,7 +5,6 @@ Falls back to the manual caption file when the browser session can't upload
 """
 
 import os
-import time
 
 from uploaders.snapchat_uploader import SnapchatUploader
 from .base_publisher import BasePublisher
@@ -36,7 +35,7 @@ class SnapchatPublisher(BasePublisher):
     def run(self, video_path: str, caption: str) -> bool:
         print(f"  [{self.PLATFORM_NAME}] Starting publish...")
         try:
-            from cookie_manager import has_valid_cookies, load_cookies
+            from cookie_manager import has_valid_cookies
 
             if not has_valid_cookies(self.PLATFORM_NAME):
                 print(f"  [{self.PLATFORM_NAME}] No cookies — manual fallback")
@@ -44,27 +43,13 @@ class SnapchatPublisher(BasePublisher):
                 return False
 
             uploader = SnapchatUploader(headless=self.headless)
-            uploader.driver = uploader._create_driver()
-            try:
-                if not uploader._load_cookies():
-                    print(f"  [{self.PLATFORM_NAME}] Cookies unusable — manual fallback")
-                    self._write_manual_caption(caption)
-                    return False
-                uploader.driver.refresh()
-                time.sleep(2)
-                success = uploader.publish(video_path, caption)
-                if success:
-                    print(f"  [✓] {self.PLATFORM_NAME} posted successfully")
-                else:
-                    print(f"  [✗] {self.PLATFORM_NAME} post failed — manual fallback")
-                    self._write_manual_caption(caption)
-                return success
-            finally:
-                if uploader.driver:
-                    try:
-                        uploader.driver.quit()
-                    except Exception:
-                        pass
+            success = uploader.publish(video_path, caption)
+            if success:
+                print(f"  [✓] {self.PLATFORM_NAME} posted successfully")
+            else:
+                print(f"  [✗] {self.PLATFORM_NAME} post failed — manual fallback")
+                self._write_manual_caption(caption)
+            return success
         except Exception as e:
             print(f"  [✗] {self.PLATFORM_NAME} error: {e}")
             self._write_manual_caption(caption)

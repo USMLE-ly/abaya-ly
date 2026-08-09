@@ -1,11 +1,15 @@
+"""Base class for platform publishers — Playwright over the anti-detect Chromium host.
+
+Selenium/Firefox replacement: the browser is the anti-detect chromium from
+browser_host (modern UA, `navigator.webdriver` masked, session cookies
+restored, CPU-only SwiftShader rendering), attached over CDP. Platform
+subclasses implement `publish()`; `run()` handles the full lifecycle.
+"""
+
 import os
 import sys
 import time
 from abc import ABC, abstractmethod
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.firefox.service import Service
-from webdriver_manager.firefox import GeckoDriverManager
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT_DIR)
@@ -20,86 +24,72 @@ class BasePublisher(ABC):
 
     def __init__(self, headless: bool = True):
         self.headless = headless
-        self.driver = None
+        self.driver = None       # Playwright Page attached over CDP
+        self._pw = None          # sync_playwright instance (keeps the loop alive)
+        self._host_proc = None   # browser_host subprocess
+        self._host_port = None   # CDP port
 
-    def _create_driver(self) -> webdriver.Firefox:
-        """Create a Firefox WebDriver instance."""
-        # Container fix: Firefox content processes segfault (marionette decode
-        # error) when the content sandbox is enabled in restricted containers.
-        os.environ.setdefault("MOZ_DISABLE_CONTENT_SANDBOX", "1")
-        os.environ.setdefault("MOZ_HEADLESS", "1")
-        options = Options()
-        firefox_bin = os.environ.get("FIREFOX_BIN") or "/opt/firefox-arm64/firefox"
-        if os.path.exists(firefox_bin):
-            options.binary_location = firefox_bin
-        if self.headless:
-            options.add_argument("--headless")
-        options.add_argument("--width=1920")
-        options.add_argument("--height=1080")
-        # Avoid IPv6 timeouts against flaky CDN edges (some Akamai ranges for
-        # TikTok only answer IPv4 reliably from this datacenter).
-        options.set_preference("network.dns.disableIPv6", True)
+    def _create_driver(self) -> "object | None":
+        """Launch the anti-detect chromium host and attach a Page over CDP."""
+        import browser_host
+        from playwright.sync_api import sync_playwright
 
-        service = Service(GeckoDriverManager().install())
-        driver = webdriver.Firefox(service=service, options=options)
-        driver.implicitly_wait(10)
-        return driver
-
-    def _normalize_cookie(self, raw: dict) -> dict | None:
-        """Map common export formats (Cookie-Editor/EditThisCookie) to Selenium's add_cookie."""
-        name = raw.get("name")
-        value = raw.get("value")
-        if not name or value is None:
+        launched = browser_host.launch_and_wait(
+            self.PLATFORM_NAME, keepalive_sec=60 * 30
+        )
+        if not launched:
+            print("  [!] Could not launch anti-detect browser host")
             return None
-        cookie = {"name": name, "value": value, "path": raw.get("path", "/")}
-        if raw.get("domain"):
-            cookie["domain"] = raw["domain"]
-        if raw.get("secure"):
-            cookie["secure"] = True
-        expiry = raw.get("expirationDate") or raw.get("expiry")
-        if expiry:
-            cookie["expiry"] = int(expiry)
-        return cookie
+        proc, port = launched
+        pw = sync_playwright().start()
+        browser = pw.chromium.connect_over_cdp(f"http://127.0.0.1:{port}")
+        page = browser.contexts[0].pages[0]
+        page.set_default_timeout(90000)
+        self._pw = pw
+        self._host_proc = proc
+        self._host_port = port
+        self.driver = page
+        return page
 
     def _load_cookies(self) -> bool:
-        """Load cookies for this platform. Returns True if cookies loaded.
-
-        Selenium requires the browser to already be on the cookie's domain before
-        add_cookie() succeeds, so we park on the platform host first.
-        """
+        """Cookies are restored by browser_host at launch; just verify them."""
         cookies = load_cookies(self.PLATFORM_NAME)
         if not cookies:
             print(f"  [!] No cookies found for {self.PLATFORM_NAME}")
             return False
-
         self._safe_get(self.HOME_URL)
-        time.sleep(2)
-
-        for raw in cookies:
-            cookie = self._normalize_cookie(raw)
-            if not cookie:
-                continue
-            try:
-                self.driver.add_cookie(cookie)
-            except Exception:
-                continue
         return True
 
     def _safe_get(self, url: str, retries: int = 4, pause: float = 6.0) -> None:
         """Navigate with retries — CDN edges (esp. TikTok/Akamai) intermittently
         drop the first connection from datacenter IPs; a retry usually lands."""
-        from selenium.common.exceptions import WebDriverException, TimeoutException
         last = None
         for attempt in range(1, retries + 1):
             try:
-                self.driver.set_page_load_timeout(60)
-                self.driver.get(url)
+                self.driver.goto(url, wait_until="domcontentloaded", timeout=60000)
                 return
-            except (WebDriverException, TimeoutException) as e:
+            except Exception as e:
                 last = e
                 print(f"  [!] Navigation retry {attempt}/{retries} ({url}): {e}")
                 time.sleep(pause)
         raise last
+
+    def _quit(self) -> None:
+        """Tear down the Playwright session and the browser host subprocess."""
+        if self._pw:
+            try:
+                self._pw.stop()
+            except Exception:
+                pass
+            self._pw = None
+        if self._host_proc is not None:
+            import browser_host
+            try:
+                browser_host.stop(self._host_proc)
+            except Exception:
+                pass
+            self._host_proc = None
+        self.driver = None
 
     @abstractmethod
     def publish(self, video_path: str, caption: str) -> bool:
@@ -114,7 +104,9 @@ class BasePublisher(ABC):
         """
         print(f"  [{self.PLATFORM_NAME}] Starting publish...")
         try:
-            self.driver = self._create_driver()
+            if not self._create_driver():
+                print(f"  [{self.PLATFORM_NAME}] Could not launch browser")
+                return False
 
             if not self._load_cookies():
                 print(f"  [{self.PLATFORM_NAME}] Skipping — no valid cookies")
@@ -136,8 +128,4 @@ class BasePublisher(ABC):
             print(f"  [✗] {self.PLATFORM_NAME} error: {e}")
             return False
         finally:
-            if self.driver:
-                try:
-                    self.driver.quit()
-                except Exception:
-                    pass
+            self._quit()
