@@ -5,8 +5,8 @@ const rl = createRateLimiter();
 const DEFAULT_SETTINGS = {
   storeName: "نادين",
   storeEmail: "nadine.luxor@gmail.com",
-  storePhone: "+218944003708",
-  whatsapp: "+218944003708",
+  storePhone: "+218920060299",
+  whatsapp: "+218920060299",
   address: "بنغازي، ليبيا",
   shippingInfo: "توصيل إلى جميع المدن الليبية خلال 3-7 أيام عمل",
   socialInstagram: "nadine.ly",
