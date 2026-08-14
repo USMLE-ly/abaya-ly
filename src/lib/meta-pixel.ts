@@ -5,7 +5,7 @@
 // can never throw into React render or break checkout.
 // ─────────────────────────────────────────────────────────────
 
-export const PIXEL_ID = "760469593227327";
+export const PIXEL_ID = "1742209750300193";
 export const PIXEL_CURRENCY = "LYD";
 
 type Fbq = (...args: unknown[]) => void;
