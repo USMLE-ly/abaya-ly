@@ -1,6 +1,6 @@
 import { MessageCircle } from "lucide-react";
 
-const PHONE = "+218944003708"; // ← ضعي رقم الواتساب هنا
+const PHONE = "+218920060299"; // ← ضعي رقم الواتساب هنا
 const MESSAGE = "مرحباً! أود الاستفسار عن فستان من متجر نادين ♡";
 
 export function WhatsAppButton() {
