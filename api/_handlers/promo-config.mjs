@@ -7,7 +7,7 @@
 //   active     true  → promotion is live
 //              false → promotion fully disabled (hidden everywhere)
 //   code       the coupon code customers redeem (case-insensitive)
-//   type/value "percent" + 10 → 10% off
+//   type/value "percent" + 25 → 25% off
 //   label      short Arabic label shown in the promo UI
 //   expiresAt  fixed ISO end date-time. The countdown runs ONCE,
 //              reaches zero, and stays expired until you edit this.
@@ -19,9 +19,9 @@ export const PROMO = {
   active: true,
   code: "NADINE10",
   type: "percent",
-  value: 10,
-  label: "خصم 10% على طلبكِ — كود NADINE10",
-  expiresAt: "2026-08-05T21:10:00.000Z",
+  value: 25,
+  label: "خصم 25% على طلبكِ — كود NADINE10",
+  expiresAt: "2026-08-15T15:08:30.000Z",
 };
 
 /** Derived, time-aware status used by the API + coupon validation. */
