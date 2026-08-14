@@ -173,7 +173,7 @@ export function OrderDetails({
       </div>
       <div className="flex flex-wrap justify-center gap-3">
         <a
-          href={`https://wa.me/218944003708?text=${encodeURIComponent(
+          href={`https://wa.me/218920060299?text=${encodeURIComponent(
             `السلام عليكم، أريد الاستفسار عن طلبي رقم ${orderId}`
           )}`}
           target="_blank"
