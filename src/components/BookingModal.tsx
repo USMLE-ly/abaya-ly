@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { X, Loader2, ChevronDown } from "lucide-react";
 import { products } from "@/data/products";
 import { trackBeginCheckout, trackPurchase } from "@/lib/analytics";
+import { toInternationalPhone } from "@/lib/meta-pixel";
 import type { CertificateData } from "@/components/certificate/OrderCertificate";
 import { OrderSuccessCard } from "@/components/ui/order-success-card";
 import { OrderDetails } from "@/components/ui/order-details";
@@ -257,6 +258,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
           finalTotal,
           purchased.map((it) => ({ id: it.id, name: it.name, price: it.price })),
           purchased.map((it) => it.quantity),
+          { ph: toInternationalPhone(phone) },
         );
       } catch {
         /* tracking must never affect a confirmed order */

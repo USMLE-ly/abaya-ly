@@ -4,7 +4,7 @@
 // Data appears in the admin dashboard (التحليلات → نشاط المتجر).
 // ─────────────────────────────────────────────────────────────
 
-import { pixelTrack, pixelTrackOnce } from "@/lib/meta-pixel";
+import { pixelTrack, pixelTrackOnce, type MetaUserData } from "@/lib/meta-pixel";
 
 const FLUSH_INTERVAL = 15_000;
 const FLUSH_BATCH = 25;
@@ -147,12 +147,12 @@ export const trackBeginCheckout = (value: number, items: TrackableProduct[], qua
   pixelTrack("InitiateCheckout", { ...toPixelItems(items, quantities), value });
 };
 
-export const trackPurchase = (transactionId: string, value: number, items: TrackableProduct[], quantities: number[] = []) => {
+export const trackPurchase = (transactionId: string, value: number, items: TrackableProduct[], quantities: number[] = [], userData?: MetaUserData) => {
   track("purchase", { transaction_id: transactionId, value, items: items.map((i) => toItem(i)) });
   pixelTrackOnce(transactionId || "no-id", "Purchase", {
     ...toPixelItems(items, quantities),
     value,
-  });
+  }, userData);
 };
 
 export const trackCta = (label: string, location: string) =>
@@ -162,14 +162,14 @@ export const trackCoupon = (code: string, status: "applied" | "rejected") =>
   track(status === "applied" ? "coupon_applied" : "coupon_rejected", { coupon: code });
 
 /** Newsletter, contact form and any other lead capture. */
-export const trackLead = (source: string) => {
+export const trackLead = (source: string, userData?: MetaUserData) => {
   track("lead", { source });
-  pixelTrack("Lead", { content_name: source, value: 0 });
+  pixelTrack("Lead", { content_name: source, value: 0 }, userData);
 };
 
-export const trackNewsletter = (source: string) => {
+export const trackNewsletter = (source: string, userData?: MetaUserData) => {
   track("newsletter_signup", { source });
-  pixelTrack("Lead", { content_name: "Newsletter Signup", value: 0 });
+  pixelTrack("Lead", { content_name: "Newsletter Signup", value: 0 }, userData);
 };
 
 export const trackSearch = (query: string, resultCount = 0) => {

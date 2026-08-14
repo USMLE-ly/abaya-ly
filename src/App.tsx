@@ -26,6 +26,7 @@ const TermsOfService = lazy(() => import("@/pages/TermsOfService"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const DesignSystem = lazy(() => import("@/pages/DesignSystem"));
 const Wishlist = lazy(() => import("@/pages/Wishlist").then(m => ({ default: m.Wishlist })));
+const MetaDebug = lazy(() => import("@/pages/MetaDebug").then(m => ({ default: m.MetaDebug })));
 
 const AdminLogin = lazy(() => import("@/admin/pages/Login"));
 const AdminLayout = lazy(() => import("@/admin/layout/AdminLayout").then(m => ({ default: m.AdminLayout })));
@@ -94,6 +95,7 @@ export default function App() {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/design-system" element={<DesignSystem />} />
             <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/meta-debug" element={<MetaDebug />} />
 
             {/* /admin aliases redirect to the real dashboard path */}
             <Route path="/admin" element={<AdminAliasRedirect />} />

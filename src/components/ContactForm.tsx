@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Send, CheckCircle, Loader2 } from "lucide-react";
 import { Button, Input, Textarea } from "@/components/velar";
 import { trackLead } from "@/lib/analytics";
+import { toInternationalPhone } from "@/lib/meta-pixel";
 
 export function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -35,7 +36,7 @@ export function ContactForm() {
         setError(body.error || "حدث خطأ، يرجى المحاولة لاحقاً");
         return;
       }
-      trackLead("Contact Form");
+      trackLead("Contact Form", { ph: toInternationalPhone(phoneDigits), fn: String(data.get("name") || "").trim() });
       form.reset();
       setSubmitted(true);
     } catch {

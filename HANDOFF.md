@@ -334,6 +334,9 @@ Scripts used for one-off pushes (Instagram-focused) also live in `automation/`.
 - `VITE_ADMIN_PATH` — admin path segment (`dashboard-nadine-admin`)
 - `ADMIN_PASSWORD` — server-side admin password checked by `isAdmin`
 - `MIMO_API_KEY` — MiMo 2.5 key (automation; env override)
+- `META_PIXEL_ID` — comma-separated Meta pixel IDs for CAPI (e.g. `760469593227327,1742209750300193`)
+- `META_CAPI_ACCESS_TOKEN` — Meta Conversions API token (manage_pixel / ads_management)
+- `VITE_META_DEBUG=1` — build flag that enables Meta event console logging by default
 - `GITHUB_TOKEN` is embedded in the git remote URL (do not echo)
 
 ---
@@ -370,3 +373,55 @@ Scripts used for one-off pushes (Instagram-focused) also live in `automation/`.
 3. Show the user a t=1s preview frame of the overlay and get approval before any live post.
 4. Then continue from section 7 follow-ups (TikTok views, FB uploader, Snapchat OTP)
    as the user directs.
+
+---
+
+## 10. Meta Pixel reliability — CAPI, catalog feed & QA (added 2026-08-14)
+
+### Client pixel → Conversions API (server-side) with dedup
+- `src/lib/meta-pixel.ts` now fires every standard event to **all pixels** and
+  mirrors the same event to **`POST /api/meta/capi`** with the **same `event_id`**
+  (`eventID` param on the browser side), so Meta deduplicates browser + server hits.
+- Handler: `api/_handlers/meta-capi.mjs` (dispatched from `api/[...route].mjs`).
+  - Whitelists standard events, hashes `user_data` (ph/em/fn/ln) with SHA-256
+    server-side, adds `client_ip_address` + `client_user_agent` automatically.
+  - **Dedup:** every `event_id` is stored for 48h (Edge Config/Upstash); repeats
+    are answered `{ deduplicated: true }` without re-sending to Meta.
+  - `GET /api/meta/capi` returns config status for the QA page.
+- Purchase (`BookingModal`) sends `ph`; Contact form sends `ph` + `fn` for Lead
+  matching. `trackPurchase` / `trackLead` / `trackNewsletter` accept `userData`.
+- **Required Vercel env vars:** `META_PIXEL_ID`, `META_CAPI_ACCESS_TOKEN`.
+  Token must have `manage_pixel`/`ads_management` on the pixel(s). Until set, the
+  handler answers `{ skipped: true }` and logs a warning — the site keeps working.
+
+### Meta product catalog feed (dynamic product ads)
+- Generator: `automation/generate-feed.mjs` → `public/products-feed.xml`
+  (runs in `prebuild` after `generate-sitemap.mjs`).
+- Feed URL: **`https://nadine.luxor.ly/products-feed.xml`** — add this in
+  Business Manager → Catalog → Data sources → Meta Pixel/URL (or manual upload).
+- `<g:id>` values equal storefront product IDs, so `ViewContent`/`Purchase`
+  `content_ids` match feed items automatically.
+- Meta requires `LYD` as the catalog currency; prices are `NNN.NN LYD`.
+
+### Debug mode + QA page
+- Enable logging: `?meta_debug=1` on any URL, `VITE_META_DEBUG=1` build flag, or
+  toggle from the QA page. Logs every event to console with its payload.
+- QA page: **`/meta-debug`** — live event list (pixel + CAPI), event IDs, JSON
+  payloads, copy-JSON button, CAPI config status, and a **“Fire test events”**
+  button (ViewContent + Lead + Purchase).
+- Every event is buffered in `window.__META_EVENTS__` (cap 200) and a
+  `meta-debug-event` window event fires on each record.
+- E2E coverage: `tests/meta-pixel.spec.ts` (runs in CI against the preview build).
+
+### How to verify (Meta Events Manager)
+1. Events Manager → your pixel → **Test Events** → open
+   `https://nadine.luxor.ly/?meta_debug=1` and confirm PageView/ViewContent appear
+   for **both** pixels.
+2. Live test purchase: use the QA page’s “Fire test events” (or place a real
+   order). The `Purchase` event should appear once in Events Manager — the same
+   `event_id` dedupes the pixel + CAPI copy.
+3. In Events Manager → “Server events”, confirm CAPI shows `events_received: 1`
+   per sent event (no duplicates).
+4. Catalog: Business Manager → Catalog → Items → “Add items via URL” →
+   `https://nadine.luxor.ly/products-feed.xml`, then check items load and map to
+   product IDs.

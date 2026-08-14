@@ -9,10 +9,11 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "validate": "npx tsx automation/validate-products.ts || echo '⚠ Validation warnings found (non-blocking)'",
-    "prebuild": "npx tsx automation/export-products.ts && node automation/generate-sitemap.mjs && node automation/optimize-images.mjs && npx tsx automation/validate-products.ts",
+    "validate": "npx tsx automation/validate-products.ts || echo '\u26a0 Validation warnings found (non-blocking)'",
+    "prebuild": "npx tsx automation/export-products.ts && node automation/generate-sitemap.mjs && node automation/generate-feed.mjs && node automation/optimize-images.mjs && npx tsx automation/validate-products.ts",
     "test": "playwright test",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "feed": "node automation/generate-feed.mjs"
   },
   "dependencies": {
     "@playwright/test": "^1.62.0",

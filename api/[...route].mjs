@@ -20,6 +20,7 @@ import adminNotes from "./_handlers/admin-notes.mjs";
 import adminProducts from "./_handlers/admin-products.mjs";
 import adminSettings from "./_handlers/admin-settings.mjs";
 import adminStock from "./_handlers/admin-stock.mjs";
+import metaCapi from "./_handlers/meta-capi.mjs";
 
 const ADMIN_404_HTML = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -65,6 +66,7 @@ export default async function handler(req, res) {
       case "track-order": return await trackOrder(req, res);
       case "reviews": return await reviews(req, res);
       case "update-status": return await updateStatus(req, res);
+      case "meta-capi": return await metaCapi(req, res);
       case "admin":
         switch (parts[2]) {
           case "analytics": return await adminAnalytics(req, res);
