@@ -48,8 +48,8 @@ interface StoreSettings {
 const DEFAULTS: StoreSettings = {
   storeName: "نادين",
   storeEmail: "nadine.luxor@gmail.com",
-  storePhone: "+218944003708",
-  whatsapp: "+218944003708",
+  storePhone: "+218920060299",
+  whatsapp: "+218920060299",
   address: "بنغازي، ليبيا",
   shippingInfo: "توصيل إلى جميع المدن الليبية خلال 3-7 أيام عمل",
   socialInstagram: "nadine.ly",
@@ -306,7 +306,7 @@ export default function Settings() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {input("البريد الإلكتروني", "storeEmail", <Mail size={14} />, { type: "email", dir: "ltr" })}
               {input("رقم الهاتف", "storePhone", <Phone size={14} />, { dir: "ltr" })}
-              {input("رقم واتساب", "whatsapp", <MessageCircle size={14} />, { dir: "ltr", placeholder: "+218944003708" })}
+              {input("رقم واتساب", "whatsapp", <MessageCircle size={14} />, { dir: "ltr", placeholder: "+218920060299" })}
               {input("العنوان", "address", <MapPin size={14} />)}
             </div>
           </ACard>
