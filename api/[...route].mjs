@@ -67,6 +67,9 @@ export default async function handler(req, res) {
       case "reviews": return await reviews(req, res);
       case "update-status": return await updateStatus(req, res);
       case "meta-capi": return await metaCapi(req, res);
+      case "meta":
+        if (parts[2] === "capi") return await metaCapi(req, res);
+        return res.status(404).json({ error: "Not found" });
       case "admin":
         switch (parts[2]) {
           case "analytics": return await adminAnalytics(req, res);
