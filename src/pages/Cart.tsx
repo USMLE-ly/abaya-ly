@@ -8,7 +8,7 @@ import { Button, Card } from "@/components/velar";
 import { products } from "@/data/products";
 import { usePageMeta } from "@/lib/usePageMeta";
 
-const WHATSAPP = "218944003708";
+const WHATSAPP = "218920060299";
 const shortName = (name: string) => name.split(" • ").slice(2).join(" • ") || name;
 
 interface CartItem { id: string; name: string; fabric: string; price: number; image: string; color: string; size: string; quantity: number; }
