@@ -683,7 +683,7 @@ export function BookingModal({ open, onClose, productCode, productName, colors, 
               onCertificate={certificate ? () => setCertOpen(true) : undefined}
               certificateAvailable={Boolean(certificate)}
               whatsappHref={orderId
-                ? `https://wa.me/218944003708?text=${encodeURIComponent(`السلام عليكم، أريد الاستفسار عن طلبي رقم ${orderId}`)}`
+                ? `https://wa.me/218920060299?text=${encodeURIComponent(`السلام عليكم، أريد الاستفسار عن طلبي رقم ${orderId}`)}`
                 : undefined}
               cutouts
               className="w-full max-w-md mx-auto"
