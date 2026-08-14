@@ -3,7 +3,7 @@ import { FeatureCard } from "@/components/ui/grid-feature-cards";
 import { motion } from "framer-motion";
 
 const features = [
-  { icon: Truck, title: "شحن مجاني", description: "لجميع مدن ليبيا — التوصيل خلال 3-5 أيام عمل", stat: "7" },
+  { icon: Truck, title: "شحن مجاني", description: "داخل بنغازي — التوصيل خلال 3-5 أيام عمل", stat: "7" },
   { icon: RotateCcw, title: "إرجاع سهل", description: "خلال 7 أيام من تاريخ الاستلام بدون أي تعقيد", stat: "7" },
   { icon: Shield, title: "ضمان الجودة", description: "أقمشة عالمية مضمونة من أفضل المصانع العالمية", stat: "100%" },
   { icon: Headphones, title: "دعم متواصل", description: "فريق خدمة العملاء متاح عبر الواتساب على مدار الساعة", stat: "24/7" },
