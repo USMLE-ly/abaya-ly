@@ -15,9 +15,13 @@ interface Props {
   maxDays?: number;
 }
 
-/** Shrine-style estimated shipping with dynamic delivery dates (Libya, 3–7 days). */
-export function ProductShippingEstimate({ minDays = 3, maxDays = 7 }: Props) {
+/**
+ * Estimated shipping with dynamic delivery dates:
+ * Benghazi = 1 business day, other cities = 3–5 business days.
+ */
+export function ProductShippingEstimate({ minDays = 3, maxDays = 5 }: Props) {
   const now = new Date();
+  const benghazi = new Date(now.getTime() + 1 * 864e5);
   const start = new Date(now.getTime() + minDays * 864e5);
   const end = new Date(now.getTime() + maxDays * 864e5);
 
@@ -29,7 +33,7 @@ export function ProductShippingEstimate({ minDays = 3, maxDays = 7 }: Props) {
       <div className="min-w-0">
         <p className="text-xs font-bold text-fg">التوصيل المتوقع</p>
         <p className="text-[11px] text-fg-secondary leading-relaxed">
-          اطلبي الآن ليصلكِ بين <span className="font-bold text-brand">{formatDate(start)}</span> و<span className="font-bold text-brand">{formatDate(end)}</span> — توصيل مجاني داخل بنغازي
+          داخل بنغازي يصلكِ في <span className="font-bold text-brand">{formatDate(benghazi)}</span> — باقي المدن بين <span className="font-bold text-brand">{formatDate(start)}</span> و<span className="font-bold text-brand">{formatDate(end)}</span> · توصيل مجاني داخل بنغازي
         </p>
       </div>
     </div>

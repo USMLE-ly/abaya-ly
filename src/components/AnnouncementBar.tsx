@@ -9,14 +9,19 @@ import {
   setAnnounceHeight,
   subscribeAnnounceState,
 } from "@/lib/announcement";
+import { usePromo } from "@/lib/promo";
 
-const messages = [
-  { icon: Truck, text: "توصيل مجاني داخل بنغازي · التوصيل خلال 3-5 أيام", to: "/shipping-policy" },
+const BASE_MESSAGES = [
+  { icon: Truck, text: "توصيل مجاني داخل بنغازي خلال يوم عمل واحد · باقي المدن 3-5 أيام", to: "/shipping-policy" },
   { icon: Banknote, text: "الدفع عند الاستلام · إرجاع سهل خلال 7 أيام", to: "/refund-policy" },
-  { icon: ShoppingBag, text: "خصم 10% على طلبكِ — كود NADINE10", to: "/collections" },
+  { icon: ShoppingBag, text: "خصم 25% على طلبكِ — كود NADINE10", to: "/collections" },
 ];
 
 export function AnnouncementBar() {
+  const { promo } = usePromo();
+  const messages = BASE_MESSAGES.map((m, i) =>
+    i === 2 && promo?.label ? { ...m, text: promo.label } : m
+  );
   const [announce, setAnnounce] = useState(getAnnounceState);
   const [index, setIndex] = useState(0);
   const [pending, setPending] = useState(0);

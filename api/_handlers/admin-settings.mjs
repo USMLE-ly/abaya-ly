@@ -8,7 +8,7 @@ const DEFAULT_SETTINGS = {
   storePhone: "+218920060299",
   whatsapp: "+218920060299",
   address: "بنغازي، ليبيا",
-  shippingInfo: "توصيل إلى جميع المدن الليبية خلال 3-7 أيام عمل",
+  shippingInfo: "توصيل إلى جميع المدن الليبية — مجاني داخل بنغازي خلال يوم عمل واحد، وباقي المدن 3-5 أيام عمل",
   socialInstagram: "nadine.ly",
   socialFacebook: "nadine.ly",
   currency: "د.ل",

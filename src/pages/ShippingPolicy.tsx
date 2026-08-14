@@ -12,7 +12,7 @@ const sections = [
   {
     icon: Clock,
     title: "مدة التوصيل",
-    content: "يتم توصيل الطلبات خلال ٣-٥ أيام عمل من تاريخ تأكيد الطلب. في المناطق النائية قد يستغرق التوصيل يوماً إضافياً.",
+    content: "داخل بنغازي يتم التوصيل خلال يوم عمل واحد، وللمدن الأخرى خلال ٣-٥ أيام عمل من تاريخ تأكيد الطلب. في المناطق النائية قد يستغرق التوصيل يوماً إضافياً.",
   },
   {
     icon: MapPin,
@@ -27,7 +27,7 @@ const sections = [
 ];
 
 export default function ShippingPolicy() {
-  usePageMeta("الشحن والتوصيل", "نوصل لجميع المدن الليبية برسوم حسب المدينة — الشحن مجاني داخل بنغازي خلال 3-5 أيام عمل.");
+  usePageMeta("الشحن والتوصيل", "نوصل لجميع المدن الليبية برسوم حسب المدينة — الشحن مجاني داخل بنغازي خلال يوم عمل واحد، وباقي المدن 3-5 أيام عمل.");
   return (
     <div className="min-h-screen pt-24 pb-16">
       <div className="max-w-[800px] mx-auto px-4 sm:px-6">
@@ -38,7 +38,7 @@ export default function ShippingPolicy() {
         </nav>
 
         <h1 className="font-display text-3xl md:text-4xl font-bold text-fg mb-4">سياسة الشحن <span className="text-accent-brand">والتوصيل</span></h1>
-        <p className="text-sm text-fg/50 mb-10 leading-relaxed">شحن مجاني داخل بنغازي خلال 3-5 أيام. باقي المدن برسوم واضحة تظهر قبل تأكيد الطلب.</p>
+        <p className="text-sm text-fg/50 mb-10 leading-relaxed">شحن مجاني داخل بنغازي خلال يوم عمل واحد. باقي المدن تُوصَّل خلال 3-5 أيام عمل برسوم واضحة تظهر قبل تأكيد الطلب.</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
           {sections.map((s, i) => (

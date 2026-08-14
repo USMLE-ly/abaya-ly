@@ -12,7 +12,7 @@ import { WishlistButton } from "@/components/WishlistButton";
 import { usePageMeta } from "@/lib/usePageMeta";
 
 export function Collections() {
-  usePageMeta("المجموعات", "فساتين سهرة وخطوبة ومناسبات بخامات عالمية — نوصل لجميع المدن الليبية برسوم، والشحن مجاني داخل بنغازي خلال 3-5 أيام، الدفع عند الاستلام.");
+  usePageMeta("المجموعات", "فساتين سهرة وخطوبة ومناسبات بخامات عالمية — نوصل لجميع المدن الليبية برسوم، والشحن مجاني داخل بنغازي خلال يوم عمل واحد، وباقي المدن 3-5 أيام، الدفع عند الاستلام.");
   return <PageTransition><CollectionsContent /></PageTransition>;
 }
 

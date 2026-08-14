@@ -32,7 +32,7 @@ import { openCartDrawer } from "@/components/CartDrawer";
 const SITE_URL = "https://nadine.luxor.ly";
 
 const trustItems = [
-  { icon: Truck, title: "شحن مجاني", description: "داخل بنغازي فقط — نوصل لجميع المدن برسوم", stat: "3-5" },
+  { icon: Truck, title: "شحن مجاني", description: "داخل بنغازي يوم عمل واحد — باقي المدن 3-5 أيام", stat: "1" },
   { icon: RotateCcw, title: "إرجاع خلال 7 أيام", description: "بحالتها الأصلية — أو نعيد لك المبلغ كامل", stat: "7" },
   { icon: Shield, title: "فحص يدوي", description: "كل قطعة تُمحص يدوياً قبل الشحن إليك", stat: "100%" },
   { icon: Headphones, title: "دعم واتساب", description: "نرشدك لمقاسك قبل الشحن — نرد خلال ساعات النهار", stat: "24/7" },
@@ -561,7 +561,7 @@ function ProductContent() {
               <p className="text-[10px] font-bold text-center" style={{ color: "#e63d6a" }}>الدفع عند الاستلام 💵</p>
             </div>
             <div className="flex items-center justify-center gap-1.5 mb-1">
-              <p className="text-[10px] font-medium text-fg-tertiary text-center">شحن مجاني داخل بنغازي فقط · نوصل لجميع المدن برسوم · إرجاع خلال 7 أيام</p>
+              <p className="text-[10px] font-medium text-fg-tertiary text-center">شحن مجاني داخل بنغازي (يوم عمل واحد) · باقي المدن 3-5 أيام · إرجاع خلال 7 أيام</p>
             </div>
           </div>
         </div>

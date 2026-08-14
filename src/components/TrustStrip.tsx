@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Truck, RotateCcw, Banknote, MessageCircle, ShieldCheck } from "lucide-react";
 
 const items = [
-  { icon: Truck, title: "توصيل مجاني", note: "داخل بنغازي · 3-5 أيام", to: "/shipping-policy" },
+  { icon: Truck, title: "توصيل مجاني", note: "داخل بنغازي · يوم عمل واحد", to: "/shipping-policy" },
   { icon: Banknote, title: "الدفع عند الاستلام", note: "لا تدفعين قبل أن تستلمي", to: "/faq" },
   { icon: RotateCcw, title: "إرجاع خلال 7 أيام", note: "بالحالة الأصلية، بدون تعقيد", to: "/refund-policy" },
   { icon: ShieldCheck, title: "أقمشة مضمونة", note: "فحص يدوي قبل الشحن", to: "/about" },

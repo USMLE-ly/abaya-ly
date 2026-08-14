@@ -51,7 +51,7 @@ function HomeFAQ() {
 }
 
 export function Home() {
-  usePageMeta("نادين | بيت الفساتين الفاخرة في ليبيا", "فساتين سهرة ومناسبات بخامات عالمية — نوصل لجميع المدن الليبية برسوم، والشحن مجاني داخل بنغازي، الدفع عند الاستلام، وإرجاع خلال 7 أيام.");
+  usePageMeta("نادين | بيت الفساتين الفاخرة في ليبيا", "فساتين سهرة ومناسبات بخامات عالمية — نوصل لجميع المدن الليبية برسوم، والشحن مجاني داخل بنغازي خلال يوم عمل واحد، وباقي المدن 3-5 أيام، الدفع عند الاستلام، وإرجاع خلال 7 أيام.");
   return <PageTransition><HomeContent /></PageTransition>;
 }
 
@@ -78,7 +78,7 @@ function HomeContent() {
             إطلالتكِ القادمة <span className="text-accent-brand">تبدأ من هنا</span>
           </h2>
           <p className="text-sm text-fg-tertiary max-w-lg mx-auto">
-            أحدث القطع — كل واحدة لِمَناسبتها. اطلبي اليوم، تصلك خلال 3-5 أيام.
+            أحدث القطع — كل واحدة لِمَناسبتها. اطلبي اليوم، داخل بنغازي يصلكِ خلال يوم عمل واحد، وباقي المدن خلال 3-5 أيام.
           </p>
         </div>
         <div className="flex items-center justify-center overflow-hidden max-w-full">

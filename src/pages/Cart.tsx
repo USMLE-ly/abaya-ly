@@ -187,7 +187,7 @@ function CartContent() {
                       )}
                       <div className="flex justify-between items-center">
                         <span className="text-fg-tertiary flex items-center gap-1"><Truck size={12} /> التوصيل</span>
-                        <span className="text-status-success font-medium">مجاني داخل بنغازي · 3-5 أيام</span>
+                        <span className="text-status-success font-medium">مجاني داخل بنغازي · يوم عمل واحد</span>
                       </div>
                       <div className="h-px bg-line-subtle" />
                       <div className="flex justify-between text-base font-bold">
