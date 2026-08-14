@@ -27,7 +27,7 @@ const sections = [
 ];
 
 export default function ShippingPolicy() {
-  usePageMeta("الشحن والتوصيل", "توصيل مجاني داخل بنغازي خلال 3-5 أيام عمل.");
+  usePageMeta("الشحن والتوصيل", "نوصل لجميع المدن الليبية برسوم حسب المدينة — الشحن مجاني داخل بنغازي خلال 3-5 أيام عمل.");
   return (
     <div className="min-h-screen pt-24 pb-16">
       <div className="max-w-[800px] mx-auto px-4 sm:px-6">

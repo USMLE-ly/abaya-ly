@@ -21,7 +21,7 @@ const loadCart = (): CartItem[] => {
 };
 
 export function Cart() {
-  usePageMeta("سلة تسوقكِ", "أكملي طلبكِ من نادين — شحن مجاني داخل بنغازي، الدفع عند الاستلام، وإرجاع خلال 7 أيام.");
+  usePageMeta("سلة تسوقكِ", "أكملي طلبكِ من نادين — نوصل لجميع المدن الليبية، الشحن مجاني داخل بنغازي، الدفع عند الاستلام، وإرجاع خلال 7 أيام.");
   return <PageTransition><CartContent /></PageTransition>;
 }
 
