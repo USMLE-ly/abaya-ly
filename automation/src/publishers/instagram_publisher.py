@@ -50,7 +50,8 @@ class InstagramPublisher(BasePublisher):
         m = re.search(r"https?://[^\s]+", caption)
         return m.group(0) if m else None
 
-    def publish(self, video_path: str, caption: str, product_url: str | None = None) -> bool:
+    def publish(self, video_path: str, caption: str, product_url: str | None = None,
+                 trial: bool = False, location_name: str | None = None) -> bool:
         if not os.path.exists(video_path):
             print(f"  [!] Video not found: {video_path}")
             return False
@@ -64,7 +65,8 @@ class InstagramPublisher(BasePublisher):
         if sessionid:
             try:
                 link = product_url or self._product_url(caption)
-                result = uploader.upload_reel(video_path, caption, link=link)
+                result = uploader.upload_reel(video_path, caption, link=link,
+                                               trial=trial, location_name=location_name)
                 print(f"  [✓] Instagram posted → {result['url']}")
                 if link and result.get('link'):
                     print(f"  [✓] Reel link sticker attached")
@@ -81,12 +83,14 @@ class InstagramPublisher(BasePublisher):
 
         return self._publish_vision(video_path, caption)
 
-    def run(self, video_path: str, caption: str, product_url: str | None = None) -> bool:
+    def run(self, video_path: str, caption: str, product_url: str | None = None,
+             trial: bool = False, location_name: str | None = None) -> bool:
         """Run the publish flow. No browser is spawned for the instagrapi path;
         the vision fallback launches its own browser-use host if needed."""
         print(f"  [{self.PLATFORM_NAME}] Starting publish...")
         try:
-            success = self.publish(video_path, caption, product_url=product_url)
+            success = self.publish(video_path, caption, product_url=product_url,
+                                   trial=trial, location_name=location_name)
             if success:
                 print(f"  [✓] {self.PLATFORM_NAME} posted successfully")
             else:

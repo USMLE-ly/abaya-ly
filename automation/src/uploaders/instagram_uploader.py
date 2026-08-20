@@ -53,16 +53,44 @@ class InstagramUploader:
         info = self.client.account_info()
         return {"username": info.username, "pk": str(info.pk)}
 
-    def upload_reel(self, video_path: str, caption: str = "", link: Optional[str] = None) -> dict:
+    def search_location(self, name: str = "Libya"):
+        """Search for an Instagram location by name."""
+        results = self.client.location_search_name(name)
+        if results:
+            loc = results[0]
+            print(f"  [📍] Location found: {loc.name} (pk={loc.pk})")
+            return loc
+        return None
+
+    def upload_reel(
+        self,
+        video_path: str,
+        caption: str = "",
+        link: Optional[str] = None,
+        trial: bool = False,
+        location_name: Optional[str] = None,
+    ) -> dict:
         """Upload a video as a Reel.
 
-        When ``link`` is given, we attempt Instagram's Reel link (Add link).
-        Only accounts Instagram has enabled the feature for will accept it —
-        otherwise we retry without the link and the reel still posts.
+        When ``trial=True``, posts as a Trial Reel (not on main profile).
+        When ``location_name`` is given, searches and attaches the location.
+        When ``link`` is given, attempts Instagram's Reel link (Add link).
         """
         if not os.path.exists(video_path):
             raise FileNotFoundError(video_path)
         from instagrapi.exceptions import ClientError as IGClientError
+
+        location = None
+        if location_name:
+            location = self.search_location(location_name)
+
+        kwargs = {}
+        if location:
+            kwargs["location"] = location
+        if trial:
+            kwargs["trial"] = True
+            kwargs["trial_graduation_strategy"] = "manual"
+            print("  [🧪] Trial mode ON — reel won't appear on main profile")
 
         if link:
             try:
@@ -70,18 +98,26 @@ class InstagramUploader:
                     os.path.abspath(video_path),
                     caption[:2200],
                     extra_data={"link": link},
+                    **kwargs,
                 )
                 return {
                     "pk": str(media.pk),
                     "url": f"https://www.instagram.com/reel/{media.pk}/",
                     "link": link,
+                    "trial": trial,
                 }
             except (IGClientError, Exception) as e:
                 print(f"  [!] Reel link rejected ({e}) — retrying without link")
-        media = self.client.clip_upload(os.path.abspath(video_path), caption[:2200])
+
+        media = self.client.clip_upload(
+            os.path.abspath(video_path),
+            caption[:2200],
+            **kwargs,
+        )
         return {
             "pk": str(media.pk),
             "url": f"https://www.instagram.com/reel/{media.pk}/",
+            "trial": trial,
         }
 
     def comment(self, media_pk: str, text: str) -> dict:
