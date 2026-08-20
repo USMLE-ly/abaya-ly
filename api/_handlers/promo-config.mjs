@@ -11,7 +11,6 @@
 //   label      short Arabic label shown in the promo UI
 //   expiresAt  fixed ISO end date-time. The countdown runs ONCE,
 //              reaches zero, and stays expired until you edit this.
-//              (Current run: NADINE10 valid for 24 hours only.)
 //
 // The countdown never restarts or loops — one fixed expiration.
 // ═══════════════════════════════════════════════════════════════
@@ -21,7 +20,7 @@ export const PROMO = {
   type: "percent",
   value: 25,
   label: "خصم 25% على طلبكِ — كود NADINE10",
-  expiresAt: "2026-08-15T15:08:30.000Z",
+  expiresAt: "2026-08-21T15:07:50.000Z",
 };
 
 /** Derived, time-aware status used by the API + coupon validation. */
