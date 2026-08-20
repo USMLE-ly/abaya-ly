@@ -89,8 +89,10 @@ class InstagramUploader:
             kwargs["location"] = location
         if trial:
             kwargs["trial"] = True
-            kwargs["trial_graduation_strategy"] = "manual"
-            print("  [🧪] Trial mode ON — reel won't appear on main profile")
+            kwargs["trial_graduation_strategy"] = "auto"
+            kwargs["show_preview_in_feed"] = False
+            kwargs["extra_data"] = {**kwargs.get("extra_data", {}), "is_trial": "1"}
+            print("  [🧪] Trial mode ON — shown to non-followers first, auto-graduates if performing well")
 
         if link:
             try:
