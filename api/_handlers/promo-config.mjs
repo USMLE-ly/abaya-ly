@@ -20,7 +20,7 @@ export const PROMO = {
   type: "percent",
   value: 25,
   label: "خصم 25% على طلبكِ — كود NADINE10",
-  expiresAt: "2026-08-21T15:07:50.000Z",
+  expiresAt: "2026-08-23T04:35:29.000Z",
 };
 
 /** Derived, time-aware status used by the API + coupon validation. */
