@@ -5,6 +5,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { pixelTrack, pixelTrackOnce, type MetaUserData } from "@/lib/meta-pixel";
+import { clarityEvent } from "@/lib/clarity";
 
 const FLUSH_INTERVAL = 15_000;
 const FLUSH_BATCH = 25;
@@ -79,6 +80,7 @@ function scheduleFlush() {
 export function track(event: string, params: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
   if (import.meta.env.DEV) console.debug("[analytics]", event, params);
+  clarityEvent(event);
   buffer.push({
     name: event,
     params,
