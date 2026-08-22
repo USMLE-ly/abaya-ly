@@ -1,9 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ticketPath, useIsRTL, useTicketScale, type TicketGeom } from "./ticket";
+import { useEffect, useMemo, useState } from "react";
 import { usePromo } from "@/lib/promo";
-
-/** Admit-One ticket anatomy (21st.dev reference) in rose/white brand colors. */
-const GEO: TicketGeom = { w: 741, h: 425, corner: 25, notch: 21, dividerX: 562 };
 
 function PromoEnded() {
   return (
@@ -34,14 +30,7 @@ export function PromoCountdown() {
     return () => clearInterval(id);
   }, [target]);
 
-  // Hooks must run unconditionally: an early return below would change the
-  // hook count between renders and crash with React error #310.
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const rtl = useIsRTL();
-  const scale = useTicketScale(wrapRef, GEO.w);
-
   if (loading) return null;
-  // Disabled → hidden completely. Expired / reached zero → permanent ended state.
   if (!promo || promo.disabled) return null;
   if (promo.ended || Number.isNaN(target) || target - now <= 0) return <PromoEnded />;
 
@@ -58,142 +47,100 @@ export function PromoCountdown() {
     { value: seconds, label: "ثانية" },
   ];
 
-  const clip = ticketPath(GEO, rtl);
-  const dividerLeft = rtl ? GEO.w - GEO.dividerX - 0.8 : GEO.dividerX - 0.8;
-  const stubLeft = rtl ? 0 : GEO.dividerX;
-  const stubWidth = GEO.w - GEO.dividerX;
-
   return (
     <section className="py-10 md:py-14">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-10">
         <div
-          ref={wrapRef}
-          className="relative mx-auto w-full"
-          style={{ maxWidth: GEO.w, aspectRatio: `${GEO.w} / ${GEO.h}` }}
+          data-debug="promo-countdown-real"
+          className="relative mx-auto w-full overflow-hidden rounded-3xl"
+          style={{
+            maxWidth: "min(741px, calc(100vw - 2rem))",
+            background: "linear-gradient(135deg, #ffffff 0%, #fff5f7 42%, #ffe4eb 100%)",
+            boxShadow: "0 24px 44px rgba(196,40,85,0.22), inset 0 0 52px -24px rgba(196,40,85,0.28)",
+          }}
         >
+          {/* perforation — dashed vertical tear line */}
           <div
-            className="absolute"
+            aria-hidden="true"
+            className="absolute top-0 bottom-0 hidden sm:block"
             style={{
-              left: "50%",
-              top: 0,
-              marginLeft: -GEO.w / 2,
-              width: GEO.w,
-              height: GEO.h,
-              transform: `scale(${scale})`,
-              transformOrigin: "top center",
+              left: "76%",
+              width: 1.6,
+              backgroundImage:
+                "repeating-linear-gradient(rgba(196,40,85,0.35) 0px, rgba(196,40,85,0.35) 8.9px, transparent 8.9px, transparent 17.8px)",
             }}
-          >
-            <div className="relative h-full w-full" style={{ filter: "drop-shadow(0 24px 44px rgba(196,40,85,0.22))" }}>
-              <div
-                data-debug="promo-countdown-real"
-                className="relative"
-                style={{ width: GEO.w, height: GEO.h, clipPath: `path("${clip}")` }}
-              >
-                {/* rose gradient body */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0"
-                  style={{ background: "linear-gradient(135deg, #ffffff 0%, #fff5f7 42%, #ffe4eb 100%)" }}
-                />
+          />
 
-                {/* perforation — dashed tear line exactly on the divider */}
-                <div
-                  aria-hidden="true"
-                  className="absolute top-0 bottom-0"
-                  style={{
-                    left: dividerLeft,
-                    width: 1.6,
-                    backgroundImage:
-                      "repeating-linear-gradient(rgba(196,40,85,0.35) 0px, rgba(196,40,85,0.35) 8.9px, transparent 8.9px, transparent 17.8px)",
-                  }}
-                />
+          <div className="flex flex-col sm:flex-row">
+            {/* Main body */}
+            <div className="flex-1 px-6 py-8 sm:px-8 sm:py-12">
+              <span className="inline-flex items-center rounded-full bg-brand-subtle px-3.5 py-1 text-[11px] uppercase tracking-[0.22em] font-semibold text-brand shadow-[inset_0_0_0_1px_rgba(196,40,85,0.12)]">
+                عرض محدود
+              </span>
+              <h2 className="mt-3 font-display text-lg leading-snug font-bold text-fg sm:text-[22px]">
+                {promo.label}
+              </h2>
 
-                {/* stub watermark */}
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute grid place-items-center font-bold tabular-nums"
-                  style={{
-                    left: stubLeft,
-                    top: 0,
-                    width: stubWidth,
-                    height: GEO.h,
-                    color: "rgba(196,40,85,0.10)",
-                    overflow: "hidden",
-                  }}
-                >
-                  <span style={{ writingMode: "vertical-rl", fontSize: 118, lineHeight: 1, letterSpacing: "-0.04em" }}>
-                    {promo.value}%
-                  </span>
-                </div>
-
-                {/* stub label */}
-                <div
-                  className="absolute grid place-items-center font-bold"
-                  style={{
-                    left: stubLeft,
-                    top: 0,
-                    width: stubWidth,
-                    height: GEO.h,
-                    color: "#c42855",
-                    opacity: 0.9,
-                  }}
-                >
-                  <span
-                    dir="ltr"
-                    style={{ writingMode: "vertical-rl", fontSize: 34, lineHeight: 1.1, letterSpacing: "0.08em" }}
-                  >
-                    {promo.code}
-                  </span>
-                </div>
-
-                {/* main body — badge + title */}
-                <div className="absolute" style={{ top: 56, insetInlineStart: 57, textAlign: "start" }}>
-                  <span className="inline-flex items-center rounded-full bg-brand-subtle px-3.5 py-1 text-[11px] uppercase tracking-[0.22em] font-semibold text-brand shadow-[inset_0_0_0_1px_rgba(196,40,85,0.12)]">
-                    عرض محدود
-                  </span>
-                  <h2 className="mt-3 font-display text-[22px] leading-snug font-bold text-fg">{promo.label}</h2>
-                </div>
-
-                {/* countdown */}
-                <div className="absolute" style={{ top: 200, insetInlineStart: 57 }}>
-                  <div className="flex items-center" dir="ltr">
-                    {cells.map((c, i) => (
-                      <div key={i} className="flex items-center">
-                        <div className="flex h-[62px] w-[88px] flex-col items-center justify-center">
-                          <span className="text-[40px] font-bold tabular-nums leading-none text-brand">
-                            {String(c.value).padStart(2, "0")}
-                          </span>
-                          <span className="mt-1.5 text-[11px] font-semibold text-fg-disabled">{c.label}</span>
-                        </div>
-                        {i < cells.length - 1 && (
-                          <span className="mx-2 text-2xl font-bold text-brand/30">:</span>
-                        )}
-                      </div>
-                    ))}
+              {/* Countdown */}
+              <div className="mt-6 flex items-center justify-start" dir="ltr">
+                {cells.map((c, i) => (
+                  <div key={i} className="flex items-center">
+                    <div
+                      className="flex flex-col items-center justify-center"
+                      style={{ minWidth: "clamp(56px, 16vw, 88px)", height: "clamp(48px, 13vw, 62px)" }}
+                    >
+                      <span
+                        className="font-bold tabular-nums leading-none text-brand"
+                        style={{ fontSize: "clamp(1.6rem, 7vw, 2.5rem)" }}
+                      >
+                        {String(c.value).padStart(2, "0")}
+                      </span>
+                      <span className="mt-1 text-[10px] font-semibold text-fg-disabled sm:text-[11px]">{c.label}</span>
+                    </div>
+                    {i < cells.length - 1 && (
+                      <span className="mx-1 text-xl font-bold text-brand/30 sm:mx-2 sm:text-2xl">:</span>
+                    )}
                   </div>
-                </div>
-
-                {/* bottom note */}
-                <div className="absolute" style={{ top: 348, insetInlineStart: 57, textAlign: "start" }}>
-                  <p className="text-[13px] font-medium text-fg-tertiary">
-                    استخدمي كود{" "}
-                    <span className="font-bold text-brand" dir="ltr">
-                      {promo.code}
-                    </span>{" "}
-                    عند الحجز — ينتهي العداد أدناه
-                  </p>
-                </div>
-
-                {/* edge highlight — follows the same outline */}
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0"
-                  style={{
-                    clipPath: `path("${clip}")`,
-                    boxShadow: "inset 0 0 0 1.5px rgba(196,40,85,0.18), inset 0 0 52px -24px rgba(196,40,85,0.28)",
-                  }}
-                />
+                ))}
               </div>
+
+              {/* Bottom note */}
+              <p className="mt-5 text-xs font-medium text-fg-tertiary sm:text-[13px]">
+                استخدمي كود{" "}
+                <span className="font-bold text-brand" dir="ltr">
+                  {promo.code}
+                </span>{" "}
+                عند الحجز — ينتهي العداد أدناه
+              </p>
+            </div>
+
+            {/* Stub — visible only on wider screens */}
+            <div
+              className="relative hidden w-[24%] min-w-[140px] items-center justify-center sm:flex"
+              aria-hidden="false"
+            >
+              {/* watermark */}
+              <span
+                className="pointer-events-none absolute inset-0 grid place-items-center overflow-hidden font-bold tabular-nums"
+                style={{ color: "rgba(196,40,85,0.06)" }}
+              >
+                <span style={{ writingMode: "vertical-rl", fontSize: 96, lineHeight: 1 }}>
+                  {promo.value}%
+                </span>
+              </span>
+              <span
+                dir="ltr"
+                className="relative font-bold"
+                style={{
+                  writingMode: "vertical-rl",
+                  fontSize: "clamp(20px, 3vw, 34px)",
+                  letterSpacing: "0.08em",
+                  color: "#c42855",
+                  opacity: 0.9,
+                }}
+              >
+                {promo.code}
+              </span>
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@ import { Star, ChevronLeft, Minus, Plus, Truck, RotateCcw, Shield, Headphones, C
 import { BookingModal } from "@/components/BookingModal";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { ProductShippingEstimate } from "@/components/ProductShippingEstimate";
-import { CouponCard } from "@/components/CouponCard";
+import { ClickableDiscount } from "@/components/ClickableDiscount";
 import { UrgencyText } from "@/components/UrgencyText";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import { SizeGuide } from "@/components/SizeGuide";
@@ -535,7 +535,7 @@ function ProductContent() {
             <div className="mb-4 space-y-3">
               <UrgencyText />
               {promo?.active && (
-                <CouponCard code={promo.code} discountLabel={`كود خصم ${promo.value}٪ — على طلبكِ`} expiresAt={promo.expiresAt ?? undefined} />
+                <ClickableDiscount code={promo.code} label={`كوبون خصم ${promo.value}% على طلبكِ`} onReveal={(c) => setRevealedCoupon(c)} />
               )}
             </div>
 
