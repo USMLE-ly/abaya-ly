@@ -213,7 +213,7 @@ const base: BaseFields[] = [
   { id: "lumiere-white-lace-strapless", fabric: "قماش مطاطي مع شبك مطرز", category: "السهرة", price: 780, originalPrice: 980, badge: "جديد",
     colors: [{name:"أبيض",hex:"#FFFFFF"},{name:"أسود فاحم",hex:"#0A0A0A",linkTo:"noir-black-lace-collar-midi"}], sizes: ["S","M","L","XL"], images: ["/outfits/lumiere-white-lace-strapless.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "noir-black-lace-collar-midi", fabric: "ساتان مع دانتيل", category: "السهرة", price: 890, originalPrice: 1150, badge: "جديد",
-    colors: [{name:"أسود فاحم",hex:"#0A0A0A"},{name:"أبيض",hex:"#FFFFFF",linkTo:"lumiere-white-lace-strapless"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-black-lace-collar-midi.jpg"], rating: 4.8, reviewCount: 0 },
+    colors: [{name:"أسود فاحم",hex:"#0A0A0A"},{name:"أبيض",hex:"#FFFFFF",linkTo:"lumiere-white-lace-strapless"}], sizes: ["S","M","L","XL"], images: ["/outfits/noir-black-lace-collar-midi.jpg"], rating: 4.8, reviewCount: 12 },
   { id: "botanique-pink-gold-ring-midi", fabric: "جيرسي ناعم", category: "السهرة", price: 720, originalPrice: 950, badge: "جديد",
     colors: [{name:"وردي فاتح",hex:"#F8BBD0"},{name:"أسود فحمي",hex:"#1C1C1C",linkTo:"noir-black-ruched-midi"},{name:"أزرق فاتح",hex:"#A8D8EA",linkTo:"azure-light-blue-gold-ring-midi"},{name:"بني موكا",hex:"#7A5C4E",linkTo:"maison-mocha-ruched-gown"}], sizes: ["S","M","L","XL"], images: ["/outfits/botanique-pink-gold-ring-midi.jpg"], rating: 4.8, reviewCount: 0 },
   { id: "azure-light-blue-gold-ring-midi", fabric: "جيرسي مطاطي ناعم", category: "السهرة", price: 720, originalPrice: 920, badge: "جديد",
